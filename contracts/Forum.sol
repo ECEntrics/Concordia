@@ -1,4 +1,4 @@
-pragma solidity ^0.4.17;
+pragma solidity ^0.4.21;
 
 contract Forum {
 
@@ -13,10 +13,15 @@ contract Forum {
     mapping (address => User) users;
     mapping (string => address) userAddresses;
 
+    event UserSignedUp(
+        string userName
+    );
+
     function signUp(string userName) public returns (bool) {  // Also allows user to update his name - TODO: his previous name will appear as taken
         require(!isUserNameTaken(userName));
         users[msg.sender] = User(userName, new uint[](0), new uint[](0));
         userAddresses[userName] = msg.sender;
+        emit UserSignedUp(userName);
         return true;
     }
 
