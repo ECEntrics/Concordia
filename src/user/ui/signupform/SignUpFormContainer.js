@@ -1,4 +1,4 @@
-import { connect } from 'react-redux'
+import {drizzleConnect} from "drizzle-react";
 import SignUpForm from './SignUpForm'
 import { signUpUser } from './SignUpFormActions'
 
@@ -14,9 +14,6 @@ const mapDispatchToProps = (dispatch) => {
   }
 };
 
-const SignUpFormContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SignUpForm);
+const SignUpFormContainer = drizzleConnect(SignUpForm, mapStateToProps, mapDispatchToProps);
 
 export default SignUpFormContainer

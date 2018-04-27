@@ -1,4 +1,5 @@
-import { connect } from 'react-redux'
+import { drizzleConnect } from 'drizzle-react'
+
 import ProfileForm from './ProfileForm'
 import { updateUser } from './ProfileFormActions'
 
@@ -17,9 +18,6 @@ const mapDispatchToProps = (dispatch) => {
   }
 };
 
-const ProfileFormContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ProfileForm);
+const ProfileFormContainer = drizzleConnect(ProfileForm, mapStateToProps, mapDispatchToProps);
 
 export default ProfileFormContainer
