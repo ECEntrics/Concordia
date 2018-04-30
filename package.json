@@ -6,9 +6,6 @@
     "type": "git",
     "url": "https://gitlab.com/Ezerous/Apella.git"
   },
-  "devDependencies": {
-    "truffle-contract": "^3.0.4"
-  },
   "dependencies": {
     "drizzle": "^1.1.5",
     "drizzle-react": "^1.1.1",
@@ -23,7 +20,6 @@
     "redux": "^3.7.2",
     "redux-auth-wrapper": "1.1.0",
     "redux-saga": "0.16.0",
-    "redux-thunk": "^2.2.0",
     "web3":"^1.0.0-beta.34"
   },
   "scripts": {
