@@ -1,13 +1,22 @@
 import React, { Component } from 'react'
+import { AccountData, ContractData } from 'drizzle-react-components'
+import UsernameFormContainer from '../../containers/UsernameFormContainer'
 
 class Home extends Component {
   render() {
-    return(
+    return (
       <main className="container">
         <div className="pure-g">
+          <div className="pure-u-1-1 header">
+            <h1>Apella</h1>
+            <br/><br/>
+          </div>
           <div className="pure-u-1-1">
-            <h1>Welcome!</h1>
-            <p>Lorem ipsum dolor sit amet, tempor vitae vivamus senectus id risus, nulla in, urna sed vitae at ac. Parturient fringilla vestibulum, vitae metus tempus, augue sollicitudin, faucibus scelerisque suspendisse, consectetuer massa fermentum tellus interdum neque. Luctus euismod, nam sodales, non aliquam luctus lorem tellus, habitasse porttitor fusce sed mauris omnis massa, mauris felis pede sodales ligula semper. Amet ut id voluptatum. Nunc amet sem, fusce wisi interdum, et a. Fusce dolor augue in non aliquam, id vestibulum, lacinia diam ante sit felis et, viverra velit, nulla sociosqu autem.</p>
+            <h2>Account</h2>
+            <AccountData accountIndex="0" units="ether" precision="3" />
+            <p><strong>Username</strong>: <ContractData contract="Forum" method="getUsername" methodArgs={[this.props.accounts[0]]}/></p>
+            <UsernameFormContainer/>
+            <br/><br/>
           </div>
         </div>
       </main>
