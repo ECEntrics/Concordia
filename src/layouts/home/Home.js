@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { AccountData, ContractData, ContractForm } from 'drizzle-react-components'
-import Menu from './../../containers/Menu'
+import { AccountData, ContractData } from 'drizzle-react-components'
+import UsernameFormContainer from '../../containers/UsernameFormContainer'
 
 class Home extends Component {
   render() {
@@ -15,8 +15,7 @@ class Home extends Component {
             <h2>Account</h2>
             <AccountData accountIndex="0" units="ether" precision="3" />
             <p><strong>Username</strong>: <ContractData contract="Forum" method="getUsername" methodArgs={[this.props.accounts[0]]}/></p>
-            <ContractForm contract="Forum" method="signUp" />
-            <Menu method="hasUserSignedUp" methodArgs={[this.props.accounts[0]]} />
+            <UsernameFormContainer/>
             <br/><br/>
           </div>
         </div>

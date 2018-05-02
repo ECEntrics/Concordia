@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import './css/oswald.css'
 import './css/open-sans.css'
 import './css/pure-min.css'
-import './App.css'
+import './css/App.css'
 
 class App extends Component {
   render() {

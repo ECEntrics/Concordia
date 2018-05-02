@@ -12,6 +12,8 @@ import { LoadingContainer } from 'drizzle-react-components'
 import store from './store'
 import drizzleOptions from './drizzleOptions'
 
+import './css/index.css'
+
 // Initialize react-router-redux.
 const history = syncHistoryWithStore(browserHistory, store);
 

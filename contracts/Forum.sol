@@ -1,56 +1,62 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.23;
 
 contract Forum {
 
-    //----------------------------------------USER----------------------------------------
+    //----------------------------------------AUTHENTICATION----------------------------------------
     struct User {
-        string userName;    // TODO: set an upper bound instead of arbitrary string
+        string username;    // TODO: set an upper bound instead of arbitrary string
         // TODO: orbitDBAddress;
         uint[] topicIDs;    // IDs of the topics the user created
         uint[] postIDs;    // IDs of the posts the user created
+        bool signedUp;    // Helper variable for hasUserSignedUp()
     }
 
     mapping (address => User) users;
     mapping (string => address) userAddresses;
 
-    event UserSignedUp(
-        string userName
-    );
+    event UserSignedUp(string username, address userAddress);
+    event UsernameUpdated(string newName, string oldName,address userAddress);
 
-    function signUp(string userName) public returns (bool) {  // Also allows user to update his name - TODO: his previous name will appear as taken
-        require(!isUserNameTaken(userName));
-        users[msg.sender] = User(userName, new uint[](0), new uint[](0));
-        userAddresses[userName] = msg.sender;
-        emit UserSignedUp(userName);
+    function signUp(string username) public returns (bool) {
+        require (!hasUserSignedUp(msg.sender), "User has already signed up.");
+        require(!isUserNameTaken(username), "Username is already taken.");
+        users[msg.sender] = User(username, new uint[](0), new uint[](0), true);
+        userAddresses[username] = msg.sender;
+        emit UserSignedUp(username, msg.sender);
         return true;
     }
 
-    function login() public view returns (string) {
-        require (hasUserSignedUp(msg.sender));
-        return users[msg.sender].userName;
+    function updateUsername(string newUsername) public returns (bool) {
+        require (hasUserSignedUp(msg.sender), "User hasn't signed up yet.");
+        require(!isUserNameTaken(newUsername), "Username is already taken.");
+        string memory oldUsername = getUsername(msg.sender);
+        delete userAddresses[users[msg.sender].username];
+        users[msg.sender].username = newUsername;
+        userAddresses[newUsername] = msg.sender;
+        emit UsernameUpdated(newUsername, oldUsername, msg.sender);
+        return true;
     }
 
     function getUsername(address userAddress) public view returns (string) {
-        return users[userAddress].userName;
+        return users[userAddress].username;
     }
 
-    function getUserAddress(string userName) public view returns (address) {
-        return userAddresses[userName];
+    function getUserAddress(string username) public view returns (address) {
+        return userAddresses[username];
     }
 
     function hasUserSignedUp(address userAddress) public view returns (bool) {
-        if (bytes(getUsername(userAddress)).length!=0)
+        return users[userAddress].signedUp;
+    }
+
+    function isUserNameTaken(string username) public view returns (bool) {
+        if (getUserAddress(username)!=address(0))
             return true;
         return false;
     }
 
-    function isUserNameTaken(string userName) public view returns (bool) {
-        if (getUserAddress(userName)!=0)
-            return true;
-        return false;
-    }
 
-    //----------------------------------------TOPIC----------------------------------------
+    //----------------------------------------POSTING----------------------------------------
     struct Topic {
         uint topicID;
         address author;
