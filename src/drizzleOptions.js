@@ -11,8 +11,12 @@ const drizzleOptions = {
         Forum
     ],
     events: {
-        Forum: ['UserSignedUp']
-    }
+        Forum: ['UserSignedUp', 'UsernameUpdated']
+    },
+    polls: {
+        accounts: 3000,
+        blocks: 3000
+    },
 };
 
 export default drizzleOptions

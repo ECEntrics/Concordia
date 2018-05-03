@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { AccountData, ContractData } from 'drizzle-react-components'
+import { ContractData } from 'drizzle-react-components'
 import UsernameFormContainer from '../../containers/UsernameFormContainer'
 
 class Home extends Component {
@@ -13,7 +13,6 @@ class Home extends Component {
           </div>
           <div className="pure-u-1-1">
             <h2>Account</h2>
-            <AccountData accountIndex="0" units="ether" precision="3" />
             <p><strong>Username</strong>: <ContractData contract="Forum" method="getUsername" methodArgs={[this.props.accounts[0]]}/></p>
             <UsernameFormContainer/>
             <br/><br/>

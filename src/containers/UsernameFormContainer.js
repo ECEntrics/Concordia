@@ -45,7 +45,6 @@ class UsernameFormContainer extends Component {
 
             }
         }
-        console.dir(initialState);
         this.state = initialState;
     }
 
