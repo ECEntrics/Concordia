@@ -1,7 +1,7 @@
 const initialState = {
-    username: "Guest",
+    username: "",
     address: "0x0",
-    hasSignedUp: false
+    hasSignedUp: null
 };
 
 const userReducer = (state = initialState, action) => {
@@ -14,7 +14,7 @@ const userReducer = (state = initialState, action) => {
             };
         case 'USER_IS_GUEST':
             return {
-                username: "Guest",
+                username: "",
                 address: action.address,
                 hasSignedUp: false
             };

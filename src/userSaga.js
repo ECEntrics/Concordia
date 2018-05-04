@@ -39,23 +39,24 @@ function* updateUserData() {
 function* getUserData() {
     account = (yield select(accounts))[0];
     forumContract.methods["hasUserSignedUp"].cacheCall(...[account]);
-    const txObject = yield call(forumContract.methods["hasUserSignedUp"], ...[account]);
+    const txObj1 = yield call(forumContract.methods["hasUserSignedUp"], ...[account]);
     try {
-        const callResult = yield call(txObject.call, {address:account});
+        const callResult = yield call(txObj1.call, {address:account});
         if(callResult)
         {
-            const username = yield call(forumContract.methods["getUsername"], ...[account]);
+            const txObj2 = yield call(forumContract.methods["getUsername"], ...[account]);
+            const username = yield call(txObj2.call, {address:account});
             const dispatchArgs = {
                 address: account,
                 username: username
             };
-            yield put({type: 'USER_HAS_SIGNED_UP', ...dispatchArgs});   //TODO: only dispatch if needed
+            yield put({type: 'USER_HAS_SIGNED_UP', ...dispatchArgs});
         }
         else{
             const dispatchArgs = {
                 address: account,
             };
-            yield put({type: 'USER_IS_GUEST', ...dispatchArgs});    //TODO: only dispatch if needed
+            yield put({type: 'USER_IS_GUEST', ...dispatchArgs});
         }
     }
     catch (error) {

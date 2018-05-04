@@ -1,7 +1,6 @@
 import { drizzleConnect } from 'drizzle-react'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import AuthWrapperContainer from './AuthWrapperContainer'
 
 const contract = "Forum";
 const signUpMethod = "signUp";
@@ -11,81 +10,42 @@ class UsernameFormContainer extends Component {
     constructor(props, context) {
         super(props);
 
-        this.handleSignUp = this.handleSignUp.bind(this);
-        this.handleSignUpInputChange = this.handleSignUpInputChange.bind(this);
-
-        this.handleUsernameUpdate = this.handleUsernameUpdate.bind(this);
-        this.handleUpdateUsernameInputChange = this.handleUpdateUsernameInputChange.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
 
         this.contracts = context.drizzle.contracts;
-
-        // Get the contract ABI
-        const abi = this.contracts[contract].abi;
-
-
-        this.inputs = {signUp:[], updateUsername:[]};
-        let initialState = {signUp:{}, updateUsername:{}};
-
-        // Iterate over abi for correct function.
-        for (let i = 0; i < abi.length; i++) {
-            if ((abi[i].name === signUpMethod)) {
-                this.inputs.signUp = abi[i].inputs;
-
-                for (let i = 0; i < this.inputs.signUp.length; i++) {
-                    initialState.signUp[this.inputs.signUp[i].name] = '';
-                }
-
-            }
-            else if ((abi[i].name === updateUsernameMethod)) {
-                this.inputs.updateUsername = abi[i].inputs;
-
-                for (let i = 0; i < this.inputs.updateUsername.length; i++) {
-                    initialState.updateUsername[this.inputs.updateUsername[i].name] = '';
-                }
-
-            }
-        }
-        this.state = initialState;
+        this.state = {usernameInput:''};
     }
 
-    handleSignUp() {
-        this.contracts[contract].methods[signUpMethod].cacheSend(...Object.values(this.state.signUp));
+    handleSubmit() {
+        this.setState({usernameInput:''});
+        if(this.props.user.hasSignedUp)
+           this.contracts[contract].methods[updateUsernameMethod].cacheSend(...[this.state.usernameInput]);
+        else
+           this.contracts[contract].methods[signUpMethod].cacheSend(...[this.state.usernameInput]);
     }
 
-    handleUsernameUpdate() {
-        this.contracts[contract].methods[updateUsernameMethod].cacheSend(...Object.values(this.state.updateUsername));
-    }
 
-    handleSignUpInputChange(event) {
-        this.setState({ signUp: { ...this.state.signUp, [event.target.name]: event.target.value} });
+    handleInputChange(event) {
+        this.setState({[event.target.name]: event.target.value});
     }
-
-    handleUpdateUsernameInputChange(event) {
-        this.setState({ updateUsername: { ...this.state.updateUsername, [event.target.name]: event.target.value} });
-    }
-
 
     render() {
-        let signUp = this.inputs.signUp[0].name;    //username
-        let updateUsername = this.inputs.updateUsername[0].name;    //newUsername
-        return (
-            <AuthWrapperContainer
-                authRender={
-                    <form className="pure-form pure-form-stacked">
-                        <input key={updateUsername} name={updateUsername} type="text" value={this.state.updateUsername.newUsername} placeholder="Username" onChange={this.handleUpdateUsernameInputChange} />
-                        <button key="submit" className="pure-button" type="button" onClick={this.handleUsernameUpdate}>Update</button>
-                    </form>
-                }
-                guestRender={
-                    <form className="pure-form pure-form-stacked">
-                        <input key={signUp} name={signUp} type="text" value={this.state.signUp.username} placeholder="Username" onChange={this.handleSignUpInputChange} />
-                        <button key="submit" className="pure-button" type="button" onClick={this.handleSignUp}>Sign Up</button>
-                    </form>
-                }
-            />
+        const hasSignedUp = this.props.user.hasSignedUp;
 
+        if(hasSignedUp!==null) {
+            const buttonText = hasSignedUp ? "Update" : "Sign Up";
+            const placeholderText = hasSignedUp ? this.props.user.username : "Username";
 
-        )
+            return(
+                <form className="pure-form pure-form-stacked">
+                    <input key={"usernameInput"} name={"usernameInput"} type="text" value={this.state.usernameInput} placeholder={placeholderText} onChange={this.handleInputChange} />
+                    <button key="submit" className="pure-button" type="button" onClick={this.handleSubmit}>{buttonText}</button>
+                </form>
+            );
+        }
+
+        return(null);
     }
 }
 
@@ -95,7 +55,8 @@ UsernameFormContainer.contextTypes = {
 
 const mapStateToProps = state => {
     return {
-        contracts: state.contracts
+        contracts: state.contracts,
+        user: state.user
     }
 };
 
