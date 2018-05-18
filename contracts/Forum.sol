@@ -2,10 +2,13 @@ pragma solidity ^0.4.23;
 
 contract Forum {
 
-    //----------------------------------------AUTHENTICATION----------------------------------------
+    //----------------------------------------USER----------------------------------------
     struct User {
         string username;    // TODO: set an upper bound instead of arbitrary string
-        // TODO: orbitDBAddress;
+        string orbitMainDB;     // TODO: set an upper bound instead of arbitrary string
+        string orbitTopicsDB;
+        string orbitPostsDB;
+
         uint[] topicIDs;    // IDs of the topics the user created
         uint[] postIDs;    // IDs of the posts the user created
         bool signedUp;    // Helper variable for hasUserSignedUp()
@@ -17,10 +20,10 @@ contract Forum {
     event UserSignedUp(string username, address userAddress);
     event UsernameUpdated(string newName, string oldName,address userAddress);
 
-    function signUp(string username) public returns (bool) {
+    function signUp(string username, string orbitMainDB, string orbitTopicsDB, string orbitPostsDB) public returns (bool) {
         require (!hasUserSignedUp(msg.sender), "User has already signed up.");
         require(!isUserNameTaken(username), "Username is already taken.");
-        users[msg.sender] = User(username, new uint[](0), new uint[](0), true);
+        users[msg.sender] = User(username, orbitMainDB, orbitTopicsDB, orbitPostsDB, new uint[](0), new uint[](0), true);
         userAddresses[username] = msg.sender;
         emit UserSignedUp(username, msg.sender);
         return true;
@@ -55,7 +58,17 @@ contract Forum {
         return false;
     }
 
+    function getOrbitMainDB(address userAddress) public view returns (string) {
+        return users[userAddress].orbitMainDB;
+    }
 
+    function getOrbitTopicsDB(address userAddress) public view returns (string) {
+        return users[userAddress].orbitTopicsDB;
+    }
+
+    function getOrbitPostsDB(address userAddress) public view returns (string) {
+        return users[userAddress].orbitPostsDB;
+    }
     //----------------------------------------POSTING----------------------------------------
     struct Topic {
         uint topicID;

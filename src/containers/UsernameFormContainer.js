@@ -1,5 +1,8 @@
 import { drizzleConnect } from 'drizzle-react'
 import React, { Component } from 'react'
+
+import { createDatabases } from './../util/orbit'
+
 import PropTypes from 'prop-types'
 
 const contract = "Forum";
@@ -17,12 +20,15 @@ class UsernameFormContainer extends Component {
         this.state = {usernameInput:''};
     }
 
-    handleSubmit() {
-        this.setState({usernameInput:''});
+    async handleSubmit() {
         if(this.props.user.hasSignedUp)
            this.contracts[contract].methods[updateUsernameMethod].cacheSend(...[this.state.usernameInput]);
         else
-           this.contracts[contract].methods[signUpMethod].cacheSend(...[this.state.usernameInput]);
+        {
+            const orbitdb = await createDatabases();
+            this.contracts[contract].methods[signUpMethod].cacheSend(...[this.state.usernameInput, orbitdb.mainDB, orbitdb.topicsDB, orbitdb.postsDB]);
+        }
+
     }
 
 

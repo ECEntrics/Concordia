@@ -7,10 +7,10 @@ import { DrizzleProvider } from 'drizzle-react'
 // Layouts
 import App from './App'
 import HomeContainer from './layouts/home/HomeContainer'
-import { LoadingContainer } from 'drizzle-react-components'
+import LoadingContainer  from './containers/LoadingContainer'
 
 import store from './store'
-import drizzleOptions from './drizzleOptions'
+import drizzleOptions from './util/drizzleOptions'
 
 import './css/index.css'
 

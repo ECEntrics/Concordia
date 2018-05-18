@@ -1,4 +1,4 @@
-import Forum from './build/contracts/Forum.json'
+import Forum from './../build/contracts/Forum.json'
 
 const drizzleOptions = {
     web3: {
