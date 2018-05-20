@@ -26,7 +26,8 @@ async function createDatabases() {
     const topicsDB = await orbitdb.keyvalue('topics');
     const postsDB = await orbitdb.keyvalue('posts');
     console.log("OrbitDBs created successfully!");
-    return {mainDB: orbitdb.id, topicsDB: topicsDB.address.toString(), postsDB: postsDB.address.toString()};    //TODO: regex in the latter two
+    return {id: orbitdb.id, topicsDB: topicsDB.address.root, postsDB: postsDB.address.root,
+        publicKey: orbitdb.key.getPublic('hex'), privateKey:orbitdb.key.getPrivate('hex')};
 }
 
 export { createDatabases }

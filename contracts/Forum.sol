@@ -5,10 +5,7 @@ contract Forum {
     //----------------------------------------USER----------------------------------------
     struct User {
         string username;    // TODO: set an upper bound instead of arbitrary string
-        string orbitMainDB;     // TODO: set an upper bound instead of arbitrary string
-        string orbitTopicsDB;
-        string orbitPostsDB;
-
+        OrbitDB orbitdb;
         uint[] topicIDs;    // IDs of the topics the user created
         uint[] postIDs;    // IDs of the posts the user created
         bool signedUp;    // Helper variable for hasUserSignedUp()
@@ -20,10 +17,10 @@ contract Forum {
     event UserSignedUp(string username, address userAddress);
     event UsernameUpdated(string newName, string oldName,address userAddress);
 
-    function signUp(string username, string orbitMainDB, string orbitTopicsDB, string orbitPostsDB) public returns (bool) {
+    function signUp(string username, string orbitDBId, string orbitTopicsDB, string orbitPostsDB, string orbitPublicKey, string orbitPrivateKey) public returns (bool) {
         require (!hasUserSignedUp(msg.sender), "User has already signed up.");
         require(!isUserNameTaken(username), "Username is already taken.");
-        users[msg.sender] = User(username, orbitMainDB, orbitTopicsDB, orbitPostsDB, new uint[](0), new uint[](0), true);
+        users[msg.sender] = User(username, OrbitDB(orbitDBId, orbitTopicsDB, orbitPostsDB, orbitPublicKey, orbitPrivateKey), new uint[](0), new uint[](0), true);
         userAddresses[username] = msg.sender;
         emit UserSignedUp(username, msg.sender);
         return true;
@@ -58,17 +55,44 @@ contract Forum {
         return false;
     }
 
-    function getOrbitMainDB(address userAddress) public view returns (string) {
-        return users[userAddress].orbitMainDB;
+    //---------OrbitDB---------
+    struct OrbitDB {
+        string id;     // TODO: set an upper bound instead of arbitrary string
+        string topicsDB;    //TODO: not sure yet which of these are actually needed
+        string postsDB;
+        string publicKey;
+        string privateKey;
+    }
+
+
+    function getOrbitDBId(address userAddress) public view returns (string) {
+        require (hasUserSignedUp(userAddress), "User hasn't signed up.");
+        return users[userAddress].orbitdb.id;
     }
 
     function getOrbitTopicsDB(address userAddress) public view returns (string) {
-        return users[userAddress].orbitTopicsDB;
+        require (hasUserSignedUp(userAddress), "User hasn't signed up.");
+        return users[userAddress].orbitdb.topicsDB;
     }
 
     function getOrbitPostsDB(address userAddress) public view returns (string) {
-        return users[userAddress].orbitPostsDB;
+        require (hasUserSignedUp(userAddress), "User hasn't signed up.");
+        return users[userAddress].orbitdb.postsDB;
     }
+
+    function getOrbitPublicKey() public view returns (string) {
+        require (hasUserSignedUp(msg.sender), "User hasn't signed up.");
+        return users[msg.sender].orbitdb.publicKey;
+    }
+
+    //TODO: encrypt using Metamask in the future
+    function getOrbitPrivateKey() public view returns (string) {
+        require (hasUserSignedUp(msg.sender), "User hasn't signed up.");
+        return users[msg.sender].orbitdb.privateKey;
+    }
+
+
+
     //----------------------------------------POSTING----------------------------------------
     struct Topic {
         uint topicID;

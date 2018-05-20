@@ -25,8 +25,9 @@ class UsernameFormContainer extends Component {
            this.contracts[contract].methods[updateUsernameMethod].cacheSend(...[this.state.usernameInput]);
         else
         {
-            const orbitdb = await createDatabases();
-            this.contracts[contract].methods[signUpMethod].cacheSend(...[this.state.usernameInput, orbitdb.mainDB, orbitdb.topicsDB, orbitdb.postsDB]);
+            const orbitdbInfo = await createDatabases();
+            this.contracts[contract].methods[signUpMethod].cacheSend(...[this.state.usernameInput, orbitdbInfo.id,
+                orbitdbInfo.topicsDB, orbitdbInfo.postsDB, orbitdbInfo.publicKey, orbitdbInfo.privateKey]);
         }
 
     }
