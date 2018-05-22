@@ -14,6 +14,8 @@ class Home extends Component {
                     <div className="pure-u-1-1">
                         <h2>Account</h2>
                         <p><strong>Username</strong>: {this.props.user.username}</p>
+                        <p><strong>Account</strong>: {this.props.user.address}</p>
+                        <p><strong>OrbitDB</strong>: {this.props.orbitDB.id}</p>
                         <UsernameFormContainer/>
                         <br/><br/>
                     </div>
@@ -29,6 +31,7 @@ const mapStateToProps = state => {
     accounts: state.accounts,
     Forum: state.contracts.Forum,
     user: state.user,
+    orbitDB: state.orbitDB,
     drizzleStatus: state.drizzleStatus
   }
 };

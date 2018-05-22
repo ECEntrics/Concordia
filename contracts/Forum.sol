@@ -80,17 +80,27 @@ contract Forum {
         return users[userAddress].orbitdb.postsDB;
     }
 
-    function getOrbitPublicKey() public view returns (string) {
-        require (hasUserSignedUp(msg.sender), "User hasn't signed up.");
-        return users[msg.sender].orbitdb.publicKey;
+    function getOrbitPublicKey(address userAddress) public view returns (string) {
+        require (hasUserSignedUp(userAddress), "User hasn't signed up.");
+        return users[userAddress].orbitdb.publicKey;
     }
 
     //TODO: encrypt using Metamask in the future
-    function getOrbitPrivateKey() public view returns (string) {
-        require (hasUserSignedUp(msg.sender), "User hasn't signed up.");
-        return users[msg.sender].orbitdb.privateKey;
+    function getOrbitPrivateKey(address userAddress) public view returns (string) {
+        require (hasUserSignedUp(userAddress), "User hasn't signed up.");
+        return users[userAddress].orbitdb.privateKey;
     }
 
+    function getOrbitDBInfo(address userAddress) public view returns (string, string, string, string, string) {
+        require (hasUserSignedUp(userAddress), "User hasn't signed up.");
+        return (
+                users[userAddress].orbitdb.id,
+                users[userAddress].orbitdb.topicsDB,
+                users[userAddress].orbitdb.postsDB,
+                users[userAddress].orbitdb.publicKey,
+                users[userAddress].orbitdb.privateKey
+        );
+    }
 
 
     //----------------------------------------POSTING----------------------------------------

@@ -42,7 +42,7 @@ class LoadingContainer extends Component {
             )
         }
 
-        if (!this.props.orbitDB.initialized)
+        if (!this.props.orbitDB.ipfsInitialized)
         {
             return(
                 <main className="container loading-screen">

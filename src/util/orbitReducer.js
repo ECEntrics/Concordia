@@ -1,17 +1,33 @@
 const initialState = {
-    initialized: false,
-    databasesReady: false
+    ipfsInitialized: false,
+    ready: false,
+    id: null
 };
 
 const orbitReducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'IPFS_READY':
+        case 'IPFS_INITIALIZED':
             return {
-                initialized: true
+                ...state,
+                ipfsInitialized: true
             };
         case 'DATABASES_CREATED':
             return {
-                databasesReady: true
+                ...state,
+                ready: true,
+                id: action.id
+            };
+        case 'DATABASES_LOADED':
+            return {
+                ...state,
+                ready: true,
+                id: action.id
+            };
+        case 'DATABASES_NOT_READY':
+            return {
+                ...state,
+                ready: false,
+                id: null
             };
         default:
             return state
