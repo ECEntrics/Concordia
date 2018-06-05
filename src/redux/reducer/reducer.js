@@ -1,9 +1,9 @@
-import { combineReducers } from 'redux'
-import { routerReducer } from 'react-router-redux'
-import { drizzleReducers } from 'drizzle'
+import { combineReducers } from 'redux';
+import { routerReducer } from 'react-router-redux';
+import { drizzleReducers } from 'drizzle';
 import userReducer from "./userReducer";
 import contractReducer from "./contractReducer";
-import orbitReducer from "./util/orbitReducer";
+import orbitReducer from "../../util/orbitReducer";
 
 const reducer = combineReducers({
     routing: routerReducer,
@@ -13,4 +13,4 @@ const reducer = combineReducers({
     ...drizzleReducers
 });
 
-export default reducer
+export default reducer;

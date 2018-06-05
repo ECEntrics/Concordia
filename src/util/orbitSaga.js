@@ -1,6 +1,6 @@
 import { loadDatabases } from './../util/orbit'
 import { call, put, select, takeLatest } from 'redux-saga/effects'
-import {grabbedContract as contract} from "../contractSaga";
+import {grabbedContract as contract} from "../redux/sagas/contractSaga";
 
 const accounts = (state) => state.accounts;
 

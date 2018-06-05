@@ -1,6 +1,7 @@
 const initialState = {
     username: "",
     address: "0x0",
+    avatarUrl: "",
     hasSignedUp: null
 };
 
@@ -23,4 +24,4 @@ const userReducer = (state = initialState, action) => {
     }
 };
 
-export default userReducer
+export default userReducer;

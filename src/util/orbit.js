@@ -2,7 +2,7 @@ import IPFS from 'ipfs';
 import OrbitDB from 'orbit-db';
 import Keystore  from 'orbit-db-keystore';
 import path from 'path';
-import store from './../store';
+import store from './../redux/store';
 
 // OrbitDB uses Pubsub which is an experimental feature
 // and need to be turned on manually.
@@ -45,6 +45,4 @@ async function loadDatabases(id,topicsDB, postsDB,publicKey,privateKey) {   //TO
     store.dispatch({type: "DATABASES_LOADED", id: orbitdb.id});
 }
 
-
-
-export { createDatabases, loadDatabases }
+export { createDatabases, loadDatabases };

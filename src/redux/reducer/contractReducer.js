@@ -13,4 +13,4 @@ const contractReducer = (state = initialState, action) => {
     }
 };
 
-export default contractReducer
+export default contractReducer;

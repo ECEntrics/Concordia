@@ -123,20 +123,22 @@ contract Forum {
     mapping (uint => Topic) topics;
     mapping (uint => Post) posts;
 
-    function createTopic() public returns (uint topicID) {
+    function createTopic() public returns (uint) {
         require(hasUserSignedUp(msg.sender));  // Only registered users can create topics
-        topicID = numTopics++;
+        uint topicID = numTopics++;
         topics[topicID] = Topic(topicID, msg.sender, block.timestamp, new uint[](0));
         users[msg.sender].topicIDs.push(topicID);
+        return topicID;
     }
 
-    function createPost(uint topicID) public returns (uint postID) {
+    function createPost(uint topicID) public returns (uint) {
         require(hasUserSignedUp(msg.sender));  // Only registered users can create posts
         require(topicID<numTopics); // Only allow posting to a topic that exists
-        postID = numPosts++;
+        uint postID = numPosts++;
         posts[postID] = Post(postID, msg.sender, block.timestamp);
         topics[topicID].postIDs.push(postID);
         users[msg.sender].postIDs.push(postID);
+        return postID;
     }
 
     function getTopicPosts (uint topicID) public view returns (uint[]) {

@@ -19,4 +19,4 @@ const drizzleOptions = {
     },
 };
 
-export default drizzleOptions
+export default drizzleOptions;

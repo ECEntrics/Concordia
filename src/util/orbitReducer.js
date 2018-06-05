@@ -34,4 +34,4 @@ const orbitReducer = (state = initialState, action) => {
     }
 };
 
-export default orbitReducer
+export default orbitReducer;
