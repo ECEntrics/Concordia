@@ -1,50 +1,119 @@
-import React from 'react';
-import Topic from './Topic';
+import { drizzleConnect } from 'drizzle-react';
+import React, { Component } from 'react';
 import { Link } from 'react-router';
+import PropTypes from 'prop-types'
 
-const topics1 = [
-    {topicSubject: 'This is a topic about something 1',
-     topicStarter: 'username1',
-     numberOfReplies: 12,
-     date: 'May 20, 2018, 10:10:10',
-     id: 1,
-     address: 0x5fe3062B24033113fbf52b2b75882890D7d8CA54
-    },
-    {topicSubject: 'This is a topic about something 2',
-     topicStarter: 'username2',
-     numberOfReplies: 41,
-     date: 'May 20, 2018, 10:10:10',
-     id: 2,
-     address: 0x083c41ea13af6c2d5aaddf6e73142eb9a7b00183
-    },
-    {topicSubject: 'This is a topic about something 3',
-     topicStarter: 'username3',
-     numberOfReplies: 73,
-     date: 'May 20, 2018, 10:10:10',
-     id: 3,
-     address: 0x26d1ec50b4e62c1d1a40d16e7cacc6a6580757d5
+import Topic from './Topic';
+
+const contract = "Forum";
+const contractMethod = "getTopic";
+
+class TopicList extends Component {
+    constructor(props, context) {
+        super(props);
+
+        this.fetchSubject = this.fetchSubject.bind(this);
+        this.correctTimeFormat = this.correctTimeFormat.bind(this);
+
+        this.drizzle = context.drizzle;
+        this.dataKeys = [];
+        this.topicsData = new Array(parseInt(this.props.numberOfTopics, 10)).fill(undefined);
+        this.topicsSubjects = [];
+        this.topicsSubjectsFetched = [];
+
+        for (var i = 0; i < this.props.numberOfTopics; ++i){
+            this.dataKeys[i] = this.drizzle.contracts[contract].methods[contractMethod].cacheCall(i);
+        }
+
+        this.state = {
+        };
     }
-];
 
-const TopicList = (props) => {
-    const topics = topics1.map((topic) =>
-        <Link to={"/topic/" + topic.id + "/" + topic.topicSubject}
-            key={topic.id}>
-                <Topic topicSubject={topic.topicSubject}
-                topicStarter={topic.topicStarter}
-                numberOfReplies={topic.numberOfReplies}
-                date={topic.date}
-                id={topic.id}
-                key={topic.id}
-                address={topic.address}/>
-        </Link>
-    );
+    async fetchSubject(topicID) {
+        /*const fullAddress = this.topicsData[topicID][1];
+        const store = await this.props.orbitDB.orbitdb.keyvalue(JSON.stringify(fullAddress));
+        await store.load();
+        var som = store.get(JSON.stringify(topicID));
+        this.topicsSubjects[topicID] = som['subject'];
+        this.topicsSubjectsFetched[topicID] = true;*/
 
-    return (
-        <div className="topics-list">
-            {topics}
-        </div>
-    );
+        var som =this.props.orbitDB.topicsDB.get(JSON.stringify(topicID));
+        this.topicsSubjects[topicID] = som['subject'];
+        this.topicsSubjectsFetched[topicID] = true;
+    }
+
+    correctTimeFormat(timestamp) {
+        var timestampDate = new Date(0);
+        timestampDate.setUTCSeconds(timestamp);
+        return ((timestampDate.getMonth() + 1)  + " "
+            + timestampDate.getDate() + ", "
+            + timestampDate.getFullYear() + ", "
+            + timestampDate.getHours() + ":"
+            + timestampDate.getMinutes() + ":"
+            + timestampDate.getSeconds())
+    }
+
+    render (){
+        const topics = this.topicsData.map((topic, index) => {
+            if (topic){
+                return (
+                    <Link to={"/topic/" + index + "/" + 
+                        ((this.topicsSubjects[index] !== undefined) ? this.topicsSubjects[index] : "")}
+                        key={index}>
+                        <Topic topic={{
+                                    topicSubject: ((this.topicsSubjects[index] !== undefined) && this.topicsSubjects[index]),
+                                    topicStarter: topic[2],
+                                    numberOfReplies: topic[4].length,
+                                    date: this.correctTimeFormat(topic[3])
+                                }}
+                            id={index}
+                            key={index}
+                            address={topic[1]}/>
+                    </Link>
+                );
+            } else {
+                return (
+                    <Link to={"/topic/" + index + "/"}
+                        key={index}>
+                        <Topic topic={null}
+                            id={index}
+                            key={index}/>
+                    </Link>
+                );
+            }
+        });
+
+        return (
+            <div className="topics-list">
+                {topics}
+            </div>
+        );
+    }
+
+    componentWillReceiveProps() {
+        for (var i = 0; i < this.props.numberOfTopics; ++i){
+            if (this.topicsData[i] === undefined) {
+                let currentDrizzleState = this.drizzle.store.getState();
+                let dataFetched = (currentDrizzleState.contracts[contract][contractMethod])[this.dataKeys[i]];
+                if (dataFetched){
+                    this.topicsData[i] = dataFetched.value;
+                }
+            } else if (!this.topicsSubjects[i] && !this.topicsSubjectsFetched[i]) {
+                this.fetchSubject(i);
+            }
+        }
+    }
 };
 
-export default TopicList;
+TopicList.contextTypes = {
+    drizzle: PropTypes.object
+};
+
+const mapStateToProps = state => {
+    return {
+        user: state.user, //Needed!!
+        orbitDB: state.orbitDB,
+    }
+};
+
+export default drizzleConnect(TopicList, mapStateToProps);

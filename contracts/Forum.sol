@@ -55,7 +55,7 @@ contract Forum {
         return false;
     }
 
-    //---------OrbitDB---------
+    //----------------------------------------OrbitDB----------------------------------------
     struct OrbitDB {
         string id;     // TODO: set an upper bound instead of arbitrary string
         string topicsDB;    //TODO: not sure yet which of these are actually needed
@@ -123,11 +123,17 @@ contract Forum {
     mapping (uint => Topic) topics;
     mapping (uint => Post) posts;
 
+    event TopicCreated(uint topicID);
+    event PostCreated(uint postID, uint topicID);
+    event NumberOfTopicsReceived(uint numTopics);
+    event TopicReceived(string orbitTopicsDB, address author, string username, uint timestamp, uint[] postIDs);
+
     function createTopic() public returns (uint) {
         require(hasUserSignedUp(msg.sender));  // Only registered users can create topics
         uint topicID = numTopics++;
         topics[topicID] = Topic(topicID, msg.sender, block.timestamp, new uint[](0));
         users[msg.sender].topicIDs.push(topicID);
+        emit TopicCreated(topicID);
         return topicID;
     }
 
@@ -138,10 +144,33 @@ contract Forum {
         posts[postID] = Post(postID, msg.sender, block.timestamp);
         topics[topicID].postIDs.push(postID);
         users[msg.sender].postIDs.push(postID);
+        emit PostCreated(postID, topicID);
         return postID;
     }
 
-    function getTopicPosts (uint topicID) public view returns (uint[]) {
+    function getNumberOfTopics() public view returns (uint) {
+        emit NumberOfTopicsReceived(numTopics);
+        return numTopics;
+    }
+
+    function getTopic(uint topicID) public view returns (string, address, string, uint, uint[]) {
+        //require(hasUserSignedUp(msg.sender)); needed?
+        require(topicID<numTopics);
+        emit TopicReceived(getOrbitTopicsDB(topics[topicID].author),
+            topics[topicID].author,
+            users[topics[topicID].author].username,
+            topics[topicID].timestamp,
+            topics[topicID].postIDs);
+        return (
+            getOrbitTopicsDB(topics[topicID].author),
+            topics[topicID].author,
+            users[topics[topicID].author].username,
+            topics[topicID].timestamp,
+            topics[topicID].postIDs
+        );
+    }
+
+    function getTopicPosts(uint topicID) public view returns (uint[]) {
         require(topicID<numTopics); // Topic should exist
         return topics[topicID].postIDs;
     }

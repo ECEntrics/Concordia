@@ -11,11 +11,29 @@ import store from './../redux/store';
 const ipfsOptions = {
     EXPERIMENTAL: {
         pubsub: true
+    }, config: {
+        Addresses: {
+            Swarm: []
+        }
     },
 };
 
+/*,
+    config: {
+        Addresses: {
+            Swarm: [
+                // Use IPFS dev signal server
+                // '/dns4/star-signal.cloud.ipfs.team/wss/p2p-webrtc-star',
+                '/dns4/ws-star.discovery.libp2p.io/tcp/443/wss/p2p-websocket-star',
+                // Use local signal server
+                // '/ip4/0.0.0.0/tcp/9090/wss/p2p-webrtc-star',
+            ]
+        }
+    }*/
+
 // Create IPFS instance
 const ipfs = new IPFS(ipfsOptions);
+let orbitdb, topicsDB, postsDB;
 
 ipfs.on('ready', async () => {
     store.dispatch({type: "IPFS_INITIALIZED"});
@@ -23,26 +41,41 @@ ipfs.on('ready', async () => {
 
 
 async function createDatabases() {
-    const orbitdb = new OrbitDB(ipfs);
-    const topicsDB = await orbitdb.keyvalue('topics');
-    const postsDB = await orbitdb.keyvalue('posts');
-    store.dispatch({type: "DATABASES_CREATED", id: orbitdb.id});
+    orbitdb = new OrbitDB(ipfs);
+    topicsDB = await orbitdb.keyvalue('topics');
+    postsDB = await orbitdb.keyvalue('posts');
+    store.dispatch({
+        type: "DATABASES_CREATED",
+        orbitdb: orbitdb,
+        topicsDB: topicsDB,
+        postsDB: postsDB,
+        id: orbitdb.id
+    });
     return {id: orbitdb.id, topicsDB: topicsDB.address.root, postsDB: postsDB.address.root,
         publicKey: orbitdb.key.getPublic('hex'), privateKey:orbitdb.key.getPrivate('hex')};
 }
 
-async function loadDatabases(id,topicsDB, postsDB,publicKey,privateKey) {   //TODO: does this work? does IPFS need reinitializng?
+async function loadDatabases(id,mTopicsDB, mPostsDB,publicKey,privateKey) {
     let directory = "./orbitdb";
     let keystore = Keystore.create(path.join(directory, id, '/keystore'));
     keystore._storage.setItem(id, JSON.stringify({
         publicKey: publicKey,
         privateKey: privateKey
     }));
-    const orbitdb = new OrbitDB(ipfs,directory,{peerId:id, keystore:keystore});
-    await orbitdb.keyvalue('/orbitdb/' + topicsDB +'/topics');
-    await orbitdb.keyvalue('/orbitdb/' + postsDB +'/posts');
-    //todo: loadedDBs.load() (?)
-    store.dispatch({type: "DATABASES_LOADED", id: orbitdb.id});
+    orbitdb = new OrbitDB(ipfs,directory,{peerId:id, keystore:keystore});
+    topicsDB = await orbitdb.keyvalue('/orbitdb/' + mTopicsDB +'/topics');
+    postsDB = await orbitdb.keyvalue('/orbitdb/' + mPostsDB +'/posts');
+
+    topicsDB.load();
+    postsDB.load();
+
+    store.dispatch({
+        type: "DATABASES_LOADED",
+        orbitdb: orbitdb,
+        topicsDB: topicsDB,
+        postsDB: postsDB,
+        id: orbitdb.id
+    });
 }
 
 export { createDatabases, loadDatabases };

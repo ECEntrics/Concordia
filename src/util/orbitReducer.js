@@ -1,6 +1,9 @@
 const initialState = {
     ipfsInitialized: false,
     ready: false,
+    orbitdb: null,
+    topicsDB: null,
+    postsDB: null,
     id: null
 };
 
@@ -15,18 +18,27 @@ const orbitReducer = (state = initialState, action) => {
             return {
                 ...state,
                 ready: true,
+                orbitdb: action.orbitdb,
+                topicsDB: action.topicsDB,
+                postsDB: action.postsDB,
                 id: action.id
             };
         case 'DATABASES_LOADED':
             return {
                 ...state,
                 ready: true,
+                orbitdb: action.orbitdb,
+                topicsDB: action.topicsDB,
+                postsDB: action.postsDB,
                 id: action.id
             };
         case 'DATABASES_NOT_READY':
             return {
                 ...state,
                 ready: false,
+                orbitdb: null,
+                topicsDB: null,
+                postsDB: null,
                 id: null
             };
         default:

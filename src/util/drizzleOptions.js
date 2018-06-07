@@ -11,7 +11,12 @@ const drizzleOptions = {
         Forum
     ],
     events: {
-        Forum: ['UserSignedUp', 'UsernameUpdated']
+        Forum: ['UserSignedUp',
+            'UsernameUpdated',
+            'TopicCreated',
+            'PostCreated',
+            'NumberOfTopicsReceived',
+            'TopicReceived']
     },
     polls: {
         accounts: 3000,
