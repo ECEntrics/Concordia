@@ -1,10 +1,10 @@
 import { drizzleConnect } from 'drizzle-react';
 import React, { Component } from 'react';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
+import { Link } from 'react-router';
 
 import TopicList from '../components/TopicList';
 import FloatingButton from '../components/FloatingButton';
-import StartTopic from '../components/StartTopic';
 
 const contract = "Forum";
 const contractMethod = "getNumberOfTopics";
@@ -13,27 +13,17 @@ class Board extends Component {
     constructor(props, context) {
         super(props);
 
-        this.handleClick = this.handleClick.bind(this);
-
         this.drizzle = context.drizzle;
-        this.dataKey = this.drizzle.contracts[contract].methods[contractMethod].cacheCall();
 
         this.state = {
             startingNewTopic: false,
-            transactionState: "IN_PROGRESS"
+            transactionState: null
         };
-    }
-
-    handleClick(event) {
-        event.preventDefault();
-        this.setState(prevState => ({
-          startingNewTopic: !prevState.startingNewTopic
-        }));
     }
 
     render() {
         var boardContents;
-        if (this.state.transactionState === "IN_PROGRESS") {
+        if (this.state.transactionState !== "SUCCESS") {
             boardContents = (
                 <div className="center-in-parent">
                     <p>
@@ -46,20 +36,25 @@ class Board extends Component {
         }
 
         return (
-            this.state.startingNewTopic
-            ?(<div>
-                <StartTopic onClick={this.handleClick}/>
-            </div>)
-            :(<div style={{marginBottom: '100px'}}>
+            <div style={{marginBottom: '100px'}}>
                 {boardContents}
-                <FloatingButton onClick={this.handleClick}/>
-            </div>)
+                <Link to="/startTopic">
+                    <FloatingButton onClick={this.handleClick}/>
+                </Link>
+            </div>
         );
     }
 
     componentWillReceiveProps() {
+        if (this.state.transactionState === null){
+            if (this.drizzle.contracts[contract]){
+                //This gets called only once but should be called every time someone posts
+                this.dataKey = this.drizzle.contracts[contract].methods[contractMethod].cacheCall();
+                this.setState({'transactionState': "IN_PROGRESS"});
+            }
+        }
         if (!this.numberOfTopics) {
-            let currentDrizzleState = this.drizzle.store.getState()
+            let currentDrizzleState = this.drizzle.store.getState();
             let dataFetched = (currentDrizzleState.contracts[contract][contractMethod])[this.dataKey];
             if (dataFetched){
                 this.numberOfTopics = dataFetched.value
@@ -75,8 +70,7 @@ Board.contextTypes = {
 
 const mapStateToProps = state => {
     return {
-        user: state.user,
-        orbitDB: state.orbitDB,
+        user: state.user
     }
 };
 

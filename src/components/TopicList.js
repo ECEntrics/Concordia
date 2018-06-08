@@ -54,7 +54,7 @@ class TopicList extends Component {
     }
 
     render (){
-        const topics = this.topicsData.map((topic, index) => {
+        const topics = this.topicsData.slice(0).reverse().map((topic, index) => {
             if (topic){
                 return (
                     <Link to={"/topic/" + index + "/" + 

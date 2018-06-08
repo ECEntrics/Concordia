@@ -13,6 +13,7 @@ import PrivateRouteContainer from './containers/PrivateRouteContainer';
 
 import HomeContainer from './containers/HomeContainer';
 import TopicContainer from './containers/TopicContainer';
+import StartTopicContainer from './containers/StartTopicContainer';
 import ProfileContainer from './containers/ProfileContainer';
 import NotFoundView from './components/NotFoundView';
 
@@ -32,6 +33,7 @@ render((
             <IndexRoute component={HomeContainer} />
             <PrivateRouteContainer path="/topic/:topicId/:topicSubject" component={TopicContainer} redirectTo="/" />
             <PrivateRouteContainer path='/profile' component={ProfileContainer} redirectTo="/" />
+            <PrivateRouteContainer path='/startTopic' component={StartTopicContainer} redirectTo="/" />
             <Route path='/404' component={NotFoundView} />
             <Route path='*' component={NotFoundView} />
           </Route>
