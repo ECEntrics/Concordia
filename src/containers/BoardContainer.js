@@ -5,6 +5,7 @@ import { Link } from 'react-router';
 
 import TopicList from '../components/TopicList';
 import FloatingButton from '../components/FloatingButton';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const contract = "Forum";
 const contractMethod = "getNumberOfTopics";
@@ -16,7 +17,6 @@ class Board extends Component {
         this.drizzle = context.drizzle;
 
         this.state = {
-            startingNewTopic: false,
             transactionState: null
         };
     }
@@ -25,18 +25,14 @@ class Board extends Component {
         var boardContents;
         if (this.state.transactionState !== "SUCCESS") {
             boardContents = (
-                <div className="center-in-parent">
-                    <p>
-                        <i className="fas fa-spinner fa-3x fa-spin"></i>
-                    </p>
-                </div>
+                <LoadingSpinner/>
             );
         } else {
-            boardContents = <TopicList numberOfTopics={this.numberOfTopics}/>;
+            boardContents = <TopicList topicIDs={this.topicIDs}/>;
         }
 
         return (
-            <div style={{marginBottom: '100px'}}>
+            <div style={{marginBottom: '70px'}}>
                 {boardContents}
                 <Link to="/startTopic">
                     <FloatingButton onClick={this.handleClick}/>
@@ -47,7 +43,7 @@ class Board extends Component {
 
     componentWillReceiveProps() {
         if (this.state.transactionState === null){
-            if (this.drizzle.contracts[contract]){
+            if (this.drizzle.contracts[contract]){ //Waits until drizzle is initialized
                 //This gets called only once but should be called every time someone posts
                 this.dataKey = this.drizzle.contracts[contract].methods[contractMethod].cacheCall();
                 this.setState({'transactionState': "IN_PROGRESS"});
@@ -57,7 +53,11 @@ class Board extends Component {
             let currentDrizzleState = this.drizzle.store.getState();
             let dataFetched = (currentDrizzleState.contracts[contract][contractMethod])[this.dataKey];
             if (dataFetched){
-                this.numberOfTopics = dataFetched.value
+                this.numberOfTopics = dataFetched.value;
+                this.topicIDs = [];
+                for (var i = 0; i < this.numberOfTopics; i++) {
+                    this.topicIDs.push(i);
+                }
                 this.setState({'transactionState': "SUCCESS"});
             }
         }

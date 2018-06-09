@@ -14,9 +14,7 @@ const drizzleOptions = {
         Forum: ['UserSignedUp',
             'UsernameUpdated',
             'TopicCreated',
-            'PostCreated',
-            'NumberOfTopicsReceived',
-            'TopicReceived']
+            'PostCreated']
     },
     polls: {
         accounts: 3000,

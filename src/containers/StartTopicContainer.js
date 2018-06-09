@@ -54,6 +54,10 @@ class StartTopic extends Component {
 
     async pushToDatabase() {
         await this.props.orbitDB.topicsDB.put(this.topicIDFetched, {
+            subject: this.state.topicSubjectInput
+        });
+
+        await this.props.orbitDB.postsDB.put(this.postIDFetched, {
             subject: this.state.topicSubjectInput,
             content: this.state.topicMessageInput
         });
@@ -82,7 +86,7 @@ class StartTopic extends Component {
     }
 
     render() {
-        return(
+        return (
             <div>
                 {this.state.creatingTopic && <div id="overlay">
                         <div id="overlay-content">
@@ -93,11 +97,13 @@ class StartTopic extends Component {
                     </div>
                 }
                 {this.state.previewEnabled &&
-                    <Post avatarUrl={this.props.user.avatarUrl}
-                        username={this.props.user.username}
-                        subject={this.state.topicSubjectInput}
-                        date={this.state.previewDate}
-                        postContent={this.state.topicMessageInput}
+                    <Post post = {{
+                            avatarUrl: this.props.user.avatarUrl,
+                            username: this.props.user.username,
+                            subject: this.state.topicSubjectInput,
+                            date: this.state.previewDate,
+                            postContent: this.state.topicMessageInput
+                        }}
                         id={0}/>}
                 <form className="topic-form">
                     {!this.state.previewEnabled &&
@@ -155,8 +161,10 @@ class StartTopic extends Component {
                     /*      Transaction completed successfully      */
 
                     //Gets topic's id returned by contract
-                    this.topicIDFetched = this.props.transactions[this.txHash].receipt
-                        .events.TopicCreated.returnValues.topicID;
+                    let topicData = this.props.transactions[this.txHash].receipt.events.TopicCreated
+                        .returnValues;
+                    this.topicIDFetched = topicData.topicID;
+                    this.postIDFetched = topicData.postID;
 
                     //Updates output and state
                     this.transactionProgressText.push(<br key={uuidv4()}/>);
@@ -168,7 +176,7 @@ class StartTopic extends Component {
                     this.transactionProgressText.push(<br key={uuidv4()}/>);
                     this.transactionProgressText.push(<span key={uuidv4()} style={{color: 'green'}}>
                         <strong>
-                            TopicID = {this.topicIDFetched}
+                            TopicID = {this.topicIDFetched}, PostID = {this.postIDFetched}
                         </strong>
                     </span>);
                     this.setState({'transactionState': "SUCCESS"});
@@ -215,7 +223,7 @@ class StartTopic extends Component {
                     this.transactionProgressText.push(<br key={uuidv4()}/>);
                     this.transactionProgressText.push(<span key={uuidv4()} style={{color: 'green'}}>
                         <strong>
-                            Post successfully saved in OrbitDB.
+                            Topic successfully saved in OrbitDB.
                         </strong>
                     </span>);
                     this.setState({'transactionOutputTimerActive': true});

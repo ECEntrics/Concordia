@@ -1,45 +1,107 @@
-import React from 'react';
+import { drizzleConnect } from 'drizzle-react';
+import React, { Component } from 'react';
+import { Link } from 'react-router';
+import PropTypes from 'prop-types';
+
 import Post from './Post';
 
-const posts1 = [
-    {avatarUrl: "https://i.makeagif.com/media/4-18-2018/8BLiwJ.gif",
-     username: "Apostolof",
-     subject: "Some very important topic of discussion2!",
-     date: "May 25, 2018, 11:11:11",
-     postIndex: "1",
-     postContent: "# We have markdown!!!\n  \n**Oh yes we do!!**  \n*ITALICS*  \n  \n```Some code```",
-     id: 2,
-     address: 0x083c41ea13af6c2d5aaddf6e73142eb9a7b00183
-    },
-    {avatarUrl: "",
-     username: "",
-     subject: "Some very important topic of discussion!",
-     date: "May 20, 2018, 10:10:10",
-     postIndex: "",
-     postContent: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur, natus ipsum minima.",
-     id: 1,
-     address: 0x5fe3062B24033113fbf52b2b75882890D7d8CA54
+import epochTimeConverter from '../helpers/EpochTimeConverter'
+
+const contract = "Forum";
+const contractMethod = "getPost";
+
+class PostList extends Component {
+    constructor(props, context) {
+        super(props);
+
+        this.fetchPost = this.fetchPost.bind(this);
+
+        this.drizzle = context.drizzle;
+        this.dataKeys = [];
+        this.postsData = new Array(parseInt(this.props.postIDs.length, 10)).fill(undefined);
+        this.orbitPostsData = new Array(parseInt(this.props.postIDs.length, 10)).fill(undefined);
+        this.orbitPostsDataFetchStatus = new Array(parseInt(this.props.postIDs.length, 10)).fill("pending");
+
+        for (var i = 0; i < this.props.postIDs.length; ++i){
+            this.dataKeys[i] = this.drizzle.contracts[contract].methods[contractMethod]
+                .cacheCall(this.props.postIDs[i]);
+        }
     }
-];
 
-const PostList = (props) => {
-    const posts = posts1.map((post) =>
-        <Post avatarUrl={post.avatarUrl}
-        username={post.username}
-        subject={post.subject}
-        date={post.date}
-        postIndex={post.postIndex}
-        postContent={post.postContent}
-        id={post.id}
-        key={post.id}
-        address={post.address}/>
-    );
+    async fetchPost(index) {
+        /*const fullAddress = this.postsData[postID][1];
+        const store = await this.props.orbitDB.orbitdb.keyvalue(JSON.stringify(fullAddress));
+        await store.load();
+        var som = store.get(JSON.stringify(postID));
+        this.orbitPostsData[postID] = som['subject'];
+        this.orbitPostsDataFetchStatus[postID] = "fetched";*/
 
-    return (
-        <div className="posts-list">
-            {posts}
-        </div>
-    );
+        var som = this.props.orbitDB.postsDB.get(this.props.postIDs[index]);
+        this.orbitPostsData[index] = som;
+        this.orbitPostsDataFetchStatus[index] = "fetched";
+    }
+
+    render (){
+        const posts = this.postsData.map((post, index) => {
+            if (post) {
+                return (
+                    <Link to={"/topic/" + post[4] + "/" + 
+                        ((this.orbitPostsData[index] !== undefined) ? this.orbitPostsData[index].subject + "/" +
+                            this.props.postIDs[index] : "")}
+                        key={index}>
+                        <Post post={{
+                                avatarUrl: post.avatarUrl,
+                                username: post[2],
+                                subject: (this.orbitPostsData[index] !== undefined) && this.orbitPostsData[index].subject,
+                                date: epochTimeConverter(post[3]),
+                                postIndex: index,
+                                postContent: (this.orbitPostsData[index] !== undefined) && this.orbitPostsData[index].content
+                            }}
+                            id={index}
+                            key={index}/>
+                    </Link>
+                );
+            } else {
+                return (
+                    <Post post={null}
+                        id={index}
+                        key={index}/>
+                );
+            }
+        });
+
+        return (
+            <div className="posts-list">
+                {posts}
+            </div>
+        );
+    }
+
+    componentWillReceiveProps() {
+        for (var i = 0; i < this.props.postIDs.length; ++i){
+            if (this.postsData[i] === undefined) {
+                let currentDrizzleState = this.drizzle.store.getState();
+                let dataFetched = (currentDrizzleState.contracts[contract][contractMethod])[this.dataKeys[i]];
+                if (dataFetched){
+                    this.postsData[i] = dataFetched.value;
+                }
+            } else if (!this.orbitPostsData[i] && this.orbitPostsDataFetchStatus[i] === "pending") {
+                this.orbitPostsDataFetchStatus[i] = "fetching";
+                this.fetchPost(i);
+            }
+        }
+    }
 };
 
-export default PostList;
+PostList.contextTypes = {
+    drizzle: PropTypes.object
+};
+
+const mapStateToProps = state => {
+    return {
+        user: state.user, //Needed!!
+        orbitDB: state.orbitDB,
+    }
+};
+
+export default drizzleConnect(PostList, mapStateToProps);

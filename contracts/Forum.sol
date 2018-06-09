@@ -55,6 +55,16 @@ contract Forum {
         return false;
     }
 
+    function getUserTopics(address userAddress) public view returns (uint[]) {
+        require (hasUserSignedUp(msg.sender), "User hasn't signed up yet.");
+        return users[userAddress].topicIDs;
+    }
+
+    function getUserPosts(address userAddress) public view returns (uint[]) {
+        require (hasUserSignedUp(msg.sender), "User hasn't signed up yet.");
+        return users[userAddress].postIDs;
+    }
+
     //----------------------------------------OrbitDB----------------------------------------
     struct OrbitDB {
         string id;     // TODO: set an upper bound instead of arbitrary string
@@ -115,6 +125,7 @@ contract Forum {
         uint postID;
         address author;
         uint timestamp;
+        uint topicID;
     }
 
     uint numTopics;   // Total number of topics
@@ -123,25 +134,33 @@ contract Forum {
     mapping (uint => Topic) topics;
     mapping (uint => Post) posts;
 
-    event TopicCreated(uint topicID);
+    event TopicCreated(uint topicID, uint postID);
     event PostCreated(uint postID, uint topicID);
-    event NumberOfTopicsReceived(uint numTopics);
-    event TopicReceived(string orbitTopicsDB, address author, string username, uint timestamp, uint[] postIDs);
+    /* event NumberOfTopicsReceived(uint numTopics);
+    event TopicReceived(string orbitTopicsDB, address author, string username, uint timestamp, uint[] postIDs); */
 
-    function createTopic() public returns (uint) {
+    function createTopic() public returns (uint, uint) {
         require(hasUserSignedUp(msg.sender));  // Only registered users can create topics
+        //Creates topic
         uint topicID = numTopics++;
         topics[topicID] = Topic(topicID, msg.sender, block.timestamp, new uint[](0));
         users[msg.sender].topicIDs.push(topicID);
-        emit TopicCreated(topicID);
-        return topicID;
+
+        //Adds first post to topic
+        uint postID = numPosts++;
+        posts[postID] = Post(postID, msg.sender, block.timestamp, topicID);
+        topics[topicID].postIDs.push(postID);
+        users[msg.sender].postIDs.push(postID);
+
+        emit TopicCreated(topicID, postID);
+        return (topicID, postID);
     }
 
     function createPost(uint topicID) public returns (uint) {
         require(hasUserSignedUp(msg.sender));  // Only registered users can create posts
         require(topicID<numTopics); // Only allow posting to a topic that exists
         uint postID = numPosts++;
-        posts[postID] = Post(postID, msg.sender, block.timestamp);
+        posts[postID] = Post(postID, msg.sender, block.timestamp, topicID);
         topics[topicID].postIDs.push(postID);
         users[msg.sender].postIDs.push(postID);
         emit PostCreated(postID, topicID);
@@ -149,20 +168,14 @@ contract Forum {
     }
 
     function getNumberOfTopics() public view returns (uint) {
-        emit NumberOfTopicsReceived(numTopics);
+        /* emit NumberOfTopicsReceived(numTopics); */
         return numTopics;
     }
 
     function getTopic(uint topicID) public view returns (string, address, string, uint, uint[]) {
         //require(hasUserSignedUp(msg.sender)); needed?
         require(topicID<numTopics);
-        emit TopicReceived(getOrbitTopicsDB(topics[topicID].author),
-            topics[topicID].author,
-            users[topics[topicID].author].username,
-            topics[topicID].timestamp,
-            topics[topicID].postIDs);
-        return (
-            getOrbitTopicsDB(topics[topicID].author),
+        return (getOrbitTopicsDB(topics[topicID].author),
             topics[topicID].author,
             users[topics[topicID].author].username,
             topics[topicID].timestamp,
@@ -173,5 +186,16 @@ contract Forum {
     function getTopicPosts(uint topicID) public view returns (uint[]) {
         require(topicID<numTopics); // Topic should exist
         return topics[topicID].postIDs;
+    }
+
+    function getPost(uint postID) public view returns (string, address, string, uint, uint) {
+        //require(hasUserSignedUp(msg.sender)); needed?
+        require(postID<numPosts);
+        return (getOrbitPostsDB(posts[postID].author),
+            posts[postID].author,
+            users[posts[postID].author].username,
+            posts[postID].timestamp,
+            posts[postID].topicID
+        );
     }
 }

@@ -11,7 +11,7 @@ const ProfileInformation = (props) => {
                     src={props.avatarUrl}
                     name={props.username}/>}
                 <p className="no-margin inline">
-                    <strong>Username</strong>: {props.username}
+                    <strong>Username:</strong> {props.username}
                 </p>
                 <p className="no-margin">
                     <strong>Account address:</strong> {props.address}
@@ -20,9 +20,12 @@ const ProfileInformation = (props) => {
                     <strong>OrbitDB:</strong> {props.orbitAddress}
                 </p>
                 <p className="no-margin">
-                    Number of posts: TODO?
+                    <strong>Number of topics created:</strong> {props.numberOfTopics}
                 </p>
-                <UsernameFormContainer/>
+                <p className="no-margin">
+                    <strong>Number of posts:</strong> {props.numberOfPosts}
+                </p>
+                {props.self && <UsernameFormContainer/>}
             </div>
         );
 };

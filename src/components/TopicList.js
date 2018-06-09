@@ -1,9 +1,11 @@
 import { drizzleConnect } from 'drizzle-react';
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
 import Topic from './Topic';
+
+import epochTimeConverter from '../helpers/EpochTimeConverter'
 
 const contract = "Forum";
 const contractMethod = "getTopic";
@@ -13,62 +15,50 @@ class TopicList extends Component {
         super(props);
 
         this.fetchSubject = this.fetchSubject.bind(this);
-        this.correctTimeFormat = this.correctTimeFormat.bind(this);
 
         this.drizzle = context.drizzle;
         this.dataKeys = [];
-        this.topicsData = new Array(parseInt(this.props.numberOfTopics, 10)).fill(undefined);
+        this.topicsData = new Array(parseInt(this.props.topicIDs.length, 10)).fill(undefined);
         this.topicsSubjects = [];
-        this.topicsSubjectsFetched = [];
+        this.topicsSubjectsFetchStatus = new Array(parseInt(this.props.topicIDs.length, 10)).fill("pending");
 
-        for (var i = 0; i < this.props.numberOfTopics; ++i){
-            this.dataKeys[i] = this.drizzle.contracts[contract].methods[contractMethod].cacheCall(i);
+        for (var i = 0; i < this.props.topicIDs.length; ++i){
+            this.dataKeys[i] = this.drizzle.contracts[contract].methods[contractMethod]
+                .cacheCall(this.props.topicIDs[i]);
         }
 
         this.state = {
         };
     }
 
-    async fetchSubject(topicID) {
+    async fetchSubject(topicIndex) {
         /*const fullAddress = this.topicsData[topicID][1];
         const store = await this.props.orbitDB.orbitdb.keyvalue(JSON.stringify(fullAddress));
         await store.load();
         var som = store.get(JSON.stringify(topicID));
         this.topicsSubjects[topicID] = som['subject'];
-        this.topicsSubjectsFetched[topicID] = true;*/
+        this.topicsSubjectsFetchStatus[topicID] = "fetched";*/
 
-        var som =this.props.orbitDB.topicsDB.get(JSON.stringify(topicID));
-        this.topicsSubjects[topicID] = som['subject'];
-        this.topicsSubjectsFetched[topicID] = true;
-    }
-
-    correctTimeFormat(timestamp) {
-        var timestampDate = new Date(0);
-        timestampDate.setUTCSeconds(timestamp);
-        return ((timestampDate.getMonth() + 1)  + " "
-            + timestampDate.getDate() + ", "
-            + timestampDate.getFullYear() + ", "
-            + timestampDate.getHours() + ":"
-            + timestampDate.getMinutes() + ":"
-            + timestampDate.getSeconds())
+        var som =this.props.orbitDB.topicsDB.get(this.props.topicIDs[topicIndex]);
+        this.topicsSubjects[topicIndex] = som['subject'];
+        this.topicsSubjectsFetchStatus[topicIndex] = "fetched";
     }
 
     render (){
-        const topics = this.topicsData.slice(0).reverse().map((topic, index) => {
+        const topics = this.topicsData.map((topic, index) => {
             if (topic){
                 return (
                     <Link to={"/topic/" + index + "/" + 
-                        ((this.topicsSubjects[index] !== undefined) ? this.topicsSubjects[index] : "")}
+                        ((this.topicsSubjects[index] !== undefined) ? this.topicsSubjects[index] + "/" + 0 : "")}
                         key={index}>
                         <Topic topic={{
                                     topicSubject: ((this.topicsSubjects[index] !== undefined) && this.topicsSubjects[index]),
                                     topicStarter: topic[2],
                                     numberOfReplies: topic[4].length,
-                                    date: this.correctTimeFormat(topic[3])
+                                    date: epochTimeConverter(topic[3])
                                 }}
                             id={index}
-                            key={index}
-                            address={topic[1]}/>
+                            key={index}/>
                     </Link>
                 );
             } else {
@@ -85,20 +75,21 @@ class TopicList extends Component {
 
         return (
             <div className="topics-list">
-                {topics}
+                {topics.slice(0).reverse()}
             </div>
         );
     }
 
     componentWillReceiveProps() {
-        for (var i = 0; i < this.props.numberOfTopics; ++i){
+        for (var i = 0; i < this.props.topicIDs.length; ++i){
             if (this.topicsData[i] === undefined) {
                 let currentDrizzleState = this.drizzle.store.getState();
                 let dataFetched = (currentDrizzleState.contracts[contract][contractMethod])[this.dataKeys[i]];
                 if (dataFetched){
                     this.topicsData[i] = dataFetched.value;
                 }
-            } else if (!this.topicsSubjects[i] && !this.topicsSubjectsFetched[i]) {
+            } else if (!this.topicsSubjects[i] && this.topicsSubjectsFetchStatus[i] === "pending") {
+                this.topicsSubjectsFetchStatus[i] = "fetching";
                 this.fetchSubject(i);
             }
         }

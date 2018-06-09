@@ -31,7 +31,7 @@ render((
         <Router history={history}>
           <Route path="/" component={CoreLayout}>
             <IndexRoute component={HomeContainer} />
-            <PrivateRouteContainer path="/topic/:topicId/:topicSubject" component={TopicContainer} redirectTo="/" />
+            <PrivateRouteContainer path="/topic/:topicId/:topicSubject/:postId" component={TopicContainer} redirectTo="/" />
             <PrivateRouteContainer path='/profile' component={ProfileContainer} redirectTo="/" />
             <PrivateRouteContainer path='/startTopic' component={StartTopicContainer} redirectTo="/" />
             <Route path='/404' component={NotFoundView} />
