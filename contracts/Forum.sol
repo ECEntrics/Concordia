@@ -8,6 +8,7 @@ contract Forum {
         OrbitDB orbitdb;
         uint[] topicIDs;    // IDs of the topics the user created
         uint[] postIDs;    // IDs of the posts the user created
+        uint timestamp;
         bool signedUp;    // Helper variable for hasUserSignedUp()
     }
 
@@ -20,7 +21,9 @@ contract Forum {
     function signUp(string username, string orbitDBId, string orbitTopicsDB, string orbitPostsDB, string orbitPublicKey, string orbitPrivateKey) public returns (bool) {
         require (!hasUserSignedUp(msg.sender), "User has already signed up.");
         require(!isUserNameTaken(username), "Username is already taken.");
-        users[msg.sender] = User(username, OrbitDB(orbitDBId, orbitTopicsDB, orbitPostsDB, orbitPublicKey, orbitPrivateKey), new uint[](0), new uint[](0), true);
+        users[msg.sender] = User(username,
+            OrbitDB(orbitDBId,orbitTopicsDB, orbitPostsDB, orbitPublicKey, orbitPrivateKey),
+            new uint[](0), new uint[](0), block.timestamp, true);
         userAddresses[username] = msg.sender;
         emit UserSignedUp(username, msg.sender);
         return true;
@@ -56,13 +59,18 @@ contract Forum {
     }
 
     function getUserTopics(address userAddress) public view returns (uint[]) {
-        require (hasUserSignedUp(msg.sender), "User hasn't signed up yet.");
+        require (hasUserSignedUp(userAddress), "User hasn't signed up yet.");
         return users[userAddress].topicIDs;
     }
 
     function getUserPosts(address userAddress) public view returns (uint[]) {
-        require (hasUserSignedUp(msg.sender), "User hasn't signed up yet.");
+        require (hasUserSignedUp(userAddress), "User hasn't signed up yet.");
         return users[userAddress].postIDs;
+    }
+
+    function getUserDateOfRegister(address userAddress) public view returns (uint) {
+        require (hasUserSignedUp(userAddress), "User hasn't signed up yet.");
+        return users[userAddress].timestamp;
     }
 
     //----------------------------------------OrbitDB----------------------------------------
@@ -136,8 +144,6 @@ contract Forum {
 
     event TopicCreated(uint topicID, uint postID);
     event PostCreated(uint postID, uint topicID);
-    /* event NumberOfTopicsReceived(uint numTopics);
-    event TopicReceived(string orbitTopicsDB, address author, string username, uint timestamp, uint[] postIDs); */
 
     function createTopic() public returns (uint, uint) {
         require(hasUserSignedUp(msg.sender));  // Only registered users can create topics
@@ -168,7 +174,6 @@ contract Forum {
     }
 
     function getNumberOfTopics() public view returns (uint) {
-        /* emit NumberOfTopicsReceived(numTopics); */
         return numTopics;
     }
 

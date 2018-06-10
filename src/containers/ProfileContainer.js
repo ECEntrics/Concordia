@@ -6,9 +6,11 @@ import ProfileInformation from '../components/ProfileInformation';
 import TopicList from '../components/TopicList';
 import PostList from '../components/PostList';
 import LoadingSpinner from '../components/LoadingSpinner';
+import epochTimeConverter from '../helpers/EpochTimeConverter';
 
 const contract = "Forum";
 const contractMethods = {
+    getDateOfRegister: "getUserDateOfRegister",
     getOrbitDB: "getOrbitDBId",
     getUserTopics: "getUserTopics",
     getUserPosts: "getUserPosts"
@@ -31,8 +33,10 @@ class Profile extends Component {
         this.state = {
             viewSelected: "topics",
             username: this.match.username, // TODO actually get them from match
-            userAddress: this.match.address, // when router is fixed
+            userAddress: this.match.userAddress, // when router is fixed
+            dateOfRegister: null,
             orbitDBId: this.match.address === this.props.user.address ? this.props.orbitDB.id : "",
+            getDateOfRegisterTransactionState: null,
             getOrbitDBTransactionState: this.match.address === this.props.user.address ? "SUCCESS" : null,
             getTopicsTransactionState: null,
             getPostsTransactionState: null,
@@ -53,6 +57,7 @@ class Profile extends Component {
                     orbitAddress={this.state.orbitDBId}
                     numberOfTopics={this.state.topicIDs.length}
                     numberOfPosts={this.state.postIDs.length}
+                    dateOfRegister={this.state.dateOfRegister}
                     self/>
                 <div className="pure-u-1-1 profile-tabs-header">
                     <p onClick={() => (this.handleTabClick("topics"))}
@@ -83,11 +88,29 @@ class Profile extends Component {
     }
 
     componentWillReceiveProps() {
+        if (this.state.getDateOfRegisterTransactionState === null){
+            if (this.drizzle.contracts[contract]){ //Waits until drizzle is initialized
+                this.dateOfRegisterKey = this.drizzle.contracts[contract]
+                    .methods[contractMethods.getDateOfRegister].cacheCall(this.state.userAddress);
+                this.setState({'getDateOfRegisterTransactionState': "IN_PROGRESS"});
+            }
+        }
+        if (this.state.getDateOfRegisterTransactionState === "IN_PROGRESS") {
+            let currentDrizzleState = this.drizzle.store.getState();
+            let dataFetched = (currentDrizzleState
+                .contracts[contract][contractMethods.getDateOfRegister])[this.dateOfRegisterKey];
+            if (dataFetched){
+                this.setState({
+                    'dateOfRegister': epochTimeConverter(dataFetched.value),
+                    'getDateOfRegisterTransactionState': "SUCCESS"
+                });
+            }
+        }
+
         if (this.state.getOrbitDBTransactionState === null){
             if (this.drizzle.contracts[contract]){ //Waits until drizzle is initialized
-                //This gets called only once but should be called every time someone posts
                 this.orbitDBIdKey = this.drizzle.contracts[contract]
-                    .methods[contractMethods.getOrbitDB].cacheCall(this.match.userAddress);
+                    .methods[contractMethods.getOrbitDB].cacheCall(this.state.userAddress);
                 this.setState({'getOrbitDBTransactionState': "IN_PROGRESS"});
             }
         }
@@ -105,9 +128,8 @@ class Profile extends Component {
 
         if (this.state.getTopicsTransactionState === null){
             if (this.drizzle.contracts[contract]){ //Waits until drizzle is initialized
-                //This gets called only once but should be called every time someone posts
                 this.getTopicsKey = this.drizzle.contracts[contract]
-                    .methods[contractMethods.getUserTopics].cacheCall(this.match.userAddress);
+                    .methods[contractMethods.getUserTopics].cacheCall(this.state.userAddress);
                 this.setState({'getTopicsTransactionState': "IN_PROGRESS"});
             }
         }
@@ -125,9 +147,8 @@ class Profile extends Component {
 
         if (this.state.getPostsTransactionState === null){
             if (this.drizzle.contracts[contract]){ //Waits until drizzle is initialized
-                //This gets called only once but should be called every time someone posts
                 this.getPostsKey = this.drizzle.contracts[contract]
-                    .methods[contractMethods.getUserPosts].cacheCall(this.match.userAddress);
+                    .methods[contractMethods.getUserPosts].cacheCall(this.state.userAddress);
                 this.setState({'getPostsTransactionState': "IN_PROGRESS"});
             }
         }

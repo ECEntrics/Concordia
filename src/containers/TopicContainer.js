@@ -63,18 +63,18 @@ class Topic extends Component {
             );
         } else {
             topicContents = (
-                this.state.posting
-                ?(<div style={{marginBottom: '100px'}}>
-                    <NewPost topicID={1}
-                        subject={this.state.topicSubject}
-                        onCancelClick={() => {this.handleClick()}}
-                        onPostCreated={() => {this.postCreated()}}
-                    />
+                (<div style={{marginBottom: '100px'}}>
+                    {this.state.posting &&
+                        <NewPost topicID={1}
+                            subject={this.state.topicSubject}
+                            onCancelClick={() => {this.handleClick()}}
+                            onPostCreated={() => {this.postCreated()}}
+                        />
+                    }
                     <PostList postIDs={this.posts}/>
-                </div>)
-                :(<div style={{marginBottom: '100px'}}>
-                    <PostList postIDs={this.posts}/>
-                    <FloatingButton onClick={this.handleClick}/>
+                    {!this.state.posting &&
+                        <FloatingButton onClick={this.handleClick}/>
+                    }
                 </div>)
             )
         }

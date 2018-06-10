@@ -22,7 +22,7 @@ class NewPost extends Component {
         this.drizzle = context.drizzle;
 
         this.state = {
-            postSubjectInput: this.props.subject,
+            postSubjectInput: this.props.subject ? this.props.subject : "",
             postContentInput: '',
             postSubjectInputEmptySubmit: false,
             postContentInputEmptySubmit: false,

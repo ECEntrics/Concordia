@@ -25,6 +25,11 @@ const ProfileInformation = (props) => {
                 <p className="no-margin">
                     <strong>Number of posts:</strong> {props.numberOfPosts}
                 </p>
+                {props.dateOfRegister &&
+                    <p className="no-margin">
+                        <strong>Member since:</strong> {props.dateOfRegister}
+                    </p>
+                }
                 {props.self && <UsernameFormContainer/>}
             </div>
         );

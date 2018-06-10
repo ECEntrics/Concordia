@@ -1,7 +1,6 @@
 import { drizzleConnect } from 'drizzle-react';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router';
 
 import TopicList from '../components/TopicList';
 import FloatingButton from '../components/FloatingButton';
@@ -34,9 +33,7 @@ class Board extends Component {
         return (
             <div style={{marginBottom: '70px'}}>
                 {boardContents}
-                <Link to="/startTopic">
-                    <FloatingButton onClick={this.handleClick}/>
-                </Link>
+                <FloatingButton to="/startTopic"/>
             </div>
         );
     }

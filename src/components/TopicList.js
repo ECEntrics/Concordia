@@ -32,16 +32,24 @@ class TopicList extends Component {
     }
 
     async fetchSubject(topicIndex) {
-        /*const fullAddress = this.topicsData[topicID][1];
-        const store = await this.props.orbitDB.orbitdb.keyvalue(JSON.stringify(fullAddress));
-        await store.load();
-        var som = store.get(JSON.stringify(topicID));
-        this.topicsSubjects[topicID] = som['subject'];
-        this.topicsSubjectsFetchStatus[topicID] = "fetched";*/
+        if (this.topicsData[topicIndex][1] === this.props.user.address){
+            let som =this.props.orbitDB.topicsDB.get(this.props.topicIDs[topicIndex]);
+            this.topicsSubjects[topicIndex] = som['subject'];
+            this.topicsSubjectsFetchStatus[topicIndex] = "fetched";
+        } else {
+            const fullAddress = "/orbitdb" + this.topicsData[topicIndex][0] + "/topics";
+            const store = await this.props.orbitDB.orbitdb.keyvalue(fullAddress);
 
-        var som =this.props.orbitDB.topicsDB.get(this.props.topicIDs[topicIndex]);
-        this.topicsSubjects[topicIndex] = som['subject'];
-        this.topicsSubjectsFetchStatus[topicIndex] = "fetched";
+            /*store.events.on('replicated', () => {
+              const result = store.iterator({ limit: -1 }).collect().map(e => e.payload.value)
+              console.log(result.join('\n'))
+            })*/
+
+            await store.load();
+            let som = store.get(this.props.topicIDs[topicIndex]);
+            this.topicsSubjects[topicIndex] = som['subject'];
+            this.topicsSubjectsFetchStatus[topicIndex] = "fetched";
+        }
     }
 
     render (){

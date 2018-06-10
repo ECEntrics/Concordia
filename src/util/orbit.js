@@ -13,23 +13,24 @@ const ipfsOptions = {
         pubsub: true
     }, config: {
         Addresses: {
-            Swarm: []
+            Swarm: [
+                // Use IPFS dev signal server
+                // Prefer websocket over webrtc
+                //
+                // Websocket:
+                // '/dns4/ws-star-signal-2.servep2p.com/tcp/443//wss/p2p-websocket-star',
+                // '/dns4/ws-star.discovery.libp2p.io/tcp/443/wss/p2p-websocket-star',
+                // Local signal server
+                //'/ip4/127.0.0.1/tcp/4711/ws/p2p-websocket-star'
+                //
+                // WebRTC:
+                // '/dns4/star-signal.cloud.ipfs.team/wss/p2p-webrtc-star',
+                // Local signal server
+                // '/ip4/127.0.0.1/tcp/1337/ws/p2p-webrtc-star'
+            ]
         }
     },
 };
-
-/*,
-    config: {
-        Addresses: {
-            Swarm: [
-                // Use IPFS dev signal server
-                // '/dns4/star-signal.cloud.ipfs.team/wss/p2p-webrtc-star',
-                '/dns4/ws-star.discovery.libp2p.io/tcp/443/wss/p2p-websocket-star',
-                // Use local signal server
-                // '/ip4/0.0.0.0/tcp/9090/wss/p2p-webrtc-star',
-            ]
-        }
-    }*/
 
 // Create IPFS instance
 const ipfs = new IPFS(ipfsOptions);
@@ -38,7 +39,6 @@ let orbitdb, topicsDB, postsDB;
 ipfs.on('ready', async () => {
     store.dispatch({type: "IPFS_INITIALIZED"});
 });
-
 
 async function createDatabases() {
     orbitdb = new OrbitDB(ipfs);
