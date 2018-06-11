@@ -1,6 +1,5 @@
 import { drizzleConnect } from 'drizzle-react';
 import React, { Component } from 'react';
-import { Link } from 'react-router';
 import PropTypes from 'prop-types';
 
 import Post from './Post';
@@ -45,12 +44,15 @@ class PostList extends Component {
         const posts = this.postsData.map((post, index) => {
             if (post) {
                 return (
-                    <Link to={"/topic/" + post[4] + "/" + 
-                        ((this.orbitPostsData[index] !== undefined) ? this.orbitPostsData[index].subject + "/" +
-                            this.props.postIDs[index] : "")}
+                    <div onClick={() => {
+                        this.context.router.push("/topic/" + post[4] + "/" +
+                            ((this.orbitPostsData[index] !== undefined)
+                                ? this.orbitPostsData[index].subject + "/" + this.props.postIDs[index]
+                                : ""))}}
                         key={index}>
                         <Post post={{
                                 avatarUrl: post.avatarUrl,
+                                userAddress: post[1],
                                 username: post[2],
                                 subject: (this.orbitPostsData[index] !== undefined) && this.orbitPostsData[index].subject,
                                 date: epochTimeConverter(post[3]),
@@ -59,7 +61,7 @@ class PostList extends Component {
                             }}
                             id={index}
                             key={index}/>
-                    </Link>
+                    </div>
                 );
             } else {
                 return (
@@ -94,13 +96,14 @@ class PostList extends Component {
 };
 
 PostList.contextTypes = {
-    drizzle: PropTypes.object
+    drizzle: PropTypes.object,
+    router: PropTypes.object
 };
 
 const mapStateToProps = state => {
     return {
         user: state.user, //Needed!!
-        orbitDB: state.orbitDB,
+        orbitDB: state.orbitDB
     }
 };
 

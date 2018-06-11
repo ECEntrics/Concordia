@@ -10,6 +10,7 @@ import epochTimeConverter from '../helpers/EpochTimeConverter';
 
 const contract = "Forum";
 const contractMethods = {
+    getUsername: "getUsername",
     getDateOfRegister: "getUserDateOfRegister",
     getOrbitDB: "getOrbitDBId",
     getUserTopics: "getUserTopics",
@@ -20,10 +21,20 @@ class Profile extends Component {
     constructor(props, context) {
         super(props);
 
-        //THIS WILL CHANGE WITH ACTUAL DATA
-        this.match = {
-            username: this.props.user.username,
-            userAddress: this.props.user.address
+        if (this.props.params.address){
+            this.profile = {
+                userAddress: this.props.params.address,
+                username: this.props.params.username ? this.props.params.username : "",
+                orbitId: "",
+                self: false
+            }
+        } else {
+            this.profile = {
+                userAddress: this.props.user.address,
+                username: this.props.user.username,
+                orbitId: this.props.orbitDB.id,
+                self: true
+            }
         }
 
         this.handleTabClick = this.handleTabClick.bind(this);
@@ -32,12 +43,13 @@ class Profile extends Component {
 
         this.state = {
             viewSelected: "topics",
-            username: this.match.username, // TODO actually get them from match
-            userAddress: this.match.userAddress, // when router is fixed
+            username: this.profile.username,
+            userAddress: this.profile.userAddress,
             dateOfRegister: null,
-            orbitDBId: this.match.address === this.props.user.address ? this.props.orbitDB.id : "",
+            orbitDBId: this.profile.orbitId,
+            getUsernameTransactionState: null,
             getDateOfRegisterTransactionState: null,
-            getOrbitDBTransactionState: this.match.address === this.props.user.address ? "SUCCESS" : null,
+            getOrbitDBTransactionState: this.profile.orbitId ? "SUCCESS" : null,
             getTopicsTransactionState: null,
             getPostsTransactionState: null,
             topicIDs: [],
@@ -58,7 +70,7 @@ class Profile extends Component {
                     numberOfTopics={this.state.topicIDs.length}
                     numberOfPosts={this.state.postIDs.length}
                     dateOfRegister={this.state.dateOfRegister}
-                    self/>
+                    self={this.profile.self}/>
                 <div className="pure-u-1-1 profile-tabs-header">
                     <p onClick={() => (this.handleTabClick("topics"))}
                         className={this.state.viewSelected === "topics" ? "profile-tab-selected" : ""}>
@@ -88,6 +100,25 @@ class Profile extends Component {
     }
 
     componentWillReceiveProps() {
+        if (this.state.getUsernameTransactionState === null){
+            if (this.drizzle.contracts[contract]){ //Waits until drizzle is initialized
+                this.usernameKey = this.drizzle.contracts[contract]
+                    .methods[contractMethods.getUsername].cacheCall(this.state.userAddress);
+                this.setState({'getUsernameTransactionState': "IN_PROGRESS"});
+            }
+        }
+        if (this.state.getUsernameTransactionState === "IN_PROGRESS") {
+            let currentDrizzleState = this.drizzle.store.getState();
+            let dataFetched = (currentDrizzleState
+                .contracts[contract][contractMethods.getUsername])[this.usernameKey];
+            if (dataFetched){
+                this.setState({
+                    'username': dataFetched.value,
+                    'getUsernameTransactionState': "SUCCESS"
+                });
+            }
+        }
+
         if (this.state.getDateOfRegisterTransactionState === null){
             if (this.drizzle.contracts[contract]){ //Waits until drizzle is initialized
                 this.dateOfRegisterKey = this.drizzle.contracts[contract]

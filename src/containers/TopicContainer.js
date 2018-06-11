@@ -14,6 +14,10 @@ class Topic extends Component {
     constructor(props, context) {
         super(props);
 
+        if (!/^[0-9]+$/.test(this.props.params.topicId)){
+            this.props.router.push("/404");
+        }
+
         this.fetchTopicSubject = this.fetchTopicSubject.bind(this);
         this.handleClick = this.handleClick.bind(this);
         this.postCreated = this.postCreated.bind(this);
@@ -21,21 +25,25 @@ class Topic extends Component {
         this.drizzle = context.drizzle;
 
         this.state = {
+            topicID: this.props.params.topicId,
+            topicSubject: this.props.params.topicSubject ? this.props.params.topicSubject : null,
+            postFocus: this.props.params.postId && /^[0-9]+$/.test(this.props.params.postId)
+                ? this.props.params.postId
+                : null,
             getPostsTransactionState: null,
-            posting: false,
-            topicSubject: null
+            posting: false
         };
     }
 
-    async fetchTopicSubject(orbitDBAddress, topicID) {
-        /*const fullAddress = this.topicsData[topicID][1];
+    async fetchTopicSubject(orbitDBAddress) {
+        /*const fullAddress = this.topicsData[this.state.topicID][1];
         const store = await this.props.orbitDB.orbitdb.keyvalue(JSON.stringify(fullAddress));
         await store.load();
-        var som = store.get(JSON.stringify(topicID));
-        this.topicsSubjects[topicID] = som['subject'];
-        this.topicsSubjectsFetchStatus[topicID] = "fetched";*/
+        var som = store.get(JSON.stringify(this.state.topicID));
+        this.topicsSubjects[this.state.topicID] = som['subject'];
+        this.topicsSubjectsFetchStatus[this.state.topicID] = "fetched";*/
 
-        var som =this.props.orbitDB.topicsDB.get(JSON.stringify(topicID));
+        var som =this.props.orbitDB.topicsDB.get(JSON.stringify(this.state.topicID));
         this.setState({'topicSubject': som['subject']});
     }
 
@@ -65,7 +73,7 @@ class Topic extends Component {
             topicContents = (
                 (<div style={{marginBottom: '100px'}}>
                     {this.state.posting &&
-                        <NewPost topicID={1}
+                        <NewPost topicID={this.state.topicID}
                             subject={this.state.topicSubject}
                             onCancelClick={() => {this.handleClick()}}
                             onPostCreated={() => {this.postCreated()}}
@@ -90,7 +98,8 @@ class Topic extends Component {
         if (this.state.getPostsTransactionState === null){
             if (this.drizzle.contracts[contract]){ //Waits until drizzle is initialized
                 //This gets called only once but should be called every time someone posts
-                this.getPostsDataKey = this.drizzle.contracts[contract].methods[contractMethod].cacheCall(1);
+                this.getPostsDataKey = this.drizzle.contracts[contract].methods[contractMethod]
+                    .cacheCall(this.state.topicID);
                 this.setState({'getPostsTransactionState': "IN_PROGRESS"});
             }
         }
@@ -98,9 +107,13 @@ class Topic extends Component {
             let currentDrizzleState = this.drizzle.store.getState();
             let dataFetched = (currentDrizzleState.contracts[contract][contractMethod])[this.getPostsDataKey];
             if (dataFetched){
-                this.posts = dataFetched.value[4];
-                this.setState({'getPostsTransactionState': "SUCCESS"});
-                this.fetchTopicSubject(dataFetched.value[0], 1);
+                if (dataFetched.value){
+                    this.posts = dataFetched.value[4];
+                    this.setState({'getPostsTransactionState': "SUCCESS"});
+                    this.fetchTopicSubject(dataFetched.value[0]);
+                } else if (dataFetched.error){
+                    //TODO
+                }
             }
         }
     }

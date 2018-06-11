@@ -56,7 +56,7 @@ class TopicList extends Component {
         const topics = this.topicsData.map((topic, index) => {
             if (topic){
                 return (
-                    <Link to={"/topic/" + index + "/" + 
+                    <Link to={"/topic/" + this.props.topicIDs[index] + "/" + 
                         ((this.topicsSubjects[index] !== undefined) ? this.topicsSubjects[index] + "/" + 0 : "")}
                         key={index}>
                         <Topic topic={{
@@ -71,7 +71,7 @@ class TopicList extends Component {
                 );
             } else {
                 return (
-                    <Link to={"/topic/" + index + "/"}
+                    <Link to={"/topic/" + this.props.topicIDs[index] + "/"}
                         key={index}>
                         <Topic topic={null}
                             id={index}

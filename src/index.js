@@ -31,9 +31,12 @@ render((
         <Router history={history}>
           <Route path="/" component={CoreLayout}>
             <IndexRoute component={HomeContainer} />
-            <PrivateRouteContainer path="/topic/:topicId/:topicSubject/:postId" component={TopicContainer} redirectTo="/" />
-            <PrivateRouteContainer path='/profile' component={ProfileContainer} redirectTo="/" />
-            <PrivateRouteContainer path='/startTopic' component={StartTopicContainer} redirectTo="/" />
+            <Route path="/topic/:topicId(/:topicSubject)(/:postId)"
+              component={TopicContainer} />
+            <Route path='/profile(/:address)(/:username)'
+              component={ProfileContainer} />
+            <Route path='/startTopic'
+              component={StartTopicContainer} />
             <Route path='/404' component={NotFoundView} />
             <Route path='*' component={NotFoundView} />
           </Route>
@@ -43,3 +46,10 @@ render((
   ),
   document.getElementById('root')
 );
+
+/*<PrivateRouteContainer path="/topic/:topicId(/:topicSubject)(/:postId)"
+              component={TopicContainer} />
+  <PrivateRouteContainer path='/profile(/:address)(/:username)'
+    component={ProfileContainer} />
+  <PrivateRouteContainer path='/startTopic'
+    component={StartTopicContainer} />*/

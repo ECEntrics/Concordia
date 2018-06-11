@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link, withRouter } from 'react-router';
 import UserAvatar from 'react-user-avatar';
 import TimeAgo from 'react-timeago';
 import ReactMarkdown from 'react-markdown';
@@ -9,11 +10,14 @@ const Post = (props) => {
         ? <div className="pure-u-1-1 post card">
             <div className="post-header">
                 <div className="vertical-center-children">
-                    <UserAvatar
-                        size="40"
-                        className="inline user-avatar"
-                        src={props.post.avatarUrl}
-                        name={props.post.username}/>
+                    <Link to={"/profile/" + props.post.userAddress + "/" + props.post.username}
+                        onClick={(event) => {event.stopPropagation()}}>
+                        <UserAvatar
+                            size="40"
+                            className="inline user-avatar"
+                            src={props.post.avatarUrl}
+                            name={props.post.username}/>
+                    </Link>
                     <p className="inline no-margin">
                         <strong>
                             {props.post.username}
@@ -60,4 +64,4 @@ const Post = (props) => {
     );
 };
 
-export default Post;
+export default withRouter(Post);
