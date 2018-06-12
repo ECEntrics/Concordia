@@ -84,7 +84,7 @@ class NewPost extends Component {
 
     render() {
         return (
-            <div className="pure-u-1-1 post card">
+            <div className="post card">
                 {this.state.creatingPost && <div id="overlay">
                         <div id="overlay-content">
                             <p><i className="fas fa-spinner fa-3x fa-spin"></i></p>
@@ -129,17 +129,16 @@ class NewPost extends Component {
                                 onChange={this.handleInputChange} />
                             ]}
                         <button key="submit"
-                            className="pure-button pure-button-primary"
                             type="button"
                             onClick={this.validateAndPost}>
                                 Post
                         </button>
-                        <button className="pure-button margin-left-small"
+                        <button className="margin-left-small"
                             type="button"
                             onClick={this.handlePreviewToggle}>
                                 {this.state.previewEnabled ? "Edit" : "Preview"}
                         </button>
-                        <button className="pure-button margin-left-small"
+                        <button className="margin-left-small"
                             type="button"
                             onClick={this.props.onCancelClick}>
                                 Cancel

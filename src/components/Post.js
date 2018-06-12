@@ -7,59 +7,78 @@ import ReactMarkdown from 'react-markdown';
 const Post = (props) => {
     return (
         props.post !== null
-        ? <div className="pure-u-1-1 post card">
-            <div className="post-header">
-                <div className="vertical-center-children">
+        ? <div className="post">
+            <div className="row">
+                <div className="col s1">
                     <Link to={"/profile/" + props.post.userAddress + "/" + props.post.username}
                         onClick={(event) => {event.stopPropagation()}}>
                         <UserAvatar
-                            size="40"
+                            size="50"
                             className="inline user-avatar"
                             src={props.post.avatarUrl}
                             name={props.post.username}/>
                     </Link>
-                    <p className="inline no-margin">
-                        <strong>
-                            {props.post.username}
-                            <br/>
-                            Subject: {props.post.subject}
-                        </strong>
-                    </p>
                 </div>
-                <div className="post-info">
-                    <span>Posted <TimeAgo date={props.post.date}/></span>
-                    <span>#{props.post.postIndex}</span>
+                <div className="col s11">
+                    <div>
+                        <div className="stretch-space-between">
+                            <strong><span>{props.post.username}</span></strong>
+                            <span className="grey-text text-darken-2">
+                                <TimeAgo date={props.post.date}/>, #{props.post.postIndex}
+                            </span>
+                        </div>
+                        <div className="stretch-space-between">
+                            <strong><span>{props.post.subject}</span></strong>
+                        </div>
+                        <div>
+                            {props.post.postContent
+                                ? <ReactMarkdown source={props.post.postContent} />
+                                : <p style={{color: 'grey'}}>Post content...</p>
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
-            <hr/>
-            <div className="post-content">
-                {props.post.postContent
-                    ? <ReactMarkdown source={props.post.postContent} />
-                    : <p style={{color: 'grey'}}>Post content...</p>
-                }
+            <div className="row">
+                <div className="post-meta grey-text text-darken-2">
+                    <i className="material-icons waves-effect waves-teal circle">
+                        keyboard_arrow_up
+                    </i>
+                    <span>8</span>
+                    <i className="material-icons waves-effect waves-teal circle">
+                        keyboard_arrow_down
+                    </i>
+                    <i className="material-icons waves-effect waves-teal circle" onClick={props.onHrefClick}>
+                        link
+                    </i>
+                </div>
             </div>
-            <hr/>
-            <div className="post-meta">
-                Maybe add buttons for upvote etc here...
-            </div>
+            <div className="divider"></div>
         </div>
-        : <div className="pure-u-1-1 post card" style={{color: 'grey'}}>
-            <div className="post-header">
-                <p className="inline no-margin">
-                    <strong>Subject</strong>
-                </p>
-                <div className="post-info">
-                    <span>Posted </span>
+        : <div className="post grey-text text-darken-2">
+            <div className="row">
+                <div className="col s1">
+                    <div></div>
+                </div>
+                <div className="col s11">
+                    <div>
+                        <div className="stretch-space-between">
+                            <span></span>
+                        </div>
+                        <div className="stretch-space-between">
+                            <span>Subject:</span>
+                        </div>
+                        <div>
+                            <p>Post content...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <hr/>
-            <div className="post-content">
-                <p>Post content...</p>
+            <div className="row">
+                <div className="post-meta">
+                </div>
             </div>
-            <hr/>
-            <div className="post-meta">
-                Maybe add buttons for upvote etc here...
-            </div>
+            <div className="divider"></div>
         </div>
     );
 };

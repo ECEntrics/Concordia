@@ -4,32 +4,42 @@ import UsernameFormContainer from '../containers/UsernameFormContainer';
 
 const ProfileInformation = (props) => {
         return (
-            <div className="pure-u-1-1 user-info card">
+            <div className="user-info">
                 {props.avatarUrl && <UserAvatar
                     size="40"
                     className="inline user-avatar"
                     src={props.avatarUrl}
                     name={props.username}/>}
-                <p className="no-margin inline">
-                    <strong>Username:</strong> {props.username}
-                </p>
-                <p className="no-margin">
-                    <strong>Account address:</strong> {props.address}
-                </p>
-                <p className="no-margin">
-                    <strong>OrbitDB:</strong> {props.orbitAddress}
-                </p>
-                <p className="no-margin">
-                    <strong>Number of topics created:</strong> {props.numberOfTopics}
-                </p>
-                <p className="no-margin">
-                    <strong>Number of posts:</strong> {props.numberOfPosts}
-                </p>
-                {props.dateOfRegister &&
-                    <p className="no-margin">
-                        <strong>Member since:</strong> {props.dateOfRegister}
-                    </p>
-                }
+                <table className="highlight centered responsive-table">
+                    <tbody>
+                        <tr>
+                            <td><strong>Username:</strong></td>
+                            <td>{props.username}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Account address:</strong></td>
+                            <td>{props.address}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>OrbitDB:</strong></td>
+                            <td>{props.orbitAddress}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Number of topics created:</strong></td>
+                            <td>{props.numberOfTopics}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Number of posts:</strong></td>
+                            <td>{props.numberOfPosts}</td>
+                        </tr>
+                        {props.dateOfRegister &&
+                            <tr>
+                                <td><strong>Member since:</strong></td>
+                                <td>{props.dateOfRegister}</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
                 {props.self && <UsernameFormContainer/>}
             </div>
         );

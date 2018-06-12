@@ -14,6 +14,7 @@ class PostList extends Component {
         super(props);
 
         this.fetchPost = this.fetchPost.bind(this);
+        this.onHrefHandle = this.onHrefHandle.bind(this);
 
         this.drizzle = context.drizzle;
         this.dataKeys = [];
@@ -40,25 +41,30 @@ class PostList extends Component {
         this.orbitPostsDataFetchStatus[index] = "fetched";
     }
 
+    onHrefHandle(postIndex){
+        this.context.router.push("/topic/" + this.postsData[postIndex][4] + "/" + 
+            ((this.orbitPostsData[postIndex] !== undefined)
+                ? this.orbitPostsData[postIndex].subject + "/" + this.props.postIDs[postIndex]
+                : ""))
+    }
+
     render (){
         const posts = this.postsData.map((post, index) => {
             if (post) {
                 return (
-                    <div onClick={() => {
-                        this.context.router.push("/topic/" + post[4] + "/" +
-                            ((this.orbitPostsData[index] !== undefined)
-                                ? this.orbitPostsData[index].subject + "/" + this.props.postIDs[index]
-                                : ""))}}
-                        key={index}>
+                    <div key={index}>
                         <Post post={{
-                                avatarUrl: post.avatarUrl,
-                                userAddress: post[1],
-                                username: post[2],
-                                subject: (this.orbitPostsData[index] !== undefined) && this.orbitPostsData[index].subject,
-                                date: epochTimeConverter(post[3]),
-                                postIndex: index,
-                                postContent: (this.orbitPostsData[index] !== undefined) && this.orbitPostsData[index].content
+                                avatarUrl:post.avatarUrl,
+                                userAddress:post[1],
+                                username:post[2],
+                                subject:(this.orbitPostsData[index] !== undefined) &&
+                                    this.orbitPostsData[index].subject,
+                                date:epochTimeConverter(post[3]),
+                                postIndex:index,
+                                postContent:(this.orbitPostsData[index] !== undefined) &&
+                                    this.orbitPostsData[index].content,
                             }}
+                            onHrefClick={() => this.onHrefHandle(index)}
                             id={index}
                             key={index}/>
                     </div>

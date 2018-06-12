@@ -4,10 +4,12 @@ import { Link } from 'react-router';
 
 const NavBar = (props) => {
     return (
-        <div className="pure-u-1-1 navbar">
-            <ul>
+        <nav>
+            <div className="nav-wrapper navColor">
+            {/*<a href="#" className="brand-logo right">Logo</a>*/}
+            <ul id="nav-mobile" className="left hide-on-med-and-down">
                 <li>
-                  <Link to="/">Home</Link>
+                    <Link to="/">Home</Link>
                 </li>
                 {props.hasSignedUp &&
                     <li>
@@ -15,7 +17,8 @@ const NavBar = (props) => {
                     </li>
                 }
             </ul>
-        </div>
+          </div>
+      </nav>
     );
 };
 

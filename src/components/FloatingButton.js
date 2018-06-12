@@ -3,16 +3,20 @@ import { Link } from 'react-router';
 
 const FloatingButton = (props) => {
     return (
-        <div className="pure-u-1-1">
+        <div>
             {props.to
-                ?<Link to={props.to}>
-                    <p className="no-margin floating-button" data-fa-transform="down-6">
-                        <i className="fa fa-plus fa-2x"></i>
+                ?<div className="fixed-action-btn">
+                    <Link className="btn-floating btn-large waves-effect waves-light teal lighten-1"
+                        to={props.to}>
+                        <i className="large material-icons">add</i>
+                    </Link>
+                </div>
+                :<div className="fixed-action-btn">
+                    <p className="btn-floating btn-large waves-effect waves-light teal lighten-1"
+                        onClick={props.onClick}>
+                        <i className="large material-icons">add</i>
                     </p>
-                </Link>
-                :<p className="no-margin floating-button" data-fa-transform="down-6" onClick={props.onClick}>
-                    <i className="fa fa-plus fa-2x"></i>
-                </p>
+                </div>
             }
         </div>
     );

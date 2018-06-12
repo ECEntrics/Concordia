@@ -45,9 +45,14 @@ class UsernameFormContainer extends Component {
             const placeholderText = hasSignedUp ? this.props.user.username : "Username";
 
             return(
-                <form className="pure-form pure-form-stacked">
-                    <input key={"usernameInput"} name={"usernameInput"} type="text" value={this.state.usernameInput} placeholder={placeholderText} onChange={this.handleInputChange} />
-                    <button key="submit" className="pure-button" type="button" onClick={this.handleSubmit}>{buttonText}</button>
+                <form>
+                    <div className="input-field">
+                      <input key={"usernameInput"} name={"usernameInput"} id="usernameInput"
+                        type="text" className="validate" value={this.state.usernameInput}
+                        onChange={this.handleInputChange}/>
+                      <label htmlFor="usernameInput">{placeholderText}</label>
+                    </div>
+                    <button key="submit" className="waves-effect waves-light btn-large" type="button" onClick={this.handleSubmit}>{buttonText}</button>
                 </form>
             );
         }
