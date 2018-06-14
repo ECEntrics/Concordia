@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { Router, Route, IndexRoute, browserHistory } from 'react-router';
+import { Router, IndexRoute, browserHistory } from 'react-router';
+import { Route } from 'react-router-dom';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { DrizzleProvider } from 'drizzle-react';
 
@@ -31,7 +32,7 @@ render((
         <Router history={history}>
           <Route path="/" component={CoreLayout}>
             <IndexRoute component={HomeContainer} />
-            <Route path="/topic/:topicId(/:topicSubject)(/:postId)"
+            <Route path="/topic/:topicId(/:postId)"
               component={TopicContainer} />
             <Route path='/profile(/:address)(/:username)'
               component={ProfileContainer} />

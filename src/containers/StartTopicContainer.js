@@ -237,8 +237,7 @@ class StartTopic extends Component {
                             'savingToOrbitDB': null,
                             'transactionOutputTimerActive': false
                         });
-                        this.props.router.push("/topic/" + this.topicIDFetched + "/"
-                            + this.state.topicSubjectInput);
+                        this.props.router.push("/topic/" + this.topicIDFetched);
                     }, 5000);
                 }
                 else if (this.state.savingToOrbitDB === "ERROR"){

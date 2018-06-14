@@ -2,21 +2,15 @@ import { drizzleConnect } from 'drizzle-react';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import WithBlockchainData from '../components/WithBlockchainData';
 import PostList from '../components/PostList';
 import NewPost from '../components/NewPost';
 import FloatingButton from '../components/FloatingButton';
 import LoadingSpinner from '../components/LoadingSpinner';
 
-const contract = "Forum";
-const contractMethod = "getTopic";
-
 class Topic extends Component {
     constructor(props, context) {
         super(props);
-
-        if (!/^[0-9]+$/.test(this.props.params.topicId)){
-            this.props.router.push("/404");
-        }
 
         this.fetchTopicSubject = this.fetchTopicSubject.bind(this);
         this.handleClick = this.handleClick.bind(this);
@@ -43,7 +37,7 @@ class Topic extends Component {
         this.topicsSubjects[this.state.topicID] = som['subject'];
         this.topicsSubjectsFetchStatus[this.state.topicID] = "fetched";*/
 
-        var som =this.props.orbitDB.topicsDB.get(JSON.stringify(this.state.topicID));
+        var som =this.props.orbitDB.topicsDB.get(this.state.topicID);
         this.setState({'topicSubject': som['subject']});
     }
 
@@ -79,7 +73,7 @@ class Topic extends Component {
                             onPostCreated={() => {this.postCreated()}}
                         />
                     }
-                    <PostList postIDs={this.posts}/>
+                    {this.postList}
                     {!this.state.posting &&
                         <FloatingButton onClick={this.handleClick}/>
                     }
@@ -95,25 +89,22 @@ class Topic extends Component {
     }
 
     componentWillReceiveProps() {
-        if (this.state.getPostsTransactionState === null){
-            if (this.drizzle.contracts[contract]){ //Waits until drizzle is initialized
-                //This gets called only once but should be called every time someone posts
-                this.getPostsDataKey = this.drizzle.contracts[contract].methods[contractMethod]
-                    .cacheCall(this.state.topicID);
-                this.setState({'getPostsTransactionState': "IN_PROGRESS"});
-            }
-        }
-        if (this.state.getPostsTransactionState === "IN_PROGRESS") {
-            let currentDrizzleState = this.drizzle.store.getState();
-            let dataFetched = (currentDrizzleState.contracts[contract][contractMethod])[this.getPostsDataKey];
-            if (dataFetched){
-                if (dataFetched.value){
-                    this.posts = dataFetched.value[4];
-                    this.setState({'getPostsTransactionState': "SUCCESS"});
-                    this.fetchTopicSubject(dataFetched.value[0]);
-                } else if (dataFetched.error){
-                    //TODO
-                }
+        if (this.props.blockchainData[0].status === "success") {
+            if (this.state.getPostsTransactionState !== "SUCCESS"){
+                this.postList = <WithBlockchainData
+                    component={PostList}
+                    callsInfo={this.props.blockchainData[0].returnData[4].map((postID) => {
+                        return {
+                            contract: 'Forum',
+                            method: 'getPost',
+                            params: [postID]
+                        }
+                    })}
+                    postIDs={this.props.blockchainData[0].returnData[4]}
+                />
+
+                this.setState({'getPostsTransactionState': "SUCCESS"});
+                this.fetchTopicSubject(this.props.blockchainData[0].returnData[0]);
             }
         }
     }
@@ -130,6 +121,28 @@ const mapStateToProps = state => {
     }
 };
 
-const TopicContainer = drizzleConnect(Topic, mapStateToProps);
+class TopicContainer extends Component {
+    constructor(props){
+        super(props);
+
+        if (!/^[0-9]+$/.test(props.params.topicId)){ //Topic ID should be a positive integer
+            this.props.router.push("/404");
+        }
+
+        this.topic = <WithBlockchainData
+            component={drizzleConnect(Topic, mapStateToProps)}
+            callsInfo={[{
+                    contract: 'Forum',
+                    method: 'getTopic',
+                    params: [this.props.params.topicId]
+                }]}
+            params={this.props.params}
+        />;
+    }
+    
+    render() {
+        return(this.topic);
+    }
+}
 
 export default TopicContainer;

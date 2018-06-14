@@ -41,6 +41,7 @@ contract Forum {
     }
 
     function getUsername(address userAddress) public view returns (string) {
+        require (hasUserSignedUp(userAddress), "User hasn't signed up yet.");
         return users[userAddress].username;
     }
 

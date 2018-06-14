@@ -3,47 +3,20 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
+import WithBlockchainData from '../components/WithBlockchainData';
 import ProfileInformation from '../components/ProfileInformation';
 import TopicList from '../components/TopicList';
 import PostList from '../components/PostList';
 import LoadingSpinner from '../components/LoadingSpinner';
-import epochTimeConverter from '../helpers/EpochTimeConverter';
 
 import '../assets/css/materialTabs.css';
-
-const contract = "Forum";
-const contractMethods = {
-    getUsername: "getUsername",
-    getDateOfRegister: "getUserDateOfRegister",
-    getOrbitDB: "getOrbitDBId",
-    getUserTopics: "getUserTopics",
-    getUserPosts: "getUserPosts"
-};
 
 class Profile extends Component {
     constructor(props, context) {
         super(props);
 
-        /*console.log(this.props.params.address);
-        console.log(this.props.user.address);*/
-
-        if (this.props.params.address == this.props.user.address){
-            this.profile = {
-                userAddress: this.props.params.address,
-                username: this.props.params.username ? this.props.params.username : "",
-                orbitId: "",
-                self: false
-            }
-        } else {
-            this.profile = {
-                userAddress: this.props.user.address,
-                username: this.props.user.username,
-                orbitId: this.props.orbitDB.id,
-                self: true
-            }
-        }
-
         this.handleTabClick = this.handleTabClick.bind(this);
+        this.propsToView = this.propsToView.bind(this);
 
         this.drizzle = context.drizzle;
         this.underlineBarRef = React.createRef();
@@ -53,17 +26,7 @@ class Profile extends Component {
 
         this.state = {
             viewSelected: "profile-info-tab",
-            username: this.profile.username,
-            userAddress: this.profile.userAddress,
-            dateOfRegister: null,
-            orbitDBId: this.profile.orbitId,
-            getUsernameTransactionState: null,
-            getDateOfRegisterTransactionState: null,
-            getOrbitDBTransactionState: this.profile.orbitId ? "SUCCESS" : null,
-            getTopicsTransactionState: null,
-            getPostsTransactionState: null,
-            topicIDs: [],
-            postIDs: []
+            userAddress: this.profile.userAddress
         };
     }
 
@@ -85,26 +48,40 @@ class Profile extends Component {
     }
 
     render() {
+        this.propsToView();
         var infoTab =
-            (<ProfileInformation username={this.state.username}
-                address={this.state.userAddress}
-                orbitAddress={this.state.orbitDBId}
-                numberOfTopics={this.state.topicIDs.length}
-                numberOfPosts={this.state.postIDs.length}
-                dateOfRegister={this.state.dateOfRegister}
-                self={this.profile.self}
-            />);
+            (<WithBlockchainData
+                    component={ProfileInformation}
+                    callsInfo={[{
+                        contract: 'Forum',
+                        method: 'getUsername',
+                        params: [this.state.userAddress]
+                    },{
+                        contract: 'Forum',
+                        method: 'getUserDateOfRegister',
+                        params: [this.state.userAddress]
+                    },{
+                        contract: 'Forum',
+                        method: 'getOrbitDBId',
+                        params: [this.state.userAddress]
+                    }]}
+                    address={this.state.userAddress}
+                    numberOfTopics={this.topicIDs && this.topicIDs.length}
+                    numberOfPosts={this.postIDs && this.postIDs.length}
+                    self={this.state.userAddress === this.props.user.address}
+                    key="profileInfo"
+                />);
         var topicsTab =
             (<div className="profile-tab">
-                {this.state.getTopicsTransactionState === "SUCCESS"
-                    ? <TopicList topicIDs={this.state.topicIDs}/>
+                {this.topicIDs
+                    ? <TopicList topicIDs={this.topicIDs} />
                     : <LoadingSpinner />
                 }
             </div>);
         var postsTab =
             (<div className="profile-tab">
-                {this.state.getPostsTransactionState === "SUCCESS"
-                    ? <PostList postIDs={this.state.postIDs}/>
+                {this.postIDs
+                    ? <PostList postIDs={this.postIDs} recentToTheTop />
                     : <LoadingSpinner />
                 }
             </div>);
@@ -152,99 +129,19 @@ class Profile extends Component {
         );
     }
 
-    componentWillReceiveProps() {
-        if (this.state.getUsernameTransactionState === null){
-            if (this.drizzle.contracts[contract]){ //Waits until drizzle is initialized
-                this.usernameKey = this.drizzle.contracts[contract]
-                    .methods[contractMethods.getUsername].cacheCall(this.state.userAddress);
-                this.setState({'getUsernameTransactionState': "IN_PROGRESS"});
+    propsToView(){
+        if (!this.topicIDs){
+            let transaction = this.props.blockchainData
+                .find(transaction => transaction.callInfo.method === "getUserTopics");
+            if (transaction.returnData){
+                this.topicIDs = transaction.returnData;
             }
         }
-        if (this.state.getUsernameTransactionState === "IN_PROGRESS") {
-            let currentDrizzleState = this.drizzle.store.getState();
-            let dataFetched = (currentDrizzleState
-                .contracts[contract][contractMethods.getUsername])[this.usernameKey];
-            if (dataFetched){
-                this.setState({
-                    'username': dataFetched.value,
-                    'getUsernameTransactionState': "SUCCESS"
-                });
-            }
-        }
-
-        if (this.state.getDateOfRegisterTransactionState === null){
-            if (this.drizzle.contracts[contract]){ //Waits until drizzle is initialized
-                this.dateOfRegisterKey = this.drizzle.contracts[contract]
-                    .methods[contractMethods.getDateOfRegister].cacheCall(this.state.userAddress);
-                this.setState({'getDateOfRegisterTransactionState': "IN_PROGRESS"});
-            }
-        }
-        if (this.state.getDateOfRegisterTransactionState === "IN_PROGRESS") {
-            let currentDrizzleState = this.drizzle.store.getState();
-            let dataFetched = (currentDrizzleState
-                .contracts[contract][contractMethods.getDateOfRegister])[this.dateOfRegisterKey];
-            if (dataFetched){
-                this.setState({
-                    'dateOfRegister': epochTimeConverter(dataFetched.value),
-                    'getDateOfRegisterTransactionState': "SUCCESS"
-                });
-            }
-        }
-
-        if (this.state.getOrbitDBTransactionState === null){
-            if (this.drizzle.contracts[contract]){ //Waits until drizzle is initialized
-                this.orbitDBIdKey = this.drizzle.contracts[contract]
-                    .methods[contractMethods.getOrbitDB].cacheCall(this.state.userAddress);
-                this.setState({'getOrbitDBTransactionState': "IN_PROGRESS"});
-            }
-        }
-        if (this.state.getOrbitDBTransactionState === "IN_PROGRESS") {
-            let currentDrizzleState = this.drizzle.store.getState();
-            let dataFetched = (currentDrizzleState
-                .contracts[contract][contractMethods.getOrbitDB])[this.orbitDBIdKey];
-            if (dataFetched){
-                this.setState({
-                    'orbitDBId': dataFetched.value,
-                    'getOrbitDBTransactionState': "SUCCESS"
-                });
-            }
-        }
-
-        if (this.state.getTopicsTransactionState === null){
-            if (this.drizzle.contracts[contract]){ //Waits until drizzle is initialized
-                this.getTopicsKey = this.drizzle.contracts[contract]
-                    .methods[contractMethods.getUserTopics].cacheCall(this.state.userAddress);
-                this.setState({'getTopicsTransactionState': "IN_PROGRESS"});
-            }
-        }
-        if (this.state.getTopicsTransactionState === "IN_PROGRESS") {
-            let currentDrizzleState = this.drizzle.store.getState();
-            let dataFetched = (currentDrizzleState
-                .contracts[contract][contractMethods.getUserTopics])[this.getTopicsKey];
-            if (dataFetched){
-                this.setState({
-                    'topicIDs': dataFetched.value,
-                    'getTopicsTransactionState': "SUCCESS"
-                });
-            }
-        }
-
-        if (this.state.getPostsTransactionState === null){
-            if (this.drizzle.contracts[contract]){ //Waits until drizzle is initialized
-                this.getPostsKey = this.drizzle.contracts[contract]
-                    .methods[contractMethods.getUserPosts].cacheCall(this.state.userAddress);
-                this.setState({'getPostsTransactionState': "IN_PROGRESS"});
-            }
-        }
-        if (this.state.getPostsTransactionState === "IN_PROGRESS") {
-            let currentDrizzleState = this.drizzle.store.getState();
-            let dataFetched = (currentDrizzleState
-                .contracts[contract][contractMethods.getUserPosts])[this.getPostsKey];
-            if (dataFetched){
-                this.setState({
-                    'postIDs': dataFetched.value,
-                    'getPostsTransactionState': "SUCCESS"
-                });
+        if (!this.postIDs){
+            let transaction = this.props.blockchainData
+                .find(transaction => transaction.callInfo.method === "getUserPosts");
+            if (transaction.returnData){
+                this.postIDs = transaction.returnData;
             }
         }
     }
@@ -260,14 +157,46 @@ Profile.contextTypes = {
 
 const mapStateToProps = state => {
   return {
-    accounts: state.accounts,
-    Forum: state.contracts.Forum,
     user: state.user,
-    orbitDB: state.orbitDB,
-    drizzleStatus: state.drizzleStatus
+    orbitDB: state.orbitDB
   }
 };
 
-const ProfileContainer = drizzleConnect(Profile, mapStateToProps);
+class ProfileContainer extends Component {
+    constructor(props){
+        super(props);
 
-export default ProfileContainer;
+        let userAddress;
+        if (this.props.params.address){
+            userAddress = this.props.params.address;
+        } else {
+            userAddress = this.props.user.address;
+        }
+
+        this.profile = <WithBlockchainData
+            component={drizzleConnect(Profile, mapStateToProps)}
+            callsInfo={[{
+                contract: 'Forum',
+                method: 'getUserTopics',
+                params: [userAddress]
+            },{
+                contract: 'Forum',
+                method: 'getUserPosts',
+                params: [userAddress]
+            }]}
+            params={this.props.params}
+        />
+    }
+
+    render() {
+        return(this.profile);
+    }
+}
+
+const containerProps = state => {
+  return {
+    user: state.user
+  }
+};
+
+export default drizzleConnect(ProfileContainer, containerProps);

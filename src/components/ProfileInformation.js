@@ -1,20 +1,34 @@
 import React from 'react';
 import UserAvatar from 'react-user-avatar';
+
+import epochTimeConverter from '../helpers/EpochTimeConverter';
+
 import UsernameFormContainer from '../containers/UsernameFormContainer';
 
 const ProfileInformation = (props) => {
+    let transaction = props.blockchainData
+        .find(transaction => transaction.callInfo.method === "getUsername");
+    let username = transaction ? transaction.returnData : "";
+
+    transaction = props.blockchainData
+        .find(transaction => transaction.callInfo.method === "getUserDateOfRegister");
+    let dateOfRegister = transaction ? transaction.returnData : "";
+
+    transaction = props.blockchainData
+        .find(transaction => transaction.callInfo.method === "getOrbitDBId")
+    let orbitDBId = transaction ? transaction.returnData : "";
         return (
             <div className="user-info">
                 {props.avatarUrl && <UserAvatar
                     size="40"
                     className="inline user-avatar"
                     src={props.avatarUrl}
-                    name={props.username}/>}
+                    name={username}/>}
                 <table className="highlight centered responsive-table">
                     <tbody>
                         <tr>
                             <td><strong>Username:</strong></td>
-                            <td>{props.username}</td>
+                            <td>{username}</td>
                         </tr>
                         <tr>
                             <td><strong>Account address:</strong></td>
@@ -22,7 +36,7 @@ const ProfileInformation = (props) => {
                         </tr>
                         <tr>
                             <td><strong>OrbitDB:</strong></td>
-                            <td>{props.orbitAddress}</td>
+                            <td>{orbitDBId}</td>
                         </tr>
                         <tr>
                             <td><strong>Number of topics created:</strong></td>
@@ -35,7 +49,7 @@ const ProfileInformation = (props) => {
                         {props.dateOfRegister &&
                             <tr>
                                 <td><strong>Member since:</strong></td>
-                                <td>{props.dateOfRegister}</td>
+                                <td>{epochTimeConverter(dateOfRegister)}</td>
                             </tr>
                         }
                     </tbody>
