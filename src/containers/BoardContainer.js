@@ -2,32 +2,28 @@ import { drizzleConnect } from 'drizzle-react';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import WithBlockchainData from '../components/WithBlockchainData';
 import TopicList from '../components/TopicList';
 import FloatingButton from '../components/FloatingButton';
 import LoadingSpinner from '../components/LoadingSpinner';
 
-const contract = "Forum";
-const contractMethod = "getNumberOfTopics";
-
 class Board extends Component {
     constructor(props, context) {
         super(props);
-
-        this.drizzle = context.drizzle;
-
-        this.state = {
-            transactionState: null
-        };
     }
 
     render() {
         var boardContents;
-        if (this.state.transactionState !== "SUCCESS") {
+        if (!this.props.blockchainData[0].returnData) {
             boardContents = (
                 <LoadingSpinner/>
             );
         } else {
-            boardContents = <TopicList topicIDs={this.topicIDs}/>;
+            this.topicIDs = [];
+            for (var i = 0; i < this.props.blockchainData[0].returnData; i++) {
+                this.topicIDs.push(i);
+            }
+            boardContents = <TopicList topicIDs={this.topicIDs}/>
         }
 
         return (
@@ -36,28 +32,6 @@ class Board extends Component {
                 <FloatingButton to="/startTopic"/>
             </div>
         );
-    }
-
-    componentWillReceiveProps() {
-        if (this.state.transactionState === null){
-            if (this.drizzle.contracts[contract]){ //Waits until drizzle is initialized
-                //This gets called only once but should be called every time someone posts
-                this.dataKey = this.drizzle.contracts[contract].methods[contractMethod].cacheCall();
-                this.setState({'transactionState': "IN_PROGRESS"});
-            }
-        }
-        if (!this.numberOfTopics) {
-            let currentDrizzleState = this.drizzle.store.getState();
-            let dataFetched = (currentDrizzleState.contracts[contract][contractMethod])[this.dataKey];
-            if (dataFetched){
-                this.numberOfTopics = dataFetched.value;
-                this.topicIDs = [];
-                for (var i = 0; i < this.numberOfTopics; i++) {
-                    this.topicIDs.push(i);
-                }
-                this.setState({'transactionState': "SUCCESS"});
-            }
-        }
     }
 }
 
@@ -71,6 +45,23 @@ const mapStateToProps = state => {
     }
 };
 
-const BoardContainer = drizzleConnect(Board, mapStateToProps);
+class BoardContainer extends Component {
+    constructor(props){
+        super(props);
+
+        this.board = <WithBlockchainData
+            component={drizzleConnect(Board, mapStateToProps)}
+            callsInfo={[{
+                contract: 'Forum',
+                method: 'getNumberOfTopics',
+                params: []
+            }]}
+        />;
+    }
+    
+    render() {
+        return(this.board);
+    }
+}
 
 export default BoardContainer;

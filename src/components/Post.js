@@ -1,67 +1,117 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router';
-import UserAvatar from 'react-user-avatar';
+import { drizzleConnect } from 'drizzle-react';
+import PropTypes from 'prop-types';
+
 import TimeAgo from 'react-timeago';
+import epochTimeConverter from '../helpers/EpochTimeConverter'
+import UserAvatar from 'react-user-avatar';
 import ReactMarkdown from 'react-markdown';
 
-const Post = (props) => {
-    return (
-        props.post !== null
-        ? <div className="pure-u-1-1 post card">
-            <div className="post-header">
-                <div className="vertical-center-children">
-                    <Link to={"/profile/" + props.post.userAddress + "/" + props.post.username}
-                        onClick={(event) => {event.stopPropagation()}}>
-                        <UserAvatar
-                            size="40"
-                            className="inline user-avatar"
-                            src={props.post.avatarUrl}
-                            name={props.post.username}/>
-                    </Link>
-                    <p className="inline no-margin">
-                        <strong>
-                            {props.post.username}
-                            <br/>
-                            Subject: {props.post.subject}
-                        </strong>
-                    </p>
+class Post extends Component {
+    constructor(props, context) {
+        super(props);
+
+        this.fetchPost = this.fetchPost.bind(this);
+
+        this.orbitPostData = {
+            content: "",
+            subject: ""
+        };
+        this.orbitPostDataFetchStatus = "pending";
+    }
+
+    async fetchPost(postID) {
+        this.orbitPostDataFetchStatus = "fetching";
+
+        var som = this.props.orbitDB.postsDB.get(postID);
+        if (som){
+            this.orbitPostData = som;
+        }
+        this.orbitPostDataFetchStatus = "fetched";
+    }
+
+    render(){
+        let avatarView = (this.props.blockchainData[0].returnData
+            ? <UserAvatar
+                size="40"
+                className="inline user-avatar"
+                src={this.props.avatarUrl}
+                name={this.props.blockchainData[0].returnData[2]}/>
+            : <div className="user-avatar" style={{width: "40px"}}></div>
+        );
+
+        return (
+            <div className="pure-u-1-1 post card"
+                onClick={() => { this.context.router.push("/topic/"
+                    + this.props.blockchainData[0].returnData[4] + "/"
+                    + this.props.postID)}}>
+                <div className="post-header">
+                    <div className="vertical-center-children">
+                        {this.props.blockchainData[0].returnData !== null
+                            ?<Link to={"/profile/" + this.props.blockchainData[0].returnData[1]
+                                + "/" + this.props.blockchainData[0].returnData[2]}
+                            onClick={(event) => {event.stopPropagation()}}>
+                                {avatarView}
+                            </Link>
+                            :avatarView
+                        }
+                        <p className="inline no-margin">
+                            <strong>
+                                <span style={{color: this.props.blockchainData[0].returnData !== null ? "" : "grey"}}>
+                                    {this.props.blockchainData[0].returnData !== null
+                                        ?this.props.blockchainData[0].returnData[2]
+                                        :"Username"
+                                    }
+                                </span>
+                                <br/>
+                                <span style={{color: this.orbitPostData.subject ? "" : "grey"}}>
+                                    Subject: {this.orbitPostData.subject}
+                                </span>
+                            </strong>
+                        </p>
+                    </div>
+                    <div className="post-info">
+                        <span>
+                            Posted {this.props.blockchainData[0].returnData !== null &&
+                                <TimeAgo date={epochTimeConverter(this.props.blockchainData[0].returnData[3])}/>
+                            }
+                        </span>
+                        <span>#{this.props.postIndex}</span>
+                    </div>
                 </div>
-                <div className="post-info">
-                    <span>Posted <TimeAgo date={props.post.date}/></span>
-                    <span>#{props.post.postIndex}</span>
+                <hr/>
+                <div className="post-content">
+                    {this.orbitPostData.content
+                        ? <ReactMarkdown source={this.orbitPostData.content} />
+                        : <p style={{color: 'grey'}}>Post content...</p>
+                    }
+                </div>
+                <hr/>
+                <div className="post-meta">
+                    Maybe add buttons for upvote etc here...
                 </div>
             </div>
-            <hr/>
-            <div className="post-content">
-                {props.post.postContent
-                    ? <ReactMarkdown source={props.post.postContent} />
-                    : <p style={{color: 'grey'}}>Post content...</p>
-                }
-            </div>
-            <hr/>
-            <div className="post-meta">
-                Maybe add buttons for upvote etc here...
-            </div>
-        </div>
-        : <div className="pure-u-1-1 post card" style={{color: 'grey'}}>
-            <div className="post-header">
-                <p className="inline no-margin">
-                    <strong>Subject</strong>
-                </p>
-                <div className="post-info">
-                    <span>Posted </span>
-                </div>
-            </div>
-            <hr/>
-            <div className="post-content">
-                <p>Post content...</p>
-            </div>
-            <hr/>
-            <div className="post-meta">
-                Maybe add buttons for upvote etc here...
-            </div>
-        </div>
-    );
+        );
+    }
+
+    componentDidUpdate() {
+        if (this.props.blockchainData[0].status === "success"
+            && this.orbitPostDataFetchStatus === "pending") {
+            this.fetchPost(this.props.postID);
+        }
+    }
 };
 
-export default withRouter(Post);
+Post.contextTypes = {
+    router: PropTypes.object
+};
+
+const mapStateToProps = state => {
+    return {
+        user: state.user,
+        orbitDB: state.orbitDB
+    }
+};
+
+export default drizzleConnect(withRouter(Post), mapStateToProps);
