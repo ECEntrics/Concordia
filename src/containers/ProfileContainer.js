@@ -26,7 +26,7 @@ class Profile extends Component {
 
         this.state = {
             viewSelected: "profile-info-tab",
-            userAddress: this.profile.userAddress
+            userAddress: this.props.params.address ? this.props.params.address : this.props.user.address
         };
     }
 

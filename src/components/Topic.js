@@ -45,7 +45,7 @@ class Topic extends Component {
                     <div className="card-content">
                         <div className={"topic-subject" + (this.topicSubject ? "" : "grey-text")}>
                             <p>
-                                {topic.topicSubject !== null ? topic.topicSubject : "Subject"}
+                                {this.topicSubject !== null ? this.topicSubject : "Subject"}
                             </p>
                         </div>
                         <hr/>

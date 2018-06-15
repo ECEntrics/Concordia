@@ -1,25 +1,51 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { drizzleConnect } from 'drizzle-react';
 import { Link } from 'react-router';
 
-const NavBar = (props) => {
-    return (
-        <nav>
-            <div className="nav-wrapper navColor">
-            {/*<a href="#" className="brand-logo right">Logo</a>*/}
-            <ul id="nav-mobile" className="left hide-on-med-and-down">
-                <li>
-                    <Link to="/">Home</Link>
-                </li>
-                {props.hasSignedUp &&
+class NavBar extends Component {
+    constructor(props){
+        super(props);
+
+        this.handleScroll = this.handleScroll.bind(this);
+
+        this.navRef = React.createRef();
+    }
+
+    render() {
+        return (
+            <nav ref={this.navRef}>
+                <div className="nav-wrapper navColor">
+                <ul id="nav-mobile" className="left hide-on-med-and-down">
                     <li>
-                      <Link to="/profile">Profile</Link>
+                        <Link to="/">Home</Link>
                     </li>
-                }
-            </ul>
-          </div>
-      </nav>
-    );
+                    {this.props.hasSignedUp &&
+                        <li>
+                          <Link to="/profile">Profile</Link>
+                        </li>
+                    }
+                </ul>
+              </div>
+          </nav>
+        );
+    }
+
+    componentDidMount(){
+        this.headerHeight = this.navRef.current.offsetTop;
+        window.addEventListener('scroll', this.handleScroll);
+    }
+
+    componentWillUnmount(){
+        window.removeEventListener('scroll', this.handleScroll);
+    }
+
+    handleScroll(){
+        if (window.pageYOffset >= this.headerHeight) {
+            this.navRef.current.classList.add("stick")
+        } else {
+            this.navRef.current.classList.remove("stick");
+        }
+    }
 };
 
 const mapStateToProps = state => {
