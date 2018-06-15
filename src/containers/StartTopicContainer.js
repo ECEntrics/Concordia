@@ -86,6 +86,7 @@ class StartTopic extends Component {
     }
 
     render() {
+        var previewEditText = this.state.previewEnabled ? "Edit" : "Preview";
         return (
             <div>
                 {this.state.creatingTopic && <div id="overlay">
@@ -104,11 +105,12 @@ class StartTopic extends Component {
                             date: this.state.previewDate,
                             postContent: this.state.topicMessageInput
                         }}
-                        id={0}/>}
+                        id={0}
+                    />
+                }
                 <form className="topic-form">
                     {!this.state.previewEnabled &&
-                        [
-                        <input key={"topicSubjectInput"}
+                        [<input key={"topicSubjectInput"}
                             name={"topicSubjectInput"}
                             className={this.state.topicSubjectInputEmptySubmit ? "form-input-required" : ""}
                             type="text"
@@ -122,18 +124,18 @@ class StartTopic extends Component {
                             value={this.state.topicMessageInput}
                             placeholder="Post"
                             id="topicMessageInput"
-                            onChange={this.handleInputChange} />
-                        ]}
+                            onChange={this.handleInputChange} />]
+                    }
                     <button key="submit"
-                        className="pure-button"
+                        className="btn waves-effect waves-teal white black-text"
                         type="button"
                         onClick={this.validateAndPost}>
-                            Post
+                            <i className="material-icons right">send</i>Post
                     </button>
-                    <button className="pure-button margin-left-small"
+                    <button className="waves-effect waves-orange btn white black-text margin-left-small"
                         type="button"
                         onClick={this.handlePreviewToggle}>
-                            {this.state.previewEnabled ? "Edit" : "Preview"}
+                        <span>{previewEditText}</span>
                     </button>
                 </form>
             </div>

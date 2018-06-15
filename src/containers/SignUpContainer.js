@@ -5,12 +5,12 @@ import UsernameFormContainer from './UsernameFormContainer';
 class SignUp extends Component {
     render() {
         return (
-            <div className="container pure-g">
-                <div className="pure-u-1-1">
+            <div className="valign-wrapper">
+                <div className="centerDiv">
                     <h1>Sign Up</h1>
-                    <p><strong>Username</strong>: {this.props.user.username}</p>
-                    <p><strong>Account</strong>: {this.props.user.address}</p>
-                    <p><strong>OrbitDB</strong>: {this.props.orbitDB.id}</p>
+                    <p>Username: {this.props.user.username}</p>
+                    <p>Account: {this.props.user.address}</p>
+                    <p>OrbitDB: {this.props.orbitDB.id}</p>
                     <UsernameFormContainer/>
                 </div>
             </div>

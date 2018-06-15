@@ -4,9 +4,6 @@ import NavBar from '../../components/NavBar';
 
 // Styles
 import '../../assets/fonts/fontawesome-free-5.0.13/fontawesome-all.js';
-import '../../assets/css/oswald.css';
-import '../../assets/css/open-sans.css';
-import '../../assets/css/pure-min.css';
 import '../../assets/css/App.css';
 
 class CoreLayout extends Component {

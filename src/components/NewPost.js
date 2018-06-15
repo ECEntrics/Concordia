@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import uuidv4 from 'uuid/v4';
 
+import TimeAgo from 'react-timeago';
 import UserAvatar from 'react-user-avatar';
 import ReactMarkdown from 'react-markdown';
 
@@ -17,6 +18,9 @@ class NewPost extends Component {
         this.handlePreviewToggle = this.handlePreviewToggle.bind(this);
         this.validateAndPost = this.validateAndPost.bind(this);
         this.pushToDatabase = this.pushToDatabase.bind(this);
+
+        this.newPostOuterRef = React.createRef();
+        this.subjectInputRef = React.createRef();
 
         this.transactionProgressText = [];
         this.drizzle = context.drizzle;
@@ -67,8 +71,8 @@ class NewPost extends Component {
 
     handlePreviewToggle() {
         this.setState((prevState, props) => ({
-          previewEnabled: !prevState.previewEnabled,
-          previewDate: this.getDate()
+            previewEnabled: !prevState.previewEnabled,
+            previewDate: this.getDate()
         }));
     }
 
@@ -84,7 +88,7 @@ class NewPost extends Component {
 
     render() {
         return (
-            <div className="pure-u-1-1 post card">
+            <div className="post" ref={this.newPostOuterRef}>
                 {this.state.creatingPost && <div id="overlay">
                         <div id="overlay-content">
                             <p><i className="fas fa-spinner fa-3x fa-spin"></i></p>
@@ -93,59 +97,76 @@ class NewPost extends Component {
                         </div>
                     </div>
                 }
-                <div className="post-header">
-                    <UserAvatar
-                        size="40"
-                        className="inline user-avatar"
-                        src={this.props.user.avatarUrl}
-                        name={this.props.user.username}/>
-                    <p className="inline no-margin">
-                        <strong>{this.props.user.username}<br/>Subject: {this.state.postSubjectInput}</strong>
-                    </p>
-                    <div className="post-info">
-                        <span></span>
-                        <span>#{this.props.postIndex}</span>
+                <div className="row">
+                    <div className="col s1">
+                        <UserAvatar
+                            size="40"
+                            className="inline user-avatar"
+                            src={this.props.avatarUrl}
+                            name={this.props.user.username}
+                        />
+                    </div>
+                    <div className="col s11">
+                        <div>
+                            <div className="stretch-space-between">
+                                <strong><span>{this.props.user.username}</span></strong>
+                                <span className="grey-text text-darken-2">
+                                    {this.state.previewEnabled && 
+                                        <TimeAgo date={this.state.previewDate}/>
+                                    }{this.state.previewEnabled && ","} #{this.props.postIndex}
+                                </span>
+                            </div>
+                            <div className="stretch-space-between">
+                                <strong><span>
+                                    {this.state.previewEnabled &&
+                                        ("Subject: " + this.state.postSubjectInput)
+                                    }
+                                </span></strong>
+                            </div>
+                            <div>
+                                <form className="topic-form">
+                                    {this.state.previewEnabled
+                                        ? <ReactMarkdown source={this.state.postContentInput}
+                                            className="markdownPreview" />
+                                        : [
+                                        <input key={"postSubjectInput"}
+                                            name={"postSubjectInput"}
+                                            className={this.state.postSubjectInputEmptySubmit ? "form-input-required" : ""}
+                                            type="text"
+                                            value={this.state.postSubjectInput}
+                                            placeholder="Subject"
+                                            id="postSubjectInput"
+                                            ref={this.subjectInputRef}
+                                            onChange={this.handleInputChange} />,
+                                        <textarea key={"postContentInput"}
+                                            name={"postContentInput"}
+                                            value={this.state.postContentInput}
+                                            placeholder="Post"
+                                            id="postContentInput"
+                                            onChange={this.handleInputChange} />
+                                        ]}
+                                    <button key="submit"
+                                        className="btn waves-effect waves-teal white black-text"
+                                        type="button"
+                                        onClick={this.validateAndPost}>
+                                            <i className="material-icons right">send</i>Post
+                                    </button>
+                                    <button className="waves-effect waves-orange btn white black-text margin-left-small"
+                                        type="button"
+                                        onClick={this.handlePreviewToggle}>
+                                        <span>{this.state.previewEnabled ? "Edit" : "Preview"}</span>
+                                    </button>
+                                    <button className="btn red margin-left-small"
+                                        type="button"
+                                        onClick={this.props.onCancelClick}>
+                                        <span>Cancel</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <hr/>
-                <div className="post-content">
-                    <form className="topic-form">
-                        {this.state.previewEnabled
-                            ? <ReactMarkdown source={this.state.postContentInput} className="markdownPreview" />
-                            : [
-                            <input key={"postSubjectInput"}
-                                name={"postSubjectInput"}
-                                className={this.state.postSubjectInputEmptySubmit ? "form-input-required" : ""}
-                                type="text"
-                                value={this.state.postSubjectInput}
-                                placeholder="Subject"
-                                id="postSubjectInput"
-                                onChange={this.handleInputChange} />,
-                            <textarea key={"postContentInput"}
-                                name={"postContentInput"}
-                                value={this.state.postContentInput}
-                                placeholder="Post"
-                                id="postContentInput"
-                                onChange={this.handleInputChange} />
-                            ]}
-                        <button key="submit"
-                            className="pure-button pure-button-primary"
-                            type="button"
-                            onClick={this.validateAndPost}>
-                                Post
-                        </button>
-                        <button className="pure-button margin-left-small"
-                            type="button"
-                            onClick={this.handlePreviewToggle}>
-                                {this.state.previewEnabled ? "Edit" : "Preview"}
-                        </button>
-                        <button className="pure-button margin-left-small"
-                            type="button"
-                            onClick={this.props.onCancelClick}>
-                                Cancel
-                        </button>
-                    </form>
-                </div>
+                <div className="divider"></div>
             </div>
         );
     }
@@ -298,6 +319,16 @@ class NewPost extends Component {
                 }, 5000);
             }
         }
+    }
+
+    componentDidUpdate(prevProps, prevState){
+        if (!this.state.previewEnabled && prevState.previewEnabled){
+            this.newPostOuterRef.current.scrollIntoView(true);
+        }
+    }
+
+    componentDidMount(){
+        this.newPostOuterRef.current.scrollIntoView(true);
     }
 }
 

@@ -17,35 +17,46 @@ const ProfileInformation = (props) => {
     transaction = props.blockchainData
         .find(transaction => transaction.callInfo.method === "getOrbitDBId")
     let orbitDBId = transaction ? transaction.returnData : "";
-
-    return (
-        <div className="pure-u-1-1 user-info card">
-            {props.avatarUrl && <UserAvatar
-                size="40"
-                className="inline user-avatar"
-                src={props.avatarUrl}
-                name={username}/>}
-            <p className="no-margin inline">
-                <strong>Username:</strong> {username}
-            </p>
-            <p className="no-margin">
-                <strong>Account address:</strong> {props.address}
-            </p>
-            <p className="no-margin">
-                <strong>OrbitDB:</strong> {orbitDBId}
-            </p>
-            <p className="no-margin">
-                <strong>Number of topics created:</strong> {props.numberOfTopics}
-            </p>
-            <p className="no-margin">
-                <strong>Number of posts:</strong> {props.numberOfPosts}
-            </p>
-            <p className="no-margin">
-                <strong>Member since:</strong> {epochTimeConverter(dateOfRegister)}
-            </p>
-            {props.self && <UsernameFormContainer/>}
-        </div>
-    );
+        return (
+            <div className="user-info">
+                {props.avatarUrl && <UserAvatar
+                    size="40"
+                    className="inline user-avatar"
+                    src={props.avatarUrl}
+                    name={username}/>}
+                <table className="highlight centered responsive-table">
+                    <tbody>
+                        <tr>
+                            <td><strong>Username:</strong></td>
+                            <td>{username}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Account address:</strong></td>
+                            <td>{props.address}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>OrbitDB:</strong></td>
+                            <td>{orbitDBId}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Number of topics created:</strong></td>
+                            <td>{props.numberOfTopics}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Number of posts:</strong></td>
+                            <td>{props.numberOfPosts}</td>
+                        </tr>
+                        {props.dateOfRegister &&
+                            <tr>
+                                <td><strong>Member since:</strong></td>
+                                <td>{epochTimeConverter(dateOfRegister)}</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                {props.self && <UsernameFormContainer/>}
+            </div>
+        );
 };
 
 export default ProfileInformation;

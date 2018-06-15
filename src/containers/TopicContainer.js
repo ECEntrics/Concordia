@@ -66,14 +66,15 @@ class Topic extends Component {
         } else {
             topicContents = (
                 (<div style={{marginBottom: '100px'}}>
+                    {this.postList}
                     {this.state.posting &&
                         <NewPost topicID={this.state.topicID}
                             subject={this.state.topicSubject}
+                            postIndex={this.props.blockchainData[0].returnData[4].length}
                             onCancelClick={() => {this.handleClick()}}
                             onPostCreated={() => {this.postCreated()}}
                         />
                     }
-                    {this.postList}
                     {!this.state.posting &&
                         <FloatingButton onClick={this.handleClick}/>
                     }

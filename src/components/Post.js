@@ -4,7 +4,7 @@ import { drizzleConnect } from 'drizzle-react';
 import PropTypes from 'prop-types';
 
 import TimeAgo from 'react-timeago';
-import epochTimeConverter from '../helpers/EpochTimeConverter'
+import epochTimeConverter from '../helpers/EpochTimeConverter';
 import UserAvatar from 'react-user-avatar';
 import ReactMarkdown from 'react-markdown';
 
@@ -34,20 +34,17 @@ class Post extends Component {
     render(){
         let avatarView = (this.props.blockchainData[0].returnData
             ? <UserAvatar
-                size="40"
-                className="inline user-avatar"
+                size="52"
+                className="inline"
                 src={this.props.avatarUrl}
                 name={this.props.blockchainData[0].returnData[2]}/>
-            : <div className="user-avatar" style={{width: "40px"}}></div>
+            : <div></div>
         );
 
         return (
-            <div className="pure-u-1-1 post card"
-                onClick={() => { this.context.router.push("/topic/"
-                    + this.props.blockchainData[0].returnData[4] + "/"
-                    + this.props.postID)}}>
-                <div className="post-header">
-                    <div className="vertical-center-children">
+            <div className="post">
+                <div className="row">
+                    <div className="col s1 user-avatar">
                         {this.props.blockchainData[0].returnData !== null
                             ?<Link to={"/profile/" + this.props.blockchainData[0].returnData[1]
                                 + "/" + this.props.blockchainData[0].returnData[2]}
@@ -56,41 +53,54 @@ class Post extends Component {
                             </Link>
                             :avatarView
                         }
-                        <p className="inline no-margin">
-                            <strong>
-                                <span style={{color: this.props.blockchainData[0].returnData !== null ? "" : "grey"}}>
+                    </div>
+                    <div className="col s11">
+                        <div>
+                            <div className="stretch-space-between">
+                                <strong><span className={this.props.blockchainData[0].returnData !== null ? "" : "grey-text"}>
                                     {this.props.blockchainData[0].returnData !== null
                                         ?this.props.blockchainData[0].returnData[2]
                                         :"Username"
                                     }
+                                </span></strong>
+                                <span className="grey-text text-darken-2">
+                                    {this.props.blockchainData[0].returnData !== null &&
+                                        <TimeAgo date={epochTimeConverter(this.props.blockchainData[0].returnData[3])}/>
+                                    }{this.props.blockchainData[0].returnData !== null && ","} #{this.props.postIndex}
                                 </span>
-                                <br/>
-                                <span style={{color: this.orbitPostData.subject ? "" : "grey"}}>
+                            </div>
+                            <div className="stretch-space-between">
+                                <strong><span className={this.orbitPostData.subject ? "" : "grey-text"}>
                                     Subject: {this.orbitPostData.subject}
-                                </span>
-                            </strong>
-                        </p>
-                    </div>
-                    <div className="post-info">
-                        <span>
-                            Posted {this.props.blockchainData[0].returnData !== null &&
-                                <TimeAgo date={epochTimeConverter(this.props.blockchainData[0].returnData[3])}/>
-                            }
-                        </span>
-                        <span>#{this.props.postIndex}</span>
+                                </span></strong>
+                            </div>
+                            <div className="post-content">
+                                {this.orbitPostData.content
+                                    ? <ReactMarkdown source={this.orbitPostData.content} />
+                                    : <p className="grey-text">Post content...</p>
+                                }
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <hr/>
-                <div className="post-content">
-                    {this.orbitPostData.content
-                        ? <ReactMarkdown source={this.orbitPostData.content} />
-                        : <p style={{color: 'grey'}}>Post content...</p>
-                    }
+                <div className="row">
+                    <div className="post-meta grey-text text-darken-2">
+                        <i className="material-icons waves-effect waves-teal circle">
+                            keyboard_arrow_up
+                        </i>
+                        <span>8</span>
+                        <i className="material-icons waves-effect waves-teal circle">
+                            keyboard_arrow_down
+                        </i>
+                        <i className="material-icons waves-effect waves-teal circle"
+                            onClick={() => { this.context.router.push("/topic/"
+                                + this.props.blockchainData[0].returnData[4] + "/"
+                                + this.props.postID)}}>
+                            link
+                        </i>
+                    </div>
                 </div>
-                <hr/>
-                <div className="post-meta">
-                    Maybe add buttons for upvote etc here...
-                </div>
+                <div className="divider"></div>
             </div>
         );
     }

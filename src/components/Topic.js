@@ -41,33 +41,33 @@ class Topic extends Component {
     render(){
         return (
             <Link to={"/topic/" + this.props.topicID}>
-                <div className={"pure-u-1-1 topic card"}>
-                    <p className="topic-subject" style={{color: this.topicSubject ? "" : "grey"}}>
-                        <strong>{this.topicSubject !== null ? this.topicSubject : "Subject"}</strong>
-                    </p>
-                    <hr/>
-                    <div className="topic-meta">
-                        <p className="no-margin" style={{
-                            color: this.props.blockchainData[0].returnData !== null ? "" : "grey"
-                        }}>
-                            {this.props.blockchainData[0].returnData !== null
-                                ?this.props.blockchainData[0].returnData[2]
-                                :"Username"
-                            }
-                        </p>
-                        <p className="no-margin" style={{
-                            color: this.props.blockchainData[0].returnData !== null ? "" : "grey"
-                        }}>
-                            {"Number of replies: " + (this.props.blockchainData[0].returnData !== null
-                                ?this.props.blockchainData[0].returnData[4].length
-                                :"")
-                            }
-                        </p>
-                        <p className="topic-date">
-                            Started {this.props.blockchainData[0].returnData !== null &&
-                                <TimeAgo date={epochTimeConverter(this.props.blockchainData[0].returnData[3])}/>
-                            }
-                        </p>
+                <div className="topic card white hoverable">
+                    <div className="card-content">
+                        <div className={"topic-subject" + (this.topicSubject ? "" : "grey-text")}>
+                            <p>
+                                {this.topicSubject !== null ? this.topicSubject : "Subject"}
+                            </p>
+                        </div>
+                        <hr/>
+                        <div className="topic-meta">
+                            <p className={"no-margin" + (this.topicSubject ? "" : "grey-text")}>
+                                {this.props.blockchainData[0].returnData !== null
+                                    ?this.props.blockchainData[0].returnData[2]
+                                    :"Username"
+                                }
+                            </p>
+                            <p className={"no-margin" + (this.props.blockchainData[0].returnData !== null ? "" : "grey-text")}>
+                                {"Number of replies: " + (this.props.blockchainData[0].returnData !== null
+                                    ?this.props.blockchainData[0].returnData[4].length
+                                    :"")
+                                }
+                            </p>
+                            <p className="topic-date grey-text darken-3">
+                                Started {this.props.blockchainData[0].returnData !== null &&
+                                    <TimeAgo date={epochTimeConverter(this.props.blockchainData[0].returnData[3])}/>
+                                }
+                            </p>
+                        </div>
                     </div>
                 </div>
             </Link>
