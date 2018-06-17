@@ -6,7 +6,6 @@ import '../../assets/fonts/fontawesome-free-5.0.13/fontawesome-all.js';
 import '../../assets/css/App.css';
 import '../../assets/css/loading-container.css';
 import '../../assets/css/sign-up-container.css';
-import '../../assets/css/navbar.css';
 
 import '../../assets/css/board-container.css';
 import '../../assets/css/start-topic-container.css';

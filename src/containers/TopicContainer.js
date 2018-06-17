@@ -75,7 +75,7 @@ class Topic extends Component {
                             onPostCreated={() => {this.postCreated()}}
                         />
                     }
-                    {!this.state.posting &&
+                    {this.props.user.hasSignedUp && !this.state.posting &&
                         <FloatingButton onClick={this.handleClick}/>
                     }
                 </div>)

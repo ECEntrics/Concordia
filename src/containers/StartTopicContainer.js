@@ -89,6 +89,11 @@ class StartTopic extends Component {
     }
 
     render() {
+        if (!this.props.user.hasSignedUp) {
+            this.context.router.push("/signup");
+            return(null);
+        }
+
         var previewEditText = this.state.previewEnabled ? "Edit" : "Preview";
         return (
             <div>
@@ -296,7 +301,8 @@ class StartTopic extends Component {
 }
 
 StartTopic.contextTypes = {
-    drizzle: PropTypes.object
+    drizzle: PropTypes.object,
+    router: PropTypes.object
 };
 
 const mapStateToProps = state => {

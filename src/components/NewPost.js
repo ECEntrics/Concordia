@@ -132,7 +132,7 @@ class NewPost extends Component {
                                     <Form className="topic-form">
                                         {this.state.previewEnabled
                                             ? <ReactMarkdown source={this.state.postContentInput}
-                                                className="markdownPreview" />
+                                                className="markdown-preview" />
                                             : [
                                             <Form.Input key={"postSubjectInput"}
                                                 name={"postSubjectInput"}
@@ -154,7 +154,6 @@ class NewPost extends Component {
                                         <br/><br/>
                                         <Button.Group>
                                             <Button key="submit"
-                                                className="btn waves-effect waves-teal white black-text"
                                                 type="button"
                                                 onClick={this.validateAndPost}
                                                 color='teal'
@@ -164,14 +163,12 @@ class NewPost extends Component {
                                                         <Icon name='reply' />
                                                     </Button.Content>
                                             </Button>
-                                            <Button className="waves-effect waves-orange btn white black-text margin-left-small"
-                                                type="button"
+                                            <Button type="button"
                                                 onClick={this.handlePreviewToggle}
                                                 color='yellow'>
                                                 {this.state.previewEnabled ? "Edit" : "Preview"}
                                             </Button>
-                                            <Button className="btn red margin-left-small"
-                                                type="button"
+                                            <Button type="button"
                                                 onClick={this.props.onCancelClick}
                                                 color='red'>
                                                 Cancel

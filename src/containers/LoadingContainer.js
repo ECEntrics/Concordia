@@ -1,12 +1,8 @@
-import { drizzleConnect } from 'drizzle-react'
-import React, { Children, Component } from 'react'
-import PropTypes from 'prop-types'
+import { drizzleConnect } from 'drizzle-react';
+import React, { Children, Component } from 'react';
+import PropTypes from 'prop-types';
 
 import ipfs_logo from './../resources/ipfs_logo.png';
-
-/*
- * Create component.
- */
 
 class LoadingContainer extends Component {
     render() {
@@ -79,10 +75,6 @@ class LoadingContainer extends Component {
 LoadingContainer.contextTypes = {
     drizzle: PropTypes.object
 };
-
-/*
- * Export connected component.
- */
 
 const mapStateToProps = state => {
     return {

@@ -36,7 +36,7 @@ class NavBar extends Component {
                         Profile
                     </Menu.Item>
                     :<Menu.Menu position='right'>
-                        <Menu.Item onClick={() => {this.handleItemClick("/signUp")}}>
+                        <Menu.Item onClick={() => {this.handleItemClick("/signup")}}>
                             Sign Up
                         </Menu.Item>
                     </Menu.Menu>

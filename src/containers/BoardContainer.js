@@ -1,6 +1,8 @@
-import { drizzleConnect } from 'drizzle-react';
 import React, { Component } from 'react';
+import { drizzleConnect } from 'drizzle-react';
 import PropTypes from 'prop-types';
+
+import { Header } from 'semantic-ui-react';
 
 import WithBlockchainData from '../components/WithBlockchainData';
 import TopicList from '../components/TopicList';
@@ -24,16 +26,43 @@ class Board extends Component {
             boardContents = (
                 <LoadingSpinner/>
             );
-        } else {
+        } else if (this.props.blockchainData[0].returnData !== '0'){
             this.topicIDs = [];
             for (var i = 0; i < this.props.blockchainData[0].returnData; i++) {
                 this.topicIDs.push(i);
             }
             boardContents = ([
                 <TopicList topicIDs={this.topicIDs} key="topicList"/>,
-                <FloatingButton onClick={this.handleCreateTopicClick}
-                    key="createTopicButton"/>
+                this.props.user.hasSignedUp &&
+                    <FloatingButton onClick={this.handleCreateTopicClick}
+                        key="createTopicButton"/>
             ]);
+        } else {
+            if (!this.props.user.hasSignedUp){
+                boardContents = (
+                    <div className="vertical-center-in-parent">
+                        <Header color='teal' textAlign='center' as='h2'>
+                            There are no topics yet!
+                        </Header>
+                        <Header color='teal' textAlign='center' as='h4'>
+                            Sign up to be the first post.
+                        </Header>
+                    </div>
+                );
+            } else {
+                boardContents = (
+                    <div className="vertical-center-in-parent">
+                        <Header color='teal' textAlign='center' as='h2'>
+                            There are no topics yet!
+                        </Header>
+                        <Header color='teal' textAlign='center' as='h4'>
+                            Click the add button at the bottom of the page to be the first to post.
+                        </Header>
+                        <FloatingButton onClick={this.handleCreateTopicClick}
+                            key="createTopicButton"/>
+                    </div>
+                );
+            }
         }
 
         return (

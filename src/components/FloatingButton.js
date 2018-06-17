@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router';
 import { Button, Icon } from 'semantic-ui-react'
 
 const FloatingButton = (props) => {

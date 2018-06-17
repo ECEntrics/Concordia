@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { Router, IndexRoute, browserHistory } from 'react-router';
+import { Router, IndexRedirect, browserHistory } from 'react-router';
 import { Route } from 'react-router-dom';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { DrizzleProvider } from 'drizzle-react';
@@ -10,8 +10,7 @@ import CoreLayout from './layouts/CoreLayout/CoreLayout';
 
 // Containers
 import LoadingContainer  from './containers/LoadingContainer';
-import PrivateRouteContainer from './containers/PrivateRouteContainer';
-
+import SignUpContainer from './containers/SignUpContainer';
 import HomeContainer from './containers/HomeContainer';
 import TopicContainer from './containers/TopicContainer';
 import StartTopicContainer from './containers/StartTopicContainer';
@@ -31,7 +30,11 @@ render((
       <LoadingContainer>
         <Router history={history}>
           <Route path="/" component={CoreLayout}>
-            <IndexRoute component={HomeContainer} />
+            <IndexRedirect to="/home" />
+            <Route path="/home"
+              component={HomeContainer} />
+            <Route path="/signup"
+              component={SignUpContainer} />
             <Route path="/topic/:topicId(/:postId)"
               component={TopicContainer} />
             <Route path='/profile(/:address)(/:username)'
@@ -47,10 +50,3 @@ render((
   ),
   document.getElementById('root')
 );
-
-/*<PrivateRouteContainer path="/topic/:topicId(/:topicSubject)(/:postId)"
-              component={TopicContainer} />
-  <PrivateRouteContainer path='/profile(/:address)(/:username)'
-    component={ProfileContainer} />
-  <PrivateRouteContainer path='/startTopic'
-    component={StartTopicContainer} />*/

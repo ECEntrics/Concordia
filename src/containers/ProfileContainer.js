@@ -1,6 +1,5 @@
 import { drizzleConnect } from 'drizzle-react';
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
 import { Tab } from 'semantic-ui-react'
@@ -25,6 +24,11 @@ class Profile extends Component {
     }
 
     render() {
+        if (!this.props.user.hasSignedUp) {
+            this.context.router.push("/signup");
+            return(null);
+        }
+
         this.propsToView();
         var infoTab =
             (<WithBlockchainData
@@ -116,7 +120,8 @@ class Profile extends Component {
 }
 
 Profile.contextTypes = {
-    drizzle: PropTypes.object
+    drizzle: PropTypes.object,
+    router: PropTypes.object
 };
 
 const mapStateToProps = state => {

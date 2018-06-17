@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { drizzleConnect } from 'drizzle-react';
 
-import { Grid, Divider, Button, Icon, Label } from 'semantic-ui-react'
+import { Grid, Divider } from 'semantic-ui-react'
 
 import TimeAgo from 'react-timeago';
 import UserAvatar from 'react-user-avatar';

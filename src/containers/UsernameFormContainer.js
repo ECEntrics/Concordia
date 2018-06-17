@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
-import { drizzleConnect } from 'drizzle-react'
-import PropTypes from 'prop-types'
+import React, { Component } from 'react';
+import { drizzleConnect } from 'drizzle-react';
+import PropTypes from 'prop-types';
 
-import { Button, Message, Form, Dimmer, Loader, Header } from 'semantic-ui-react'
-import { createDatabases } from './../util/orbit'
+import { Button, Message, Form, Dimmer, Loader, Header } from 'semantic-ui-react';
+import { createDatabases } from './../util/orbit';
 
 const contract = "Forum";
 const signUpMethod = "signUp";

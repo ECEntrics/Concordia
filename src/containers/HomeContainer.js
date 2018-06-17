@@ -1,16 +1,26 @@
 import { drizzleConnect } from 'drizzle-react';
 import React, { Component } from 'react';
-import SignUpContainer from './SignUpContainer';
+
 import BoardContainer from './BoardContainer';
 
 class Home extends Component {
     render() {
-        //This must change to routes and redirects
-        const view = this.props.user.hasSignedUp
-            ? (<BoardContainer/>) //This may become multiple boards
-            : (<SignUpContainer/>);
+        //We can add a modal to tell the user to sign up
 
-        return (view);
+        /*var modal = this.props.user.hasSignedUp && (
+        <Modal dimmer='blurring' open={this.state.open}>
+            <Modal.Header>Select a Photo</Modal.Header>
+            <Modal.Content image>
+                <Image wrapped size='medium' src='/assets/images/avatar/large/rachel.png' />
+                <Modal.Description>
+                    <Header>Default Profile Image</Header>
+                    <p>We've found the following gravatar image associated with your e-mail address.</p>
+                    <p>Is it okay to use this photo?</p>
+                </Modal.Description>
+            </Modal.Content>
+        </Modal>);*/
+
+        return (<BoardContainer/>);
     }
 }
 

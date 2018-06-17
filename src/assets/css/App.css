@@ -41,6 +41,7 @@ strong {
   top: 0;
   left: 0;
 }
+
 .main-panel {
   width: 60%;
   height: 100%;
@@ -105,10 +106,6 @@ strong {
   margin: 0px;
 }
 
-.margin-left-small {
-  margin-left: 7px;
-}
-
 hr {
   color: #0c1a2b;
   margin: 0px;
@@ -116,10 +113,6 @@ hr {
 
 *:focus {
   outline:none !important
-}
-
-.centerDiv {
-  margin: 0 auto;
 }
 
 a {
@@ -173,11 +166,6 @@ a {
 .fill {
   width: 100%;
   height: 100%;
-}
-
-.full-width {
-  max-width: 100% !important;
-  width: 100% !important;
 }
 
 .vis { /* For UX developing */
