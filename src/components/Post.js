@@ -3,6 +3,8 @@ import { Link, withRouter } from 'react-router';
 import { drizzleConnect } from 'drizzle-react';
 import PropTypes from 'prop-types';
 
+import { Grid, Divider, Button, Icon, Label } from 'semantic-ui-react'
+
 import TimeAgo from 'react-timeago';
 import epochTimeConverter from '../helpers/EpochTimeConverter';
 import UserAvatar from 'react-user-avatar';
@@ -43,64 +45,72 @@ class Post extends Component {
 
         return (
             <div className="post">
-                <div className="row">
-                    <div className="col s1 user-avatar">
-                        {this.props.blockchainData[0].returnData !== null
-                            ?<Link to={"/profile/" + this.props.blockchainData[0].returnData[1]
-                                + "/" + this.props.blockchainData[0].returnData[2]}
-                            onClick={(event) => {event.stopPropagation()}}>
-                                {avatarView}
-                            </Link>
-                            :avatarView
-                        }
-                    </div>
-                    <div className="col s11">
-                        <div>
-                            <div className="stretch-space-between">
-                                <strong><span className={this.props.blockchainData[0].returnData !== null ? "" : "grey-text"}>
-                                    {this.props.blockchainData[0].returnData !== null
-                                        ?this.props.blockchainData[0].returnData[2]
-                                        :"Username"
+                <Divider horizontal>
+                    <span className="grey-text">#{this.props.postIndex}</span>
+                </Divider>
+                <Grid>
+                    <Grid.Row columns={16} stretched>
+                        <Grid.Column width={1} className="user-avatar">
+                            {this.props.blockchainData[0].returnData !== null
+                                ?<Link to={"/profile/" + this.props.blockchainData[0].returnData[1]
+                                    + "/" + this.props.blockchainData[0].returnData[2]}
+                                onClick={(event) => {event.stopPropagation()}}>
+                                    {avatarView}
+                                </Link>
+                                :avatarView
+                            }
+                        </Grid.Column>
+                        <Grid.Column width={15}>
+                            <div className="">
+                                <div className="stretch-space-between">
+                                    <span className={this.props.blockchainData[0].returnData !== null ? "" : "grey-text"}>
+                                        <strong>
+                                            {this.props.blockchainData[0].returnData !== null
+                                                ?this.props.blockchainData[0].returnData[2]
+                                                :"Username"
+                                            }
+                                        </strong>
+                                    </span>
+                                    <span className="grey-text">
+                                        {this.props.blockchainData[0].returnData !== null &&
+                                            <TimeAgo date={epochTimeConverter(this.props.blockchainData[0].returnData[3])}/>
+                                        }
+                                    </span>
+                                </div>
+                                <div className="stretch-space-between">
+                                    <span className={this.orbitPostData.subject ? "" : "grey-text"}>
+                                        <strong>
+                                            Subject: {this.orbitPostData.subject}
+                                        </strong>
+                                    </span>
+                                </div>
+                                <div className="post-content">
+                                    {this.orbitPostData.content
+                                        ? <ReactMarkdown source={this.orbitPostData.content} />
+                                        : <p className="grey-text">Post content...</p>
                                     }
-                                </span></strong>
-                                <span className="grey-text text-darken-2">
-                                    {this.props.blockchainData[0].returnData !== null &&
-                                        <TimeAgo date={epochTimeConverter(this.props.blockchainData[0].returnData[3])}/>
-                                    }{this.props.blockchainData[0].returnData !== null && ","} #{this.props.postIndex}
-                                </span>
+                                </div>
                             </div>
-                            <div className="stretch-space-between">
-                                <strong><span className={this.orbitPostData.subject ? "" : "grey-text"}>
-                                    Subject: {this.orbitPostData.subject}
-                                </span></strong>
-                            </div>
-                            <div className="post-content">
-                                {this.orbitPostData.content
-                                    ? <ReactMarkdown source={this.orbitPostData.content} />
-                                    : <p className="grey-text">Post content...</p>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="post-meta grey-text text-darken-2">
-                        <i className="material-icons waves-effect waves-teal circle">
-                            keyboard_arrow_up
-                        </i>
-                        <span>8</span>
-                        <i className="material-icons waves-effect waves-teal circle">
-                            keyboard_arrow_down
-                        </i>
-                        <i className="material-icons waves-effect waves-teal circle"
-                            onClick={() => { this.context.router.push("/topic/"
-                                + this.props.blockchainData[0].returnData[4] + "/"
-                                + this.props.postID)}}>
-                            link
-                        </i>
-                    </div>
-                </div>
-                <div className="divider"></div>
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column floated="right" textAlign="right">
+                            <Button icon size='mini' style={{marginRight: "0px"}}>
+                                <Icon name='chevron up' />
+                            </Button>
+                            <Label color="teal">8000</Label>
+                            <Button icon size='mini'>
+                                <Icon name='chevron down' />
+                            </Button>
+                            <Button icon size='mini'
+                                onClick={() => { this.context.router.push("/topic/"
+                                    + this.props.blockchainData[0].returnData[4] + "/"
+                                    + this.props.postID)}}>
+                                <Icon name='linkify' />
+                            </Button>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
             </div>
         );
     }

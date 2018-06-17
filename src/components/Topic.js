@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { drizzleConnect } from 'drizzle-react';
+import PropTypes from 'prop-types';
+
+import { Card } from 'semantic-ui-react'
 
 import TimeAgo from 'react-timeago';
 import epochTimeConverter from '../helpers/EpochTimeConverter'
@@ -40,37 +43,38 @@ class Topic extends Component {
 
     render(){
         return (
-            <Link to={"/topic/" + this.props.topicID}>
-                <div className="topic card white hoverable">
-                    <div className="card-content">
-                        <div className={"topic-subject" + (this.topicSubject ? "" : "grey-text")}>
-                            <p>
-                                {this.topicSubject !== null ? this.topicSubject : "Subject"}
-                            </p>
-                        </div>
-                        <hr/>
-                        <div className="topic-meta">
-                            <p className={"no-margin" + (this.topicSubject ? "" : "grey-text")}>
-                                {this.props.blockchainData[0].returnData !== null
-                                    ?this.props.blockchainData[0].returnData[2]
-                                    :"Username"
-                                }
-                            </p>
-                            <p className={"no-margin" + (this.props.blockchainData[0].returnData !== null ? "" : "grey-text")}>
-                                {"Number of replies: " + (this.props.blockchainData[0].returnData !== null
-                                    ?this.props.blockchainData[0].returnData[4].length
-                                    :"")
-                                }
-                            </p>
-                            <p className="topic-date grey-text darken-3">
-                                Started {this.props.blockchainData[0].returnData !== null &&
-                                    <TimeAgo date={epochTimeConverter(this.props.blockchainData[0].returnData[3])}/>
-                                }
-                            </p>
-                        </div>
+            <Card link className="card"
+                onClick={() => {this.context.router.push("/topic/" + this.props.topicID)}}>
+                <Card.Content>
+                    <div className={"topic-subject" + (this.topicSubject ? "" : " grey-text")}>
+                        <p><strong>
+                            {this.topicSubject !== null ? this.topicSubject : "Subject"}
+                        </strong></p>
                     </div>
-                </div>
-            </Link>
+                    <hr/>
+                    <div className="topic-meta">
+                        <p className={"no-margin" +
+                            (this.props.blockchainData[0].returnData !== null ? "" : " grey-text")}>
+                            {this.props.blockchainData[0].returnData !== null
+                                ?this.props.blockchainData[0].returnData[2]
+                                :"Username"
+                            }
+                        </p>
+                        <p className={"no-margin" +
+                            (this.props.blockchainData[0].returnData !== null ? "" : " grey-text")}>
+                            {"Number of replies: " + (this.props.blockchainData[0].returnData !== null
+                                ?this.props.blockchainData[0].returnData[4].length
+                                :"")
+                            }
+                        </p>
+                        <p className="topic-date grey-text">
+                            {this.props.blockchainData[0].returnData !== null &&
+                                <TimeAgo date={epochTimeConverter(this.props.blockchainData[0].returnData[3])}/>
+                            }
+                        </p>
+                    </div>
+                </Card.Content>
+            </Card>
         );
     }
 
@@ -79,6 +83,10 @@ class Topic extends Component {
             this.fetchSubject(this.props.topicID);
         }
     }
+};
+
+Topic.contextTypes = {
+    router: PropTypes.object
 };
 
 const mapStateToProps = state => {

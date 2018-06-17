@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import uuidv4 from 'uuid/v4';
 
+import { Grid, Form, TextArea, Button, Icon, Divider } from 'semantic-ui-react'
+
 import TimeAgo from 'react-timeago';
 import UserAvatar from 'react-user-avatar';
 import ReactMarkdown from 'react-markdown';
@@ -20,7 +22,6 @@ class NewPost extends Component {
         this.pushToDatabase = this.pushToDatabase.bind(this);
 
         this.newPostOuterRef = React.createRef();
-        this.subjectInputRef = React.createRef();
 
         this.transactionProgressText = [];
         this.drizzle = context.drizzle;
@@ -97,76 +98,91 @@ class NewPost extends Component {
                         </div>
                     </div>
                 }
-                <div className="row">
-                    <div className="col s1">
-                        <UserAvatar
-                            size="40"
-                            className="inline user-avatar"
-                            src={this.props.avatarUrl}
-                            name={this.props.user.username}
-                        />
-                    </div>
-                    <div className="col s11">
-                        <div>
-                            <div className="stretch-space-between">
-                                <strong><span>{this.props.user.username}</span></strong>
-                                <span className="grey-text text-darken-2">
-                                    {this.state.previewEnabled && 
-                                        <TimeAgo date={this.state.previewDate}/>
-                                    }{this.state.previewEnabled && ","} #{this.props.postIndex}
-                                </span>
+                <Divider horizontal>
+                    <span className="grey-text">#{this.props.postIndex}</span>
+                </Divider>
+                <Grid>
+                    <Grid.Row columns={16} stretched>
+                        <Grid.Column width={1} className="user-avatar">
+                            <UserAvatar
+                                size="52"
+                                className="inline user-avatar"
+                                src={this.props.avatarUrl}
+                                name={this.props.user.username}
+                            />
+                        </Grid.Column>
+                        <Grid.Column width={15}>
+                            <div className="">
+                                <div className="stretch-space-between">
+                                    <span><strong>{this.props.user.username}</strong></span>
+                                    <span className="grey-text">
+                                        {this.state.previewEnabled && 
+                                           <TimeAgo date={this.state.previewDate}/>
+                                        }
+                                    </span>
+                                </div>
+                                <div className="stretch-space-between">
+                                    <span><strong>
+                                        {this.state.previewEnabled &&
+                                            ("Subject: " + this.state.postSubjectInput)
+                                        }
+                                    </strong></span>
+                                </div>
+                                <div className="post-content">
+                                    <Form className="topic-form">
+                                        {this.state.previewEnabled
+                                            ? <ReactMarkdown source={this.state.postContentInput}
+                                                className="markdownPreview" />
+                                            : [
+                                            <Form.Input key={"postSubjectInput"}
+                                                name={"postSubjectInput"}
+                                                error={this.state.postSubjectInputEmptySubmit}
+                                                type="text"
+                                                value={this.state.postSubjectInput}
+                                                placeholder="Subject"
+                                                id="postSubjectInput"
+                                                onChange={this.handleInputChange} />,
+                                            <TextArea key={"postContentInput"}
+                                                name={"postContentInput"}
+                                                className={this.state.postContentInputEmptySubmit ? "form-textarea-required" : ""}
+                                                value={this.state.postContentInput}
+                                                placeholder="Post"
+                                                id="postContentInput"
+                                                onChange={this.handleInputChange}
+                                                rows={4} autoHeight />
+                                            ]}
+                                        <br/><br/>
+                                        <Button.Group>
+                                            <Button key="submit"
+                                                className="btn waves-effect waves-teal white black-text"
+                                                type="button"
+                                                onClick={this.validateAndPost}
+                                                color='teal'
+                                                animated>
+                                                    <Button.Content visible>Post</Button.Content>
+                                                    <Button.Content hidden>
+                                                        <Icon name='reply' />
+                                                    </Button.Content>
+                                            </Button>
+                                            <Button className="waves-effect waves-orange btn white black-text margin-left-small"
+                                                type="button"
+                                                onClick={this.handlePreviewToggle}
+                                                color='yellow'>
+                                                {this.state.previewEnabled ? "Edit" : "Preview"}
+                                            </Button>
+                                            <Button className="btn red margin-left-small"
+                                                type="button"
+                                                onClick={this.props.onCancelClick}
+                                                color='red'>
+                                                Cancel
+                                            </Button>
+                                        </Button.Group>
+                                    </Form>
+                                </div>
                             </div>
-                            <div className="stretch-space-between">
-                                <strong><span>
-                                    {this.state.previewEnabled &&
-                                        ("Subject: " + this.state.postSubjectInput)
-                                    }
-                                </span></strong>
-                            </div>
-                            <div>
-                                <form className="topic-form">
-                                    {this.state.previewEnabled
-                                        ? <ReactMarkdown source={this.state.postContentInput}
-                                            className="markdownPreview" />
-                                        : [
-                                        <input key={"postSubjectInput"}
-                                            name={"postSubjectInput"}
-                                            className={this.state.postSubjectInputEmptySubmit ? "form-input-required" : ""}
-                                            type="text"
-                                            value={this.state.postSubjectInput}
-                                            placeholder="Subject"
-                                            id="postSubjectInput"
-                                            ref={this.subjectInputRef}
-                                            onChange={this.handleInputChange} />,
-                                        <textarea key={"postContentInput"}
-                                            name={"postContentInput"}
-                                            value={this.state.postContentInput}
-                                            placeholder="Post"
-                                            id="postContentInput"
-                                            onChange={this.handleInputChange} />
-                                        ]}
-                                    <button key="submit"
-                                        className="btn waves-effect waves-teal white black-text"
-                                        type="button"
-                                        onClick={this.validateAndPost}>
-                                            <i className="material-icons right">send</i>Post
-                                    </button>
-                                    <button className="waves-effect waves-orange btn white black-text margin-left-small"
-                                        type="button"
-                                        onClick={this.handlePreviewToggle}>
-                                        <span>{this.state.previewEnabled ? "Edit" : "Preview"}</span>
-                                    </button>
-                                    <button className="btn red margin-left-small"
-                                        type="button"
-                                        onClick={this.props.onCancelClick}>
-                                        <span>Cancel</span>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="divider"></div>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
             </div>
         );
     }

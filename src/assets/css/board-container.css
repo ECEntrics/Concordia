@@ -1,0 +1,30 @@
+/* TOPICS LIST SCREEN */
+
+.topics-list {
+  padding: 0px 2px;
+  margin-bottom: 75px;
+}
+
+.topics-list a {
+  color: black !important;
+  text-decoration: none !important;
+}
+
+.topics-list a:hover {
+  color: black !important;
+  text-decoration: none !important;
+}
+
+.topic-subject {
+  margin: 0px 0px 5px;
+}
+
+.topic-meta {
+  margin: 5px 0px 0px;
+}
+
+.topic-date {
+  margin-bottom: 0px;
+  font-size: 0.77vw !important;
+  text-align: right;
+}

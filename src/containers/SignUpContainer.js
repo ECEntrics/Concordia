@@ -5,12 +5,12 @@ import UsernameFormContainer from './UsernameFormContainer';
 class SignUp extends Component {
     render() {
         return (
-            <div className="valign-wrapper">
-                <div className="centerDiv">
+            <div className="sign-up-container">
+                <div>
                     <h1>Sign Up</h1>
-                    <p>Username: {this.props.user.username}</p>
-                    <p>Account: {this.props.user.address}</p>
-                    <p>OrbitDB: {this.props.orbitDB.id}</p>
+                    <p className="no-margin">
+                        <strong>Account address:</strong> {this.props.user.address}
+                    </p>
                     <UsernameFormContainer/>
                 </div>
             </div>
@@ -21,11 +21,7 @@ class SignUp extends Component {
 // May still need this even with data function to refresh component on updates for this contract.
 const mapStateToProps = state => {
   return {
-    accounts: state.accounts,
-    Forum: state.contracts.Forum,
-    user: state.user,
-    orbitDB: state.orbitDB,
-    drizzleStatus: state.drizzleStatus
+    user: state.user
   }
 };
 

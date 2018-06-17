@@ -10,11 +10,7 @@ class Home extends Component {
             ? (<BoardContainer/>) //This may become multiple boards
             : (<SignUpContainer/>);
 
-        return (
-            <div>
-                {view}
-            </div>
-        );
+        return (view);
     }
 }
 

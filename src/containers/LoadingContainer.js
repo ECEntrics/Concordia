@@ -17,7 +17,7 @@ class LoadingContainer extends Component {
             }
 
             return(
-                <main className="container loading-screen">
+                <main className="loading-screen">
                     <div>
                         <div>
                             <h1><span role="img" aria-label="Warning Sign">⚠</span></h1>
@@ -31,7 +31,7 @@ class LoadingContainer extends Component {
         if (this.props.web3.status === 'initialized' && Object.keys(this.props.accounts).length === 0)
         {
             return(
-                <main className="container loading-screen">
+                <main className="loading-screen">
                     <div>
                         <div>
                             <h1><span role="img" aria-label="Fox Face">🦊</span></h1>
@@ -45,7 +45,7 @@ class LoadingContainer extends Component {
         if (!this.props.orbitDB.ipfsInitialized)
         {
             return(
-                <main className="container loading-screen">
+                <main className="loading-screen">
                     <div>
                         <div>
                             <img src={ipfs_logo} alt="ipfs_logo" height="50"/>

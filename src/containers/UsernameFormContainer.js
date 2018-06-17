@@ -1,9 +1,9 @@
-import { drizzleConnect } from 'drizzle-react'
 import React, { Component } from 'react'
-
-import { createDatabases } from './../util/orbit'
-
+import { drizzleConnect } from 'drizzle-react'
 import PropTypes from 'prop-types'
+
+import { Button, Message, Form, Dimmer, Loader, Header } from 'semantic-ui-react'
+import { createDatabases } from './../util/orbit'
 
 const contract = "Forum";
 const signUpMethod = "signUp";
@@ -15,12 +15,31 @@ class UsernameFormContainer extends Component {
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.completeAction = this.completeAction.bind(this);
 
         this.contracts = context.drizzle.contracts;
-        this.state = {usernameInput:''};
+
+        this.state = {
+            usernameInput: '',
+            error: false,
+            completingAction: false
+        };
     }
 
-    async handleSubmit() {
+    handleInputChange(e, { name, value }) {
+        this.setState({ [name]: value })
+    }
+
+    handleSubmit() {
+        if (this.state.usernameInput === ''){
+            this.setState({ error: true });
+        } else {
+            this.completeAction();
+        }
+    }
+
+    async completeAction() {
+        this.setState({ completingAction: true });
         if(this.props.user.hasSignedUp)
            this.contracts[contract].methods[updateUsernameMethod].cacheSend(...[this.state.usernameInput]);
         else
@@ -29,31 +48,41 @@ class UsernameFormContainer extends Component {
             this.contracts[contract].methods[signUpMethod].cacheSend(...[this.state.usernameInput, orbitdbInfo.id,
                 orbitdbInfo.topicsDB, orbitdbInfo.postsDB, orbitdbInfo.publicKey, orbitdbInfo.privateKey]);
         }
-
-    }
-
-
-    handleInputChange(event) {
-        this.setState({[event.target.name]: event.target.value});
     }
 
     render() {
         const hasSignedUp = this.props.user.hasSignedUp;
 
-        if(hasSignedUp!==null) {
+        if(hasSignedUp !== null) {
             const buttonText = hasSignedUp ? "Update" : "Sign Up";
             const placeholderText = hasSignedUp ? this.props.user.username : "Username";
+            var withError = this.state.error && {error: true};
 
             return(
-                <form>
-                    <div className="input-field">
-                      <input key={"usernameInput"} name={"usernameInput"} id="usernameInput"
-                        type="text" className="validate" value={this.state.usernameInput}
-                        onChange={this.handleInputChange}/>
-                      <label htmlFor="usernameInput">{placeholderText}</label>
-                    </div>
-                    <button key="submit" className="waves-effect waves-light btn-large" type="button" onClick={this.handleSubmit}>{buttonText}</button>
-                </form>
+                <div>
+                    <Form onSubmit={this.handleSubmit} {...withError}>
+                        <Form.Field required>
+                            <label>Username</label>
+                            <Form.Input
+                                placeholder={placeholderText}
+                                name='usernameInput'
+                                value={this.state.usernameInput}
+                                onChange={this.handleInputChange}
+                            />
+                        </Form.Field>
+                        <Message
+                            error
+                            header='Data Incomplete'
+                            content='You need to provide a username to sign up for an account.'
+                        />
+                        <Button type='submit'>{buttonText}</Button>
+                    </Form>
+                    <Dimmer active={this.state.completingAction} page>
+                        <Header as='h2' inverted>
+                            <Loader size='large'>Magic elfs are processing your nobel request.</Loader>
+                        </Header>
+                    </Dimmer>
+                </div>
             );
         }
 

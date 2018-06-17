@@ -83,8 +83,11 @@ class Topic extends Component {
         }
 
         return (
-            <div style={{marginBottom: '70px'}}>
+            <div className="fill">
                 {topicContents}
+                {!this.state.posting &&
+                    <div className="bottom-overlay-pad"></div>
+                }
             </div>
         );
     }

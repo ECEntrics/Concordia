@@ -3,7 +3,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import uuidv4 from 'uuid/v4';
 
-import Post from '../components/Post'
+import { Form, TextArea, Button, Icon } from 'semantic-ui-react'
+
+import NewTopicPreview from '../components/NewTopicPreview'
 
 const contract = "Forum";
 const contractMethod = "createTopic";
@@ -40,6 +42,7 @@ class StartTopic extends Component {
                 topicSubjectInputEmptySubmit: this.state.topicSubjectInput === '',
                 topicMessageInputEmptySubmit: this.state.topicMessageInput === ''
             });
+
             return;
         }
 
@@ -98,46 +101,48 @@ class StartTopic extends Component {
                     </div>
                 }
                 {this.state.previewEnabled &&
-                    <Post post = {{
-                            avatarUrl: this.props.user.avatarUrl,
-                            username: this.props.user.username,
-                            subject: this.state.topicSubjectInput,
-                            date: this.state.previewDate,
-                            postContent: this.state.topicMessageInput
-                        }}
-                        id={0}
+                    <NewTopicPreview
+                        date={this.state.previewDate}
+                        subject={this.state.topicSubjectInput}
+                        content={this.state.topicMessageInput}
                     />
                 }
-                <form className="topic-form">
+                <Form>
                     {!this.state.previewEnabled &&
-                        [<input key={"topicSubjectInput"}
-                            name={"topicSubjectInput"}
-                            className={this.state.topicSubjectInputEmptySubmit ? "form-input-required" : ""}
-                            type="text"
-                            value={this.state.topicSubjectInput}
-                            placeholder="Subject"
-                            id="topicSubjectInput"
-                            onChange={this.handleInputChange} />,
-                        <textarea key={"topicMessageInput"}
+                        [<Form.Field key={"topicSubjectInput"}>
+                            <Form.Input name={"topicSubjectInput"}
+                                error={this.state.topicSubjectInputEmptySubmit}
+                                type="text"
+                                value={this.state.topicSubjectInput}
+                                placeholder="Subject"
+                                id="topicSubjectInput"
+                                onChange={this.handleInputChange} />
+                        </Form.Field>,
+                        <TextArea key={"topicMessageInput"}
                             name={"topicMessageInput"}
-                            className={this.state.topicMessageInputEmptySubmit ? "form-input-required" : ""}
+                            className={this.state.topicMessageInputEmptySubmit ? "form-textarea-required" : ""}
                             value={this.state.topicMessageInput}
                             placeholder="Post"
                             id="topicMessageInput"
+                            rows={5}
+                            autoHeight
                             onChange={this.handleInputChange} />]
                     }
-                    <button key="submit"
-                        className="btn waves-effect waves-teal white black-text"
-                        type="button"
-                        onClick={this.validateAndPost}>
-                            <i className="material-icons right">send</i>Post
-                    </button>
-                    <button className="waves-effect waves-orange btn white black-text margin-left-small"
-                        type="button"
-                        onClick={this.handlePreviewToggle}>
-                        <span>{previewEditText}</span>
-                    </button>
-                </form>
+                    <br/><br/>
+                    <Button.Group>
+                        <Button animated key="submit" type="button" color='teal'
+                            onClick={this.validateAndPost}>
+                            <Button.Content visible>Post</Button.Content>
+                            <Button.Content hidden>
+                                <Icon name='send' />
+                            </Button.Content>
+                        </Button>
+                        <Button type="button" color='yellow'
+                            onClick={this.handlePreviewToggle}>
+                            {previewEditText}
+                        </Button>
+                    </Button.Group>
+                </Form>
             </div>
         );
     }

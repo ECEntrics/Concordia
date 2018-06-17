@@ -27,6 +27,7 @@
     "react-user-avatar": "^1.10.0",
     "redux": "^3.7.2",
     "redux-saga": "0.16.0",
+    "semantic-ui-react": "^0.81.1",
     "uuid": "^3.2.1",
     "web3": "^1.0.0-beta.34"
   },

@@ -8,8 +8,14 @@ import FloatingButton from '../components/FloatingButton';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 class Board extends Component {
-    constructor(props, context) {
+    constructor(props) {
         super(props);
+
+        this.handleCreateTopicClick = this.handleCreateTopicClick.bind(this);
+    }
+
+    handleCreateTopicClick() {
+        this.context.router.push("/startTopic");
     }
 
     render() {
@@ -23,20 +29,25 @@ class Board extends Component {
             for (var i = 0; i < this.props.blockchainData[0].returnData; i++) {
                 this.topicIDs.push(i);
             }
-            boardContents = <TopicList topicIDs={this.topicIDs}/>
+            boardContents = ([
+                <TopicList topicIDs={this.topicIDs} key="topicList"/>,
+                <FloatingButton onClick={this.handleCreateTopicClick}
+                    key="createTopicButton"/>
+            ]);
         }
 
         return (
-            <div style={{marginBottom: '70px'}}>
+            <div className="fill">
                 {boardContents}
-                <FloatingButton to="/startTopic"/>
+                <div className="bottom-overlay-pad"></div>
             </div>
         );
     }
 }
 
 Board.contextTypes = {
-    drizzle: PropTypes.object
+    drizzle: PropTypes.object,
+    router: PropTypes.object
 };
 
 const mapStateToProps = state => {
