@@ -1,5 +1,10 @@
 /* POSTS LIST SCREEN */
 
+.posts-list-spacer {
+  margin-bottom: 85px;
+  height: 0px;
+}
+
 .post {
   width: 100%;
   background-color: #FFFFFF;

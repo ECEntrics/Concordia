@@ -5,6 +5,16 @@ import UsernameFormContainer from './UsernameFormContainer';
 import { Header } from 'semantic-ui-react';
 
 class SignUp extends Component {
+    constructor(props){
+        super(props);
+
+        this.signedUp = this.signedUp.bind(this);
+    }
+
+    signedUp(){
+        this.props.router.push("/home");
+    }
+
     render() {
         return (
             this.props.user.hasSignedUp
@@ -22,14 +32,13 @@ class SignUp extends Component {
                         <p className="no-margin">
                             <strong>Account address:</strong> {this.props.user.address}
                         </p>
-                        <UsernameFormContainer/>
+                        <UsernameFormContainer signedUp={this.signedUp}/>
                     </div>
                 </div>)
         );
     }
 }
 
-// May still need this even with data function to refresh component on updates for this contract.
 const mapStateToProps = state => {
   return {
     user: state.user

@@ -1,47 +1,44 @@
-import { drizzleConnect } from 'drizzle-react';
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { drizzleConnect } from 'drizzle-react';
 
 import WithBlockchainData from '../components/WithBlockchainData';
 import PostList from '../components/PostList';
 import NewPost from '../components/NewPost';
 import FloatingButton from '../components/FloatingButton';
-import LoadingSpinner from '../components/LoadingSpinner';
+
+import { showProgressBar, hideProgressBar } from '../redux/actions/userInterfaceActions';
 
 class Topic extends Component {
-    constructor(props, context) {
+    constructor(props) {
         super(props);
 
-        this.fetchTopicSubject = this.fetchTopicSubject.bind(this);
-        this.handleClick = this.handleClick.bind(this);
-        this.postCreated = this.postCreated.bind(this);
+        this.props.store.dispatch(showProgressBar());
 
-        this.drizzle = context.drizzle;
+        this.fetchTopicSubject = this.fetchTopicSubject.bind(this);
+        this.togglePostingState = this.togglePostingState.bind(this);
+        this.postCreated = this.postCreated.bind(this);
 
         this.state = {
             topicID: this.props.params.topicId,
-            topicSubject: this.props.params.topicSubject ? this.props.params.topicSubject : null,
+            topicSubject: null,
             postFocus: this.props.params.postId && /^[0-9]+$/.test(this.props.params.postId)
                 ? this.props.params.postId
                 : null,
-            getPostsTransactionState: null,
+            fetchTopicSubjectStatus: null,
             posting: false
         };
     }
 
     async fetchTopicSubject(orbitDBAddress) {
-        /*const fullAddress = this.topicsData[this.state.topicID][1];
-        const store = await this.props.orbitDB.orbitdb.keyvalue(JSON.stringify(fullAddress));
-        await store.load();
-        var som = store.get(JSON.stringify(this.state.topicID));
-        this.topicsSubjects[this.state.topicID] = som['subject'];
-        this.topicsSubjectsFetchStatus[this.state.topicID] = "fetched";*/
-
-        var som =this.props.orbitDB.topicsDB.get(this.state.topicID);
-        this.setState({'topicSubject': som['subject']});
+        var orbitData =this.props.orbitDB.topicsDB.get(this.state.topicID);
+        this.props.store.dispatch(hideProgressBar());
+        this.setState({
+            'topicSubject': orbitData['subject'],
+            fetchTopicSubjectStatus: "fetched"
+        });
     }
 
-    handleClick(event) {
+    togglePostingState(event) {
         if (event){
             event.preventDefault();
         }
@@ -52,31 +49,28 @@ class Topic extends Component {
 
     postCreated(){
         this.setState(prevState => ({
-            getPostsTransactionState: null,
             posting: false
         }));
+        //TODO reload topic
     }
 
     render() {
         var topicContents;
-        if (this.state.getPostsTransactionState !== "SUCCESS") {
+        if (this.props.blockchainData[0].status === "success") {
             topicContents = (
-                <LoadingSpinner/>
-            );
-        } else {
-            topicContents = (
-                (<div style={{marginBottom: '100px'}}>
-                    {this.postList}
+                (<div>
+                    <PostList postIDs={this.props.blockchainData[0].returnData[4]}/>
                     {this.state.posting &&
                         <NewPost topicID={this.state.topicID}
                             subject={this.state.topicSubject}
                             postIndex={this.props.blockchainData[0].returnData[4].length}
-                            onCancelClick={() => {this.handleClick()}}
+                            onCancelClick={() => {this.togglePostingState()}}
                             onPostCreated={() => {this.postCreated()}}
                         />
                     }
+                    <div className="posts-list-spacer"></div>
                     {this.props.user.hasSignedUp && !this.state.posting &&
-                        <FloatingButton onClick={this.handleClick}/>
+                        <FloatingButton onClick={this.togglePostingState}/>
                     }
                 </div>)
             )
@@ -92,31 +86,15 @@ class Topic extends Component {
         );
     }
 
-    componentWillReceiveProps() {
+    componentDidUpdate() {
         if (this.props.blockchainData[0].status === "success") {
-            if (this.state.getPostsTransactionState !== "SUCCESS"){
-                this.postList = <WithBlockchainData
-                    component={PostList}
-                    callsInfo={this.props.blockchainData[0].returnData[4].map((postID) => {
-                        return {
-                            contract: 'Forum',
-                            method: 'getPost',
-                            params: [postID]
-                        }
-                    })}
-                    postIDs={this.props.blockchainData[0].returnData[4]}
-                />
-
-                this.setState({'getPostsTransactionState': "SUCCESS"});
+            if (this.state.fetchTopicSubjectStatus === null){
+                this.setState({ fetchTopicSubjectStatus: "fetching"})
                 this.fetchTopicSubject(this.props.blockchainData[0].returnData[0]);
             }
         }
     }
 }
-
-Topic.contextTypes = {
-    drizzle: PropTypes.object
-};
 
 const mapStateToProps = state => {
     return {
@@ -132,20 +110,20 @@ class TopicContainer extends Component {
         if (!/^[0-9]+$/.test(props.params.topicId)){ //Topic ID should be a positive integer
             this.props.router.push("/404");
         }
-
-        this.topic = <WithBlockchainData
-            component={drizzleConnect(Topic, mapStateToProps)}
-            callsInfo={[{
+    }
+    
+    render() {
+        return(
+            <WithBlockchainData
+                component={drizzleConnect(Topic, mapStateToProps)}
+                callsInfo={[{
                     contract: 'Forum',
                     method: 'getTopic',
                     params: [this.props.params.topicId]
                 }]}
-            params={this.props.params}
-        />;
-    }
-    
-    render() {
-        return(this.topic);
+                params={this.props.params}
+            />
+        );
     }
 }
 

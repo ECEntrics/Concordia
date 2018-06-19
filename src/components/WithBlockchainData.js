@@ -12,11 +12,9 @@ class WithBlockchainData extends Component {
             this.forwardedProps = rest;
         }
 
-        this.checkContractUpdates = this.checkContractUpdates.bind(this);
-
         this.drizzle = context.drizzle;
         this.dataKeys = [];
-        this.blockchainData = this.callsInfo.map((call) => {
+        let blockchainData = this.callsInfo.map((call) => {
             return ({
                 callInfo: call,
                 status: "initialized",
@@ -24,52 +22,53 @@ class WithBlockchainData extends Component {
             });
         });
 
+        //Initial call
         for (var i = 0; i < this.callsInfo.length; ++i){
             this.dataKeys[i] = this.drizzle
                 .contracts[this.callsInfo[i].contract]
                 .methods[this.callsInfo[i].method]
                 .cacheCall(...(this.callsInfo[i].params));
-            this.blockchainData[i].status = "pending";
+            blockchainData[i].status = "pending";
         }
 
         this.state = {
-            transactionsState: new Array(this.callsInfo.length).fill("pending")
+            callState: new Array(this.callsInfo.length).fill("pending"),
+            blockchainData: blockchainData
         }
     }
 
     render() {
-        let {component, callsInfo, ...rest } = this.props;
+        let {component, callsInfo, ...rest } = this.props; //Update rest arguments
         return (
-            <this.component blockchainData={this.blockchainData} {...rest}/>
+            <this.component blockchainData={this.state.blockchainData} {...rest}/>
         );
     }
 
-    componentDidMount() {
-        this.intervalChecker = setInterval(this.checkContractUpdates, 10); //HOWMUCHMUCHACHO???
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.intervalChecker);
-    }
-
-    checkContractUpdates() {
+    componentDidUpdate(){
         for (var i = 0; i < this.callsInfo.length; ++i){
             let currentDrizzleState = this.drizzle.store.getState();
-            if (this.state.transactionsState[i] === "pending") {
-                let dataFetched = (currentDrizzleState
-                    .contracts[this.callsInfo[i].contract][this.callsInfo[i].method][this.dataKeys[i]]);
-                if (dataFetched){
-                    this.blockchainData[i].returnData = dataFetched.value;
-                    this.blockchainData[i].status = "success";
-                    this.setState((prevState) => ({
-                        transactionsState: [
-                            ...prevState.transactionsState.slice(0, i),
-                            "success",
-                            ...prevState.transactionsState.slice(i)
-                        ]
-                    }));
-                }
-            } //TODO cover errors!!
+            let dataFetched = (currentDrizzleState
+                .contracts[this.callsInfo[i].contract][this.callsInfo[i].method][this.dataKeys[i]]);
+            if (dataFetched && dataFetched.value !== this.state.blockchainData[i].returnData){
+                /* There are new data in the blockchain*/
+
+                //Immutable update
+                let newBlockchainData = this.state.blockchainData.map((callData, index) => {
+                    if (index !== i) return callData;
+                    return {
+                        ...callData,
+                        returnData: dataFetched.value,
+                        status: "success"
+                    }
+                })
+
+                let newStates = this.state.callState.slice();
+                newStates[i] = "success"
+                this.setState({
+                    callState: newStates,
+                    blockchainData: newBlockchainData
+                });
+            }
         }
     }
 }

@@ -7,13 +7,20 @@ import { Header } from 'semantic-ui-react';
 import WithBlockchainData from '../components/WithBlockchainData';
 import TopicList from '../components/TopicList';
 import FloatingButton from '../components/FloatingButton';
-import LoadingSpinner from '../components/LoadingSpinner';
+
+import { showProgressBar, hideProgressBar } from '../redux/actions/userInterfaceActions';
 
 class Board extends Component {
     constructor(props) {
         super(props);
 
+        this.props.store.dispatch(showProgressBar());
+
         this.handleCreateTopicClick = this.handleCreateTopicClick.bind(this);
+
+        this.state = {
+            pageLoaded: false
+        }
     }
 
     handleCreateTopicClick() {
@@ -22,17 +29,14 @@ class Board extends Component {
 
     render() {
         var boardContents;
-        if (!this.props.blockchainData[0].returnData) {
-            boardContents = (
-                <LoadingSpinner/>
-            );
-        } else if (this.props.blockchainData[0].returnData !== '0'){
+        if (this.props.blockchainData[0].returnData !== '0'){
             this.topicIDs = [];
             for (var i = 0; i < this.props.blockchainData[0].returnData; i++) {
                 this.topicIDs.push(i);
             }
             boardContents = ([
                 <TopicList topicIDs={this.topicIDs} key="topicList"/>,
+                <div className="bottom-overlay-pad" key="pad"></div>,
                 this.props.user.hasSignedUp &&
                     <FloatingButton onClick={this.handleCreateTopicClick}
                         key="createTopicButton"/>
@@ -45,7 +49,7 @@ class Board extends Component {
                             There are no topics yet!
                         </Header>
                         <Header color='teal' textAlign='center' as='h4'>
-                            Sign up to be the first post.
+                            Sign up to be the first to post.
                         </Header>
                     </div>
                 );
@@ -68,9 +72,15 @@ class Board extends Component {
         return (
             <div className="fill">
                 {boardContents}
-                <div className="bottom-overlay-pad"></div>
             </div>
         );
+    }
+
+    componentDidUpdate(){
+        if (!this.state.pageLoaded && this.props.blockchainData[0].returnData){
+            this.props.store.dispatch(hideProgressBar());
+            this.setState({ pageLoaded: true });
+        }
     }
 }
 

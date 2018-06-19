@@ -6,10 +6,6 @@ html, body {
   height: 100%;
 }
 
-body {
-  font-family: 'Roboto', sans-serif;
-}
-
 strong {
   font-weight: bold !important;
 }
@@ -55,6 +51,11 @@ strong {
   height: calc(100% - 71px);
   top: 0;
   right: 0;
+}
+
+.sidebar-message {
+  margin: 0px 5px 12px 12px;
+  padding: 0px;
 }
 
 .view-container {

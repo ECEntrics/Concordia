@@ -23,7 +23,7 @@ const PostList = (props) => {
     });
 
     return (
-        <div className="posts-list">
+        <div>
             {props.recentToTheTop
                 ?posts.slice(0).reverse()
                 :posts

@@ -3,11 +3,12 @@ import { drizzleConnect } from 'drizzle-react';
 import PropTypes from 'prop-types';
 
 import { Button, Message, Form, Dimmer, Loader, Header } from 'semantic-ui-react';
+
 import { createDatabases } from './../util/orbit';
+import { updateUsername } from '../redux/actions/transactionsMonitorActions';
 
 const contract = "Forum";
 const signUpMethod = "signUp";
-const updateUsernameMethod ="updateUsername";
 
 class UsernameFormContainer extends Component {
     constructor(props, context) {
@@ -22,7 +23,7 @@ class UsernameFormContainer extends Component {
         this.state = {
             usernameInput: '',
             error: false,
-            completingAction: false
+            signingUp: false
         };
     }
 
@@ -39,14 +40,26 @@ class UsernameFormContainer extends Component {
     }
 
     async completeAction() {
-        this.setState({ completingAction: true });
-        if(this.props.user.hasSignedUp)
-           this.contracts[contract].methods[updateUsernameMethod].cacheSend(...[this.state.usernameInput]);
-        else
-        {
+        if(this.props.user.hasSignedUp){
+            this.props.store.dispatch(updateUsername(...[this.state.usernameInput], null));
+        } else {
+            this.setState({ signingUp: true });
             const orbitdbInfo = await createDatabases();
-            this.contracts[contract].methods[signUpMethod].cacheSend(...[this.state.usernameInput, orbitdbInfo.id,
-                orbitdbInfo.topicsDB, orbitdbInfo.postsDB, orbitdbInfo.publicKey, orbitdbInfo.privateKey]);
+            this.contracts[contract].methods[signUpMethod]
+                .cacheSend(...[this.state.usernameInput,
+                    orbitdbInfo.id,
+                    orbitdbInfo.topicsDB,
+                    orbitdbInfo.postsDB,
+                    orbitdbInfo.publicKey,
+                    orbitdbInfo.privateKey
+                ]);
+        }
+        this.setState({ usernameInput: '' });
+    }
+
+    componentWillReceiveProps(nextProps){
+        if (this.state.signingUp && nextProps.user.hasSignedUp){
+            this.props.signedUp();
         }
     }
 
@@ -77,7 +90,7 @@ class UsernameFormContainer extends Component {
                         />
                         <Button type='submit'>{buttonText}</Button>
                     </Form>
-                    <Dimmer active={this.state.completingAction} page>
+                    <Dimmer active={this.state.signingUp} page>
                         <Header as='h2' inverted>
                             <Loader size='large'>Magic elfs are processing your nobel request.</Loader>
                         </Header>
