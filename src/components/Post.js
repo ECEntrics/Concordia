@@ -26,9 +26,22 @@ class Post extends Component {
     async fetchPost(postID) {
         this.orbitPostDataFetchStatus = "fetching";
 
-        var som = this.props.orbitDB.postsDB.get(postID);
-        if (som){
-            this.orbitPostData = som;
+        if (this.props.blockchainData[0].returnData[1] === this.props.user.address) {
+            this.orbitPostData = this.props.orbitDB.postsDB.get(postID);
+        } else {
+            const fullAddress = "/orbitdb/" + this.props.blockchainData[0].returnData[0] + "/posts";
+            const store = await this.props.orbitDB.orbitdb.keyvalue(fullAddress);
+            await store.load();
+
+            let localOrbitData =  store.get(postID);
+            if (localOrbitData) {
+                this.orbitPostData = localOrbitData;
+            } else {
+                // Wait until we have received something from the network
+                store.events.on('replicated', () => {
+                    this.orbitPostData = store.get(postID);
+                })
+            }
         }
         this.orbitPostDataFetchStatus = "fetched";
     }

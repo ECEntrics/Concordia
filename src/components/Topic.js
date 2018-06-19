@@ -21,21 +21,23 @@ class Topic extends Component {
         this.topicSubjectFetchStatus = "fetching";
 
         if (this.props.blockchainData[0].returnData[1] === this.props.user.address) {
-            let som = this.props.orbitDB.topicsDB.get(topicID);
-            this.topicSubject = som['subject'];
+            let orbitData = this.props.orbitDB.topicsDB.get(topicID);
+            this.topicSubject = orbitData['subject'];
             this.topicSubjectFetchStatus = "fetched";
         } else {
-            const fullAddress = "/orbitdb" + this.props.blockchainData[0].returnData[0] + "/topics";
+            const fullAddress = "/orbitdb/" + this.props.blockchainData[0].returnData[0] + "/topics";
             const store = await this.props.orbitDB.orbitdb.keyvalue(fullAddress);
-
-            /*store.events.on('replicated', () => {
-              const result = store.iterator({ limit: -1 }).collect().map(e => e.payload.value)
-              console.log(result.join('\n'))
-            })*/
-
             await store.load();
-            let som = store.get(topicID);
-            this.topicSubject = som['subject'];
+
+            let localOrbitData =  store.get(topicID);
+            if (localOrbitData) {
+                this.topicSubject = localOrbitData['subject'];
+            } else {
+                // Wait until we have received something from the network
+                store.events.on('replicated', () => {
+                    this.topicSubject = store.get(topicID)['subject'];
+                })
+            }
             this.topicSubjectFetchStatus = "fetched";
         }
     }

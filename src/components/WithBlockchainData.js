@@ -44,9 +44,9 @@ class WithBlockchainData extends Component {
         );
     }
 
-    componentDidUpdate(){
+    componentWillUpdate(){
+        let currentDrizzleState = this.drizzle.store.getState();
         for (var i = 0; i < this.callsInfo.length; ++i){
-            let currentDrizzleState = this.drizzle.store.getState();
             let dataFetched = (currentDrizzleState
                 .contracts[this.callsInfo[i].contract][this.callsInfo[i].method][this.dataKeys[i]]);
             if (dataFetched && dataFetched.value !== this.state.blockchainData[i].returnData){

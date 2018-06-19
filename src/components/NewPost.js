@@ -16,7 +16,6 @@ class NewPost extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handlePreviewToggle = this.handlePreviewToggle.bind(this);
         this.validateAndPost = this.validateAndPost.bind(this);
-        this.pushToDatabase = this.pushToDatabase.bind(this);
 
         this.newPostOuterRef = React.createRef();
 
@@ -40,20 +39,14 @@ class NewPost extends Component {
         }
 
         this.props.store.dispatch(
-            createPost(this.props.topicID, ((returnData) => {
-                this.topicIDFetched = returnData.topicID;
-                this.postIDFetched = returnData.postID;
-                this.pushToDatabase();
-            }))
+            createPost(this.props.topicID,
+                {
+                    postSubject: this.state.postSubjectInput,
+                    postMessage: this.state.postContentInput
+                }
+            )
         );
         this.props.onPostCreated();
-    }
-
-    async pushToDatabase() {
-        await this.props.orbitDB.postsDB.put(this.postIDFetched, {
-            subject: this.state.postSubjectInput,
-            content: this.state.postContentInput
-        });
     }
 
     handleInputChange(event) {

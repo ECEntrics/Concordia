@@ -11,6 +11,8 @@ class RightSideBar extends Component {
         super(props);
 
         this.handleMessageDismiss = this.handleMessageDismiss.bind(this);
+        this.updateTransactions = this.updateTransactions.bind(this);
+        this.completeWithOrbitInteractions = this.completeWithOrbitInteractions.bind(this);
 
         this.drizzle = context.drizzle;
         this.transactionsStackIds = [];
@@ -76,7 +78,11 @@ class RightSideBar extends Component {
         return (transactionMessages);
     }
 
-    componentDidUpdate(){
+    componentDidUpdate(){ //Maybe change to componentWillReceiveProps()
+        this.updateTransactions();
+    }
+
+    updateTransactions(){
         for (var index = 0; index < this.props.transactionsQueue.length; ++index) {
             let transaction = this.props.transactionsQueue[index];
 
@@ -102,7 +108,7 @@ class RightSideBar extends Component {
                 if (this.props.transactionStack[this.transactionsStackIds[index]]){
                     /*      User confirmed the transaction       */
 
-                    //Gets transaciton's hash
+                    //Gets transaction's hash
                     this.transactionsTxHashes[index] = (this.props
                         .transactionStack[this.transactionsStackIds[index]]);
                     this.props.store.dispatch(updateTransaction(index, {
@@ -129,9 +135,8 @@ class RightSideBar extends Component {
                     this.setState({
                         transactionsCompletionTime: transactionsCompletionTimeShallowCopy
                     });
-                    if (this.props.transactionsQueue[index].callback){
-                        this.props.transactionsQueue[index].callback(data);
-                    }
+
+                    this.completeWithOrbitInteractions(this.props.transactionsQueue[index], data);
                 } else if (this.props.transactions[this.transactionsTxHashes[index]]
                     .status === "error"){
                     /*      Transaction failed to complete      */
@@ -146,11 +151,32 @@ class RightSideBar extends Component {
                     this.setState({
                         transactionsCompletionTime: transactionsCompletionTimeShallowCopy
                     });
-                    if (this.props.transactionsQueue[index].callback){
-                        this.props.transactionsQueue[index].callback(null);
-                    }
+                    //TODO handle this gracefully
                 }
             }
+        }
+    }
+
+    async completeWithOrbitInteractions(transaction, returnData){
+        switch (transaction.event){
+            case 'TopicCreated':
+                await this.props.orbitDB.topicsDB.put(returnData.topicID, {
+                    subject: transaction.userInputs.topicSubject
+                });
+
+                await this.props.orbitDB.postsDB.put(returnData.postID, {
+                    subject: transaction.userInputs.topicSubject,
+                    content: transaction.userInputs.topicMessage
+                });
+                break;
+            case 'PostCreated':
+                await this.props.orbitDB.postsDB.put(returnData.postID, {
+                    subject: transaction.userInputs.postSubject,
+                    content: transaction.userInputs.postMessage
+                });
+                break;
+            default:
+                break; //This transaction doesn't need a DB interaction to complete
         }
     }
 }
@@ -161,6 +187,7 @@ RightSideBar.contextTypes = {
 
 const mapStateToProps = state => {
     return {
+        orbitDB: state.orbitDB,
         transactionsQueue: state.transactionsQueue.transactions,
         transactions: state.transactions,
         transactionStack: state.transactionStack

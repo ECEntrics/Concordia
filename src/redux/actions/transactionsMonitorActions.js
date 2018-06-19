@@ -11,13 +11,13 @@ export function updateUsername(newUsername, callback){
                 contract: 'Forum',
                 method: 'updateUsername',
                 params: [newUsername],
-                event: 'UsernameUpdated',
+                event: 'UsernameUpdated'
             },
         callback: callback
     };
 }
 
-export function createTopic(callback){
+export function createTopic(userInputs){
     return {
         type: INIT_TRANSACTION,
         transactionDescriptor:
@@ -25,13 +25,13 @@ export function createTopic(callback){
                 contract: 'Forum',
                 method: 'createTopic',
                 params: [],
-                event: 'TopicCreated',
+                event: 'TopicCreated'
             },
-        callback: callback
+        userInputs: userInputs
     };
 }
 
-export function createPost(topicID, callback){
+export function createPost(topicID, userInputs){
     return {
         type: INIT_TRANSACTION,
         transactionDescriptor:
@@ -39,9 +39,9 @@ export function createPost(topicID, callback){
                 contract: 'Forum',
                 method: 'createPost',
                 params: [topicID],
-                event: 'PostCreated',
+                event: 'PostCreated'
             },
-        callback: callback
+        userInputs: userInputs
     };
 }
 

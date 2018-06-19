@@ -14,7 +14,6 @@ class StartTopic extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handlePreviewToggle = this.handlePreviewToggle.bind(this);
         this.validateAndPost = this.validateAndPost.bind(this);
-        this.pushToDatabase = this.pushToDatabase.bind(this);
 
         this.state = {
             topicSubjectInput: '',
@@ -22,8 +21,7 @@ class StartTopic extends Component {
             topicSubjectInputEmptySubmit: false,
             topicMessageInputEmptySubmit: false,
             previewEnabled: false,
-            previewDate: "",
-            creatingTopic: false
+            previewDate: ""
         };
     }
 
@@ -37,27 +35,14 @@ class StartTopic extends Component {
         }
 
         this.props.store.dispatch(
-            createTopic(((returnData) => {
-                this.topicIDFetched = returnData.topicID;
-                this.postIDFetched = returnData.postID;
-                this.pushToDatabase();
-                this.props.router.push("/topic/" + this.topicIDFetched);
-            }))
+            createTopic(
+                {
+                    topicSubject: this.state.topicSubjectInput,
+                    topicMessage: this.state.topicMessageInput
+                }
+            )
         );
-        this.setState({
-            'creatingTopic': true
-        });
-    }
-
-    async pushToDatabase() {
-        await this.props.orbitDB.topicsDB.put(this.topicIDFetched, {
-            subject: this.state.topicSubjectInput
-        });
-
-        await this.props.orbitDB.postsDB.put(this.postIDFetched, {
-            subject: this.state.topicSubjectInput,
-            content: this.state.topicMessageInput
-        });
+        this.context.router.push("/home");
     }
 
     handleInputChange(event) {
@@ -90,14 +75,6 @@ class StartTopic extends Component {
         var previewEditText = this.state.previewEnabled ? "Edit" : "Preview";
         return (
             <div>
-                {/*this.state.creatingTopic && <div id="overlay">
-                        <div id="overlay-content">
-                            <p><i className="fas fa-spinner fa-3x fa-spin"></i></p>
-                            <br/>
-                            {this.transactionProgressText}
-                        </div>
-                    </div>*/
-                }
                 {this.state.previewEnabled &&
                     <NewTopicPreview
                         date={this.state.previewDate}
@@ -152,8 +129,6 @@ StartTopic.contextTypes = {
 
 const mapStateToProps = state => {
     return {
-        transactions: state.transactions,
-        transactionStack: state.transactionStack,
         orbitDB: state.orbitDB,
         user: state.user
     }

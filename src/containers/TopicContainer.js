@@ -30,7 +30,25 @@ class Topic extends Component {
     }
 
     async fetchTopicSubject(orbitDBAddress) {
-        var orbitData =this.props.orbitDB.topicsDB.get(this.state.topicID);
+        let orbitData;
+        if (this.props.blockchainData[0].returnData[1] === this.props.user.address) {
+            orbitData = this.props.orbitDB.topicsDB.get(this.state.topicID);
+        } else {
+            const fullAddress = "/orbitdb/" + orbitDBAddress + "/topics";
+            const store = await this.props.orbitDB.orbitdb.keyvalue(fullAddress);
+            await store.load();
+
+            let localOrbitData = store.get(this.state.topicID);
+            if (localOrbitData) {
+                orbitData = localOrbitData;
+            } else {
+                // Wait until we have received something from the network
+                store.events.on('replicated', () => {
+                    orbitData = store.get(this.state.topicID);
+                })
+            }
+        }
+
         this.props.store.dispatch(hideProgressBar());
         this.setState({
             'topicSubject': orbitData['subject'],

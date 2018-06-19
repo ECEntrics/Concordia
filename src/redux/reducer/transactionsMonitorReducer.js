@@ -15,7 +15,7 @@ const transactionsReducer = (state = initialState, action) => {
                 params: action.transactionDescriptor.params,
                 event: action.transactionDescriptor.event,
                 returnData: null,
-                callback: action.callback
+                userInputs: action.userInputs
             });
             return {
                 transactions: transactionsShallowCopy
