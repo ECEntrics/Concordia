@@ -7,10 +7,6 @@ import UsernameFormContainer from '../containers/UsernameFormContainer';
 
 const ProfileInformation = (props) => {
     let transaction = props.blockchainData
-        .find(transaction => transaction.callInfo.method === "getUsername");
-    let username = transaction ? transaction.returnData : "";
-
-    transaction = props.blockchainData
         .find(transaction => transaction.callInfo.method === "getUserDateOfRegister");
     let dateOfRegister = transaction ? transaction.returnData : "";
 
@@ -24,12 +20,12 @@ const ProfileInformation = (props) => {
                 size="40"
                 className="inline user-avatar"
                 src={props.avatarUrl}
-                name={username}/>}
+                name={props.username}/>}
             <table className="highlight centered responsive-table">
                 <tbody>
                     <tr>
                         <td><strong>Username:</strong></td>
-                        <td>{username}</td>
+                        <td>{props.username}</td>
                     </tr>
                     <tr>
                         <td><strong>Account address:</strong></td>

@@ -9,6 +9,7 @@ import ProfileInformation from '../components/ProfileInformation';
 import TopicList from '../components/TopicList';
 import PostList from '../components/PostList';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { setNavBarTitle } from '../redux/actions/userInterfaceActions';
 
 class Profile extends Component {
     constructor(props, context) {
@@ -35,10 +36,6 @@ class Profile extends Component {
                     component={ProfileInformation}
                     callsInfo={[{
                         contract: 'Forum',
-                        method: 'getUsername',
-                        params: [this.state.userAddress]
-                    },{
-                        contract: 'Forum',
                         method: 'getUserDateOfRegister',
                         params: [this.state.userAddress]
                     },{
@@ -47,6 +44,7 @@ class Profile extends Component {
                         params: [this.state.userAddress]
                     }]}
                     address={this.state.userAddress}
+                    username={this.username}
                     numberOfTopics={this.topicIDs && this.topicIDs.length}
                     numberOfPosts={this.postIDs && this.postIDs.length}
                     self={this.state.userAddress === this.props.user.address}
@@ -102,6 +100,13 @@ class Profile extends Component {
     }
 
     propsToView(){
+        if (!this.username){
+            let transaction = this.props.blockchainData
+                .find(transaction => transaction.callInfo.method === "getUsername");
+            if (transaction.returnData){
+                this.username = transaction.returnData;
+            }
+        }
         if (!this.topicIDs){
             let transaction = this.props.blockchainData
                 .find(transaction => transaction.callInfo.method === "getUserTopics");
@@ -115,6 +120,12 @@ class Profile extends Component {
             if (transaction.returnData){
                 this.postIDs = transaction.returnData;
             }
+        }
+    }
+
+    componentDidUpdate(){
+        if (this.username){
+            this.props.store.dispatch(setNavBarTitle(this.username));
         }
     }
 }
@@ -145,6 +156,10 @@ class ProfileContainer extends Component {
         this.profile = <WithBlockchainData
             component={drizzleConnect(Profile, mapStateToProps)}
             callsInfo={[{
+                contract: 'Forum',
+                method: 'getUsername',
+                params: [userAddress]
+            },{
                 contract: 'Forum',
                 method: 'getUserTopics',
                 params: [userAddress]

@@ -92,7 +92,7 @@ class UsernameFormContainer extends Component {
                     </Form>
                     <Dimmer active={this.state.signingUp} page>
                         <Header as='h2' inverted>
-                            <Loader size='large'>Magic elfs are processing your nobel request.</Loader>
+                            <Loader size='large'>Magic elves are processing your noble request.</Loader>
                         </Header>
                     </Dimmer>
                 </div>

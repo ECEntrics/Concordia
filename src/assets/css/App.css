@@ -66,6 +66,22 @@ strong {
 
 /* MISC */
 
+.navBarText {
+  height: 61px;
+  width: 1192px;
+  position: absolute;
+  left: calc(50% - 596px);
+  text-align: center;
+}
+
+.navBarText span {
+  color: #00b5ad;
+  height: 61px;
+  line-height: 61px;
+  vertical-align: middle;
+  font-size: 1.5em;
+}
+
 .form-textarea-required {
   color: rgb(159, 58, 56) !important;
   outline-color: rgb(159, 58, 56) !important;
@@ -167,8 +183,4 @@ a {
 .fill {
   width: 100%;
   height: 100%;
-}
-
-.vis { /* For UX developing */
-  border: 1px solid red;
 }

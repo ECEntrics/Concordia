@@ -6,7 +6,11 @@ import PostList from '../components/PostList';
 import NewPost from '../components/NewPost';
 import FloatingButton from '../components/FloatingButton';
 
-import { showProgressBar, hideProgressBar } from '../redux/actions/userInterfaceActions';
+import {
+    showProgressBar,
+    hideProgressBar,
+    setNavBarTitle
+} from '../redux/actions/userInterfaceActions';
 
 class Topic extends Component {
     constructor(props) {
@@ -50,6 +54,7 @@ class Topic extends Component {
         }
 
         this.props.store.dispatch(hideProgressBar());
+        this.props.store.dispatch(setNavBarTitle(orbitData['subject']));
         this.setState({
             'topicSubject': orbitData['subject'],
             fetchTopicSubjectStatus: "fetched"
@@ -69,7 +74,6 @@ class Topic extends Component {
         this.setState(prevState => ({
             posting: false
         }));
-        //TODO reload topic
     }
 
     render() {
@@ -77,7 +81,8 @@ class Topic extends Component {
         if (this.props.blockchainData[0].status === "success") {
             topicContents = (
                 (<div>
-                    <PostList postIDs={this.props.blockchainData[0].returnData[4]}/>
+                    <PostList postIDs={this.props.blockchainData[0].returnData[4]}
+                        focusOnPost={this.state.postFocus ? this.state.postFocus : null}/>
                     {this.state.posting &&
                         <NewPost topicID={this.state.topicID}
                             subject={this.state.topicSubject}

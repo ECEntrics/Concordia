@@ -1,7 +1,12 @@
-import { SHOW_PROGRESS_BAR, HIDE_PROGRESS_BAR } from '../actions/userInterfaceActions';
+import {
+    SHOW_PROGRESS_BAR,
+    HIDE_PROGRESS_BAR,
+    SET_NAVBAR_TITLE
+} from '../actions/userInterfaceActions';
 
 const initialState = {
-    displayProgressBar: false
+    displayProgressBar: false,
+    navBarTitle: ''
 };
 
 const userInterfaceReducer = (state = initialState, action) => {
@@ -14,6 +19,10 @@ const userInterfaceReducer = (state = initialState, action) => {
             return {
                 displayProgressBar: false
             };
+        case SET_NAVBAR_TITLE:
+            return {
+                navBarTitle: action.title
+            }
         default:
             return state;
     }

@@ -17,6 +17,7 @@ const PostList = (props) => {
                 avatarUrl={""}
                 postIndex={index}
                 postID={postID}
+                getFocus={props.focusOnPost === postID ? true : false}
                 key={postID}
             />
         );
