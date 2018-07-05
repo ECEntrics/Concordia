@@ -104,28 +104,29 @@ class NewPost extends Component {
                                     </strong></span>
                                 </div>
                                 <div className="post-content">
+                                    <div style={{display: this.state.previewEnabled ? "block" : "none"}}>
+                                        <ReactMarkdown source={this.state.postContentInput}
+                                            className="markdown-preview" />
+                                    </div>
                                     <Form className="topic-form">
-                                        {this.state.previewEnabled
-                                            ? <ReactMarkdown source={this.state.postContentInput}
-                                                className="markdown-preview" />
-                                            : [
-                                            <Form.Input key={"postSubjectInput"}
-                                                name={"postSubjectInput"}
-                                                error={this.state.postSubjectInputEmptySubmit}
-                                                type="text"
-                                                value={this.state.postSubjectInput}
-                                                placeholder="Subject"
-                                                id="postSubjectInput"
-                                                onChange={this.handleInputChange} />,
-                                            <TextArea key={"postContentInput"}
-                                                name={"postContentInput"}
-                                                className={this.state.postContentInputEmptySubmit ? "form-textarea-required" : ""}
-                                                value={this.state.postContentInput}
-                                                placeholder="Post"
-                                                id="postContentInput"
-                                                onChange={this.handleInputChange}
-                                                rows={4} autoHeight />
-                                            ]}
+                                        <Form.Input key={"postSubjectInput"}
+                                            style={{display: this.state.previewEnabled ? "none" : ""}}
+                                            name={"postSubjectInput"}
+                                            error={this.state.postSubjectInputEmptySubmit}
+                                            type="text"
+                                            value={this.state.postSubjectInput}
+                                            placeholder="Subject"
+                                            id="postSubjectInput"
+                                            onChange={this.handleInputChange} />
+                                        <TextArea key={"postContentInput"}
+                                            style={{display: this.state.previewEnabled ? "none" : ""}}
+                                            name={"postContentInput"}
+                                            className={this.state.postContentInputEmptySubmit ? "form-textarea-required" : ""}
+                                            value={this.state.postContentInput}
+                                            placeholder="Post"
+                                            id="postContentInput"
+                                            onChange={this.handleInputChange}
+                                            rows={4} autoHeight />
                                         <br/><br/>
                                         <Button.Group>
                                             <Button key="submit"
@@ -157,12 +158,6 @@ class NewPost extends Component {
                 </Grid>
             </div>
         );
-    }
-
-    componentDidUpdate(prevProps, prevState){
-        if (!this.state.previewEnabled && prevState.previewEnabled){
-            this.newPostOuterRef.current.scrollIntoView(true);
-        }
     }
 
     componentDidMount(){

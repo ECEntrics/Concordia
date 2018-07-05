@@ -9,11 +9,17 @@ import ProfileInformation from '../components/ProfileInformation';
 import TopicList from '../components/TopicList';
 import PostList from '../components/PostList';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { setNavBarTitle } from '../redux/actions/userInterfaceActions';
+import {
+    showProgressBar,
+    hideProgressBar,
+    setNavBarTitle
+} from '../redux/actions/userInterfaceActions';
 
 class Profile extends Component {
     constructor(props, context) {
         super(props);
+
+        this.props.store.dispatch(showProgressBar());
 
         this.propsToView = this.propsToView.bind(this);
 
@@ -126,6 +132,9 @@ class Profile extends Component {
     componentDidUpdate(){
         if (this.username){
             this.props.store.dispatch(setNavBarTitle(this.username));
+            if (this.topicIDs && this.postIDs){
+                this.props.store.dispatch(hideProgressBar());
+            }
         }
     }
 }

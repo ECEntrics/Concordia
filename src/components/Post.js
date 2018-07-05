@@ -125,9 +125,11 @@ class Post extends Component {
                                     <Icon name='chevron down' />
                                 </Button>
                                 <Button icon size='mini'
-                                    onClick={() => { this.context.router.push("/topic/"
-                                        + this.props.blockchainData[0].returnData[4] + "/"
-                                        + this.props.postID)}}>
+                                    onClick={this.props.blockchainData[0].returnData
+                                        ? () => { this.context.router.push("/topic/"
+                                            + this.props.blockchainData[0].returnData[4] + "/"
+                                            + this.props.postID)}
+                                        : () => {}}>
                                     <Icon name='linkify' />
                                 </Button>
                             </Grid.Column>

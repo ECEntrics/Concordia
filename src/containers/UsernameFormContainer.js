@@ -8,6 +8,7 @@ import { createDatabases } from './../util/orbit';
 import { updateUsername } from '../redux/actions/transactionsMonitorActions';
 
 const contract = "Forum";
+const checkUsernameTakenMethod = "isUserNameTaken";
 const signUpMethod = "signUp";
 
 class UsernameFormContainer extends Component {
@@ -18,11 +19,14 @@ class UsernameFormContainer extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.completeAction = this.completeAction.bind(this);
 
-        this.contracts = context.drizzle.contracts;
+        this.drizzle = context.drizzle;
+        this.contracts = this.drizzle.contracts;
 
         this.state = {
             usernameInput: '',
             error: false,
+            errorHeader: "",
+            errorMessage: "",
             signingUp: false
         };
     }
@@ -33,9 +37,18 @@ class UsernameFormContainer extends Component {
 
     handleSubmit() {
         if (this.state.usernameInput === ''){
-            this.setState({ error: true });
+            this.setState({
+                error: true,
+                errorHeader: "Data Incomplete",
+                errorMessage: "You need to provide a username"
+            });
         } else {
-            this.completeAction();
+            this.checkUsernameTakenDataKey = this.contracts[contract].methods[checkUsernameTakenMethod]
+                .cacheCall(this.state.usernameInput);
+            this.setState({
+                error: false
+            });
+            this.checkingUsernameTaken = true;
         }
     }
 
@@ -57,9 +70,31 @@ class UsernameFormContainer extends Component {
         this.setState({ usernameInput: '' });
     }
 
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps) {
         if (this.state.signingUp && nextProps.user.hasSignedUp){
             this.props.signedUp();
+        }
+    }
+
+    componentWillUpdate() {
+        if (this.checkingUsernameTaken){
+            let dataFetched = this.drizzle.store.getState()
+                .contracts[contract][checkUsernameTakenMethod][this.checkUsernameTakenDataKey];
+            if (dataFetched){
+                this.checkingUsernameTaken = false;
+                if (dataFetched.value){
+                    this.setState({
+                        error: true,
+                        errorHeader: "Data disapproved",
+                        errorMessage: "This username is already taken"
+                    });
+                } else {
+                    this.setState({
+                        error: false
+                    });
+                    this.completeAction();
+                }
+            }
         }
     }
 
@@ -85,14 +120,14 @@ class UsernameFormContainer extends Component {
                         </Form.Field>
                         <Message
                             error
-                            header='Data Incomplete'
-                            content='You need to provide a username to sign up for an account.'
+                            header={this.state.errorHeader}
+                            content={this.state.errorMessage}
                         />
                         <Button type='submit'>{buttonText}</Button>
                     </Form>
-                    <Dimmer active={this.state.signingUp} page>
+                    <Dimmer active={this.state.signingUp || this.checkingUsernameTaken} page>
                         <Header as='h2' inverted>
-                            <Loader size='large'>Magic elves are processing your noble request.</Loader>
+                            <Loader size='large'>Magic elfs are processing your nobel request.</Loader>
                         </Header>
                     </Dimmer>
                 </div>
@@ -109,7 +144,6 @@ UsernameFormContainer.contextTypes = {
 
 const mapStateToProps = state => {
     return {
-        contracts: state.contracts,
         user: state.user
     }
 };

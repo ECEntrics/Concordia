@@ -35,7 +35,7 @@ class NavBar extends Component {
                     ? <Menu.Item onClick={() => {this.handleItemClick("/profile")}}>
                         Profile
                     </Menu.Item>
-                    :<Menu.Menu position='right'>
+                    :<Menu.Menu position='right' style={{backgroundColor: '#00b5ad'}}>
                         <Menu.Item onClick={() => {this.handleItemClick("/signup")}}>
                             Sign Up
                         </Menu.Item>
