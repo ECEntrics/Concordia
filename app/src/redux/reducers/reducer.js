@@ -1,0 +1,10 @@
+import { combineReducers } from 'redux';
+import { drizzleReducers } from 'drizzle';
+import userReducer from "./userReducer";
+
+const reducer = combineReducers({
+    user: userReducer,
+    ...drizzleReducers
+});
+
+export default reducer;
