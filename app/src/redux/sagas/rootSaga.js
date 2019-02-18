@@ -1,6 +1,6 @@
 import { all, fork } from 'redux-saga/effects'
 import { drizzleSagas } from 'drizzle'
-import userSaga from "./userSaga";
+import userSaga from './userSaga';
 
 export default function* root() {
     let sagas = [...drizzleSagas, userSaga];

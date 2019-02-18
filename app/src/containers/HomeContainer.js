@@ -1,5 +1,16 @@
-import HomeComponent from "../components/HomeComponent";
-import { drizzleConnect } from "drizzle-react";
+import React, { Component } from 'react';
+import {connect} from "react-redux";
+
+class HomeContainer extends Component {
+  render() {
+    return (<div className="App">
+      <div className="section">
+        <h1>Active Account</h1>
+        {this.props.accounts[0]}
+      </div>
+    </div>);
+  }
+}
 
 const mapStateToProps = state => {
   return {
@@ -9,6 +20,4 @@ const mapStateToProps = state => {
   };
 };
 
-const HomeContainer = drizzleConnect(HomeComponent, mapStateToProps);
-
-export default HomeContainer;
+export default connect(mapStateToProps)(HomeContainer);
