@@ -8,10 +8,6 @@ import { Image, Menu } from 'semantic-ui-react'
 import logo from '../assets/images/logo.png';
 
 class NavBarContainer extends Component {
-    constructor(props){
-        super(props);
-    }
-
     render() {
         return (
             <Menu fixed='top' inverted>
