@@ -1,5 +1,5 @@
 import React from 'react';
-import pageNotFound from '../resources/PageNotFound.jpg';
+import pageNotFound from '../assets/images/PageNotFound.jpg';
 
 const NotFound = () => {
     return (

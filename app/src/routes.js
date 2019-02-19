@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Switch } from 'react-router-dom'
-import NavBar from "./containers/NavBar";
+import NavBarContainer from "./containers/NavBarContainer";
 import HomeContainer from './containers/HomeContainer'
 import SignUpContainer from './containers/SignUpContainer'
 import NotFound from './components/NotFound'
@@ -8,7 +8,7 @@ import NotFound from './components/NotFound'
 
 const routes = (
     <div>
-        <NavBar />
+        <NavBarContainer />
         <Switch>
             <Route exact path="/" component={HomeContainer} />
             <Route path="/signup" component={SignUpContainer} />
