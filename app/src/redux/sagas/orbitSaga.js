@@ -8,8 +8,8 @@ function* getOrbitDBInfo() {
     yield put({type: 'ORRBIT_GETTING_INFO', ...[]});
     const account = yield call(getCurrentAccount);
     if(account!==latestAccount) {
-        console.log("Deleting local storage..");
-        localStorage.clear();
+        //console.log("Deleting local storage..");
+        //localStorage.clear();
         const txObj1 = yield call(contract.methods["hasUserSignedUp"], ...[account]);
         try {
             const callResult = yield call(txObj1.call, {address:account});
