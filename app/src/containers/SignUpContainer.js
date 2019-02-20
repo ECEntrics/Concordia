@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 
 import { Header } from 'semantic-ui-react';
-import {bindActionCreators} from "redux";
-import {push} from "connected-react-router";
 import {connect} from "react-redux";
 
 class SignUp extends Component {
@@ -29,10 +27,6 @@ class SignUp extends Component {
         );
     }
 }
-const mapDispatchToProps = dispatch => bindActionCreators({
-    navigateTo: () => push()
-}, dispatch);
-
 
 const mapStateToProps = state => {
     return {
@@ -40,7 +34,7 @@ const mapStateToProps = state => {
     }
 };
 
-const SignUpContainer = connect(mapStateToProps, mapDispatchToProps)(SignUp);
+const SignUpContainer = connect(mapStateToProps)(SignUp);
 
 export default SignUpContainer;
 
