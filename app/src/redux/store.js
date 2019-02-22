@@ -27,8 +27,6 @@ const store = createStore(
     composedEnhancers
 );
 
-new Drizzle(drizzleOptions, store);
-
 sagaMiddleware.run(rootSaga);
 
 export default store;

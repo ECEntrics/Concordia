@@ -35,7 +35,7 @@ function* getOrbitDBInfo() {
 function* orbitSaga() {
     yield take("DRIZZLE_UTILS_SAGA_INITIALIZED");
     yield take('IPFS_INITIALIZED');
-    yield takeLatest("ACCOUNT_CHANGED", getOrbitDBInfo);
+    yield takeLatest("ACCOUNT_CHANGED", getOrbitDBInfo);    //TODO: takeEvery (?)
 }
 
 export default orbitSaga;

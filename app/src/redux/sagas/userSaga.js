@@ -1,4 +1,4 @@
-import { call, put, take, takeEvery } from 'redux-saga/effects'
+import {call, put, select, take, takeEvery} from 'redux-saga/effects'
 
 import { contract, getCurrentAccount } from './drizzleUtilsSaga';
 
@@ -12,21 +12,26 @@ function* updateUserData() {
     }
     const txObj1 = yield call(contract.methods["hasUserSignedUp"], ...[account]);
     try {
+        const userState = yield call(getUserState);
         const callResult = yield call(txObj1.call, {address:account});
         if(callResult) {
             const txObj2 = yield call(contract.methods["getUsername"], ...[account]);
             const username = yield call(txObj2.call, {address:account});
-            const dispatchArgs = {
-                address: account,
-                username: username
-            };
-            yield put({type: 'USER_HAS_SIGNED_UP', ...dispatchArgs});
+            if(account!==userState.address || username!==userState.username){
+                const dispatchArgs = {
+                    address: account,
+                    username: username
+                };
+                yield put({type: 'USER_DATA_UPDATED_(AUTHENTICATED)', ...dispatchArgs});
+            }
         }
         else{
-            const dispatchArgs = {
-                address: account
-            };
-            yield put({type: 'USER_IS_GUEST', ...dispatchArgs});
+            if(account!==userState.address){
+                const dispatchArgs = {
+                    address: account
+                };
+                yield put({type: 'USER_DATA_UPDATED_(GUEST)', ...dispatchArgs});
+            }
         }
     }
     catch (error) {
@@ -35,6 +40,9 @@ function* updateUserData() {
     }
 }
 
+function* getUserState(){
+    return yield select((state) => state.user);
+}
 
 function* userSaga() {
     yield take("DRIZZLE_UTILS_SAGA_INITIALIZED");
