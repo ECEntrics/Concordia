@@ -1,17 +1,17 @@
 import React from 'react'
-import { Route, Switch } from 'react-router-dom'
-import PrivateRoute from './PrivateRoute.js';
+import { Route, Redirect, Switch } from 'react-router-dom'
 import NavBarContainer from '../containers/NavBarContainer';
 import HomeContainer from '../containers/HomeContainer'
 import SignUpContainer from '../containers/SignUpContainer'
 import NotFound from '../components/NotFound'
-
+import {drizzle} from '../index'
 
 const routes = (
     <div>
         <NavBarContainer />
         <Switch>
-            <PrivateRoute exact path="/" component={HomeContainer} />
+            <Route exact path="/" component={HomeContainer} />
+            <Redirect from='/home' to="/" />
             <Route path="/signup" component={SignUpContainer} />
             <Route component={NotFound} />
         </Switch>

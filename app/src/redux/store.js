@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import { createBrowserHistory } from 'history'
 import createSagaMiddleware from 'redux-saga';
-import {Drizzle, generateContractsInitialState} from 'drizzle';
+import {generateContractsInitialState} from 'drizzle';
 import {routerMiddleware} from 'connected-react-router';
 
 import rootSaga from './sagas/rootSaga';

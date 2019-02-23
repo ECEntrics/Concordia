@@ -2,8 +2,15 @@ import React, { Component } from 'react';
 
 import { Header } from 'semantic-ui-react';
 import {connect} from "react-redux";
+import UsernameFormContainer from './UsernameFormContainer';
 
 class SignUp extends Component {
+    componentDidUpdate(prevProps) {
+        if (this.props.user.hasSignedUp && !prevProps.user.hasSignedUp){
+            this.props.history.push("/");
+        }
+    }
+
     render() {
         return (
             this.props.user.hasSignedUp
@@ -21,7 +28,7 @@ class SignUp extends Component {
                         <p className="no-margin">
                             <strong>Account address:</strong> {this.props.user.address}
                         </p>
-                        UsernameFormContainer
+                        <UsernameFormContainer />
                     </div>
                 </div>)
         );
@@ -37,4 +44,3 @@ const mapStateToProps = state => {
 const SignUpContainer = connect(mapStateToProps)(SignUp);
 
 export default SignUpContainer;
-
