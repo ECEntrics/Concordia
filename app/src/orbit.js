@@ -15,7 +15,7 @@ function initIPFS(){
 }
 
 async function createDatabases() {
-    orbitdb = new OrbitDB(ipfs);
+    orbitdb = await OrbitDB.createInstance(ipfs);
     topicsDB = await orbitdb.keyvalue('topics');
     postsDB = await orbitdb.keyvalue('posts');
     store.dispatch({
@@ -25,20 +25,42 @@ async function createDatabases() {
         postsDB: postsDB,
         id: orbitdb.id
     });
-    return {id: orbitdb.id, topicsDB: topicsDB.address.root, postsDB: postsDB.address.root,
-        publicKey: orbitdb.key.getPublic('hex'), privateKey:orbitdb.key.getPrivate('hex')};
+
+    const identityKey = orbitdb.keystore.getKey(orbitdb.identity.id);
+    const orbitKey = orbitdb.keystore.getKey(orbitdb.id);
+
+    const returnValue = {
+        identityId: orbitdb.identity.id,
+        identityPublicKey: identityKey.getPublic('hex'),
+        identityPrivateKey: identityKey.getPrivate('hex'),
+        orbitId: orbitdb.id,
+        orbitPublicKey: orbitKey.getPublic('hex'),
+        orbitPrivateKey: orbitKey.getPrivate('hex'),
+        topicsDB: topicsDB.address.root,
+        postsDB: postsDB.address.root
+    };
+    console.dir(returnValue);
+
+    return returnValue;
 }
 
-async function loadDatabases(id,mTopicsDB, mPostsDB,publicKey,privateKey) {
+async function loadDatabases(identityId, identityPublicKey, identityPrivateKey,
+                             orbitId, orbitPublicKey, orbitPrivateKey, topicsDB, postsDB) {
     let directory = "./orbitdb";
-    let keystore = Keystore.create(path.join(directory, id, '/keystore'));
-    keystore._storage.setItem(id, JSON.stringify({
-        publicKey: publicKey,
-        privateKey: privateKey
+    let keystore = Keystore.create(path.join(directory, identityId, '/keystore'));
+    keystore._storage.setItem(identityId, JSON.stringify({
+        publicKey: identityPublicKey,
+        privateKey: identityPrivateKey
     }));
-    orbitdb = new OrbitDB(ipfs,directory,{peerId:id, keystore:keystore});
-    topicsDB = await orbitdb.keyvalue('/orbitdb/' + mTopicsDB +'/topics');
-    postsDB = await orbitdb.keyvalue('/orbitdb/' + mPostsDB +'/posts');
+
+    keystore._storage.setItem(orbitId, JSON.stringify({
+        publicKey: orbitPublicKey,
+        privateKey: orbitPrivateKey
+    }));
+
+    orbitdb = await OrbitDB.createInstance(ipfs, {directory: directory, peerId:identityId, keystore:keystore});
+    topicsDB = await orbitdb.keyvalue('/orbitdb/' + topicsDB +'/topics');
+    postsDB = await orbitdb.keyvalue('/orbitdb/' + postsDB +'/posts');
 
     topicsDB.load();
     postsDB.load();
