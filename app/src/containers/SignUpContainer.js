@@ -6,9 +6,8 @@ import UsernameFormContainer from './UsernameFormContainer';
 
 class SignUp extends Component {
     componentDidUpdate(prevProps) {
-        if (this.props.user.hasSignedUp && !prevProps.user.hasSignedUp){
+        if (this.props.user.hasSignedUp && !prevProps.user.hasSignedUp)
             this.props.history.push("/");
-        }
     }
 
     render() {

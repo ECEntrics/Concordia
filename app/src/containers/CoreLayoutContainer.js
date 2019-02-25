@@ -4,7 +4,7 @@ import NavBarContainer from './NavBarContainer';
 /*import TransactionsMonitorContainer from '../../containers/TransactionsMonitorContainer';*/
 
 // Styles
-import '../assets/fonts/fontawesome-free-5.7.2/all.js';
+import '../assets/fonts/fontawesome-free-5.7.2/all.js'; //TODO: check https://fontawesome.com/how-to-use/on-the-web/setup/using-package-managers
 import '../assets/css/App.css';
 import '../assets/css/sign-up-container.css';
 

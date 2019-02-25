@@ -12,7 +12,7 @@ const checkUsernameTakenMethod = "isUserNameTaken";
 const signUpMethod = "signUp";
 
 class UsernameFormContainer extends Component {
-    constructor(props, context) {
+    constructor(props) {
         super(props);
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -33,7 +33,7 @@ class UsernameFormContainer extends Component {
         this.setState({
             [name]: value,
             error: false
-        })
+        });
         if (value !== '') {
             if (this.checkedUsernames.length > 0) {
                 if (this.checkedUsernames.some(e => e.usernameChecked === value)){
@@ -78,16 +78,16 @@ class UsernameFormContainer extends Component {
 
     componentDidUpdate() {
         if (this.state.signingUp) {
-            var txHash = this.props.transactionStack[this.stackId];
+            const txHash = this.props.transactionStack[this.stackId];
             if (txHash && this.props.transactions[txHash].status === "error") {
                 this.setState({signingUp: false});
             }
         } else {
-            var temp = Object.values(this.props.contracts[contract][checkUsernameTakenMethod]);
+            const temp = Object.values(this.props.contracts[contract][checkUsernameTakenMethod]);
             this.checkedUsernames = temp.map(checked => {return {
                 usernameChecked: checked.args[0],
                 isTaken: checked.value
-            }})
+            }});
     
             if (this.checkedUsernames.length > 0){
                 this.checkedUsernames.forEach( checked => {
@@ -111,7 +111,7 @@ class UsernameFormContainer extends Component {
         if(hasSignedUp !== null) {
             const buttonText = hasSignedUp ? "Update" : "Sign Up";
             const placeholderText = hasSignedUp ? this.props.user.username : "Username";
-            var withError = this.state.error && {error: true};
+            const withError = this.state.error && {error: true};
 
             return(
                 <div>
@@ -134,7 +134,7 @@ class UsernameFormContainer extends Component {
                     </Form>
                     <Dimmer active={this.state.signingUp} page>
                         <Header as='h2' inverted>
-                            <Loader size='large'>Magic elfs are processing your nobel request.</Loader>
+                            <Loader size='large'>Magic elves are processing your noble request.</Loader>
                         </Header>
                     </Dimmer>
                 </div>
