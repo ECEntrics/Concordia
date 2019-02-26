@@ -74,7 +74,7 @@ class UsernameFormContainer extends Component {
                     orbitdbInfo.orbitPrivateKey,
                     orbitdbInfo.topicsDB,
                     orbitdbInfo.postsDB
-                ]);
+                ], { from: this.props.account});
         }
         /*this.setState({ usernameInput: '' });*/
     }
@@ -101,7 +101,6 @@ class UsernameFormContainer extends Component {
                             errorHeader: "Data disapproved",
                             errorMessage: "This username is already taken"
                         });
-                        return
                     }
                 })
             }
@@ -150,6 +149,7 @@ class UsernameFormContainer extends Component {
 
 const mapStateToProps = state => {
     return {
+        account: state.accounts[0],
         contracts: state.contracts,
         transactions: state.transactions,
         transactionStack: state.transactionStack,
