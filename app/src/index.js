@@ -14,7 +14,9 @@ import drizzleOptions from "./config/drizzleOptions";
 
 initIPFS();
 
-export const drizzle = new Drizzle(drizzleOptions, store);
+const drizzle = new Drizzle(drizzleOptions, store);
+
+export { drizzle };
 
 render(
     <Provider store={store}>

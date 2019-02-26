@@ -4,7 +4,7 @@ import { Header } from 'semantic-ui-react';
 import {connect} from "react-redux";
 import UsernameFormContainer from './UsernameFormContainer';
 
-class SignUp extends Component {
+class SignUpContainer extends Component {
     componentDidUpdate(prevProps) {
         if (this.props.user.hasSignedUp && !prevProps.user.hasSignedUp)
             this.props.history.push("/");
@@ -40,6 +40,4 @@ const mapStateToProps = state => {
     }
 };
 
-const SignUpContainer = connect(mapStateToProps)(SignUp);
-
-export default SignUpContainer;
+export default connect(mapStateToProps)(SignUpContainer);

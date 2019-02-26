@@ -53,7 +53,10 @@ class UsernameFormContainer extends Component {
                 errorMessage: "You need to provide a username"
             });
         } else if (!this.state.error) {
-            this.completeAction();
+            // Makes sure current input username has been checked for availability
+            if (this.checkedUsernames.some(e => e.usernameChecked === this.state.usernameInput)){
+                this.completeAction();
+            }
         }
     }
 
@@ -114,6 +117,17 @@ class UsernameFormContainer extends Component {
             const buttonText = hasSignedUp ? "Update" : "Sign Up";
             const placeholderText = hasSignedUp ? this.props.user.username : "Username";
             const withError = this.state.error && {error: true};
+
+            /*var disableSubmit = true;
+            if (this.checkedUsernames.length > 0) {
+                if (this.checkedUsernames.some(e => e.usernameChecked === this.state.usernameInput)){
+                    disableSubmit = false;
+                }
+            } else {
+                disableSubmit = false;
+            }
+
+            disableSubmit = (disableSubmit || this.state.error) && {loading: true};*/
 
             return(
                 <div>

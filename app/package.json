@@ -17,13 +17,18 @@
     "orbit-db-keystore": "^0.1.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.3",
+    "react-content-loader": "^4.0.1",
     "react-dom": "^16.8.3",
+    "react-markdown": "^4.0.6",
     "react-redux": "^6.0.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.1.5",
+    "react-timeago": "^4.4.0",
+    "react-user-avatar": "^1.10.0",
     "redux": "^4.0.1",
     "redux-saga": "^0.16.2",
-    "semantic-ui-react": "^0.85.0"
+    "semantic-ui-react": "^0.85.0",
+    "uuid": "^3.3.2"
   },
   "scripts": {
     "start": "react-scripts start",
