@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { drizzle } from '../index';
-import { withRouter } from 'react-router'
+import { withRouter } from 'react-router-dom'
 
 import { Header } from 'semantic-ui-react';
 

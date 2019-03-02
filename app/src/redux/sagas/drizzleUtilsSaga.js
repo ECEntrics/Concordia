@@ -1,5 +1,4 @@
-import getWeb3 from '@drizzle-utils/get-web3';
-import getContractInstance from '@drizzle-utils/get-contract-instance';
+import { getContractInstance, getWeb3 } from "../../utils/drizzleUtils";
 import { call, put, takeLatest, select } from 'redux-saga/effects'
 
 import Forum from '../../contracts/Forum';
