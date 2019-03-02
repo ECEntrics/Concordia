@@ -27,7 +27,7 @@
     "redux-saga": "^0.16.2",
     "semantic-ui-react": "^0.85.0",
     "uuid": "^3.3.2",
-    "web3": "1.0.0-beta.35"
+    "web3": "1.0.0-beta.46"
   },
   "scripts": {
     "start": "react-scripts start",

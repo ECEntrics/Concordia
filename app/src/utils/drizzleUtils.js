@@ -58,7 +58,7 @@ const getContractInstance = (options = {}) =>
             if (options.artifact) {
                 // if artifact exists, attempt to get network ID and the deployed address
                 const { artifact } = options;
-                const networkId = await web3.eth.net.getId();
+                const networkId = await web3.eth.net.getId();   // web3 v1.0.0-beta.47 breaks here
                 const deployedNetwork = artifact.networks[networkId];
 
                 // if no deployed address is found, instantiate without the address
