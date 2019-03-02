@@ -10,7 +10,7 @@ function* init() {
     if(!initFlag) {
         web3 = yield call(getWeb3);
         contract = yield call(getContractInstance,{
-            web3,
+            web3: web3,
             artifact: Forum
         });
         initFlag=true;

@@ -15,7 +15,8 @@ function initIPFS(){
 }
 
 async function createDatabases() {
-    orbitdb = await OrbitDB.createInstance(ipfs);
+    console.log("Creating databases...");
+    orbitdb = await new OrbitDB(ipfs);
     topicsDB = await orbitdb.keyvalue('topics');
     postsDB = await orbitdb.keyvalue('posts');
     store.dispatch({
@@ -26,13 +27,12 @@ async function createDatabases() {
         id: orbitdb.id
     });
 
-    const identityKey = orbitdb.keystore.getKey(orbitdb.identity.id);
     const orbitKey = orbitdb.keystore.getKey(orbitdb.id);
 
     const returnValue = {
-        identityId: orbitdb.identity.id,
-        identityPublicKey: identityKey.getPublic('hex'),
-        identityPrivateKey: identityKey.getPrivate('hex'),
+        identityId: "Tempus",
+        identityPublicKey: "edax",
+        identityPrivateKey: "rerum",
         orbitId: orbitdb.id,
         orbitPublicKey: orbitKey.getPublic('hex'),
         orbitPrivateKey: orbitKey.getPrivate('hex'),
@@ -46,19 +46,16 @@ async function createDatabases() {
 
 async function loadDatabases(identityId, identityPublicKey, identityPrivateKey,
                              orbitId, orbitPublicKey, orbitPrivateKey, topicsDB, postsDB) {
+    console.log("Loading databases...");
     let directory = "./orbitdb";
-    let keystore = Keystore.create(path.join(directory, identityId, '/keystore'));
-    keystore._storage.setItem(identityId, JSON.stringify({
-        publicKey: identityPublicKey,
-        privateKey: identityPrivateKey
-    }));
+    let keystore = Keystore.create(path.join(directory, orbitId, '/keystore'));
 
     keystore._storage.setItem(orbitId, JSON.stringify({
         publicKey: orbitPublicKey,
         privateKey: orbitPrivateKey
     }));
 
-    orbitdb = await OrbitDB.createInstance(ipfs, {directory: directory, peerId:identityId, keystore:keystore});
+    orbitdb = await new OrbitDB(ipfs, directory, { peerId:orbitId, keystore:keystore});
     topicsDB = await orbitdb.keyvalue('/orbitdb/' + topicsDB +'/topics');
     postsDB = await orbitdb.keyvalue('/orbitdb/' + postsDB +'/posts');
 

@@ -9,7 +9,7 @@ const drizzleOptions = {
     },
     contracts: [Forum],
     events: {
-        Forum: ['UserSignedUp', 'UsernameUpdated']
+        Forum: ['UserSignedUp', 'UsernameUpdated', 'TopicCreated', 'PostCreated']
     },
     polls: {
         accounts: 2000,

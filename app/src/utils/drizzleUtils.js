@@ -1,3 +1,4 @@
+// See also: https://github.com/trufflesuite/drizzle-utils
 const Web3 = require("web3");
 
 const resolveWeb3 = (resolve, options, isBrowser) => {
