@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import NavBarContainer from './NavBarContainer';
+import RightSideBarContainer from './TransactionsMonitorContainer';
 /*import TransactionsMonitorContainer from '../../containers/TransactionsMonitorContainer';*/
 
 // Styles
@@ -33,7 +34,7 @@ class CoreLayout extends Component {
                         </div>
                     </div>
                     <aside className="right-side-panel">
-                        TransactionsMonitorContainer
+                        <RightSideBarContainer />
                     </aside>
                 </div>
             </div>
