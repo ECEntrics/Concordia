@@ -59,8 +59,8 @@ async function loadDatabases(identityId, identityPublicKey, identityPrivateKey,
     topicsDB = await orbitdb.keyvalue('/orbitdb/' + topicsDB +'/topics');
     postsDB = await orbitdb.keyvalue('/orbitdb/' + postsDB +'/posts');
 
-    topicsDB.load();
-    postsDB.load();
+    await topicsDB.load();
+    await postsDB.load();
 
     store.dispatch({
         type: "DATABASES_LOADED",

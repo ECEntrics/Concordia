@@ -10,6 +10,7 @@ function* initTransaction(action) {
         .cacheSend(...[action.transactionDescriptor.params]);
 
     transactionsHistory[dataKey] = action;
+    transactionsHistory[dataKey].state = 'initialized';
 }
 
 function* handleEvent(action) {
@@ -23,13 +24,11 @@ function* handleEvent(action) {
                 //Gets orbit
                 const orbit = yield select((state) => state.orbit);
                 //And saves the topic
-                /*yield call(orbit.topicsDB.put, ...[action.event.returnValues.topicID, {
-                    subject: transactionsHistory[dataKey].userInputs.topicSubject
-                }]);
-                yield call(orbit.postsDB.put, ...[action.event.returnValues.postID, {
-                    subject: transactionsHistory[dataKey].userInputs.topicSubject,
-                    content: transactionsHistory[dataKey].userInputs.topicMessage
-                }]);*/
+                yield call([orbit.topicsDB, 'put'], [action.event.returnValues.topicID,
+                    { subject: transactionsHistory[dataKey].userInputs.topicSubject }]);
+                yield call([orbit.postsDB, 'put'], [action.event.returnValues.postID,
+                    {subject: transactionsHistory[dataKey].userInputs.topicSubject,
+                    content: transactionsHistory[dataKey].userInputs.topicMessage }]);
 
                 transactionsHistory[dataKey].state = 'success';
             }
