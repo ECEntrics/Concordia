@@ -25,6 +25,10 @@ class RightSideBar extends Component {
                 if (this.props.transactions[transactionHash].receipt &&
                     this.props.transactions[transactionHash].receipt.events) {
                     switch (Object.keys(this.props.transactions[transactionHash].receipt.events)[0]){
+                        case 'UserSignedUp':
+                            this.props.history.push("/profile");
+                            this.handleMessageDismiss(null, index);
+                            break;
                         case 'TopicCreated':
                             this.props.history.push("/topic/" +
                                 this.props.transactions[transactionHash].receipt.events.TopicCreated.returnValues.topicID
@@ -32,6 +36,7 @@ class RightSideBar extends Component {
                             this.handleMessageDismiss(null, index);
                             break;
                         default:
+                            this.handleMessageDismiss(null, index);
                             break;
                     }
                 }

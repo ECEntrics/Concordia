@@ -4,6 +4,7 @@ import CoreLayoutContainer from '../containers/CoreLayoutContainer';
 import HomeContainer from '../containers/HomeContainer'
 import SignUpContainer from '../containers/SignUpContainer'
 import StartTopicContainer from '../containers/StartTopicContainer'
+import TopicContainer from '../containers/TopicContainer'
 import NotFound from '../components/NotFound'
 
 const routes = (
@@ -14,6 +15,8 @@ const routes = (
                 <Redirect from='/home' to="/" />
                 <Route path="/signup" component={SignUpContainer} />
                 <Route path="/startTopic" component={StartTopicContainer} />
+                <Route path="/topic/:topicId" component={TopicContainer} />
+                <Route path='/404' component={NotFound} />
                 <Route component={NotFound} />
             </Switch>
         </CoreLayoutContainer>

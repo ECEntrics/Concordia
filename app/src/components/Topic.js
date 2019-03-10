@@ -97,7 +97,8 @@ class Topic extends Component {
 const mapStateToProps = state => {
     return {
         user: state.user,
-        orbitDB: state.orbit
+        orbitDB: state.orbit,
+        topicsDB: state.topicsDB
     }
 }
 

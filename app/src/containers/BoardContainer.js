@@ -21,9 +21,17 @@ class BoardContainer extends Component {
 
         this.handleCreateTopicClick = this.handleCreateTopicClick.bind(this);
 
+        var pageStatus = 'initialized';
+        if (this.props.drizzleStatus['initialized']){
+            this.dataKey = drizzle.contracts[contract].methods[getNumberOfTopicsMethod].cacheCall();
+            pageStatus = 'loading';
+        }
+        if (this.dataKey && this.props.contracts[contract][getNumberOfTopicsMethod][this.dataKey]){
+            pageStatus = 'loaded';
+        }
+
         this.state = {
-            pageLoading: true,
-            pageLoaded: false
+            pageStatus: pageStatus
         }
     }
 
@@ -32,20 +40,21 @@ class BoardContainer extends Component {
     }
 
     componentDidUpdate(){
-        if (this.state.pageLoading && !this.state.pageLoaded && this.props.drizzleStatus['initialized']){
+        if (this.state.pageStatus === 'initialized' &&
+            this.props.drizzleStatus['initialized']){
             this.dataKey = drizzle.contracts[contract].methods[getNumberOfTopicsMethod].cacheCall();
-            this.setState({ pageLoading: false });
+            this.setState({ pageStatus: 'loading' });
         }
-        if (!this.state.pageLoaded && this.dataKey &&
+        if (this.state.pageStatus === 'loading' &&
             this.props.contracts[contract][getNumberOfTopicsMethod][this.dataKey]){
+            this.setState({ pageStatus: 'loaded' });
             /*this.props.store.dispatch(hideProgressBar());*/
-            this.setState({ pageLoaded: true });
         }
     }
 
     render() {
         var boardContents;
-        if (this.dataKey && this.props.contracts[contract][getNumberOfTopicsMethod][this.dataKey]){
+        if (this.state.pageStatus === 'loaded'){
             var numberOfTopics = this.props.contracts[contract][getNumberOfTopicsMethod][this.dataKey].value;
 
             if (numberOfTopics !== '0'){

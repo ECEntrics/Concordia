@@ -31,6 +31,9 @@ class NavBarContainer extends Component {
                         </Menu.Item>
                     </Menu.Menu>
                 }
+                <div className="navBarText">
+                    {this.props.navBarTitle !== '' && <span>{this.props.navBarTitle}</span>}
+                </div>
             </Menu>
         );
     }
@@ -43,6 +46,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 const mapStateToProps = state => {
     return {
         hasSignedUp: state.user.hasSignedUp,
+        navBarTitle: state.interface.navBarTitle
     }
 };
 

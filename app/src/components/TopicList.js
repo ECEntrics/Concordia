@@ -13,23 +13,22 @@ class TopicList extends Component {
 
         this.dataKeys = [];
 
-        this.state = {
-            topicsLoading: true
+        if (this.props.drizzleStatus['initialized']){
+            this.props.topicIDs.forEach( topicID => {
+                if (!this.dataKeys[topicID]) {
+                    this.dataKeys[topicID] = drizzle.contracts[contract].methods[getTopicMethod].cacheCall(topicID);
+                }
+            })
         }
     }
 
     componentDidUpdate(){
-        if (this.state.topicsLoading && this.props.drizzleStatus['initialized']){
-            var topicsLoading = false;
-
+        if (this.props.drizzleStatus['initialized']){
             this.props.topicIDs.forEach( topicID => {
                 if (!this.dataKeys[topicID]) {
                     this.dataKeys[topicID] = drizzle.contracts[contract].methods[getTopicMethod].cacheCall(topicID);
-                    topicsLoading = true;
                 }
             })
-
-            this.setState({ topicsLoading: topicsLoading });
         }
     }
 
@@ -39,6 +38,7 @@ class TopicList extends Component {
                 topicData={(this.dataKeys[topicID] && this.props.contracts[contract][getTopicMethod][this.dataKeys[topicID]])
                     ? this.props.contracts[contract][getTopicMethod][this.dataKeys[topicID]]
                     : null}
+                topicID={topicID}
                 key={topicID} />)
         });
 
