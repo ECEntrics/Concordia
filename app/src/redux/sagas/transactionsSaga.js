@@ -7,20 +7,22 @@ let transactionsHistory = Object.create(null);
 function* initTransaction(action) {
     var dataKey = drizzle.contracts[action.transactionDescriptor.contract]
         .methods[action.transactionDescriptor['method']]
-        .cacheSend(...[action.transactionDescriptor.params]);
+        .cacheSend(...(action.transactionDescriptor.params));
 
     transactionsHistory[dataKey] = action;
     transactionsHistory[dataKey].state = 'initialized';
 }
 
 function* handleEvent(action) {
+    var transactionStack = yield select((state) => state.transactionStack);
+    var dataKey = transactionStack.indexOf(action.event.transactionHash);
+
     switch(action.event.event) {
         case 'TopicCreated':
-            var transactionStack = yield select((state) => state.transactionStack);
-            var dataKey = transactionStack.indexOf(action.event.transactionHash);
             if (dataKey !== -1 &&
                 transactionsHistory[dataKey] &&
                 transactionsHistory[dataKey].state === 'initialized') {
+                transactionsHistory[dataKey].state = 'success';
                 //Gets orbit
                 const orbit = yield select((state) => state.orbit);
                 //And saves the topic
@@ -29,8 +31,19 @@ function* handleEvent(action) {
                 yield call([orbit.postsDB, 'put'], [action.event.returnValues.postID,
                     {subject: transactionsHistory[dataKey].userInputs.topicSubject,
                     content: transactionsHistory[dataKey].userInputs.topicMessage }]);
-
+            }
+            break;
+        case 'PostCreated':
+            if (dataKey !== -1 &&
+                transactionsHistory[dataKey] &&
+                transactionsHistory[dataKey].state === 'initialized') {
                 transactionsHistory[dataKey].state = 'success';
+                //Gets orbit
+                const orbit = yield select((state) => state.orbit);
+                //And saves the topic
+                yield call([orbit.postsDB, 'put'], [action.event.returnValues.postID,
+                    {subject: transactionsHistory[dataKey].userInputs.postSubject,
+                    content: transactionsHistory[dataKey].userInputs.postMessage }]);
             }
             break;
         default:

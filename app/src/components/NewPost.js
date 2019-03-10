@@ -7,7 +7,7 @@ import TimeAgo from 'react-timeago';
 import UserAvatar from 'react-user-avatar';
 import ReactMarkdown from 'react-markdown';
 
-/*import { createPost } from '../redux/actions/transactionsMonitorActions';*/
+import { createPost } from '../redux/actions/transactionsActions';
 
 class NewPost extends Component {
     constructor(props, context) {
@@ -25,7 +25,7 @@ class NewPost extends Component {
             postSubjectInputEmptySubmit: false,
             postContentInputEmptySubmit: false,
             previewEnabled: false,
-            previewDate: ""
+            previewDate: ''
         };
     }
 
@@ -38,14 +38,14 @@ class NewPost extends Component {
             return;
         }
 
-        /*this.props.store.dispatch(
+        this.props.dispatch(
             createPost(this.props.topicID,
                 {
                     postSubject: this.state.postSubjectInput,
                     postMessage: this.state.postContentInput
                 }
             )
-        );*/
+        );
         this.props.onPostCreated();
     }
 
