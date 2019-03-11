@@ -29,6 +29,10 @@ class RightSideBar extends Component {
                             this.props.history.push("/profile");
                             this.handleMessageDismiss(null, index);
                             break;
+                        case 'UsernameUpdated':
+                            this.props.history.push("/profile");
+                            this.handleMessageDismiss(null, index);
+                            break;
                         case 'TopicCreated':
                             this.props.history.push("/topic/" +
                                 this.props.transactions[transactionHash].receipt.events.TopicCreated.returnValues.topicID

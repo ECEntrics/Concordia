@@ -5,7 +5,7 @@ import { Button, Message, Form, Dimmer, Loader, Header } from 'semantic-ui-react
 
 import { drizzle } from '../index';
 import { createDatabases } from '../orbit';
-/*import { updateUsername } from '../redux/actions/transactionsMonitorActions';*/
+import { updateUsername } from '../redux/actions/transactionsActions';
 
 const contract = "Forum";
 const checkUsernameTakenMethod = "isUserNameTaken";
@@ -62,8 +62,7 @@ class UsernameFormContainer extends Component {
 
     async completeAction() {
         if(this.props.user.hasSignedUp){
-            //TODO
-            /*this.props.store.dispatch(updateUsername(...[this.state.usernameInput], null));*/
+            this.props.dispatch(updateUsername(...[this.state.usernameInput], null));
         } else {
             this.setState({ signingUp: true });
             const orbitdbInfo = await createDatabases();
@@ -79,13 +78,15 @@ class UsernameFormContainer extends Component {
                     orbitdbInfo.postsDB
                 ], { from: this.props.account});
         }
-        /*this.setState({ usernameInput: '' });*/
+        this.setState({ usernameInput: '' });
     }
 
     componentDidUpdate() {
         if (this.state.signingUp) {
             const txHash = this.props.transactionStack[this.stackId];
-            if (txHash && this.props.transactions[txHash].status === "error") {
+            if (txHash && 
+                this.props.transactions[txHash] &&
+                this.props.transactions[txHash].status === "error") {
                 this.setState({signingUp: false});
             }
         } else {
