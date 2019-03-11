@@ -39,6 +39,14 @@ class RightSideBar extends Component {
                             );
                             this.handleMessageDismiss(null, index);
                             break;
+                        case 'PostCreated':
+                            this.props.history.push("/topic/" +
+                                this.props.transactions[transactionHash].receipt.events.PostCreated.returnValues.topicID +
+                                "/" +
+                                this.props.transactions[transactionHash].receipt.events.PostCreated.returnValues.postID
+                            );
+                            this.handleMessageDismiss(null, index);
+                            break;
                         default:
                             this.handleMessageDismiss(null, index);
                             break;

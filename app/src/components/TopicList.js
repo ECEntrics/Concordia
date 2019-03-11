@@ -12,24 +12,37 @@ class TopicList extends Component {
         super(props);
 
         this.getBlockchainData = this.getBlockchainData.bind(this);
-        this.dataKeys = [];
+
+        this.state = {
+            dataKeys: []
+        }
     }
 
     getBlockchainData(){
         if (this.props.drizzleStatus['initialized']){
+            let dataKeysShallowCopy = this.state.dataKeys.slice();
+            let fetchingNewData = false;
+
             this.props.topicIDs.forEach( topicID => {
-                if (!this.dataKeys[topicID]) {
-                    this.dataKeys[topicID] = drizzle.contracts[contract].methods[getTopicMethod].cacheCall(topicID);
+                if (!this.state.dataKeys[topicID]) {
+                    dataKeysShallowCopy[topicID] = drizzle.contracts[contract].methods[getTopicMethod].cacheCall(topicID);
+                    fetchingNewData = true;
                 }
             })
+
+            if (fetchingNewData){
+                this.setState({
+                    dataKeys: dataKeysShallowCopy
+                });
+            }
         }
     }
 
     render() {
-        const topics = this.props.topicIDs.map((topicID) => {
+        const topics = this.props.topicIDs.map( topicID => {
             return (<Topic
-                topicData={(this.dataKeys[topicID] && this.props.contracts[contract][getTopicMethod][this.dataKeys[topicID]])
-                    ? this.props.contracts[contract][getTopicMethod][this.dataKeys[topicID]]
+                topicData={(this.state.dataKeys[topicID] && this.props.contracts[contract][getTopicMethod][this.state.dataKeys[topicID]])
+                    ? this.props.contracts[contract][getTopicMethod][this.state.dataKeys[topicID]]
                     : null}
                 topicID={topicID}
                 key={topicID} />)

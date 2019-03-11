@@ -12,24 +12,37 @@ class PostList extends Component {
         super(props);
 
         this.getBlockchainData = this.getBlockchainData.bind(this);
-        this.dataKeys = [];
+
+        this.state = {
+            dataKeys: []
+        }
     }
 
     getBlockchainData(){
         if (this.props.drizzleStatus['initialized']){
+            let dataKeysShallowCopy = this.state.dataKeys.slice();
+            let fetchingNewData = false;
+
             this.props.postIDs.forEach( postID => {
-                if (!this.dataKeys[postID]) {
-                    this.dataKeys[postID] = drizzle.contracts[contract].methods[getPostMethod].cacheCall(postID);
+                if (!this.state.dataKeys[postID]) {
+                    dataKeysShallowCopy[postID] = drizzle.contracts[contract].methods[getPostMethod].cacheCall(postID);
+                    fetchingNewData = true;
                 }
             })
+
+            if (fetchingNewData){
+                this.setState({
+                    dataKeys: dataKeysShallowCopy
+                });
+            }
         }
     }
 
     render() {
         const posts = this.props.postIDs.map((postID, index) => {
             return (<Post
-                postData={(this.dataKeys[postID] && this.props.contracts[contract][getPostMethod][this.dataKeys[postID]])
-                    ? this.props.contracts[contract][getPostMethod][this.dataKeys[postID]]
+                postData={(this.state.dataKeys[postID] && this.props.contracts[contract][getPostMethod][this.state.dataKeys[postID]])
+                    ? this.props.contracts[contract][getPostMethod][this.state.dataKeys[postID]]
                     : null}
                 avatarUrl={""}
                 postIndex={index}

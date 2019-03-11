@@ -127,7 +127,7 @@ class Post extends Component {
                                                 primaryColor="#b2e8e6" secondaryColor="#00b5ad" >
                                                     <rect x="0" y="0" rx="3" ry="3" width="75" height="5.5" />
                                                 </ContentLoader>
-                                                : 'Subject:' + this.state.postSubject
+                                                : 'Subject: ' + this.state.postSubject
                                                 }
                                             </strong>
                                         </span>
