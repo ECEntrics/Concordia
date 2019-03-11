@@ -17,6 +17,7 @@ class Post extends Component {
     constructor(props) {
         super(props);
 
+        this.getBlockchainData = this.getBlockchainData.bind(this);
         this.fetchPost = this.fetchPost.bind(this);
         if (props.getFocus){
             this.postRef = React.createRef();
@@ -28,6 +29,15 @@ class Post extends Component {
             postSubject: '',
             readyForAnimation: false,
             animateOnToggle: true
+        }
+    }
+
+    getBlockchainData() {
+        if (this.props.postData &&
+            this.props.orbitDB.orbitdb &&
+            this.state.fetchPostDataStatus === "pending") {
+            this.setState({ fetchPostDataStatus: 'fetching' });
+            this.fetchPost(this.props.postID);
         }
     }
 
@@ -160,11 +170,12 @@ class Post extends Component {
         );
     }
 
-    componentDidUpdate() {
-        if (this.props.postData && this.state.fetchPostDataStatus === "pending") {
-            this.setState({ fetchPostDataStatus: 'fetching' });
-            /*this.fetchPost(this.props.postID);*/
-        }
+    componentDidMount() {
+        this.getBlockchainData();
+    }
+
+    componentDidUpdate(){
+        this.getBlockchainData();
         if (this.state.readyForAnimation){
             if (this.postRef){
                 setTimeout(() => {

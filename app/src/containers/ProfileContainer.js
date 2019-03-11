@@ -28,65 +28,28 @@ class ProfileContainer extends Component {
     constructor(props) {
         super(props);
 
+        this.getBlockchainData = this.getBlockchainData.bind(this);
+
         this.dataKey = [];
         var address = this.props.match.params.address
             ? this.props.match.params.address
             : this.props.user.address;
 
-        var pageStatus = 'initialized';
-        if (this.props.drizzleStatus['initialized']) {
-            callsInfo.forEach((call, index) => {
-                this.dataKey[index] = drizzle.contracts[call.contract]
-                    .methods[call.method].cacheCall(address);
-            })
-            pageStatus = 'loading';
-        }
-        if (this.dataKey.length !== 0) {
-            pageStatus = 'loaded';
-            callsInfo.forEach((call, index) => {
-                if (!this.props.contracts[call.contract][call.method][this.dataKey[index]]) {
-                    pageStatus = 'loading';
-                    return;
-                }
-            })
-        }
-        if (pageStatus === 'loaded'){
-            var username = '';
-            var topicIDs = null;
-            var postIDs = null;
-
-            let transaction = this.props.contracts[callsInfo[0].contract][callsInfo[0].method][this.dataKey[0]];
-            if (transaction){
-                username = transaction.value;
-                this.props.setNavBarTitle(username);
-            }
-            transaction = this.props.contracts[callsInfo[1].contract][callsInfo[1].method][this.dataKey[1]];
-            if (transaction){
-                topicIDs = transaction.value;
-            }
-            transaction = this.props.contracts[callsInfo[2].contract][callsInfo[2].method][this.dataKey[2]];
-            if (transaction){
-                postIDs = transaction.value;
-            }
-
-            /*this.props.store.dispatch(hideProgressBar());*/
-        }
-
         this.state = {
-            pageStatus: pageStatus,
+            pageStatus: 'initialized',
             userAddress: address,
-            username: username ? username : '',
-            topicIDs: topicIDs ? topicIDs : null,
-            postIDs: postIDs ? postIDs : null
+            username: '',
+            topicIDs: null,
+            postIDs: null
         };
     }
 
-    componentDidUpdate(){
+    getBlockchainData() {
         if (this.state.pageStatus === 'initialized' &&
             this.props.drizzleStatus['initialized']) {
             callsInfo.forEach((call, index) => {
                 this.dataKey[index] = drizzle.contracts[call.contract]
-                    .methods[call.method].cacheCall(this.props.match.params.address);
+                    .methods[call.method].cacheCall(this.state.userAddress);
             })
             this.setState({ pageStatus: 'loading' });
         }
@@ -193,6 +156,14 @@ class ProfileContainer extends Component {
                     renderActiveOnly={false} />
             </div>
         );
+    }
+
+    componentDidMount() {
+        this.getBlockchainData();
+    }
+
+    componentDidUpdate(){
+        this.getBlockchainData();
     }
 
     componentWillUnmount() {

@@ -22,44 +22,42 @@ class TopicContainer extends Component {
             this.props.navigateTo('/404');
         }
 
+        this.getBlockchainData = this.getBlockchainData.bind(this);
         this.fetchTopicSubject = this.fetchTopicSubject.bind(this);
         this.togglePostingState = this.togglePostingState.bind(this);
         this.postCreated = this.postCreated.bind(this);
 
-        var pageStatus = 'initialized';
-        if (this.props.drizzleStatus['initialized']) {
-            this.dataKey = drizzle.contracts[contract].methods[getTopicMethod].cacheCall(this.props.match.params.topicId);
-            pageStatus = 'loading';
-        }
-        if (this.dataKey && this.props.contracts[contract][getTopicMethod][this.dataKey]) {
-            pageStatus = 'loaded';
-        }
-
         this.state = {
-            pageStatus: pageStatus,
-            topicID: this.props.match.params.topicId,
+            pageStatus: 'initialized',
+            topicID: parseInt(this.props.match.params.topicId),
             topicSubject: null,
             postFocus: this.props.match.params.postId && /^[0-9]+$/.test(this.props.match.params.postId)
                 ? this.props.match.params.postId
                 : null,
-            fetchTopicSubjectStatus: null,
+            fetchTopicSubjectStatus: 'pending',
             posting: false
         };
     }
 
-    componentDidUpdate() {
+    getBlockchainData() {
         if (this.state.pageStatus === 'initialized' &&
             this.props.drizzleStatus['initialized']) {
-            this.dataKey = drizzle.contracts[contract].methods[getTopicMethod].cacheCall(this.state.topicId);
+            this.dataKey = drizzle.contracts[contract].methods[getTopicMethod].cacheCall(this.state.topicID);
             this.setState({ pageStatus: 'loading' });
         }
         if (this.state.pageStatus === 'loading' &&
             this.props.contracts[contract][getTopicMethod][this.dataKey]) {
             this.setState({ pageStatus: 'loaded' });
-            if (this.state.fetchTopicSubjectStatus === null){
-                this.setState({ fetchTopicSubjectStatus: "fetching"})
-                /*this.fetchTopicSubject(this.props.contracts[contract][getTopicMethod][this.dataKey].value[0]);*/
+            if (this.props.orbitDB.orbitdb !== null){
+                this.fetchTopicSubject(this.props.contracts[contract][getTopicMethod][this.dataKey].value[0]);
+                this.setState({ fetchTopicSubjectStatus: 'fetching' });
             }
+        }
+        if (this.state.pageStatus === 'loaded' &&
+            this.state.fetchTopicSubjectStatus === 'pending' &&
+            this.props.orbitDB.orbitdb !== null) {
+            this.fetchTopicSubject(this.props.contracts[contract][getTopicMethod][this.dataKey].value[0]);
+            this.setState({ fetchTopicSubjectStatus: 'fetching' });
         }
     }
 
@@ -85,8 +83,8 @@ class TopicContainer extends Component {
 
         this.props.setNavBarTitle(orbitData['subject']);
         this.setState({
-            'topicSubject': orbitData['subject'],
-            fetchTopicSubjectStatus: "fetched"
+            topicSubject: orbitData['subject'],
+            fetchTopicSubjectStatus: 'fetched'
         });
     }
 
@@ -136,6 +134,18 @@ class TopicContainer extends Component {
                 }
             </div>
         );
+    }
+
+    componentDidMount() {
+        this.getBlockchainData();
+    }
+
+    componentDidUpdate() {
+        this.getBlockchainData();
+    }
+
+    componentWillUnmount() {
+        this.props.setNavBarTitle('');
     }
 }
 

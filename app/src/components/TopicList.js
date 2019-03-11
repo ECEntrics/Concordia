@@ -11,18 +11,11 @@ class TopicList extends Component {
     constructor(props) {
         super(props);
 
+        this.getBlockchainData = this.getBlockchainData.bind(this);
         this.dataKeys = [];
-
-        if (this.props.drizzleStatus['initialized']){
-            this.props.topicIDs.forEach( topicID => {
-                if (!this.dataKeys[topicID]) {
-                    this.dataKeys[topicID] = drizzle.contracts[contract].methods[getTopicMethod].cacheCall(topicID);
-                }
-            })
-        }
     }
 
-    componentDidUpdate(){
+    getBlockchainData(){
         if (this.props.drizzleStatus['initialized']){
             this.props.topicIDs.forEach( topicID => {
                 if (!this.dataKeys[topicID]) {
@@ -47,6 +40,14 @@ class TopicList extends Component {
                 {topics.slice(0).reverse()}
             </div>
         );
+    }
+
+    componentDidMount() {
+        this.getBlockchainData();
+    }
+
+    componentDidUpdate(){
+        this.getBlockchainData();
     }
 };
 

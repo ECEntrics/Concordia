@@ -19,27 +19,15 @@ class BoardContainer extends Component {
 
         /*this.props.store.dispatch(showProgressBar());*/
 
+        this.getBlockchainData = this.getBlockchainData.bind(this);
         this.handleCreateTopicClick = this.handleCreateTopicClick.bind(this);
 
-        var pageStatus = 'initialized';
-        if (this.props.drizzleStatus['initialized']){
-            this.dataKey = drizzle.contracts[contract].methods[getNumberOfTopicsMethod].cacheCall();
-            pageStatus = 'loading';
-        }
-        if (this.dataKey && this.props.contracts[contract][getNumberOfTopicsMethod][this.dataKey]){
-            pageStatus = 'loaded';
-        }
-
         this.state = {
-            pageStatus: pageStatus
+            pageStatus: 'initialized'
         }
     }
 
-    handleCreateTopicClick() {
-        this.props.history.push("/startTopic");
-    }
-
-    componentDidUpdate(){
+    getBlockchainData() {
         if (this.state.pageStatus === 'initialized' &&
             this.props.drizzleStatus['initialized']){
             this.dataKey = drizzle.contracts[contract].methods[getNumberOfTopicsMethod].cacheCall();
@@ -50,6 +38,10 @@ class BoardContainer extends Component {
             this.setState({ pageStatus: 'loaded' });
             /*this.props.store.dispatch(hideProgressBar());*/
         }
+    }
+
+    handleCreateTopicClick() {
+        this.props.history.push("/startTopic");
     }
 
     render() {
@@ -103,6 +95,14 @@ class BoardContainer extends Component {
                 {boardContents}
             </div>
         );
+    }
+
+    componentDidMount() {
+        this.getBlockchainData();
+    }
+
+    componentDidUpdate(){
+        this.getBlockchainData();
     }
 }
 

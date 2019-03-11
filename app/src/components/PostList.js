@@ -11,18 +11,11 @@ class PostList extends Component {
     constructor(props) {
         super(props);
 
+        this.getBlockchainData = this.getBlockchainData.bind(this);
         this.dataKeys = [];
-
-        if (this.props.drizzleStatus['initialized']){
-            this.props.postIDs.forEach( postID => {
-                if (!this.dataKeys[postID]) {
-                    this.dataKeys[postID] = drizzle.contracts[contract].methods[getPostMethod].cacheCall(postID);
-                }
-            })
-        }
     }
 
-    componentDidUpdate(){
+    getBlockchainData(){
         if (this.props.drizzleStatus['initialized']){
             this.props.postIDs.forEach( postID => {
                 if (!this.dataKeys[postID]) {
@@ -53,6 +46,14 @@ class PostList extends Component {
                 }
             </div>
         );
+    }
+
+    componentDidMount() {
+        this.getBlockchainData();
+    }
+
+    componentDidUpdate(){
+        this.getBlockchainData();
     }
 };
 
