@@ -1,6 +1,7 @@
 import {call, select, take, takeEvery} from 'redux-saga/effects'
 
 import { drizzle } from '../../index'
+import { orbitSagaPut } from '../../orbit'
 
 let transactionsHistory = Object.create(null);
 
@@ -26,11 +27,11 @@ function* handleEvent(action) {
                 //Gets orbit
                 const orbit = yield select((state) => state.orbit);
                 //And saves the topic
-                yield call([orbit.topicsDB, 'put'], [action.event.returnValues.topicID,
-                    { subject: transactionsHistory[dataKey].userInputs.topicSubject }]);
-                yield call([orbit.postsDB, 'put'], [action.event.returnValues.postID,
-                    {subject: transactionsHistory[dataKey].userInputs.topicSubject,
-                    content: transactionsHistory[dataKey].userInputs.topicMessage }]);
+                yield call(orbitSagaPut, orbit.topicsDB, action.event.returnValues.topicID,
+                    { subject: transactionsHistory[dataKey].userInputs.topicSubject });
+                yield call(orbitSagaPut, orbit.postsDB, action.event.returnValues.postID,
+                    { subject: transactionsHistory[dataKey].userInputs.topicSubject,
+                    content: transactionsHistory[dataKey].userInputs.topicMessage });
             }
             break;
         case 'PostCreated':
@@ -41,9 +42,9 @@ function* handleEvent(action) {
                 //Gets orbit
                 const orbit = yield select((state) => state.orbit);
                 //And saves the topic
-                yield call([orbit.postsDB, 'put'], [action.event.returnValues.postID,
+                yield call(orbitSagaPut, orbit.postsDB, action.event.returnValues.postID,
                     {subject: transactionsHistory[dataKey].userInputs.postSubject,
-                    content: transactionsHistory[dataKey].userInputs.postMessage }]);
+                    content: transactionsHistory[dataKey].userInputs.postMessage });
             }
             break;
         default:

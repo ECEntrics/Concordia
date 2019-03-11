@@ -39,7 +39,6 @@ async function createDatabases() {
         topicsDB: topicsDB.address.root,
         postsDB: postsDB.address.root
     };
-    console.dir(returnValue);
 
     return returnValue;
 }
@@ -71,4 +70,8 @@ async function loadDatabases(identityId, identityPublicKey, identityPrivateKey,
     });
 }
 
-export { initIPFS, createDatabases, loadDatabases };
+async function orbitSagaPut(db, key, value) {
+    db.put(key, value);
+}
+
+export { initIPFS, createDatabases, loadDatabases, orbitSagaPut };
