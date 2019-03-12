@@ -1,3 +1,5 @@
+import { IPFS_INITIALIZED, DATABASES_CREATED, DATABASES_LOADED, DATABASES_NOT_READY } from "../actions/orbitActions";
+
 const initialState = {
     ipfsInitialized: false,
     ready: false,
@@ -9,12 +11,12 @@ const initialState = {
 
 const orbitReducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'IPFS_INITIALIZED':
+        case IPFS_INITIALIZED:
             return {
                 ...state,
                 ipfsInitialized: true
             };
-        case 'DATABASES_CREATED':
+        case DATABASES_CREATED:
             return {
                 ...state,
                 ready: true,
@@ -23,7 +25,7 @@ const orbitReducer = (state = initialState, action) => {
                 postsDB: action.postsDB,
                 id: action.id
             };
-        case 'DATABASES_LOADED':
+        case DATABASES_LOADED:
             return {
                 ...state,
                 ready: true,
@@ -32,7 +34,7 @@ const orbitReducer = (state = initialState, action) => {
                 postsDB: action.postsDB,
                 id: action.id
             };
-        case 'DATABASES_NOT_READY':
+        case DATABASES_NOT_READY:
             return {
                 ...state,
                 ready: false,

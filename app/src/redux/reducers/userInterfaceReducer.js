@@ -1,6 +1,4 @@
-import {
-    SET_NAVBAR_TITLE
-} from '../actions/userInterfaceActions';
+import { SET_NAVBAR_TITLE } from '../actions/userInterfaceActions';
 
 const initialState = {
     navBarTitle: ''
@@ -11,7 +9,7 @@ const userInterfaceReducer = (state = initialState, action) => {
         case SET_NAVBAR_TITLE:
             return {
                 navBarTitle: action.title
-            }
+            };
         default:
             return state;
     }

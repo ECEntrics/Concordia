@@ -1,16 +1,17 @@
 import IPFS from 'ipfs';
 import OrbitDB from 'orbit-db';
-import Keystore  from 'orbit-db-keystore';
+import Keystore from 'orbit-db-keystore';
 import path from 'path';
 import store from './redux/store';
 import ipfsOptions from './config/ipfsOptions'
+import { IPFS_INITIALIZED, DATABASES_CREATED, DATABASES_LOADED } from './redux/actions/orbitActions';
 
 let ipfs, orbitdb, topicsDB, postsDB;
 
 function initIPFS(){
     ipfs = new IPFS(ipfsOptions);
     ipfs.on('ready', async () => {
-        store.dispatch({type: "IPFS_INITIALIZED"});
+        store.dispatch({type: IPFS_INITIALIZED});
     });
 }
 
@@ -20,7 +21,7 @@ async function createDatabases() {
     topicsDB = await orbitdb.keyvalue('topics');
     postsDB = await orbitdb.keyvalue('posts');
     store.dispatch({
-        type: "DATABASES_CREATED",
+        type: DATABASES_CREATED,
         orbitdb: orbitdb,
         topicsDB: topicsDB,
         postsDB: postsDB,
@@ -29,7 +30,7 @@ async function createDatabases() {
 
     const orbitKey = orbitdb.keystore.getKey(orbitdb.id);
 
-    const returnValue = {
+    return {
         identityId: "Tempus",
         identityPublicKey: "edax",
         identityPrivateKey: "rerum",
@@ -39,8 +40,6 @@ async function createDatabases() {
         topicsDB: topicsDB.address.root,
         postsDB: postsDB.address.root
     };
-
-    return returnValue;
 }
 
 async function loadDatabases(identityId, identityPublicKey, identityPrivateKey,
@@ -62,7 +61,7 @@ async function loadDatabases(identityId, identityPublicKey, identityPrivateKey,
     await postsDB.load();
 
     store.dispatch({
-        type: "DATABASES_LOADED",
+        type: DATABASES_LOADED,
         orbitdb: orbitdb,
         topicsDB: topicsDB,
         postsDB: postsDB,

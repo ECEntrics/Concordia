@@ -1,6 +1,8 @@
 import { all, call, put, take, takeLatest } from 'redux-saga/effects'
 import { contract, getCurrentAccount} from './drizzleUtilsSaga';
 import { loadDatabases } from '../../orbit'
+import { DRIZZLE_UTILS_SAGA_INITIALIZED } from "../actions/drizzleUtilsActions";
+import { IPFS_INITIALIZED, DATABASES_NOT_READY } from "../actions/orbitActions";
 
 let latestAccount;
 
@@ -22,7 +24,7 @@ function* getOrbitDBInfo() {
                     orbitDBInfo[0], orbitDBInfo[1], orbitDBInfo[2],orbitDBInfo[3], orbitDBInfo[4]);
             }
             else
-                yield put({type: 'DATABASES_NOT_READY', ...[]});
+                yield put({type: DATABASES_NOT_READY, ...[]});
 
             latestAccount=account;
         }
@@ -36,8 +38,8 @@ function* getOrbitDBInfo() {
 
 function* orbitSaga() {
     yield all([
-        take("DRIZZLE_UTILS_SAGA_INITIALIZED"),
-        take("IPFS_INITIALIZED")
+        take(DRIZZLE_UTILS_SAGA_INITIALIZED),
+        take(IPFS_INITIALIZED)
     ]);
     yield takeLatest("ACCOUNT_CHANGED", getOrbitDBInfo);
 }

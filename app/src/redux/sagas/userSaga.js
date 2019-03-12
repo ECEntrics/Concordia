@@ -1,6 +1,7 @@
 import {call, put, select, take, takeEvery} from 'redux-saga/effects'
 
 import { contract, getCurrentAccount } from './drizzleUtilsSaga';
+import { DRIZZLE_UTILS_SAGA_INITIALIZED } from "../actions/drizzleUtilsActions";
 
 let account;
 
@@ -45,7 +46,7 @@ function* getUserState(){
 }
 
 function* userSaga() {
-    yield take("DRIZZLE_UTILS_SAGA_INITIALIZED");
+    yield take(DRIZZLE_UTILS_SAGA_INITIALIZED);
     yield takeEvery("ACCOUNTS_FETCHED", updateUserData);
 }
 

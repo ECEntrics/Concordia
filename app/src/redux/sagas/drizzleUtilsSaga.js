@@ -2,6 +2,8 @@ import { getContractInstance, getWeb3 } from "../../utils/drizzleUtils";
 import { call, put, takeLatest, select } from 'redux-saga/effects'
 
 import Forum from '../../contracts/Forum';
+import { DRIZZLE_UTILS_SAGA_INITIALIZED } from "../actions/drizzleUtilsActions";
+
 
 const accounts = (state) => state.accounts;
 let initFlag, web3, contract;
@@ -14,7 +16,7 @@ function* init() {
             artifact: Forum
         });
         initFlag=true;
-        yield put({type: 'DRIZZLE_UTILS_SAGA_INITIALIZED', ...[]});
+        yield put({type: DRIZZLE_UTILS_SAGA_INITIALIZED, ...[]});
     }
     else
         console.warn("Attempted to reinitialize drizzleUtilsSaga!");
