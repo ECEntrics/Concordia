@@ -6,7 +6,7 @@ import store from './redux/store';
 import ipfsOptions from './config/ipfsOptions'
 import { IPFS_INITIALIZED, DATABASES_CREATED, DATABASES_LOADED } from './redux/actions/orbitActions';
 
-let ipfs, orbitdb, topicsDB, postsDB;
+let ipfs;
 
 function initIPFS(){
     ipfs = new IPFS(ipfsOptions);
@@ -17,9 +17,9 @@ function initIPFS(){
 
 async function createDatabases() {
     console.log("Creating databases...");
-    orbitdb = await new OrbitDB(ipfs);
-    topicsDB = await orbitdb.keyvalue('topics');
-    postsDB = await orbitdb.keyvalue('posts');
+    const orbitdb = await new OrbitDB(ipfs);
+    const topicsDB = await orbitdb.keyvalue('topics');
+    const postsDB = await orbitdb.keyvalue('posts');
     store.dispatch({
         type: DATABASES_CREATED,
         orbitdb: orbitdb,
@@ -43,7 +43,7 @@ async function createDatabases() {
 }
 
 async function loadDatabases(identityId, identityPublicKey, identityPrivateKey,
-                             orbitId, orbitPublicKey, orbitPrivateKey, topicsDB, postsDB) {
+                             orbitId, orbitPublicKey, orbitPrivateKey, topicsDBId, postsDBId) {
     console.log("Loading databases...");
     let directory = "./orbitdb";
     let keystore = Keystore.create(path.join(directory, orbitId, '/keystore'));
@@ -53,9 +53,9 @@ async function loadDatabases(identityId, identityPublicKey, identityPrivateKey,
         privateKey: orbitPrivateKey
     }));
 
-    orbitdb = await new OrbitDB(ipfs, directory, { peerId:orbitId, keystore:keystore});
-    topicsDB = await orbitdb.keyvalue('/orbitdb/' + topicsDB +'/topics');
-    postsDB = await orbitdb.keyvalue('/orbitdb/' + postsDB +'/posts');
+    const orbitdb = await new OrbitDB(ipfs, directory, { peerId:orbitId, keystore:keystore});
+    const topicsDB = await orbitdb.keyvalue('/orbitdb/' + topicsDBId +'/topics');
+    const postsDB = await orbitdb.keyvalue('/orbitdb/' + postsDBId +'/posts');
 
     await topicsDB.load();
     await postsDB.load();
