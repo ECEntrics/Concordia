@@ -55,9 +55,7 @@ async function loadDatabases(identityId, identityPublicKey, identityPrivateKey,
     await topicsDB.load();
     await postsDB.load();
 
-    updateDatabases(DATABASES_LOADED, orbitdb, topicsDB, postsDB);
-
-    return { orbitdb, topicsDB, postsDB };
+    store.dispatch(updateDatabases(DATABASES_LOADED, orbitdb, topicsDB, postsDB));
 }
 
 function getIPFS(){
