@@ -6,7 +6,7 @@ import { Drizzle } from 'drizzle';
 
 import store, {history} from './redux/store';
 import routes from './router/routes'
-import { initIPFS } from './orbit'
+import { initIPFS } from './utils/orbitUtils'
 import * as serviceWorker from './utils/serviceWorker';
 
 import './assets/css/index.css';

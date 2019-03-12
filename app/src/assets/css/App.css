@@ -72,6 +72,7 @@ strong {
   position: absolute;
   left: calc(50% - 596px);
   text-align: center;
+  z-index: -1;  /* Temporary (?) */
 }
 
 .navBarText span {

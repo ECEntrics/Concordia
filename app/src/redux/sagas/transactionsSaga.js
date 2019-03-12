@@ -1,8 +1,8 @@
 import {call, select, take, takeEvery} from 'redux-saga/effects'
 
 import { drizzle } from '../../index'
-import { orbitSagaPut } from '../../orbit'
-import { DRIZZLE_UTILS_SAGA_INITIALIZED } from "../actions/drizzleUtilsActions";
+import { orbitSagaPut } from '../../utils/orbitUtils'
+import { DRIZZLE_UTILS_SAGA_INITIALIZED } from '../actions/drizzleUtilsActions';
 
 let transactionsHistory = Object.create(null);
 

@@ -1,6 +1,7 @@
 import { IPFS_INITIALIZED, DATABASES_CREATED, DATABASES_LOADED, DATABASES_NOT_READY } from "../actions/orbitActions";
 
 const initialState = {
+    ipfs: null,
     ipfsInitialized: false,
     ready: false,
     orbitdb: null,
@@ -14,6 +15,7 @@ const orbitReducer = (state = initialState, action) => {
         case IPFS_INITIALIZED:
             return {
                 ...state,
+                ipfs: action.ipfs,
                 ipfsInitialized: true
             };
         case DATABASES_CREATED:

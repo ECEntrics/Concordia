@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Button, Message, Form, Dimmer, Loader, Header } from 'semantic-ui-react';
 
 import { drizzle } from '../index';
-import { createDatabases } from '../orbit';
+import { createDatabases } from '../utils/orbitUtils';
 import { updateUsername } from '../redux/actions/transactionsActions';
 
 const contract = "Forum";
@@ -84,7 +84,7 @@ class UsernameFormContainer extends Component {
     componentDidUpdate() {
         if (this.state.signingUp) {
             const txHash = this.props.transactionStack[this.stackId];
-            if (txHash && 
+            if (txHash &&
                 this.props.transactions[txHash] &&
                 this.props.transactions[txHash].status === "error") {
                 this.setState({signingUp: false});
@@ -95,7 +95,7 @@ class UsernameFormContainer extends Component {
                 usernameChecked: checked.args[0],
                 isTaken: checked.value
             }});
-    
+
             if (this.checkedUsernames.length > 0){
                 this.checkedUsernames.forEach( checked => {
                     if (checked.usernameChecked === this.state.usernameInput &&

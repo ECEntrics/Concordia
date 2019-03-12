@@ -1,32 +1,26 @@
-import IPFS from 'ipfs';
 import OrbitDB from 'orbit-db';
 import Keystore from 'orbit-db-keystore';
 import path from 'path';
-import store from './redux/store';
-import ipfsOptions from './config/ipfsOptions'
-import { IPFS_INITIALIZED, DATABASES_CREATED, DATABASES_LOADED } from './redux/actions/orbitActions';
-
-let ipfs;
+import store from '../redux/store';
+import { DATABASES_CREATED, DATABASES_LOADED, IPFS_INITIALIZED, updateDatabases } from '../redux/actions/orbitActions';
+import IPFS from "ipfs";
+import ipfsOptions from "../config/ipfsOptions";
 
 function initIPFS(){
-    ipfs = new IPFS(ipfsOptions);
+    const ipfs = new IPFS(ipfsOptions);
     ipfs.on('ready', async () => {
-        store.dispatch({type: IPFS_INITIALIZED});
+        store.dispatch({type: IPFS_INITIALIZED, ipfs});
+        console.log("IPFS initialized.");
     });
 }
 
 async function createDatabases() {
     console.log("Creating databases...");
+    const ipfs = getIPFS();
     const orbitdb = await new OrbitDB(ipfs);
     const topicsDB = await orbitdb.keyvalue('topics');
     const postsDB = await orbitdb.keyvalue('posts');
-    store.dispatch({
-        type: DATABASES_CREATED,
-        orbitdb: orbitdb,
-        topicsDB: topicsDB,
-        postsDB: postsDB,
-        id: orbitdb.id
-    });
+    store.dispatch(updateDatabases(DATABASES_CREATED, orbitdb, topicsDB, postsDB));
 
     const orbitKey = orbitdb.keystore.getKey(orbitdb.id);
 
@@ -53,6 +47,7 @@ async function loadDatabases(identityId, identityPublicKey, identityPrivateKey,
         privateKey: orbitPrivateKey
     }));
 
+    const ipfs = getIPFS();
     const orbitdb = await new OrbitDB(ipfs, directory, { peerId:orbitId, keystore:keystore});
     const topicsDB = await orbitdb.keyvalue('/orbitdb/' + topicsDBId +'/topics');
     const postsDB = await orbitdb.keyvalue('/orbitdb/' + postsDBId +'/posts');
@@ -60,13 +55,13 @@ async function loadDatabases(identityId, identityPublicKey, identityPrivateKey,
     await topicsDB.load();
     await postsDB.load();
 
-    store.dispatch({
-        type: DATABASES_LOADED,
-        orbitdb: orbitdb,
-        topicsDB: topicsDB,
-        postsDB: postsDB,
-        id: orbitdb.id
-    });
+    updateDatabases(DATABASES_LOADED, orbitdb, topicsDB, postsDB);
+
+    return { orbitdb, topicsDB, postsDB };
+}
+
+function getIPFS(){
+    return store.getState().orbit.ipfs;
 }
 
 async function orbitSagaPut(db, key, value) {
