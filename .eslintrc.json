@@ -1,0 +1,15 @@
+{
+  "rules": {
+    "comma-dangle": ["error", "never"],
+    "no-console": "off",
+    "no-unused-vars": "warn",
+    "object-curly-newline": ["error", {
+      "ObjectExpression": "always",
+      "ObjectPattern": { "multiline": true },
+      "ImportDeclaration": "never",
+      "ExportDeclaration": "never"
+    }],
+    "object-curly-spacing": ["error", "always"]
+  },
+  "extends": "airbnb"
+}

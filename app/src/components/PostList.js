@@ -4,77 +4,79 @@ import { drizzle } from '../index';
 
 import Post from './Post';
 
-const contract = "Forum";
-const getPostMethod = "getPost";
+const contract = 'Forum';
+const getPostMethod = 'getPost';
 
 class PostList extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.getBlockchainData = this.getBlockchainData.bind(this);
+    this.getBlockchainData = this.getBlockchainData.bind(this);
 
-        this.state = {
-            dataKeys: []
+    this.state = {
+      dataKeys: []
+    };
+  }
+
+  render() {
+    const posts = this.props.postIDs.map((postID, index) => (
+      <Post
+        postData={(this.state.dataKeys[postID]
+              && this.props.contracts[contract][getPostMethod][this.state.dataKeys[postID]])
+          ? this.props.contracts[contract][getPostMethod][this.state.dataKeys[postID]]
+          : null}
+        avatarUrl=""
+        postIndex={index}
+        postID={postID}
+        getFocus={this.props.focusOnPost === postID}
+        key={postID}
+      />
+    ));
+
+    return (
+      <div>
+        {this.props.recentToTheTop
+          ? posts.slice(0).reverse()
+          : posts
+          }
+      </div>
+    );
+  }
+
+  componentDidMount() {
+    this.getBlockchainData();
+  }
+
+  componentDidUpdate() {
+    this.getBlockchainData();
+  }
+
+  getBlockchainData() {
+    if (this.props.drizzleStatus.initialized) {
+      const dataKeysShallowCopy = this.state.dataKeys.slice();
+      let fetchingNewData = false;
+
+      this.props.postIDs.forEach((postID) => {
+        if (!this.state.dataKeys[postID]) {
+          dataKeysShallowCopy[postID] = drizzle.contracts[contract].methods[getPostMethod].cacheCall(
+            postID,
+          );
+          fetchingNewData = true;
         }
-    }
+      });
 
-    getBlockchainData(){
-        if (this.props.drizzleStatus['initialized']){
-            let dataKeysShallowCopy = this.state.dataKeys.slice();
-            let fetchingNewData = false;
-
-            this.props.postIDs.forEach( postID => {
-                if (!this.state.dataKeys[postID]) {
-                    dataKeysShallowCopy[postID] = drizzle.contracts[contract].methods[getPostMethod].cacheCall(postID);
-                    fetchingNewData = true;
-                }
-            })
-
-            if (fetchingNewData){
-                this.setState({
-                    dataKeys: dataKeysShallowCopy
-                });
-            }
-        }
-    }
-
-    render() {
-        const posts = this.props.postIDs.map((postID, index) => {
-            return (<Post
-                postData={(this.state.dataKeys[postID] && this.props.contracts[contract][getPostMethod][this.state.dataKeys[postID]])
-                    ? this.props.contracts[contract][getPostMethod][this.state.dataKeys[postID]]
-                    : null}
-                avatarUrl={""}
-                postIndex={index}
-                postID={postID}
-                getFocus={this.props.focusOnPost === postID ? true : false}
-                key={postID} />)
+      if (fetchingNewData) {
+        this.setState({
+          dataKeys: dataKeysShallowCopy
         });
-
-        return (
-            <div>
-                {this.props.recentToTheTop
-                    ?posts.slice(0).reverse()
-                    :posts
-                }
-            </div>
-        );
+      }
     }
+  }
+}
 
-    componentDidMount() {
-        this.getBlockchainData();
-    }
-
-    componentDidUpdate(){
-        this.getBlockchainData();
-    }
-};
-
-const mapStateToProps = state => {
-    return {
-        contracts: state.contracts,
-        drizzleStatus: state.drizzleStatus
-    }
-};
+const mapStateToProps = state => ({
+  contracts: state.contracts,
+  drizzleStatus: state.drizzleStatus
+});
 
 export default connect(mapStateToProps)(PostList);

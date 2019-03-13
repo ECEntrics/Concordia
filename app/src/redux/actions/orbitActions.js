@@ -3,14 +3,18 @@ const DATABASES_CREATED = 'DATABASES_CREATED';
 const DATABASES_LOADED = 'DATABASES_LOADED';
 const DATABASES_NOT_READY = 'DATABASES_NOT_READY';
 
-function updateDatabases(type, orbitdb, topicsDB, postsDB){
-    return {
-        type,
-        orbitdb,
-        topicsDB,
-        postsDB,
-        id: orbitdb.id
-    };
+function updateDatabases(type, orbitdb, topicsDB, postsDB) {
+  return {
+    type,
+    orbitdb,
+    topicsDB,
+    postsDB,
+    id: orbitdb.id
+  };
 }
 
-export { DATABASES_CREATED, DATABASES_LOADED, DATABASES_NOT_READY, IPFS_INITIALIZED, updateDatabases }
+export { DATABASES_CREATED,
+  DATABASES_LOADED,
+  DATABASES_NOT_READY,
+  IPFS_INITIALIZED,
+  updateDatabases };

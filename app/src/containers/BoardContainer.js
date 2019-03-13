@@ -1,117 +1,124 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { drizzle } from '../index';
-import { withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom';
 
 import { Header } from 'semantic-ui-react';
+import { drizzle } from '../index';
 
 import TopicList from '../components/TopicList';
 import FloatingButton from '../components/FloatingButton';
 
-/*import { showProgressBar, hideProgressBar } from '../redux/actions/userInterfaceActions';*/
+/* import { showProgressBar, hideProgressBar } from '../redux/actions/userInterfaceActions'; */
 
-const contract = "Forum";
-const getNumberOfTopicsMethod = "getNumberOfTopics";
+const contract = 'Forum';
+const getNumberOfTopicsMethod = 'getNumberOfTopics';
 
 class BoardContainer extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        /*this.props.store.dispatch(showProgressBar());*/
+    /* this.props.store.dispatch(showProgressBar()); */
 
-        this.getBlockchainData = this.getBlockchainData.bind(this);
-        this.handleCreateTopicClick = this.handleCreateTopicClick.bind(this);
+    this.getBlockchainData = this.getBlockchainData.bind(this);
+    this.handleCreateTopicClick = this.handleCreateTopicClick.bind(this);
 
-        this.state = {
-            pageStatus: 'initialized'
-        }
+    this.state = {
+      pageStatus: 'initialized'
+    };
+  }
+
+  getBlockchainData() {
+    if (this.state.pageStatus === 'initialized'
+        && this.props.drizzleStatus.initialized) {
+      this.dataKey = drizzle.contracts[contract].methods[getNumberOfTopicsMethod].cacheCall();
+      this.setState({
+        pageStatus: 'loading'
+      });
     }
-
-    getBlockchainData() {
-        if (this.state.pageStatus === 'initialized' &&
-            this.props.drizzleStatus['initialized']){
-            this.dataKey = drizzle.contracts[contract].methods[getNumberOfTopicsMethod].cacheCall();
-            this.setState({ pageStatus: 'loading' });
-        }
-        if (this.state.pageStatus === 'loading' &&
-            this.props.contracts[contract][getNumberOfTopicsMethod][this.dataKey]){
-            this.setState({ pageStatus: 'loaded' });
-            /*this.props.store.dispatch(hideProgressBar());*/
-        }
+    if (this.state.pageStatus === 'loading'
+        && this.props.contracts[contract][getNumberOfTopicsMethod][this.dataKey]) {
+      this.setState({
+        pageStatus: 'loaded'
+      });
+      /* this.props.store.dispatch(hideProgressBar()); */
     }
+  }
 
-    handleCreateTopicClick() {
-        this.props.history.push("/startTopic");
-    }
+  handleCreateTopicClick() {
+    this.props.history.push('/startTopic');
+  }
 
-    render() {
-        var boardContents;
-        if (this.state.pageStatus === 'loaded'){
-            var numberOfTopics = this.props.contracts[contract][getNumberOfTopicsMethod][this.dataKey].value;
+  render() {
+    let boardContents;
+    if (this.state.pageStatus === 'loaded') {
+      const numberOfTopics = this.props.contracts[contract][getNumberOfTopicsMethod][this.dataKey].value;
 
-            if (numberOfTopics !== '0'){
-                this.topicIDs = [];
-                for (var i = 0; i < numberOfTopics; i++) {
-                    this.topicIDs.push(i);
-                }
-                boardContents = ([
-                    <TopicList topicIDs={this.topicIDs} key="topicList"/>,
-                    <div className="bottom-overlay-pad" key="pad"></div>,
-                    this.props.hasSignedUp &&
-                        <FloatingButton onClick={this.handleCreateTopicClick}
-                            key="createTopicButton"/>
-                ]);
-            } else {
-                if (!this.props.hasSignedUp){
-                    boardContents = (
-                        <div className="vertical-center-in-parent">
-                            <Header color='teal' textAlign='center' as='h2'>
-                                There are no topics yet!
-                            </Header>
-                            <Header color='teal' textAlign='center' as='h4'>
-                                Sign up to be the first to post.
-                            </Header>
-                        </div>
-                    );
-                } else {
-                    boardContents = (
-                        <div className="vertical-center-in-parent">
-                            <Header color='teal' textAlign='center' as='h2'>
-                                There are no topics yet!
-                            </Header>
-                            <Header color='teal' textAlign='center' as='h4'>
-                                Click the add button at the bottom of the page to be the first to post.
-                            </Header>
-                            <FloatingButton onClick={this.handleCreateTopicClick}
-                                key="createTopicButton"/>
-                        </div>
-                    );
-                }
-            }
+      if (numberOfTopics !== '0') {
+        this.topicIDs = [];
+        for (let i = 0; i < numberOfTopics; i++) {
+          this.topicIDs.push(i);
         }
-
-        return (
-            <div className="fill">
-                {boardContents}
-            </div>
+        boardContents = ([
+          <TopicList topicIDs={this.topicIDs} key="topicList" />,
+          <div className="bottom-overlay-pad" key="pad" />,
+          this.props.hasSignedUp
+          && (
+          <FloatingButton
+            onClick={this.handleCreateTopicClick}
+            key="createTopicButton"
+          />
+          )
+        ]);
+      } else if (!this.props.hasSignedUp) {
+        boardContents = (
+          <div className="vertical-center-in-parent">
+            <Header color="teal" textAlign="center" as="h2">
+                  There are no topics yet!
+            </Header>
+            <Header color="teal" textAlign="center" as="h4">
+                  Sign up to be the first to post.
+            </Header>
+          </div>
         );
+      } else {
+        boardContents = (
+          <div className="vertical-center-in-parent">
+            <Header color="teal" textAlign="center" as="h2">
+                  There are no topics yet!
+            </Header>
+            <Header color="teal" textAlign="center" as="h4">
+                  Click the add button at the bottom of the page to be the first
+                  to post.
+            </Header>
+            <FloatingButton
+              onClick={this.handleCreateTopicClick}
+              key="createTopicButton"
+            />
+          </div>
+        );
+      }
     }
 
-    componentDidMount() {
-        this.getBlockchainData();
-    }
+    return (
+      <div className="fill">
+        {boardContents}
+      </div>
+    );
+  }
 
-    componentDidUpdate(){
-        this.getBlockchainData();
-    }
+  componentDidMount() {
+    this.getBlockchainData();
+  }
+
+  componentDidUpdate() {
+    this.getBlockchainData();
+  }
 }
 
-const mapStateToProps = state => {
-    return {
-        contracts: state.contracts,
-        drizzleStatus: state.drizzleStatus,
-        hasSignedUp: state.user.hasSignedUp
-    }
-};
+const mapStateToProps = state => ({
+  contracts: state.contracts,
+  drizzleStatus: state.drizzleStatus,
+  hasSignedUp: state.user.hasSignedUp
+});
 
 export default withRouter(connect(mapStateToProps)(BoardContainer));

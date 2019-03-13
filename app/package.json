@@ -25,7 +25,7 @@
     "react-user-avatar": "1.10.0",
     "redux": "4.0.1",
     "redux-saga": "0.16.2",
-    "semantic-ui-react": "0.85.0",
+    "semantic-ui-react": "0.86.0",
     "uuid": "3.3.2",
     "web3": "1.0.0-beta.48"
   },
@@ -34,9 +34,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": [
     ">0.2%",
