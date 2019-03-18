@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { Button, Form, Icon, TextArea } from 'semantic-ui-react';
@@ -7,7 +8,7 @@ import NewTopicPreview from '../components/NewTopicPreview';
 import { createTopic } from '../redux/actions/transactionsActions';
 
 class StartTopicContainer extends Component {
-  constructor(props, context) {
+  constructor(props) {
     super(props);
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -25,24 +26,27 @@ class StartTopicContainer extends Component {
   }
 
   async validateAndPost() {
-    if (this.state.topicSubjectInput === '' || this.state.topicMessageInput
+    const { topicSubjectInput, topicMessageInput } = this.state;
+    const { dispatch, history } = this.props;
+
+    if (topicSubjectInput === '' || topicMessageInput
         === '') {
       this.setState({
-        topicSubjectInputEmptySubmit: this.state.topicSubjectInput === '',
-        topicMessageInputEmptySubmit: this.state.topicMessageInput === ''
+        topicSubjectInputEmptySubmit: topicSubjectInput === '',
+        topicMessageInputEmptySubmit: topicMessageInput === ''
       });
       return;
     }
 
-    this.props.dispatch(
+    dispatch(
       createTopic(
         {
-          topicSubject: this.state.topicSubjectInput,
-          topicMessage: this.state.topicMessageInput
+          topicSubject: topicSubjectInput,
+          topicMessage: topicMessageInput
         },
       ),
     );
-    this.props.history.push('/home');
+    history.push('/home');
   }
 
   handleInputChange(event) {
@@ -52,7 +56,7 @@ class StartTopicContainer extends Component {
   }
 
   handlePreviewToggle() {
-    this.setState((prevState, props) => ({
+    this.setState((prevState) => ({
       previewEnabled: !prevState.previewEnabled,
       previewDate: this.getDate()
     }));
@@ -69,32 +73,38 @@ class StartTopicContainer extends Component {
   }
 
   render() {
-    if (!this.props.user.hasSignedUp) {
-      this.props.history.push('/signup');
+    const {
+      previewDate, previewEnabled, topicSubjectInputEmptySubmit, topicSubjectInput,
+      topicMessageInputEmptySubmit, topicMessageInput
+    } = this.state;
+    const { user, history } = this.props;
+
+    if (!user.hasSignedUp) {
+      history.push('/signup');
       return (null);
     }
 
-    const previewEditText = this.state.previewEnabled ? 'Edit' : 'Preview';
+    const previewEditText = previewEnabled ? 'Edit' : 'Preview';
     return (
       <div>
-        {this.state.previewEnabled
+        {previewEnabled
           && (
           <NewTopicPreview
-            date={this.state.previewDate}
-            subject={this.state.topicSubjectInput}
-            content={this.state.topicMessageInput}
+            date={previewDate}
+            subject={topicSubjectInput}
+            content={topicMessageInput}
           />
           )
           }
         <Form>
-          {!this.state.previewEnabled
+          {!previewEnabled
             && [
               <Form.Field key="topicSubjectInput">
                 <Form.Input
                   name="topicSubjectInput"
-                  error={this.state.topicSubjectInputEmptySubmit}
+                  error={topicSubjectInputEmptySubmit}
                   type="text"
-                  value={this.state.topicSubjectInput}
+                  value={topicSubjectInput}
                   placeholder="Subject"
                   id="topicSubjectInput"
                   onChange={this.handleInputChange}
@@ -103,10 +113,10 @@ class StartTopicContainer extends Component {
               <TextArea
                 key="topicMessageInput"
                 name="topicMessageInput"
-                className={this.state.topicMessageInputEmptySubmit
+                className={topicMessageInputEmptySubmit
                   ? 'form-textarea-required'
                   : ''}
-                value={this.state.topicMessageInput}
+                value={topicMessageInput}
                 placeholder="Post"
                 id="topicMessageInput"
                 rows={5}
@@ -142,6 +152,12 @@ class StartTopicContainer extends Component {
     );
   }
 }
+
+StartTopicContainer.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired
+};
 
 const mapStateToProps = state => ({
   orbitDB: state.orbitDB,

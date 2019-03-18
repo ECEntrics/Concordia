@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { push } from 'connected-react-router';
 import { Link, withRouter } from 'react-router-dom';
@@ -16,9 +17,11 @@ class Post extends Component {
   constructor(props) {
     super(props);
 
+    const { getFocus } = props;
+
     this.getBlockchainData = this.getBlockchainData.bind(this);
     this.fetchPost = this.fetchPost.bind(this);
-    if (props.getFocus) {
+    if (getFocus) {
       this.postRef = React.createRef();
     }
 
@@ -31,24 +34,55 @@ class Post extends Component {
     };
   }
 
+  componentDidMount() {
+    this.getBlockchainData();
+  }
+
+  componentDidUpdate() {
+    this.getBlockchainData();
+    const { readyForAnimation } = this.state;
+    if (readyForAnimation) {
+      if (this.postRef) {
+        setTimeout(() => {
+          this.postRef.current.scrollIntoView(
+            {
+              block: 'start', behavior: 'smooth'
+            },
+          );
+          setTimeout(() => {
+            this.setState({
+              animateOnToggle: false
+            });
+          }, 300);
+        }, 100);
+        this.setState({
+          readyForAnimation: false
+        });
+      }
+    }
+  }
+
   getBlockchainData() {
-    if (this.props.postData
-        && this.props.orbitDB.orbitdb
-        && this.state.fetchPostDataStatus === 'pending') {
+    const { fetchPostDataStatus } = this.state;
+    const { postData, orbitDB, postID } = this.props;
+
+    if (postData && orbitDB.orbitdb && fetchPostDataStatus === 'pending') {
       this.setState({
         fetchPostDataStatus: 'fetching'
       });
-      this.fetchPost(this.props.postID);
+      this.fetchPost(postID);
     }
   }
 
   async fetchPost(postID) {
+    const { user, postData, orbitDB } = this.props;
     let orbitPostData;
-    if (this.props.postData.value[1] === this.props.user.address) {
-      orbitPostData = this.props.orbitDB.postsDB.get(postID);
+
+    if (postData.value[1] === user.address) {
+      orbitPostData = orbitDB.postsDB.get(postID);
     } else {
-      const fullAddress = `/orbitdb/${this.props.postData.value[0]}/posts`;
-      const store = await this.props.orbitDB.orbitdb.keyvalue(fullAddress);
+      const fullAddress = `/orbitdb/${postData.value[0]}/posts`;
+      const store = await orbitDB.orbitdb.keyvalue(fullAddress);
       await store.load();
 
       const localOrbitData = store.get(postID);
@@ -71,13 +105,16 @@ class Post extends Component {
   }
 
   render() {
-    const avatarView = (this.props.postData
+    const { animateOnToggle, postSubject, postContent } = this.state;
+    const { avatarUrl, postIndex, navigateTo, postData, postID } = this.props;
+
+    const avatarView = (postData
       ? (
         <UserAvatar
           size="52"
           className="inline"
-          src={this.props.avatarUrl}
-          name={this.props.postData.value[2]}
+          src={avatarUrl}
+          name={postData.value[2]}
         />
       )
       : (
@@ -99,23 +136,23 @@ class Post extends Component {
       <Transition
         animation="tada"
         duration={500}
-        visible={this.state.animateOnToggle}
+        visible={animateOnToggle}
       >
         <div className="post" ref={this.postRef ? this.postRef : null}>
           <Divider horizontal>
             <span className="grey-text">
 #
-              {this.props.postIndex}
+              {postIndex}
             </span>
           </Divider>
           <Grid>
             <Grid.Row columns={16} stretched>
               <Grid.Column width={1} className="user-avatar">
-                {this.props.postData !== null
+                {postData !== null
                   ? (
                     <Link
-                      to={`/profile/${this.props.postData.value[1]
-                      }/${this.props.postData.value[2]}`}
+                      to={`/profile/${postData.value[1]
+                      }/${postData.value[2]}`}
                       onClick={(event) => { event.stopPropagation(); }}
                     >
                       {avatarView}
@@ -127,21 +164,21 @@ class Post extends Component {
               <Grid.Column width={15}>
                 <div className="">
                   <div className="stretch-space-between">
-                    <span className={this.props.postData
+                    <span className={postData
                                         !== null ? '' : 'grey-text'}
                     >
                       <strong>
-                        {this.props.postData !== null
-                          ? this.props.postData.value[2]
+                        {postData !== null
+                          ? postData.value[2]
                           : 'Username'
                                                 }
                       </strong>
                     </span>
                     <span className="grey-text">
-                      {this.props.postData !== null
+                      {postData !== null
                                             && (
                                             <TimeAgo date={epochTimeConverter(
-                                              this.props.postData.value[3],
+                                              postData.value[3],
                                             )}
                                             />
                                             )
@@ -150,11 +187,11 @@ class Post extends Component {
                   </div>
                   <div className="stretch-space-between">
                     <span
-                      className={this.state.postSubject
+                      className={postSubject
                                             === '' ? '' : 'grey-text'}
                     >
                       <strong>
-                        {this.state.postSubject === ''
+                        {postSubject === ''
                           ? (
                             <ContentLoader
                               height={5.8}
@@ -174,14 +211,14 @@ class Post extends Component {
                             </ContentLoader>
                           )
                           : `Subject: ${
-                            this.state.postSubject}`
+                            postSubject}`
                                                 }
                       </strong>
                     </span>
                   </div>
                   <div className="post-content">
-                    {this.state.postContent !== ''
-                      ? <ReactMarkdown source={this.state.postContent} />
+                    {postContent !== ''
+                      ? <ReactMarkdown source={postContent} />
                       : (
                         <ContentLoader
                           height={11.2}
@@ -231,11 +268,11 @@ class Post extends Component {
                 <Button
                   icon
                   size="mini"
-                  onClick={this.props.postData
+                  onClick={postData
                     ? () => {
-                      this.props.navigateTo(`/topic/${
-                        this.props.postData.value[4]}/${
-                        this.props.postID}`);
+                      navigateTo(`/topic/${
+                        postData.value[4]}/${
+                        postID}`);
                     }
                     : () => {}}
                 >
@@ -248,34 +285,18 @@ class Post extends Component {
       </Transition>
     );
   }
-
-  componentDidMount() {
-    this.getBlockchainData();
-  }
-
-  componentDidUpdate() {
-    this.getBlockchainData();
-    if (this.state.readyForAnimation) {
-      if (this.postRef) {
-        setTimeout(() => {
-          this.postRef.current.scrollIntoView(
-            {
-              block: 'start', behavior: 'smooth'
-            },
-          );
-          setTimeout(() => {
-            this.setState({
-              animateOnToggle: false
-            });
-          }, 300);
-        }, 100);
-        this.setState({
-          readyForAnimation: false
-        });
-      }
-    }
-  }
 }
+
+Post.propTypes = {
+  getFocus: PropTypes.bool.isRequired,
+  user: PropTypes.object.isRequired,
+  orbitDB: PropTypes.object.isRequired,
+  avatarUrl: PropTypes.string,
+  postIndex: PropTypes.number.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  postData: PropTypes.object,
+  postID: PropTypes.string.isRequired
+};
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   navigateTo: location => push(location)

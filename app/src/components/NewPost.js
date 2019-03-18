@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { Button, Divider, Form, Grid, Icon, TextArea } from 'semantic-ui-react';
@@ -10,8 +11,9 @@ import ReactMarkdown from 'react-markdown';
 import { createPost } from '../redux/actions/transactionsActions';
 
 class NewPost extends Component {
-  constructor(props, context) {
+  constructor(props) {
     super(props);
+    const { subject } = props;
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handlePreviewToggle = this.handlePreviewToggle.bind(this);
@@ -20,7 +22,7 @@ class NewPost extends Component {
     this.newPostOuterRef = React.createRef();
 
     this.state = {
-      postSubjectInput: this.props.subject ? this.props.subject : '',
+      postSubjectInput: subject ? subject : '',
       postContentInput: '',
       postSubjectInputEmptySubmit: false,
       postContentInputEmptySubmit: false,
@@ -29,37 +31,8 @@ class NewPost extends Component {
     };
   }
 
-  async validateAndPost() {
-    if (this.state.postSubjectInput === '' || this.state.postContentInput
-        === '') {
-      this.setState({
-        postSubjectInputEmptySubmit: this.state.postSubjectInput === '',
-        postContentInputEmptySubmit: this.state.postContentInput === ''
-      });
-      return;
-    }
-
-    this.props.dispatch(
-      createPost(this.props.topicID,
-        {
-          postSubject: this.state.postSubjectInput,
-          postMessage: this.state.postContentInput
-        }),
-    );
-    this.props.onPostCreated();
-  }
-
-  handleInputChange(event) {
-    this.setState({
-      [event.target.name]: event.target.value
-    });
-  }
-
-  handlePreviewToggle() {
-    this.setState((prevState, props) => ({
-      previewEnabled: !prevState.previewEnabled,
-      previewDate: this.getDate()
-    }));
+  componentDidMount() {
+    this.newPostOuterRef.current.scrollIntoView(true);
   }
 
   getDate() {
@@ -72,13 +45,55 @@ class NewPost extends Component {
       currentdate.getSeconds()}`);
   }
 
+  async validateAndPost() {
+    const { postSubjectInput, postContentInput } = this.state;
+    const { topicID, onPostCreated, dispatch } = this.props;
+
+    if (postSubjectInput === '' || postContentInput
+        === '') {
+      this.setState({
+        postSubjectInputEmptySubmit: postSubjectInput === '',
+        postContentInputEmptySubmit: postContentInput === ''
+      });
+      return;
+    }
+
+    dispatch(
+      createPost(topicID,
+        {
+          postSubject: postSubjectInput,
+          postMessage: postContentInput
+        }),
+    );
+    onPostCreated();
+  }
+
+  handleInputChange(event) {
+    this.setState({
+      [event.target.name]: event.target.value
+    });
+  }
+
+  handlePreviewToggle() {
+    this.setState(prevState => ({
+      previewEnabled: !prevState.previewEnabled,
+      previewDate: this.getDate()
+    }));
+  }
+
   render() {
+    const {
+      previewDate, postSubjectInputEmptySubmit, postSubjectInput, postContentInputEmptySubmit,
+      postContentInput, previewEnabled
+    } = this.state;
+    const { postIndex, avatarUrl, user, onCancelClick } = this.props;
+
     return (
       <div className="post" ref={this.newPostOuterRef}>
         <Divider horizontal>
           <span className="grey-text">
 #
-            {this.props.postIndex}
+            {postIndex}
           </span>
         </Divider>
         <Grid>
@@ -87,39 +102,39 @@ class NewPost extends Component {
               <UserAvatar
                 size="52"
                 className="inline user-avatar"
-                src={this.props.avatarUrl}
-                name={this.props.user.username}
+                src={avatarUrl}
+                name={user.username}
               />
             </Grid.Column>
             <Grid.Column width={15}>
               <div className="">
                 <div className="stretch-space-between">
-                  <span><strong>{this.props.user.username}</strong></span>
+                  <span><strong>{user.username}</strong></span>
                   <span className="grey-text">
-                    {this.state.previewEnabled
-                                        && <TimeAgo date={this.state.previewDate} />
+                    {previewEnabled
+                                        && <TimeAgo date={previewDate} />
                                         }
                   </span>
                 </div>
                 <div className="stretch-space-between">
                   <span>
                     <strong>
-                      {this.state.previewEnabled
+                      {previewEnabled
                                         && (`Subject: ${
-                                          this.state.postSubjectInput}`)
+                                          postSubjectInput}`)
                                         }
                     </strong>
                   </span>
                 </div>
                 <div className="post-content">
                   <div style={{
-                    display: this.state.previewEnabled
+                    display: previewEnabled
                       ? 'block'
                       : 'none'
                   }}
                   >
                     <ReactMarkdown
-                      source={this.state.postContentInput}
+                      source={postContentInput}
                       className="markdown-preview"
                     />
                   </div>
@@ -127,14 +142,14 @@ class NewPost extends Component {
                     <Form.Input
                       key="postSubjectInput"
                       style={{
-                        display: this.state.previewEnabled
+                        display: previewEnabled
                           ? 'none'
                           : ''
                       }}
                       name="postSubjectInput"
-                      error={this.state.postSubjectInputEmptySubmit}
+                      error={postSubjectInputEmptySubmit}
                       type="text"
-                      value={this.state.postSubjectInput}
+                      value={postSubjectInput}
                       placeholder="Subject"
                       id="postSubjectInput"
                       onChange={this.handleInputChange}
@@ -142,15 +157,15 @@ class NewPost extends Component {
                     <TextArea
                       key="postContentInput"
                       style={{
-                        display: this.state.previewEnabled
+                        display: previewEnabled
                           ? 'none'
                           : ''
                       }}
                       name="postContentInput"
-                      className={this.state.postContentInputEmptySubmit
+                      className={postContentInputEmptySubmit
                         ? 'form-textarea-required'
                         : ''}
-                      value={this.state.postContentInput}
+                      value={postContentInput}
                       placeholder="Post"
                       id="postContentInput"
                       onChange={this.handleInputChange}
@@ -177,11 +192,11 @@ class NewPost extends Component {
                         onClick={this.handlePreviewToggle}
                         color="yellow"
                       >
-                        {this.state.previewEnabled ? 'Edit' : 'Preview'}
+                        {previewEnabled ? 'Edit' : 'Preview'}
                       </Button>
                       <Button
                         type="button"
-                        onClick={this.props.onCancelClick}
+                        onClick={onCancelClick}
                         color="red"
                       >
                           Cancel
@@ -196,11 +211,18 @@ class NewPost extends Component {
       </div>
     );
   }
-
-  componentDidMount() {
-    this.newPostOuterRef.current.scrollIntoView(true);
-  }
 }
+
+NewPost.propTypes = {
+  subject: PropTypes.string,
+  topicID: PropTypes.number.isRequired,
+  postIndex: PropTypes.number.isRequired,
+  avatarUrl: PropTypes.string,
+  user: PropTypes.object.isRequired,
+  onCancelClick: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  onPostCreated: PropTypes.func.isRequired
+};
 
 const mapStateToProps = state => ({
   orbitDB: state.orbitDB,

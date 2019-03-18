@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { Button, Dimmer, Form, Header, Loader, Message } from 'semantic-ui-react';
@@ -48,16 +49,18 @@ class UsernameFormContainer extends Component {
   }
 
   handleSubmit() {
-    if (this.state.usernameInput === '') {
+    const { usernameInput, error } = this.state;
+
+    if (usernameInput === '') {
       this.setState({
         error: true,
         errorHeader: 'Data Incomplete',
         errorMessage: 'You need to provide a username'
       });
-    } else if (!this.state.error) {
+    } else if (!error) {
       // Makes sure current input username has been checked for availability
       if (this.checkedUsernames.some(
-        e => e.usernameChecked === this.state.usernameInput,
+        e => e.usernameChecked === usernameInput,
       )) {
         this.completeAction();
       }
@@ -65,8 +68,11 @@ class UsernameFormContainer extends Component {
   }
 
   async completeAction() {
-    if (this.props.user.hasSignedUp) {
-      this.props.dispatch(updateUsername(...[this.state.usernameInput], null));
+    const { usernameInput } = this.state;
+    const { user, dispatch, account } = this.props;
+
+    if (user.hasSignedUp) {
+      dispatch(updateUsername(...[usernameInput], null));
     } else {
       this.setState({
         signingUp: true
@@ -74,7 +80,7 @@ class UsernameFormContainer extends Component {
       const orbitdbInfo = await createDatabases();
       this.stackId = drizzle.contracts[contract].methods[signUpMethod].cacheSend(
         ...[
-          this.state.usernameInput,
+          usernameInput,
           orbitdbInfo.identityId,
           orbitdbInfo.identityPublicKey,
           orbitdbInfo.identityPrivateKey,
@@ -84,7 +90,7 @@ class UsernameFormContainer extends Component {
           orbitdbInfo.topicsDB,
           orbitdbInfo.postsDB
         ], {
-          from: this.props.account
+          from: account
         },
       );
     }
@@ -94,18 +100,21 @@ class UsernameFormContainer extends Component {
   }
 
   componentDidUpdate() {
-    if (this.state.signingUp) {
-      const txHash = this.props.transactionStack[this.stackId];
+    const { signingUp, usernameInput, error } = this.state;
+    const { transactionStack, transactions, contracts } = this.props;
+
+    if (signingUp) {
+      const txHash = transactionStack[this.stackId];
       if (txHash
-          && this.props.transactions[txHash]
-          && this.props.transactions[txHash].status === 'error') {
+          && transactions[txHash]
+          && transactions[txHash].status === 'error') {
         this.setState({
           signingUp: false
         });
       }
     } else {
       const temp = Object.values(
-        this.props.contracts[contract][checkUsernameTakenMethod],
+        contracts[contract][checkUsernameTakenMethod],
       );
       this.checkedUsernames = temp.map(checked => ({
         usernameChecked: checked.args[0],
@@ -114,8 +123,8 @@ class UsernameFormContainer extends Component {
 
       if (this.checkedUsernames.length > 0) {
         this.checkedUsernames.forEach((checked) => {
-          if (checked.usernameChecked === this.state.usernameInput
-              && checked.isTaken && !this.state.error) {
+          if (checked.usernameChecked === usernameInput
+              && checked.isTaken && !error) {
             this.setState({
               error: true,
               errorHeader: 'Data disapproved',
@@ -128,14 +137,15 @@ class UsernameFormContainer extends Component {
   }
 
   render() {
-    const { hasSignedUp } = this.props.user;
+    const { error, usernameInput, errorHeader, errorMessage, signingUp } = this.state;
+    const { user } = this.props;
 
-    if (hasSignedUp !== null) {
-      const buttonText = hasSignedUp ? 'Update' : 'Sign Up';
-      const placeholderText = hasSignedUp
-        ? this.props.user.username
+    if (user.hasSignedUp !== null) {
+      const buttonText = user.hasSignedUp ? 'Update' : 'Sign Up';
+      const placeholderText = user.hasSignedUp
+        ? user.username
         : 'Username';
-      const withError = this.state.error && {
+      const withError = error && {
         error: true
       };
 
@@ -158,18 +168,18 @@ class UsernameFormContainer extends Component {
               <Form.Input
                 placeholder={placeholderText}
                 name="usernameInput"
-                value={this.state.usernameInput}
+                value={usernameInput}
                 onChange={this.handleInputChange}
               />
             </Form.Field>
             <Message
               error
-              header={this.state.errorHeader}
-              content={this.state.errorMessage}
+              header={errorHeader}
+              content={errorMessage}
             />
             <Button type="submit">{buttonText}</Button>
           </Form>
-          <Dimmer active={this.state.signingUp} page>
+          <Dimmer active={signingUp} page>
             <Header as="h2" inverted>
               <Loader size="large">
 Magic elves are processing your noble
@@ -184,6 +194,16 @@ Magic elves are processing your noble
     return (null);
   }
 }
+
+UsernameFormContainer.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  account: PropTypes.string.isRequired,
+  transactionStack: PropTypes.array.isRequired,
+  transactions: PropTypes.array.isRequired,
+  contracts: PropTypes.array.isRequired,
+  hasSignedUp: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired
+};
 
 const mapStateToProps = state => ({
   account: state.accounts[0],

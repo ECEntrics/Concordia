@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import { Message } from 'semantic-ui-react';
 
 class RightSideBar extends Component {
-  constructor(props, context) {
+  constructor(props) {
     super(props);
 
     this.handleMessageClick = this.handleMessageClick.bind(this);
@@ -17,33 +18,35 @@ class RightSideBar extends Component {
   }
 
   handleMessageClick(index) {
-    const transactionHash = this.props.transactionStack[index];
-    if (this.props.transactions[transactionHash]) {
-      if (this.props.transactions[transactionHash].status === 'error') {
+    const { transactionStack, history, transactions } = this.props;
+
+    const transactionHash = transactionStack[index];
+    if (transactions[transactionHash]) {
+      if (transactions[transactionHash].status === 'error') {
         this.handleMessageDismiss(null, index);
-      } else if (this.props.transactions[transactionHash].receipt
-            && this.props.transactions[transactionHash].receipt.events) {
+      } else if (transactions[transactionHash].receipt
+            && transactions[transactionHash].receipt.events) {
         switch (Object.keys(
-          this.props.transactions[transactionHash].receipt.events,
+          transactions[transactionHash].receipt.events,
         )[0]) {
           case 'UserSignedUp':
-            this.props.history.push('/profile');
+            history.push('/profile');
             this.handleMessageDismiss(null, index);
             break;
           case 'UsernameUpdated':
-            this.props.history.push('/profile');
+            history.push('/profile');
             this.handleMessageDismiss(null, index);
             break;
           case 'TopicCreated':
-            this.props.history.push(`/topic/${
-              this.props.transactions[transactionHash].receipt.events.TopicCreated.returnValues.topicID}`);
+            history.push(`/topic/${
+              transactions[transactionHash].receipt.events.TopicCreated.returnValues.topicID}`);
             this.handleMessageDismiss(null, index);
             break;
           case 'PostCreated':
-            this.props.history.push(`/topic/${
-              this.props.transactions[transactionHash].receipt.events.PostCreated.returnValues.topicID
+            history.push(`/topic/${
+              transactions[transactionHash].receipt.events.PostCreated.returnValues.topicID
             }/${
-              this.props.transactions[transactionHash].receipt.events.PostCreated.returnValues.postID}`);
+              transactions[transactionHash].receipt.events.PostCreated.returnValues.postID}`);
             this.handleMessageDismiss(null, index);
             break;
           default:
@@ -59,7 +62,9 @@ class RightSideBar extends Component {
       event.stopPropagation();
     }
 
-    const isTransactionMessageDismissedShallowCopy = this.state.isTransactionMessageDismissed.slice();
+    const { isTransactionMessageDismissed } = this.state;
+
+    const isTransactionMessageDismissedShallowCopy = isTransactionMessageDismissed.slice();
     isTransactionMessageDismissedShallowCopy[messageIndex] = true;
     this.setState({
       isTransactionMessageDismissed: isTransactionMessageDismissedShallowCopy
@@ -67,13 +72,16 @@ class RightSideBar extends Component {
   }
 
   render() {
-    if (this.props.transactionStack.length === 0) {
+    const { isTransactionMessageDismissed } = this.state;
+    const { transactionStack, transactions } = this.props;
+
+    if (transactionStack.length === 0) {
       return null;
     }
 
-    const transactionMessages = this.props.transactionStack.map(
+    const transactionMessages = transactionStack.map(
       (transaction, index) => {
-        if (this.state.isTransactionMessageDismissed[index]) {
+        if (isTransactionMessageDismissed[index]) {
           return null;
         }
 
@@ -82,20 +90,20 @@ class RightSideBar extends Component {
         message.push(
           'New transaction has been queued and is waiting your confirmation.',
         );
-        if (this.props.transactions[transaction]) {
+        if (transactions[transaction]) {
           message.push(<br key="confirmed" />);
           message.push('- transaction confirmed');
         }
-        if (this.props.transactions[transaction]
-              && this.props.transactions[transaction].status === 'success') {
+        if (transactions[transaction]
+              && transactions[transaction].status === 'success') {
           /*      Transaction completed successfully      */
           message.push(<br key="mined" />);
           message.push('- transaction mined');
           color = 'green';
           message.push(<br key="success" />);
           message.push('- transaction completed successfully');
-        } else if (this.props.transactions[transaction]
-              && this.props.transactions[transaction].status === 'error') {
+        } else if (transactions[transaction]
+              && transactions[transaction].status === 'error') {
           /*      Transaction failed to complete      */
           message.push(<br key="mined" />);
           message.push('- transaction mined');
@@ -126,6 +134,12 @@ class RightSideBar extends Component {
     return (transactionMessages);
   }
 }
+
+RightSideBar.propTypes = {
+  transactionStack: PropTypes.array.isRequired,
+  history: PropTypes.object.isRequired,
+  transactions: PropTypes.PropTypes.objectOf(PropTypes.object).isRequired
+};
 
 const mapStateToProps = state => ({
   transactions: state.transactions,

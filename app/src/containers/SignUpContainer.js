@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import { Header } from 'semantic-ui-react';
 import { connect } from 'react-redux';
@@ -6,12 +7,15 @@ import UsernameFormContainer from './UsernameFormContainer';
 
 class SignUpContainer extends Component {
   componentDidUpdate(prevProps) {
-    if (this.props.user.hasSignedUp && !prevProps.user.hasSignedUp) this.props.history.push('/');
+    const { user, history } = this.props;
+    if (user.hasSignedUp && !prevProps.user.hasSignedUp) history.push('/');
   }
 
   render() {
+    const { user } = this.props;
+
     return (
-      this.props.user.hasSignedUp
+      user.hasSignedUp
         ? (
           <div className="vertical-center-in-parent">
             <Header color="teal" textAlign="center" as="h2">
@@ -29,7 +33,7 @@ class SignUpContainer extends Component {
               <p className="no-margin">
                 <strong>Account address:</strong>
                 {' '}
-                {this.props.user.address}
+                {user.address}
               </p>
               <UsernameFormContainer />
             </div>
@@ -38,6 +42,11 @@ class SignUpContainer extends Component {
     );
   }
 }
+
+SignUpContainer.propTypes = {
+  user: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired
+};
 
 const mapStateToProps = state => ({
   user: state.user

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { drizzle } from '../index';
 
@@ -18,31 +19,6 @@ class PostList extends Component {
     };
   }
 
-  render() {
-    const posts = this.props.postIDs.map((postID, index) => (
-      <Post
-        postData={(this.state.dataKeys[postID]
-              && this.props.contracts[contract][getPostMethod][this.state.dataKeys[postID]])
-          ? this.props.contracts[contract][getPostMethod][this.state.dataKeys[postID]]
-          : null}
-        avatarUrl=""
-        postIndex={index}
-        postID={postID}
-        getFocus={this.props.focusOnPost === postID}
-        key={postID}
-      />
-    ));
-
-    return (
-      <div>
-        {this.props.recentToTheTop
-          ? posts.slice(0).reverse()
-          : posts
-          }
-      </div>
-    );
-  }
-
   componentDidMount() {
     this.getBlockchainData();
   }
@@ -52,12 +28,15 @@ class PostList extends Component {
   }
 
   getBlockchainData() {
-    if (this.props.drizzleStatus.initialized) {
-      const dataKeysShallowCopy = this.state.dataKeys.slice();
+    const { dataKeys } = this.state;
+    const { drizzleStatus, postIDs } = this.props;
+
+    if (drizzleStatus.initialized) {
+      const dataKeysShallowCopy = dataKeys.slice();
       let fetchingNewData = false;
 
-      this.props.postIDs.forEach((postID) => {
-        if (!this.state.dataKeys[postID]) {
+      postIDs.forEach((postID) => {
+        if (!dataKeys[postID]) {
           dataKeysShallowCopy[postID] = drizzle.contracts[contract].methods[getPostMethod].cacheCall(
             postID,
           );
@@ -72,7 +51,43 @@ class PostList extends Component {
       }
     }
   }
+
+  render() {
+    const { dataKeys } = this.state;
+    const { postIDs, contracts, focusOnPost, recentToTheTop } = this.props;
+
+    const posts = postIDs.map((postID, index) => (
+      <Post
+        postData={(dataKeys[postID]
+              && contracts[contract][getPostMethod][dataKeys[postID]])
+          ? contracts[contract][getPostMethod][dataKeys[postID]]
+          : null}
+        avatarUrl=""
+        postIndex={index}
+        postID={postID}
+        getFocus={focusOnPost === postID}
+        key={postID}
+      />
+    ));
+
+    return (
+      <div>
+        {recentToTheTop
+          ? posts.slice(0).reverse()
+          : posts
+          }
+      </div>
+    );
+  }
 }
+
+PostList.propTypes = {
+  drizzleStatus: PropTypes.object.isRequired,
+  postIDs: PropTypes.array.isRequired,
+  contracts: PropTypes.array.isRequired,
+  focusOnPost: PropTypes.number,
+  recentToTheTop: PropTypes.bool
+};
 
 const mapStateToProps = state => ({
   contracts: state.contracts,

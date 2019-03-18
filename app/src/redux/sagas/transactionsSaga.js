@@ -7,7 +7,8 @@ import { DRIZZLE_UTILS_SAGA_INITIALIZED } from '../actions/drizzleUtilsActions';
 const transactionsHistory = Object.create(null);
 
 function* initTransaction(action) {
-  const dataKey = drizzle.contracts[action.transactionDescriptor.contract].methods[action.transactionDescriptor.method].cacheSend(
+  const dataKey = drizzle.contracts[action.transactionDescriptor.contract]
+    .methods[action.transactionDescriptor.method].cacheSend(
     ...(action.transactionDescriptor.params),
   );
 

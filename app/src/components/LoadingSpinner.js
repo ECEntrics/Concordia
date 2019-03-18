@@ -1,11 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-const LoadingSpinner = props => (
+const LoadingSpinner = ({ className, style }) => (
   <div className="vertical-center-children">
     <div
       className={`center-in-parent ${
-        props.className ? props.className : ''}`}
-      style={props.style ? props.style : []}
+        className ? className : ''}`}
+      style={style ? style : []}
     >
       <p>
         <i className="fas fa-spinner fa-3x fa-spin" />
@@ -13,5 +14,10 @@ const LoadingSpinner = props => (
     </div>
   </div>
 );
+
+LoadingSpinner.propTypes = {
+  className: PropTypes.string,
+  style: PropTypes.string
+};
 
 export default LoadingSpinner;

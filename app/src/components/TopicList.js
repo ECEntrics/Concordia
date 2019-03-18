@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { drizzle } from '../index';
 
@@ -18,16 +19,26 @@ class TopicList extends Component {
     };
   }
 
+  componentDidMount() {
+    this.getBlockchainData();
+  }
+
+  componentDidUpdate() {
+    this.getBlockchainData();
+  }
+
   getBlockchainData() {
-    if (this.props.drizzleStatus.initialized) {
-      const dataKeysShallowCopy = this.state.dataKeys.slice();
+    const { dataKeys } = this.state;
+    const { drizzleStatus, topicIDs } = this.props;
+
+    if (drizzleStatus.initialized) {
+      const dataKeysShallowCopy = dataKeys.slice();
       let fetchingNewData = false;
 
-      this.props.topicIDs.forEach((topicID) => {
-        if (!this.state.dataKeys[topicID]) {
-          dataKeysShallowCopy[topicID] = drizzle.contracts[contract].methods[getTopicMethod].cacheCall(
-            topicID,
-          );
+      topicIDs.forEach((topicID) => {
+        if (!dataKeys[topicID]) {
+          dataKeysShallowCopy[topicID] = drizzle.contracts[contract].methods[getTopicMethod]
+            .cacheCall(topicID);
           fetchingNewData = true;
         }
       });
@@ -41,11 +52,14 @@ class TopicList extends Component {
   }
 
   render() {
-    const topics = this.props.topicIDs.map(topicID => (
+    const { dataKeys } = this.state;
+    const { topicIDs, contracts } = this.props;
+
+    const topics = topicIDs.map(topicID => (
       <Topic
-        topicData={(this.state.dataKeys[topicID]
-              && this.props.contracts[contract][getTopicMethod][this.state.dataKeys[topicID]])
-          ? this.props.contracts[contract][getTopicMethod][this.state.dataKeys[topicID]]
+        topicData={(dataKeys[topicID]
+              && contracts[contract][getTopicMethod][dataKeys[topicID]])
+          ? contracts[contract][getTopicMethod][dataKeys[topicID]]
           : null}
         topicID={topicID}
         key={topicID}
@@ -58,15 +72,13 @@ class TopicList extends Component {
       </div>
     );
   }
-
-  componentDidMount() {
-    this.getBlockchainData();
-  }
-
-  componentDidUpdate() {
-    this.getBlockchainData();
-  }
 }
+
+TopicList.propTypes = {
+  topicIDs: PropTypes.arrayOf(PropTypes.string).isRequired,
+  contracts: PropTypes.PropTypes.objectOf(PropTypes.object).isRequired,
+  drizzleStatus: PropTypes.object.isRequired
+};
 
 const mapStateToProps = state => ({
   contracts: state.contracts,

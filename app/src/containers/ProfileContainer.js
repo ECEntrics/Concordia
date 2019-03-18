@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { push } from 'connected-react-router';
 import { connect } from 'react-redux';
 import { Tab } from 'semantic-ui-react';
 import { drizzle } from '../index';
-
 
 import ProfileInformation from '../components/ProfileInformation';
 import TopicList from '../components/TopicList';
@@ -29,12 +29,14 @@ class ProfileContainer extends Component {
   constructor(props) {
     super(props);
 
+    const { match, user } = this.props;
+
     this.getBlockchainData = this.getBlockchainData.bind(this);
 
     this.dataKey = [];
-    const address = this.props.match.params.address
-      ? this.props.match.params.address
-      : this.props.user.address;
+    const address = match.params.address
+      ? match.params.address
+      : user.address;
 
     this.state = {
       pageStatus: 'initialized',
@@ -45,12 +47,28 @@ class ProfileContainer extends Component {
     };
   }
 
+  componentDidMount() {
+    this.getBlockchainData();
+  }
+
+  componentDidUpdate() {
+    this.getBlockchainData();
+  }
+
+  componentWillUnmount() {
+    const { setNavBarTitle } = this.props;
+    setNavBarTitle('');
+  }
+
   getBlockchainData() {
-    if (this.state.pageStatus === 'initialized'
-        && this.props.drizzleStatus.initialized) {
+    const { userAddress, pageStatus, username, topicIDs, postIDs } = this.state;
+    const { drizzleStatus, setNavBarTitle, contracts } = this.props;
+
+    if (pageStatus === 'initialized'
+        && drizzleStatus.initialized) {
       callsInfo.forEach((call, index) => {
         this.dataKey[index] = drizzle.contracts[call.contract].methods[call.method].cacheCall(
-          this.state.userAddress,
+          userAddress,
         );
       });
       this.setState({
@@ -58,42 +76,42 @@ class ProfileContainer extends Component {
       });
     }
 
-    if (this.state.pageStatus === 'loading') {
-      let pageStatus = 'loaded';
+    if (pageStatus === 'loading') {
+      let pageStatusUpdate = 'loaded';
       callsInfo.forEach((call, index) => {
-        if (!this.props.contracts[call.contract][call.method][this.dataKey[index]]) {
-          pageStatus = 'loading';
+        if (!contracts[call.contract][call.method][this.dataKey[index]]) {
+          pageStatusUpdate = 'loading';
         }
       });
 
-      if (pageStatus === 'loaded') {
+      if (pageStatusUpdate === 'loaded') {
         this.setState({
-          pageStatus
+          pageStatus: pageStatusUpdate
         });
       }
     }
 
-    if (this.state.pageStatus === 'loaded') {
-      if (this.state.username === '') {
-        const transaction = this.props.contracts[callsInfo[0].contract][callsInfo[0].method][this.dataKey[0]];
+    if (pageStatus === 'loaded') {
+      if (username === '') {
+        const transaction = contracts[callsInfo[0].contract][callsInfo[0].method][this.dataKey[0]];
         if (transaction) {
           const username = transaction.value;
-          this.props.setNavBarTitle(username);
+          setNavBarTitle(username);
           this.setState({
             username
           });
         }
       }
-      if (this.state.topicIDs === null) {
-        const transaction = this.props.contracts[callsInfo[1].contract][callsInfo[1].method][this.dataKey[1]];
+      if (topicIDs === null) {
+        const transaction = contracts[callsInfo[1].contract][callsInfo[1].method][this.dataKey[1]];
         if (transaction) {
           this.setState({
             topicIDs: transaction.value
           });
         }
       }
-      if (this.state.postIDs === null) {
-        const transaction = this.props.contracts[callsInfo[2].contract][callsInfo[2].method][this.dataKey[2]];
+      if (postIDs === null) {
+        const transaction = contracts[callsInfo[2].contract][callsInfo[2].method][this.dataKey[2]];
         if (transaction) {
           this.setState({
             postIDs: transaction.value
@@ -106,33 +124,36 @@ class ProfileContainer extends Component {
   }
 
   render() {
-    if (!this.props.user.hasSignedUp) {
-      this.props.navigateTo('/signup');
+    const { userAddress, username, topicIDs, postIDs } = this.state;
+    const { navigateTo, user } = this.props;
+
+    if (!user.hasSignedUp) {
+      navigateTo('/signup');
       return (null);
     }
 
     const infoTab = (
       <ProfileInformation
-        address={this.state.userAddress}
-        username={this.state.username}
-        numberOfTopics={this.state.topicIDs && this.state.topicIDs.length}
-        numberOfPosts={this.state.postIDs && this.state.postIDs.length}
-        self={this.state.userAddress === this.props.user.address}
+        address={userAddress}
+        username={username}
+        numberOfTopics={topicIDs && topicIDs.length}
+        numberOfPosts={postIDs && postIDs.length}
+        self={userAddress === user.address}
         key="profileInfo"
       />
     );
     const topicsTab = (
       <div className="profile-tab">
-        {this.state.topicIDs
-          ? <TopicList topicIDs={this.state.topicIDs} />
+        {topicIDs
+          ? <TopicList topicIDs={topicIDs} />
           : <LoadingSpinner />
           }
       </div>
     );
     const postsTab = (
       <div className="profile-tab">
-        {this.state.postIDs
-          ? <PostList postIDs={this.state.postIDs} recentToTheTop />
+        {postIDs
+          ? <PostList postIDs={postIDs} recentToTheTop />
           : <LoadingSpinner />
           }
       </div>
@@ -174,19 +195,16 @@ class ProfileContainer extends Component {
       </div>
     );
   }
-
-  componentDidMount() {
-    this.getBlockchainData();
-  }
-
-  componentDidUpdate() {
-    this.getBlockchainData();
-  }
-
-  componentWillUnmount() {
-    this.props.setNavBarTitle('');
-  }
 }
+
+ProfileContainer.propTypes = {
+  match: PropTypes.object.isRequired,
+  drizzleStatus: PropTypes.object.isRequired,
+  contracts: PropTypes.array.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
+  setNavBarTitle: PropTypes.func.isRequired
+};
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   navigateTo: location => push(location),

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { push } from 'connected-react-router';
 import { connect } from 'react-redux';
@@ -17,9 +18,11 @@ class TopicContainer extends Component {
   constructor(props) {
     super(props);
 
+    const { match, navigateTo } = props;
+
     // Topic ID should be a positive integer
-    if (!/^[0-9]+$/.test(this.props.match.params.topicId)) {
-      this.props.navigateTo('/404');
+    if (!/^[0-9]+$/.test(match.params.topicId)) {
+      navigateTo('/404');
     }
 
     this.getBlockchainData = this.getBlockchainData.bind(this);
@@ -29,46 +32,62 @@ class TopicContainer extends Component {
 
     this.state = {
       pageStatus: 'initialized',
-      topicID: parseInt(this.props.match.params.topicId),
+      topicID: parseInt(match.params.topicId),
       topicSubject: null,
-      postFocus: this.props.match.params.postId
-      && /^[0-9]+$/.test(this.props.match.params.postId)
-        ? this.props.match.params.postId
+      postFocus: match.params.postId
+      && /^[0-9]+$/.test(match.params.postId)
+        ? match.params.postId
         : null,
       fetchTopicSubjectStatus: 'pending',
       posting: false
     };
   }
 
+  componentDidMount() {
+    this.getBlockchainData();
+  }
+
+  componentDidUpdate() {
+    this.getBlockchainData();
+  }
+
+  componentWillUnmount() {
+    const { setNavBarTitle } = this.props;
+    setNavBarTitle('');
+  }
+
   getBlockchainData() {
-    if (this.state.pageStatus === 'initialized'
-        && this.props.drizzleStatus.initialized) {
+    const { pageStatus, topicID, fetchTopicSubjectStatus } = this.state;
+    const { drizzleStatus, orbitDB, contracts } = this.props;
+
+    if (pageStatus === 'initialized'
+        && drizzleStatus.initialized) {
       this.dataKey = drizzle.contracts[contract].methods[getTopicMethod].cacheCall(
-        this.state.topicID,
+        topicID,
       );
       this.setState({
         pageStatus: 'loading'
       });
     }
-    if (this.state.pageStatus === 'loading'
-        && this.props.contracts[contract][getTopicMethod][this.dataKey]) {
+    if (pageStatus === 'loading'
+        && contracts[contract][getTopicMethod][this.dataKey]) {
       this.setState({
         pageStatus: 'loaded'
       });
-      if (this.props.orbitDB.orbitdb !== null) {
+      if (orbitDB.orbitdb !== null) {
         this.fetchTopicSubject(
-          this.props.contracts[contract][getTopicMethod][this.dataKey].value[0],
+          contracts[contract][getTopicMethod][this.dataKey].value[0],
         );
         this.setState({
           fetchTopicSubjectStatus: 'fetching'
         });
       }
     }
-    if (this.state.pageStatus === 'loaded'
-        && this.state.fetchTopicSubjectStatus === 'pending'
-        && this.props.orbitDB.orbitdb !== null) {
+    if (pageStatus === 'loaded'
+        && fetchTopicSubjectStatus === 'pending'
+        && orbitDB.orbitdb !== null) {
       this.fetchTopicSubject(
-        this.props.contracts[contract][getTopicMethod][this.dataKey].value[0],
+        contracts[contract][getTopicMethod][this.dataKey].value[0],
       );
       this.setState({
         fetchTopicSubjectStatus: 'fetching'
@@ -77,27 +96,30 @@ class TopicContainer extends Component {
   }
 
   async fetchTopicSubject(orbitDBAddress) {
+    const { topicID } = this.state;
+    const { contracts, user, orbitDB, setNavBarTitle } = this.props;
+
     let orbitData;
-    if (this.props.contracts[contract][getTopicMethod][this.dataKey].value[1]
-        === this.props.user.address) {
-      orbitData = this.props.orbitDB.topicsDB.get(this.state.topicID);
+    if (contracts[contract][getTopicMethod][this.dataKey].value[1]
+        === user.address) {
+      orbitData = orbitDB.topicsDB.get(topicID);
     } else {
       const fullAddress = `/orbitdb/${orbitDBAddress}/topics`;
-      const store = await this.props.orbitDB.orbitdb.keyvalue(fullAddress);
+      const store = await orbitDB.orbitdb.keyvalue(fullAddress);
       await store.load();
 
-      const localOrbitData = store.get(this.state.topicID);
+      const localOrbitData = store.get(topicID);
       if (localOrbitData) {
         orbitData = localOrbitData;
       } else {
         // Wait until we have received something from the network
         store.events.on('replicated', () => {
-          orbitData = store.get(this.state.topicID);
+          orbitData = store.get(topicID);
         });
       }
     }
 
-    this.props.setNavBarTitle(orbitData.subject);
+    setNavBarTitle(orbitData.subject);
     this.setState({
       topicSubject: orbitData.subject,
       fetchTopicSubjectStatus: 'fetched'
@@ -120,30 +142,33 @@ class TopicContainer extends Component {
   }
 
   render() {
+    const { pageStatus, postFocus, topicID, topicSubject, posting } = this.state;
+    const { contracts, user } = this.props;
+
     let topicContents;
-    if (this.state.pageStatus === 'loaded') {
+    if (pageStatus === 'loaded') {
       topicContents = (
         (
           <div>
             <PostList
-              postIDs={this.props.contracts[contract][getTopicMethod][this.dataKey].value[4]}
-              focusOnPost={this.state.postFocus
-                ? this.state.postFocus
+              postIDs={contracts[contract][getTopicMethod][this.dataKey].value[4]}
+              focusOnPost={postFocus
+                ? postFocus
                 : null}
             />
-            {this.state.posting
+            {posting
             && (
             <NewPost
-              topicID={this.state.topicID}
-              subject={this.state.topicSubject}
-              postIndex={this.props.contracts[contract][getTopicMethod][this.dataKey].value[4].length}
+              topicID={topicID}
+              subject={topicSubject}
+              postIndex={contracts[contract][getTopicMethod][this.dataKey].value[4].length}
               onCancelClick={() => { this.togglePostingState(); }}
               onPostCreated={() => { this.postCreated(); }}
             />
             )
             }
             <div className="posts-list-spacer" />
-            {this.props.user.hasSignedUp && !this.state.posting
+            {user.hasSignedUp && !posting
             && <FloatingButton onClick={this.togglePostingState} />
             }
           </div>
@@ -154,25 +179,23 @@ class TopicContainer extends Component {
     return (
       <div className="fill">
         {topicContents}
-        {!this.state.posting
+        {!posting
           && <div className="bottom-overlay-pad" />
           }
       </div>
     );
   }
-
-  componentDidMount() {
-    this.getBlockchainData();
-  }
-
-  componentDidUpdate() {
-    this.getBlockchainData();
-  }
-
-  componentWillUnmount() {
-    this.props.setNavBarTitle('');
-  }
 }
+
+TopicContainer.propTypes = {
+  drizzleStatus: PropTypes.object.isRequired,
+  orbitDB: PropTypes.object.isRequired,
+  setNavBarTitle: PropTypes.func.isRequired,
+  contracts: PropTypes.array.isRequired,
+  user: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired
+};
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   navigateTo: location => push(location),

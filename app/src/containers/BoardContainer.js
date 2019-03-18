@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
@@ -27,16 +28,27 @@ class BoardContainer extends Component {
     };
   }
 
+  componentDidMount() {
+    this.getBlockchainData();
+  }
+
+  componentDidUpdate() {
+    this.getBlockchainData();
+  }
+
   getBlockchainData() {
-    if (this.state.pageStatus === 'initialized'
-        && this.props.drizzleStatus.initialized) {
+    const { pageStatus } = this.state;
+    const { drizzleStatus, contracts } = this.props;
+
+    if (pageStatus === 'initialized'
+        && drizzleStatus.initialized) {
       this.dataKey = drizzle.contracts[contract].methods[getNumberOfTopicsMethod].cacheCall();
       this.setState({
         pageStatus: 'loading'
       });
     }
-    if (this.state.pageStatus === 'loading'
-        && this.props.contracts[contract][getNumberOfTopicsMethod][this.dataKey]) {
+    if (pageStatus === 'loading'
+        && contracts[contract][getNumberOfTopicsMethod][this.dataKey]) {
       this.setState({
         pageStatus: 'loaded'
       });
@@ -45,13 +57,17 @@ class BoardContainer extends Component {
   }
 
   handleCreateTopicClick() {
-    this.props.history.push('/startTopic');
+    const { history } = this.props;
+    history.push('/startTopic');
   }
 
   render() {
+    const { pageStatus } = this.state;
+    const { contracts, hasSignedUp } = this.props;
+
     let boardContents;
-    if (this.state.pageStatus === 'loaded') {
-      const numberOfTopics = this.props.contracts[contract][getNumberOfTopicsMethod][this.dataKey].value;
+    if (pageStatus === 'loaded') {
+      const numberOfTopics = contracts[contract][getNumberOfTopicsMethod][this.dataKey].value;
 
       if (numberOfTopics !== '0') {
         this.topicIDs = [];
@@ -61,7 +77,7 @@ class BoardContainer extends Component {
         boardContents = ([
           <TopicList topicIDs={this.topicIDs} key="topicList" />,
           <div className="bottom-overlay-pad" key="pad" />,
-          this.props.hasSignedUp
+          hasSignedUp
           && (
           <FloatingButton
             onClick={this.handleCreateTopicClick}
@@ -69,7 +85,7 @@ class BoardContainer extends Component {
           />
           )
         ]);
-      } else if (!this.props.hasSignedUp) {
+      } else if (!hasSignedUp) {
         boardContents = (
           <div className="vertical-center-in-parent">
             <Header color="teal" textAlign="center" as="h2">
@@ -105,15 +121,14 @@ class BoardContainer extends Component {
       </div>
     );
   }
-
-  componentDidMount() {
-    this.getBlockchainData();
-  }
-
-  componentDidUpdate() {
-    this.getBlockchainData();
-  }
 }
+
+BoardContainer.propTypes = {
+  drizzleStatus: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
+  contracts: PropTypes.objectOf(PropTypes.object).isRequired,
+  hasSignedUp: PropTypes.bool.isRequired
+};
 
 const mapStateToProps = state => ({
   contracts: state.contracts,

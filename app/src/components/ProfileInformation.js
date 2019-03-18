@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import UserAvatar from 'react-user-avatar';
 import { drizzle } from '../index';
@@ -30,12 +31,23 @@ class ProfileInformation extends Component {
     };
   }
 
+  componentDidMount() {
+    this.getBlockchainData();
+  }
+
+  componentDidUpdate() {
+    this.getBlockchainData();
+  }
+
   getBlockchainData() {
-    if (this.state.pageStatus === 'initialized'
-        && this.props.drizzleStatus.initialized) {
+    const { pageStatus, dateOfRegister, orbitDBId } = this.state;
+    const { drizzleStatus, address, contracts } = this.props;
+
+    if (pageStatus === 'initialized'
+        && drizzleStatus.initialized) {
       callsInfo.forEach((call, index) => {
         this.dataKey[index] = drizzle.contracts[call.contract].methods[call.method].cacheCall(
-          this.props.address,
+          address,
         );
       });
       this.setState({
@@ -43,32 +55,32 @@ class ProfileInformation extends Component {
       });
     }
 
-    if (this.state.pageStatus === 'loading') {
-      let pageStatus = 'loaded';
+    if (pageStatus === 'loading') {
+      let pageStatusUpdate = 'loaded';
       callsInfo.forEach((call, index) => {
-        if (!this.props.contracts[call.contract][call.method][this.dataKey[index]]) {
-          pageStatus = 'loading';
+        if (!contracts[call.contract][call.method][this.dataKey[index]]) {
+          pageStatusUpdate = 'loading';
         }
       });
 
-      if (pageStatus === 'loaded') {
+      if (pageStatusUpdate === 'loaded') {
         this.setState({
-          pageStatus
+          pageStatus: pageStatusUpdate
         });
       }
     }
 
-    if (this.state.pageStatus === 'loaded') {
-      if (this.state.dateOfRegister === '') {
-        const transaction = this.props.contracts[callsInfo[0].contract][callsInfo[0].method][this.dataKey[0]];
+    if (pageStatus === 'loaded') {
+      if (dateOfRegister === '') {
+        const transaction = contracts[callsInfo[0].contract][callsInfo[0].method][this.dataKey[0]];
         if (transaction) {
           this.setState({
             dateOfRegister: transaction.value
           });
         }
       }
-      if (this.state.orbitDBId === '') {
-        const transaction = this.props.contracts[callsInfo[1].contract][callsInfo[1].method][this.dataKey[1]];
+      if (orbitDBId === '') {
+        const transaction = contracts[callsInfo[1].contract][callsInfo[1].method][this.dataKey[1]];
         if (transaction) {
           this.setState({
             orbitDBId: transaction.value
@@ -79,61 +91,67 @@ class ProfileInformation extends Component {
   }
 
   render() {
+    const { orbitDBId, dateOfRegister } = this.state;
+    const { avatarUrl, username, address, numberOfTopics, numberOfPosts, self } = this.props;
+
     return (
       <div className="user-info">
-        {this.props.avatarUrl && (
+        {avatarUrl && (
           <UserAvatar
             size="40"
             className="inline user-avatar"
-            src={this.props.avatarUrl}
-            name={this.props.username}
+            src={avatarUrl}
+            name={username}
           />
         )}
         <table className="highlight centered responsive-table">
           <tbody>
             <tr>
               <td><strong>Username:</strong></td>
-              <td>{this.props.username}</td>
+              <td>{username}</td>
             </tr>
             <tr>
               <td><strong>Account address:</strong></td>
-              <td>{this.props.address}</td>
+              <td>{address}</td>
             </tr>
             <tr>
               <td><strong>OrbitDB:</strong></td>
-              <td>{this.state.orbitDBId}</td>
+              <td>{orbitDBId}</td>
             </tr>
             <tr>
               <td><strong>Number of topics created:</strong></td>
-              <td>{this.props.numberOfTopics}</td>
+              <td>{numberOfTopics}</td>
             </tr>
             <tr>
               <td><strong>Number of posts:</strong></td>
-              <td>{this.props.numberOfPosts}</td>
+              <td>{numberOfPosts}</td>
             </tr>
-            {this.state.dateOfRegister
+            {dateOfRegister
             && (
             <tr>
               <td><strong>Member since:</strong></td>
-              <td>{epochTimeConverter(this.state.dateOfRegister)}</td>
+              <td>{epochTimeConverter(dateOfRegister)}</td>
             </tr>
             )
             }
           </tbody>
         </table>
-        {this.props.self && <UsernameFormContainer />}
+        {self && <UsernameFormContainer />}
       </div>
     );
   }
-
-  componentDidMount() {
-    this.getBlockchainData();
-  }
-
-  componentDidUpdate() {
-    this.getBlockchainData();
-  }
 }
+
+ProfileInformation.propTypes = {
+  drizzleStatus: PropTypes.object.isRequired,
+  contracts: PropTypes.array.isRequired,
+  avatarUrl: PropTypes.string,
+  username: PropTypes.string.isRequired,
+  address: PropTypes.string.isRequired,
+  numberOfTopics: PropTypes.number.isRequired,
+  numberOfPosts: PropTypes.number.isRequired,
+  self: PropTypes.bool
+};
 
 const mapStateToProps = state => ({
   drizzleStatus: state.drizzleStatus,

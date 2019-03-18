@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { GetTopicResult } from '../CustomPropTypes'
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
@@ -20,16 +22,41 @@ class Topic extends Component {
     };
   }
 
+  componentDidMount() {
+    const { topicSubjectFetchStatus } = this.state;
+    const { topicData, orbitDB, topicID } = this.props;
+
+    if (topicData !== null
+        && topicSubjectFetchStatus === 'pending'
+        && orbitDB.ipfsInitialized
+        && orbitDB.orbitdb) {
+      this.fetchSubject(topicID);
+    }
+  }
+
+  componentDidUpdate() {
+    const { topicSubjectFetchStatus } = this.state;
+    const { topicData, orbitDB, topicID } = this.props;
+
+    if (topicData !== null
+        && topicSubjectFetchStatus === 'pending'
+        && orbitDB.ipfsInitialized
+        && orbitDB.orbitdb) {
+      this.fetchSubject(topicID);
+    }
+  }
+
   async fetchSubject(topicID) {
+    const { topicData, user, orbitDB } = this.props;
     let topicSubject;
 
-    if (this.props.topicData.value[1] === this.props.user.address) {
-      const orbitData = this.props.orbitDB.topicsDB.get(topicID);
+    if (topicData.value[1] === user.address) {
+      const orbitData = orbitDB.topicsDB.get(topicID);
       topicSubject = orbitData.subject;
     } else {
-      const fullAddress = `/orbitdb/${this.props.topicData.value[0]
+      const fullAddress = `/orbitdb/${topicData.value[0]
       }/topics`;
-      const store = await this.props.orbitDB.orbitdb.keyvalue(fullAddress);
+      const store = await orbitDB.orbitdb.keyvalue(fullAddress);
       await store.load();
 
       const localOrbitData = store.get(topicID);
@@ -50,21 +77,24 @@ class Topic extends Component {
   }
 
   render() {
+    const { topicSubject } = this.state;
+    const { history, topicID, topicData } = this.props;
+
     return (
       <Card
         link
         className="card"
         onClick={() => {
-          this.props.history.push(`/topic/${this.props.topicID}`);
+          history.push(`/topic/${topicID}`);
         }}
       >
         <Card.Content>
           <div className={`topic-subject${
-            this.state.topicSubject ? '' : ' grey-text'}`}
+            topicSubject ? '' : ' grey-text'}`}
           >
             <p>
               <strong>
-                {this.state.topicSubject !== null ? this.state.topicSubject
+                {topicSubject !== null ? topicSubject
                   : (
                     <ContentLoader
                       height={5.8}
@@ -82,26 +112,26 @@ class Topic extends Component {
           <hr />
           <div className="topic-meta">
             <p className={`no-margin${
-              this.props.topicData !== null ? '' : ' grey-text'}`}
+              topicData !== null ? '' : ' grey-text'}`}
             >
-              {this.props.topicData !== null
-                ? this.props.topicData.value[2]
+              {topicData !== null
+                ? topicData.value[2]
                 : 'Username'
                 }
             </p>
             <p className={`no-margin${
-              this.props.topicData !== null ? '' : ' grey-text'}`}
+              topicData !== null ? '' : ' grey-text'}`}
             >
-              {`Number of replies: ${this.props.topicData !== null
-                ? this.props.topicData.value[4].length
+              {`Number of replies: ${topicData !== null
+                ? topicData.value[4].length
                 : ''}`
                 }
             </p>
             <p className="topic-date grey-text">
-              {this.props.topicData !== null
+              {topicData !== null
                 && (
                 <TimeAgo
-                  date={epochTimeConverter(this.props.topicData.value[3])}
+                  date={epochTimeConverter(topicData.value[3])}
                 />
                 )
                 }
@@ -111,25 +141,15 @@ class Topic extends Component {
       </Card>
     );
   }
-
-  componentDidMount() {
-    if (this.props.topicData !== null
-        && this.state.topicSubjectFetchStatus === 'pending'
-        && this.props.orbitDB.ipfsInitialized
-        && this.props.orbitDB.orbitdb) {
-      this.fetchSubject(this.props.topicID);
-    }
-  }
-
-  componentDidUpdate() {
-    if (this.props.topicData !== null
-        && this.state.topicSubjectFetchStatus === 'pending'
-        && this.props.orbitDB.ipfsInitialized
-        && this.props.orbitDB.orbitdb) {
-      this.fetchSubject(this.props.topicID);
-    }
-  }
 }
+
+Topic.propTypes = {
+  user: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
+  topicData: GetTopicResult.isRequired,
+  orbitDB: PropTypes.object.isRequired,
+  topicID: PropTypes.string.isRequired
+};
 
 const mapStateToProps = state => ({
   user: state.user,
