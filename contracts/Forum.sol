@@ -1,6 +1,14 @@
 pragma solidity >=0.5.6 <0.6.0;
 
+import "./Posting.sol";
+
 contract Forum {
+    Posting posting;
+
+    constructor(address addr) public {
+        posting = Posting(addr);
+        posting.setForumContractAddress();
+    }
 
     //----------------------------------------USER----------------------------------------
     struct User {
@@ -137,9 +145,9 @@ contract Forum {
     function getOrbitIdentityInfo(address userAddress) public view returns (string memory, string memory, string memory) {
         require (hasUserSignedUp(userAddress), "User hasn't signed up.");
         return (
-            users[userAddress].orbitdb.identityId,
-            users[userAddress].orbitdb.identityPublicKey,
-            users[userAddress].orbitdb.identityPrivateKey
+        users[userAddress].orbitdb.identityId,
+        users[userAddress].orbitdb.identityPublicKey,
+        users[userAddress].orbitdb.identityPrivateKey
         );
     }
 
@@ -147,94 +155,49 @@ contract Forum {
         string memory, string memory, string memory) {
         require (hasUserSignedUp(userAddress), "User hasn't signed up.");
         return (
-            users[userAddress].orbitdb.orbitId,
-            users[userAddress].orbitdb.orbitPublicKey,
-            users[userAddress].orbitdb.orbitPrivateKey,
-            users[userAddress].orbitdb.topicsDB,
-            users[userAddress].orbitdb.postsDB
+        users[userAddress].orbitdb.orbitId,
+        users[userAddress].orbitdb.orbitPublicKey,
+        users[userAddress].orbitdb.orbitPrivateKey,
+        users[userAddress].orbitdb.topicsDB,
+        users[userAddress].orbitdb.postsDB
         );
     }
 
-    //----------------------------------------POSTING----------------------------------------
-    struct Topic {
-        uint topicID;
-        address author;
-        uint timestamp;
-        uint[] postIDs;
-    }
-
-    struct Post {
-        uint postID;
-        address author;
-        uint timestamp;
-        uint topicID;
-    }
-
-    uint numTopics;   // Total number of topics
-    uint numPosts;    // Total number of posts
-
-    mapping (uint => Topic) topics;
-    mapping (uint => Post) posts;
-
-    event TopicCreated(uint topicID, uint postID);
-    event PostCreated(uint postID, uint topicID);
+    //----POSTING-----
 
     function createTopic() public returns (uint, uint) {
         require(hasUserSignedUp(msg.sender));  // Only registered users can create topics
-        //Creates topic
-        uint topicID = numTopics++;
-        topics[topicID] = Topic(topicID, msg.sender, block.timestamp, new uint[](0));
+        (uint topicID, uint postID) = posting.createTopic(msg.sender);
         users[msg.sender].topicIDs.push(topicID);
-
-        //Adds first post to topic
-        uint postID = numPosts++;
-        posts[postID] = Post(postID, msg.sender, block.timestamp, topicID);
-        topics[topicID].postIDs.push(postID);
         users[msg.sender].postIDs.push(postID);
-
-        emit TopicCreated(topicID, postID);
         return (topicID, postID);
     }
 
     function createPost(uint topicID) public returns (uint) {
         require(hasUserSignedUp(msg.sender));  // Only registered users can create posts
-        require(topicID<numTopics); // Only allow posting to a topic that exists
-        uint postID = numPosts++;
-        posts[postID] = Post(postID, msg.sender, block.timestamp, topicID);
-        topics[topicID].postIDs.push(postID);
+        uint postID = posting.createPost(topicID, msg.sender);
         users[msg.sender].postIDs.push(postID);
-        emit PostCreated(postID, topicID);
         return postID;
     }
 
-    function getNumberOfTopics() public view returns (uint) {
-        return numTopics;
-    }
-
     function getTopic(uint topicID) public view returns (string memory, address, string memory, uint, uint[] memory) {
-        //require(hasUserSignedUp(msg.sender)); needed?
-        require(topicID<numTopics);
-        return (getOrbitTopicsDB(topics[topicID].author),
-        topics[topicID].author,
-        users[topics[topicID].author].username,
-        topics[topicID].timestamp,
-        topics[topicID].postIDs
+        (address author, uint timestamp, uint[] memory postIDs) = posting.getTopicInfo(topicID);
+        return (getOrbitTopicsDB(author),
+        author,
+        users[author].username,
+        timestamp,
+        postIDs
         );
-    }
-
-    function getTopicPosts(uint topicID) public view returns (uint[] memory) {
-        require(topicID<numTopics); // Topic should exist
-        return topics[topicID].postIDs;
     }
 
     function getPost(uint postID) public view returns (string memory, address, string memory, uint, uint) {
-        //require(hasUserSignedUp(msg.sender)); needed?
-        require(postID<numPosts);
-        return (getOrbitPostsDB(posts[postID].author),
-        posts[postID].author,
-        users[posts[postID].author].username,
-        posts[postID].timestamp,
-        posts[postID].topicID
+        (address author, uint timestamp, uint topicID) = posting.getPostInfo(postID);
+        return (getOrbitPostsDB(author),
+        author,
+        users[author].username,
+        timestamp,
+        topicID
         );
     }
+
 }
