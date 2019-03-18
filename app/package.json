@@ -9,7 +9,7 @@
   "dependencies": {
     "connected-react-router": "6.3.2",
     "drizzle": "1.3.3",
-    "history": "4.7.2",
+    "history": "4.9.0",
     "ipfs": "github:ipfs/js-ipfs#e849dbcab4a313f7ffc1532a389097ee76344067",
     "orbit-db": "0.19.9",
     "orbit-db-keystore": "0.1.0",
@@ -19,7 +19,7 @@
     "react-dom": "16.8.4",
     "react-markdown": "4.0.6",
     "react-redux": "6.0.1",
-    "react-router-dom": "4.3.1",
+    "react-router-dom": "5.0.0",
     "react-scripts": "2.1.8",
     "react-timeago": "4.4.0",
     "react-user-avatar": "1.10.0",
