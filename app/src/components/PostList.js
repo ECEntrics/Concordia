@@ -5,8 +5,8 @@ import { drizzle } from '../index';
 
 import Post from './Post';
 
-const contract = 'Posting';
-const getPostMethod = 'getPostInfo';
+const contract = 'Forum';
+const getPostMethod = 'getPost';
 
 class PostList extends Component {
   constructor(props) {

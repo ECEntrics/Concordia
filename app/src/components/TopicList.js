@@ -5,8 +5,8 @@ import { drizzle } from '../index';
 
 import Topic from './Topic';
 
-const contract = 'Posting';
-const getTopicMethod = 'getTopicInfo';
+const contract = 'Forum';
+const getTopicMethod = 'getTopic';
 
 class TopicList extends Component {
   constructor(props) {
