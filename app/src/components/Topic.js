@@ -54,9 +54,8 @@ class Topic extends Component {
       const orbitData = orbitDB.topicsDB.get(topicID);
       topicSubject = orbitData.subject;
     } else {
-      const fullAddress = `/orbitdb/${topicData.value[0]
-      }/topics`;
-      const store = await orbitDB.orbitdb.keyvalue(fullAddress);
+      const fullAddress = `/orbitdb/${topicData.value[0]}/topics`;
+      const store = await orbitDB.orbitdb.open(fullAddress, {type: 'keyvalue'});
       await store.load();
 
       const localOrbitData = store.get(topicID);

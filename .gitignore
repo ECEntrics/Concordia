@@ -13,6 +13,7 @@ yarn.lock
 /build
 /src/build
 /app/src/build
+/app/build
 
 # Contract Artifacts
 /app/src/contracts

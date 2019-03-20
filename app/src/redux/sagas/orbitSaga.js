@@ -1,8 +1,9 @@
-import { all, call, put, take, takeLatest } from 'redux-saga/effects';
+import { all, call, put, select, take, takeEvery, takeLatest } from 'redux-saga/effects';
+import isEqual from 'lodash.isequal';
 import { contract, getCurrentAccount } from './drizzleUtilsSaga';
 import { loadDatabases } from '../../utils/orbitUtils';
 import { DRIZZLE_UTILS_SAGA_INITIALIZED } from '../actions/drizzleUtilsActions';
-import { DATABASES_NOT_READY, IPFS_INITIALIZED } from '../actions/orbitActions';
+import { DATABASES_NOT_READY, IPFS_INITIALIZED, UPDATE_PEERS } from '../actions/orbitActions';
 
 let latestAccount;
 
@@ -19,8 +20,6 @@ function* getOrbitDBInfo() {
         address: account
       });
       if (callResult) {
-        // console.log("Deleting local storage..");
-        // localStorage.clear();
         const txObj2 = yield call(contract.methods.getOrbitIdentityInfo,
           ...[account]);
         const orbitIdentityInfo = yield call(txObj2.call, {
@@ -51,12 +50,29 @@ function* getOrbitDBInfo() {
   }
 }
 
+function* updatePeersState() {
+  const orbit = yield select(state => state.orbit);
+  if(orbit.ready){
+    const topicsDBAddress = orbit.topicsDB.address.toString();
+    const postsDBAddress = orbit.postsDB.address.toString();
+    const topicsDBPeers = yield call(orbit.ipfs.pubsub.peers, topicsDBAddress);
+    const postsDBPeers = yield call(orbit.ipfs.pubsub.peers, postsDBAddress);
+    if(!isEqual(topicsDBPeers.sort(), orbit.topicsDBPeers.sort()) ||
+        !isEqual(postsDBPeers.sort(), orbit.postsDBPeers.sort())){
+      yield put({
+        type: UPDATE_PEERS, topicsDBPeers, postsDBPeers
+      });
+    }
+  }
+}
+
 function* orbitSaga() {
   yield all([
     take(DRIZZLE_UTILS_SAGA_INITIALIZED),
     take(IPFS_INITIALIZED)
   ]);
   yield takeLatest('ACCOUNT_CHANGED', getOrbitDBInfo);
+  yield takeEvery('ACCOUNTS_FETCHED', updatePeersState);
 }
 
 export default orbitSaga;

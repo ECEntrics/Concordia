@@ -1,7 +1,9 @@
-import { DATABASES_CREATED,
+import {
+  DATABASES_CREATED,
   DATABASES_LOADED,
   DATABASES_NOT_READY,
-  IPFS_INITIALIZED } from '../actions/orbitActions';
+  IPFS_INITIALIZED, UPDATE_PEERS
+} from '../actions/orbitActions';
 
 const initialState = {
   ipfs: null,
@@ -10,6 +12,8 @@ const initialState = {
   orbitdb: null,
   topicsDB: null,
   postsDB: null,
+  topicsDBPeers: [],
+  postsDBPeers: [],
   id: null
 };
 
@@ -47,6 +51,12 @@ const orbitReducer = (state = initialState, action) => {
         topicsDB: null,
         postsDB: null,
         id: null
+      };
+    case UPDATE_PEERS:
+      return {
+        ...state,
+        topicsDBPeers: action.topicsDBPeers,
+        postsDBPeers: action.postsDBPeers
       };
     default:
       return state;

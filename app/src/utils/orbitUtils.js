@@ -17,6 +17,8 @@ function initIPFS() {
 }
 
 async function createDatabases() {
+  console.log("Deleting local storage..."); // Else we are in danger of reusing an existing orbit
+  localStorage.clear(); // Perhaps not needed at all when orbit ids are used in Orbit 0.20.x+
   console.log('Creating databases...');
   const ipfs = getIPFS();
   const orbitdb = await new OrbitDB(ipfs);

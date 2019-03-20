@@ -11,6 +11,7 @@
     "drizzle": "1.3.3",
     "history": "4.9.0",
     "ipfs": "github:ipfs/js-ipfs#e849dbcab4a313f7ffc1532a389097ee76344067",
+    "lodash.isequal": "4.5.0",
     "orbit-db": "0.19.9",
     "orbit-db-keystore": "0.1.0",
     "prop-types": "15.7.2",
