@@ -23,56 +23,52 @@ class Topic extends Component {
   }
 
   componentDidMount() {
-    const { topicSubjectFetchStatus } = this.state;
-    const { topicData, orbitDB, topicID } = this.props;
-
-    if (topicData !== null
-        && topicSubjectFetchStatus === 'pending'
-        && orbitDB.ipfsInitialized
-        && orbitDB.orbitdb) {
-      this.fetchSubject(topicID);
-    }
+      this.fetchSubject(this.props.topicID);
   }
 
   componentDidUpdate() {
-    const { topicSubjectFetchStatus } = this.state;
-    const { topicData, orbitDB, topicID } = this.props;
-
-    if (topicData !== null
-        && topicSubjectFetchStatus === 'pending'
-        && orbitDB.ipfsInitialized
-        && orbitDB.orbitdb) {
-      this.fetchSubject(topicID);
-    }
+      this.fetchSubject(this.props.topicID);
   }
 
   async fetchSubject(topicID) {
+    const { topicSubjectFetchStatus } = this.state;
     const { topicData, user, orbitDB } = this.props;
-    let topicSubject;
 
-    if (topicData.value[1] === user.address) {
-      const orbitData = orbitDB.topicsDB.get(topicID);
-      topicSubject = orbitData.subject;
-    } else {
-      const fullAddress = `/orbitdb/${topicData.value[0]}/topics`;
-      const store = await orbitDB.orbitdb.open(fullAddress, {type: 'keyvalue'});
-      await store.load();
+    if (topicData !== null
+      && topicSubjectFetchStatus === 'pending'
+      && orbitDB.ipfsInitialized
+      && orbitDB.orbitdb) {
 
-      const localOrbitData = store.get(topicID);
-      if (localOrbitData) {
-        topicSubject = localOrbitData.subject;
+      let topicSubject;
+
+      if (topicData.value[1] === user.address) {
+        const orbitData = orbitDB.topicsDB.get(topicID);
+        if(orbitData)
+          topicSubject = orbitData.subject;
       } else {
-        // Wait until we have received something from the network
+        const fullAddress = `/orbitdb/${topicData.value[0]}/topics`;
+        const store = await orbitDB.orbitdb.open(fullAddress, {type: 'keyvalue'});
+        await store.load();
+
+        const localOrbitData = store.get(topicID);
+        if (localOrbitData)
+          topicSubject = localOrbitData.subject;
+
+        store.events.on('replicate', () => {
+          console.log("Initiated OrbitDB data replication.");
+        });
+
         store.events.on('replicated', () => {
+          console.log("OrbitDB data replicated successfully.");
           topicSubject = store.get(topicID).subject;
         });
       }
-    }
 
-    this.setState({
-      topicSubject,
-      topicSubjectFetchStatus: 'fetched'
-    });
+      this.setState({
+        topicSubject,
+        topicSubjectFetchStatus: 'fetched'
+      });
+    }
   }
 
   render() {
@@ -93,7 +89,7 @@ class Topic extends Component {
           >
             <p>
               <strong>
-                {topicSubject !== null ? topicSubject
+                {(topicSubject) ? topicSubject
                   : (
                     <ContentLoader
                       height={5.8}
@@ -147,7 +143,7 @@ Topic.propTypes = {
   history: PropTypes.object.isRequired,
   topicData: GetTopicResult.isRequired,
   orbitDB: PropTypes.object.isRequired,
-  topicID: PropTypes.string.isRequired
+  topicID: PropTypes.number.isRequired
 };
 
 const mapStateToProps = state => ({

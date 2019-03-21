@@ -8,6 +8,7 @@ import ipfsOptions from '../config/ipfsOptions';
 
 function initIPFS() {
   const ipfs = new IPFS(ipfsOptions);
+  ipfs.on('error', (error) => console.error(`IPFS error: ${error}`));
   ipfs.on('ready', async () => {
     store.dispatch({
       type: IPFS_INITIALIZED, ipfs
@@ -43,9 +44,8 @@ async function createDatabases() {
 }
 
 async function loadDatabases(identityId, identityPublicKey, identityPrivateKey,
-  orbitId, orbitPublicKey, orbitPrivateKey,
-  topicsDBId, postsDBId) {
-  console.log('Loading databases...');
+                             orbitId, orbitPublicKey, orbitPrivateKey,
+                             topicsDBId, postsDBId) {
   const directory = './orbitdb';
   const keystore = Keystore.create(path.join(directory, orbitId, '/keystore'));
 
@@ -59,12 +59,15 @@ async function loadDatabases(identityId, identityPublicKey, identityPrivateKey,
     {
       peerId: orbitId, keystore
     });
-  const topicsDB = await orbitdb.keyvalue(`/orbitdb/${topicsDBId}/topics`);
-  const postsDB = await orbitdb.keyvalue(`/orbitdb/${postsDBId}/posts`);
+  const topicsDB = await orbitdb.keyvalue(`/orbitdb/${topicsDBId}/topics`)
+    .catch((error) => console.error(`TopicsDB init error: ${error}`));
+  const postsDB = await orbitdb.keyvalue(`/orbitdb/${postsDBId}/posts`)
+    .catch((error) => console.error(`PostsDB init error: ${error}`));
 
-  await topicsDB.load();
-  await postsDB.load();
+  await topicsDB.load().catch((error) => console.error(`TopicsDB loading error: ${error}`));
+  await postsDB.load().catch((error) => console.error(`PostsDB loading error: ${error}`));
 
+  console.log('Orbit databases loaded successfully.');
   store.dispatch(updateDatabases(DATABASES_LOADED, orbitdb, topicsDB, postsDB));
 }
 
@@ -73,7 +76,7 @@ function getIPFS() {
 }
 
 async function orbitSagaPut(db, key, value) {
-  db.put(key, value);
+  await db.put(key, value).catch((error) => console.error(`Orbit put error: ${error}`));
 }
 
 export { initIPFS, createDatabases, loadDatabases, orbitSagaPut };
