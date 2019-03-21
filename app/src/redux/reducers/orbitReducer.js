@@ -1,8 +1,8 @@
 import {
   DATABASES_CREATED,
   DATABASES_LOADED,
-  DATABASES_NOT_READY,
-  IPFS_INITIALIZED, UPDATE_PEERS
+  DATABASES_NOT_READY, OPENING_PEER_DATABASE,
+  IPFS_INITIALIZED, UPDATE_PEERS, PEER_DATABASE_LOADED
 } from '../actions/orbitActions';
 
 const initialState = {
@@ -12,8 +12,8 @@ const initialState = {
   orbitdb: null,
   topicsDB: null,
   postsDB: null,
-  topicsDBPeers: [],
-  postsDBPeers: [],
+  pubsubPeers: {topicsDBPeers:[], postsDBPeers:[]},
+  replicatedDatabases: [],
   id: null
 };
 
@@ -52,11 +52,27 @@ const orbitReducer = (state = initialState, action) => {
         postsDB: null,
         id: null
       };
+    case OPENING_PEER_DATABASE:
+      if(state.replicatedDatabases.find(db => db.fullAddress === action.fullAddress))
+        return state;
+      return {
+        ...state,
+        replicatedDatabases:[...state.replicatedDatabases,
+          {fullAddress: action.fullAddress, ready: false, store: null}]
+      };
+    case PEER_DATABASE_LOADED:
+      return {
+        ...state,
+        replicatedDatabases: [...state.replicatedDatabases.map((db) => {
+          if (db.fullAddress !== action.fullAddress)
+            return db; // This isn't the item we care about - keep it as-is
+          return { ...db, ready: true, store: action.store}  // Otherwise return an updated value
+        })]
+      };
     case UPDATE_PEERS:
       return {
         ...state,
-        topicsDBPeers: action.topicsDBPeers,
-        postsDBPeers: action.postsDBPeers
+        pubsubPeers: {topicsDBPeers:action.topicsDBPeers, postsDBPeers:action.postsDBPeers}
       };
     default:
       return state;

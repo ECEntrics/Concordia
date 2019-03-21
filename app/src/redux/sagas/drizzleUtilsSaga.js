@@ -5,20 +5,20 @@ import Forum from '../../contracts/Forum';
 import { DRIZZLE_UTILS_SAGA_INITIALIZED } from '../actions/drizzleUtilsActions';
 
 const accounts = state => state.accounts;
-let initFlag; let web3; let
-  contract;
+let initFlag, web3, forumContract;
 
 function* init() {
   if (!initFlag) {
     web3 = yield call(getWeb3);
-    contract = yield call(getContractInstance, {
+    forumContract = yield call(getContractInstance, {
       web3, artifact: Forum
     });
     initFlag = true;
     yield put({
       type: DRIZZLE_UTILS_SAGA_INITIALIZED, ...[]
     });
-  } else console.warn('Attempted to reinitialize drizzleUtilsSaga!');
+  }
+  else console.warn('Attempted to reinitialize drizzleUtilsSaga!');
 }
 
 // If the method below proves to be problematic/ineffective (i.e. getting current account
@@ -32,6 +32,6 @@ function* drizzleUtilsSaga() {
   yield takeLatest('DRIZZLE_INITIALIZED', init);
 }
 
-export { web3, contract, getCurrentAccount };
+export { web3, forumContract, getCurrentAccount };
 
 export default drizzleUtilsSaga;

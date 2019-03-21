@@ -11,7 +11,7 @@ import FloatingButton from '../components/FloatingButton';
 
 /* import { showProgressBar, hideProgressBar } from '../redux/actions/userInterfaceActions'; */
 
-const contract = 'Posting';
+const contract = 'Forum';
 const getNumberOfTopicsMethod = 'getNumberOfTopics';
 
 class BoardContainer extends Component {

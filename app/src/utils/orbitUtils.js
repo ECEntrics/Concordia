@@ -13,14 +13,14 @@ function initIPFS() {
     store.dispatch({
       type: IPFS_INITIALIZED, ipfs
     });
-    console.log('IPFS initialized.');
+    console.debug('IPFS initialized.');
   });
 }
 
 async function createDatabases() {
-  console.log("Deleting local storage..."); // Else we are in danger of reusing an existing orbit
+  console.debug("Deleting local storage..."); // Else we are in danger of reusing an existing orbit
   localStorage.clear(); // Perhaps not needed at all when orbit ids are used in Orbit 0.20.x+
-  console.log('Creating databases...');
+  console.debug('Creating databases...');
   const ipfs = getIPFS();
   const orbitdb = await new OrbitDB(ipfs);
   const topicsDB = await orbitdb.keyvalue('topics');
@@ -67,7 +67,21 @@ async function loadDatabases(identityId, identityPublicKey, identityPrivateKey,
   await topicsDB.load().catch((error) => console.error(`TopicsDB loading error: ${error}`));
   await postsDB.load().catch((error) => console.error(`PostsDB loading error: ${error}`));
 
-  console.log('Orbit databases loaded successfully.');
+  //It is possible that we lack our own data and need to replicate them from somewhere else
+  topicsDB.events.on('replicate', (address) => {
+    console.log(`TopicsDB Replicating (${address}).`);
+  });
+  topicsDB.events.on('replicated', (address) => {
+    console.log(`TopicsDB replicated (${address}).`);
+  });
+  postsDB.events.on('replicate', (address) => {
+    console.log(`PostsDB replicating (${address}).`);
+  });
+  postsDB.events.on('replicated', (address) => {
+    console.log(`PostsDB replicated (${address}).`);
+  });
+
+  console.debug('Orbit databases loaded successfully.');
   store.dispatch(updateDatabases(DATABASES_LOADED, orbitdb, topicsDB, postsDB));
 }
 
@@ -79,4 +93,17 @@ async function orbitSagaPut(db, key, value) {
   await db.put(key, value).catch((error) => console.error(`Orbit put error: ${error}`));
 }
 
-export { initIPFS, createDatabases, loadDatabases, orbitSagaPut };
+async function orbitSagaOpen(orbitdb, address) {
+  const store = await orbitdb.keyvalue(address)
+    .catch((error) => console.error(`Error opening a peer's db: ${error}`));
+  await store.load().catch((error) => console.log(error));
+  store.events.on('replicate', (address) => {
+    console.log(`A peer's DB is being replicated (${address}).`);
+  });
+  store.events.on('replicated', (address) => {
+    console.log(`A peer's DB was replicated (${address}).`);
+  });
+  return store;
+}
+
+export { initIPFS, createDatabases, loadDatabases, orbitSagaPut, orbitSagaOpen };

@@ -82,7 +82,7 @@ class Post extends Component {
       orbitPostData = orbitDB.postsDB.get(postID);
     } else {
       const fullAddress = `/orbitdb/${postData.value[0]}/posts`;
-      const store = await orbitDB.orbitdb.open(fullAddress, {type: 'keyvalue'});
+      const store = await orbitDB.orbitdb.keyvalue(fullAddress);
       await store.load();
 
       const localOrbitData = store.get(postID);

@@ -3,6 +3,7 @@ import { call, select, take, takeEvery } from 'redux-saga/effects';
 import { drizzle } from '../../index';
 import { orbitSagaPut } from '../../utils/orbitUtils';
 import { DRIZZLE_UTILS_SAGA_INITIALIZED } from '../actions/drizzleUtilsActions';
+import { CONTRACT_EVENT_FIRED } from './eventSaga';
 
 const transactionsHistory = Object.create(null);
 
@@ -19,7 +20,6 @@ function* initTransaction(action) {
 function* handleEvent(action) {
   const transactionStack = yield select(state => state.transactionStack);
   const dataKey = transactionStack.indexOf(action.event.transactionHash);
-
   switch (action.event.event) {
     case 'TopicCreated':
       if (dataKey !== -1
@@ -75,7 +75,7 @@ function* handleError() {
 function* transactionsSaga() {
   yield take(DRIZZLE_UTILS_SAGA_INITIALIZED);
   yield takeEvery('INIT_TRANSACTION', initTransaction);
-  yield takeEvery('EVENT_FIRED', handleEvent);
+  yield takeEvery(CONTRACT_EVENT_FIRED, handleEvent);
   yield takeEvery('TX_ERROR', handleError);
 }
 

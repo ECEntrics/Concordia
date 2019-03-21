@@ -1,6 +1,6 @@
 import { call, put, select, take, takeEvery } from 'redux-saga/effects';
 
-import { contract, getCurrentAccount } from './drizzleUtilsSaga';
+import { forumContract, getCurrentAccount } from './drizzleUtilsSaga';
 import { DRIZZLE_UTILS_SAGA_INITIALIZED } from '../actions/drizzleUtilsActions';
 
 let account;
@@ -13,14 +13,14 @@ function* updateUserData() {
       type: 'ACCOUNT_CHANGED', ...[]
     });
   }
-  const txObj1 = yield call(contract.methods.hasUserSignedUp, ...[account]);
+  const txObj1 = yield call(forumContract.methods.hasUserSignedUp, ...[account]);
   try {
     const userState = yield call(getUserState);
     const callResult = yield call(txObj1.call, {
       address: account
     });
     if (callResult) {
-      const txObj2 = yield call(contract.methods.getUsername, ...[account]);
+      const txObj2 = yield call(forumContract.methods.getUsername, ...[account]);
       const username = yield call(txObj2.call, {
         address: account
       });

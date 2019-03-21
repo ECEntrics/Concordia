@@ -28,9 +28,6 @@ contract Posting {
     mapping (uint => Topic) topics;
     mapping (uint => Post) posts;
 
-    event TopicCreated(uint topicID, uint postID);
-    event PostCreated(uint postID, uint topicID);
-
     function createTopic(address author) public returns (uint, uint) {
         require(msg.sender==forumContractAddress);
         //Creates topic
@@ -42,7 +39,6 @@ contract Posting {
         posts[postID] = Post(postID, author, block.timestamp, topicID);
         topics[topicID].postIDs.push(postID);
 
-        emit TopicCreated(topicID, postID);
         return (topicID, postID);
     }
 
@@ -52,7 +48,7 @@ contract Posting {
         uint postID = numPosts++;
         posts[postID] = Post(postID, author, block.timestamp, topicID);
         topics[topicID].postIDs.push(postID);
-        emit PostCreated(postID, topicID);
+
         return postID;
     }
 

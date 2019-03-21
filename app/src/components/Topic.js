@@ -9,71 +9,28 @@ import { Card } from 'semantic-ui-react';
 
 import TimeAgo from 'react-timeago';
 import epochTimeConverter from '../helpers/EpochTimeConverter';
+import { addPeerDatabase } from '../redux/actions/orbitActions';
 
 class Topic extends Component {
   constructor(props) {
     super(props);
-
-    this.fetchSubject = this.fetchSubject.bind(this);
-
     this.state = {
-      topicSubject: null,
-      topicSubjectFetchStatus: 'pending'
+      askedForReplication: false,
+      fetchedSubject: false
     };
   }
 
-  componentDidMount() {
-      this.fetchSubject(this.props.topicID);
-  }
-
   componentDidUpdate() {
-      this.fetchSubject(this.props.topicID);
-  }
-
-  async fetchSubject(topicID) {
-    const { topicSubjectFetchStatus } = this.state;
-    const { topicData, user, orbitDB } = this.props;
-
-    if (topicData !== null
-      && topicSubjectFetchStatus === 'pending'
-      && orbitDB.ipfsInitialized
-      && orbitDB.orbitdb) {
-
-      let topicSubject;
-
-      if (topicData.value[1] === user.address) {
-        const orbitData = orbitDB.topicsDB.get(topicID);
-        if(orbitData)
-          topicSubject = orbitData.subject;
-      } else {
-        const fullAddress = `/orbitdb/${topicData.value[0]}/topics`;
-        const store = await orbitDB.orbitdb.open(fullAddress, {type: 'keyvalue'});
-        await store.load();
-
-        const localOrbitData = store.get(topicID);
-        if (localOrbitData)
-          topicSubject = localOrbitData.subject;
-
-        store.events.on('replicate', () => {
-          console.log("Initiated OrbitDB data replication.");
-        });
-
-        store.events.on('replicated', () => {
-          console.log("OrbitDB data replicated successfully.");
-          topicSubject = store.get(topicID).subject;
-        });
-      }
-
-      this.setState({
-        topicSubject,
-        topicSubjectFetchStatus: 'fetched'
-      });
+    const { dispatch, topicData, topicSubject, orbitDB } = this.props;
+    const { askedForReplication } = this.state;
+    if(!askedForReplication && orbitDB.ipfsInitialized && orbitDB.orbitdb && dispatch && !topicSubject && topicData) {
+      this.setState({ askedForReplication: true });
+      dispatch(addPeerDatabase(`/orbitdb/${topicData.value[0]}/topics`));
     }
   }
 
   render() {
-    const { topicSubject } = this.state;
-    const { history, topicID, topicData } = this.props;
+    const { history, topicID, topicData, topicSubject } = this.props;
 
     return (
       <Card
@@ -146,9 +103,37 @@ Topic.propTypes = {
   topicID: PropTypes.number.isRequired
 };
 
-const mapStateToProps = state => ({
-  user: state.user,
-  orbitDB: state.orbit
-});
+function getTopicSubject(state, props){
+  const {  user, orbit } = state;
+  if (orbit.ipfsInitialized && orbit.orbitdb) {
+    const { topicData, topicID } = props;
+    if (topicData){
+      if(user && topicData.value[1] === user.address) {
+        const orbitData = orbit.topicsDB.get(topicID);
+        if(orbitData && orbitData.subject)
+          return orbitData.subject;
+      }
+      const db = orbit.replicatedDatabases.find(db => db.fullAddress === `/orbitdb/${topicData.value[0]}/topics`);
+      if(db && db.ready && db.store){
+        const localOrbitData = db.store.get(topicID);
+        if (localOrbitData){
+          return localOrbitData.subject;
+        }
+      }
+    }
+  }
+  return null;
+}
+
+
+
+function mapStateToProps(state, ownProps) {
+  return {
+    user: state.user,
+    orbitDB: state.orbit,
+    topicSubject: getTopicSubject(state, ownProps)
+  }
+}
+
 
 export default withRouter(connect(mapStateToProps)(Topic));

@@ -2,7 +2,7 @@ const initialState = {
   username: '',
   address: '0x0',
   avatarUrl: '',
-  hasSignedUp: null
+  hasSignedUp: false
 };
 
 const userReducer = (state = initialState, action) => {

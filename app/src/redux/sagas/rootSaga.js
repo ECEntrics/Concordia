@@ -4,6 +4,7 @@ import drizzleUtilsSaga from './drizzleUtilsSaga';
 import userSaga from './userSaga';
 import orbitSaga from './orbitSaga';
 import transactionsSaga from './transactionsSaga';
+import eventSaga from './eventSaga';
 
 export default function* root() {
   const sagas = [
@@ -11,6 +12,7 @@ export default function* root() {
     drizzleUtilsSaga,
     orbitSaga,
     userSaga,
+    eventSaga,
     transactionsSaga];
   yield all(
     sagas.map(saga => fork(saga)),

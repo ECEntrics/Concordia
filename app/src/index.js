@@ -11,6 +11,7 @@ import * as serviceWorker from './utils/serviceWorker';
 
 import './assets/css/index.css';
 import drizzleOptions from './config/drizzleOptions';
+import LoadingContainer from './containers/LoadingContainer';
 
 initIPFS();
 
@@ -20,9 +21,11 @@ export { drizzle };
 
 render(
   <Provider store={store}>
-    <ConnectedRouter history={history}>
-      {routes}
-    </ConnectedRouter>
+    <LoadingContainer>
+      <ConnectedRouter history={history}>
+        {routes}
+      </ConnectedRouter>
+    </LoadingContainer>
   </Provider>,
   document.getElementById('root'),
 );

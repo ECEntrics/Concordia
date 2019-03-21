@@ -1,5 +1,4 @@
 import Forum from '../contracts/Forum.json';
-import Posting from '../contracts/Posting.json';
 
 const drizzleOptions = {
   web3: {
@@ -8,10 +7,9 @@ const drizzleOptions = {
       url: 'ws://127.0.0.1:9545'
     }
   },
-  contracts: [Forum, Posting],
+  contracts: [Forum],
   events: {
-    Forum: ['UserSignedUp', 'UsernameUpdated'],
-    Posting: ['TopicCreated', 'PostCreated']
+    Forum: ['UserSignedUp', 'UsernameUpdated', 'TopicCreated', 'PostCreated']
   },
   polls: {
     accounts: 2000,
