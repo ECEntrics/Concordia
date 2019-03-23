@@ -1,7 +1,6 @@
-# See https://help.github.com/ignore-files/ for more about ignoring files.
-
 # Node
 /node_modules
+/app/node_modules
 package-lock.json
 
 # Yarn
@@ -10,9 +9,14 @@ yarn.lock
 # Testing
 /coverage
 
-# Production
+# Build Directories
 /build
 /src/build
+/app/src/build
+/app/build
+
+# Contract Artifacts
+/app/src/contracts
 
 # Logs
 npm-debug.log*

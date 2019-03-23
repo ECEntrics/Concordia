@@ -1,4 +1,4 @@
-var Forum = artifacts.require("Forum");
+const Forum = artifacts.require("Forum");
 
 module.exports = function(deployer) {
   deployer.deploy(Forum);
