@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 
+//TODO: Move this file
 const GetTopicResult = PropTypes.PropTypes.shape({
   0: PropTypes.string,
   1: PropTypes.string,

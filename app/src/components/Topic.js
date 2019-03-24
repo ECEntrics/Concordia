@@ -24,8 +24,8 @@ class Topic extends Component {
     const { dispatch, topicData, topicSubject, orbitDB } = this.props;
     const { askedForReplication } = this.state;
     if(!askedForReplication && orbitDB.ipfsInitialized && orbitDB.orbitdb && dispatch && !topicSubject && topicData) {
-      this.setState({ askedForReplication: true });
       dispatch(addPeerDatabase(`/orbitdb/${topicData.value[0]}/topics`));
+      this.setState({ askedForReplication: true });
     }
   }
 

@@ -2,7 +2,6 @@ import React, { Children, Component } from 'react';
 import { connect } from 'react-redux';
 import ipfs_logo from '../assets/images/ipfs_logo.png';
 
-
 //TODO: Add OrbitDB Loading thingy
 class LoadingContainer extends Component {
   render() {
@@ -52,7 +51,9 @@ class LoadingContainer extends Component {
             <div>
               <h1><span role="img" aria-label="Gear">⚙</span></h1>
               <p><strong>Initializing contracts...</strong></p>
-              <p>If this takes too long please make sure they are deployed to the network.</p>
+              <p>If this takes too long please make sure they are deployed to the network
+                and you are connected to the correct one.
+              </p>
             </div>
           </div>
         </main>

@@ -13,7 +13,11 @@ function initIPFS() {
     store.dispatch({
       type: IPFS_INITIALIZED, ipfs
     });
-    console.debug('IPFS initialized.');
+    ipfs.id(function (error, identity) {
+      if (error)
+        console.error(`IPFS id() error: ${error}`);
+      console.debug(`IPFS initialized with id: ${identity.id}`);
+    })
   });
 }
 
@@ -22,7 +26,7 @@ async function createDatabases() {
   localStorage.clear(); // Perhaps not needed at all when orbit ids are used in Orbit 0.20.x+
   console.debug('Creating databases...');
   const ipfs = getIPFS();
-  const orbitdb = await new OrbitDB(ipfs);
+  const orbitdb = new OrbitDB(ipfs);
   const topicsDB = await orbitdb.keyvalue('topics');
   const postsDB = await orbitdb.keyvalue('posts');
   store.dispatch(
@@ -55,7 +59,7 @@ async function loadDatabases(identityId, identityPublicKey, identityPrivateKey,
   }));
 
   const ipfs = getIPFS();
-  const orbitdb = await new OrbitDB(ipfs, directory,
+  const orbitdb = new OrbitDB(ipfs, directory,
     {
       peerId: orbitId, keystore
     });
