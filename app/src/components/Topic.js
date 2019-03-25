@@ -113,11 +113,12 @@ function getTopicSubject(state, props){
         if(orbitData && orbitData.subject)
           return orbitData.subject;
       }
-      const db = orbit.replicatedDatabases.find(db => db.fullAddress === `/orbitdb/${topicData.value[0]}/topics`);
-      if(db && db.ready && db.store){
-        const localOrbitData = db.store.get(topicID);
-        if (localOrbitData){
-          return localOrbitData.subject;
+      else{
+        const db = orbit.peerDatabases.find(db => db.fullAddress === `/orbitdb/${topicData.value[0]}/topics`);
+        if(db && db.store){
+          const localOrbitData = db.store.get(topicID);
+          if (localOrbitData)
+            return localOrbitData.subject;
         }
       }
     }

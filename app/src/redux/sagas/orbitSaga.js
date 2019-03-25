@@ -4,7 +4,7 @@ import { forumContract, getCurrentAccount } from './drizzleUtilsSaga';
 import { loadDatabases, orbitSagaOpen } from '../../utils/orbitUtils';
 import { DRIZZLE_UTILS_SAGA_INITIALIZED } from '../actions/drizzleUtilsActions';
 import {
-  ADD_PEER_DATABASE, PEER_DATABASE_LOADED,
+  ADD_PEER_DATABASE, PEER_DATABASE_ADDED,
   DATABASES_NOT_READY,
   IPFS_INITIALIZED, OPENING_PEER_DATABASE,
   UPDATE_PEERS
@@ -65,12 +65,9 @@ function* addPeerDatabase(action) {
   if(peerOrbitAddresses.size>size){
     const { orbitdb } = yield select(state => state.orbit);
     if(orbitdb){
-      yield put.resolve({
-        type: OPENING_PEER_DATABASE, fullAddress
-      });
       const store = yield call(orbitSagaOpen, orbitdb, fullAddress);
       yield put({
-        type: PEER_DATABASE_LOADED, fullAddress, store: store
+        type: PEER_DATABASE_ADDED, fullAddress, store: store
       });
     }
   }

@@ -1,6 +1,7 @@
 import React, { Children, Component } from 'react';
 import { connect } from 'react-redux';
-import ipfs_logo from '../assets/images/ipfs_logo.png';
+import ethereum_logo from '../assets/images/ethereum_logo.svg';
+import ipfs_logo from '../assets/images/ipfs_logo.svg';
 
 //TODO: Add OrbitDB Loading thingy
 class LoadingContainer extends Component {
@@ -15,7 +16,7 @@ class LoadingContainer extends Component {
         <main className="container loading-screen">
           <div className="pure-g">
             <div className="pure-u-1-1">
-              <h1><span role="img" aria-label="Fox Face">🦊</span></h1>
+              <img src={ethereum_logo} alt="ethereum_logo" height="50"/>
               <p><strong>This browser has no connection to the Ethereum network.</strong></p>
               <p>
                 Please make sure that:
@@ -36,7 +37,7 @@ class LoadingContainer extends Component {
         <main className="loading-screen">
           <div>
             <div>
-              <h1><span role="img" aria-label="Fox Face">🦊</span></h1>
+              <img src={ethereum_logo} alt="ethereum_logo" height="50"/>
               <p><strong>We can't find any Ethereum accounts!</strong>.</p>
             </div>
           </div>
@@ -49,7 +50,7 @@ class LoadingContainer extends Component {
         <main className="loading-screen">
           <div>
             <div>
-              <h1><span role="img" aria-label="Gear">⚙</span></h1>
+              <img src={ethereum_logo} alt="ethereum_logo" height="50"/>
               <p><strong>Initializing contracts...</strong></p>
               <p>If this takes too long please make sure they are deployed to the network
                 and you are connected to the correct one.

@@ -30,8 +30,12 @@
     "uuid": "3.3.2",
     "web3": "1.0.0-beta.50"
   },
+  "devDependencies": {
+    "libp2p-websocket-star-rendezvous": "0.3.0"
+  },
   "scripts": {
     "start": "react-scripts start",
+    "rendezvous": "rendezvous --port=9090 --host=127.0.0.1",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

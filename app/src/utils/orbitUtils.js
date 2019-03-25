@@ -16,14 +16,12 @@ function initIPFS() {
     ipfs.id(function (error, identity) {
       if (error)
         console.error(`IPFS id() error: ${error}`);
-      console.debug(`IPFS initialized with id: ${identity.id}`);
+      console.debug(`IPFS initialized with id ${identity.id}`);
     })
   });
 }
 
 async function createDatabases() {
-  console.debug("Deleting local storage..."); // Else we are in danger of reusing an existing orbit
-  localStorage.clear(); // Perhaps not needed at all when orbit ids are used in Orbit 0.20.x+
   console.debug('Creating databases...');
   const ipfs = getIPFS();
   const orbitdb = new OrbitDB(ipfs);

@@ -15,6 +15,12 @@ const callsInfo = [
   }, {
     contract: 'Forum',
     method: 'getOrbitDBId'
+  }, {
+    contract: 'Forum',
+    method: 'getOrbitTopicsDB'
+  }, {
+    contract: 'Forum',
+    method: 'getOrbitPostsDB'
   }];
 
 class ProfileInformation extends Component {
@@ -27,7 +33,9 @@ class ProfileInformation extends Component {
     this.state = {
       pageStatus: 'initialized',
       dateOfRegister: '',
-      orbitDBId: ''
+      orbitDBId: '',
+      topicsDBId: '',
+      postsDBId: ''
     };
   }
 
@@ -40,7 +48,7 @@ class ProfileInformation extends Component {
   }
 
   getBlockchainData() {
-    const { pageStatus, dateOfRegister, orbitDBId } = this.state;
+    const { pageStatus, dateOfRegister, orbitDBId, topicsDBId, postsDBId } = this.state;
     const { drizzleStatus, address, contracts } = this.props;
 
     if (pageStatus === 'initialized'
@@ -87,11 +95,29 @@ class ProfileInformation extends Component {
           });
         }
       }
+
+      if (topicsDBId === '') {
+        const transaction = contracts[callsInfo[2].contract][callsInfo[2].method][this.dataKey[2]];
+        if (transaction) {
+          this.setState({
+            topicsDBId: transaction.value
+          });
+        }
+      }
+
+      if (postsDBId === '') {
+        const transaction = contracts[callsInfo[3].contract][callsInfo[3].method][this.dataKey[3]];
+        if (transaction) {
+          this.setState({
+            postsDBId: transaction.value
+          });
+        }
+      }
     }
   }
 
   render() {
-    const { orbitDBId, dateOfRegister } = this.state;
+    const { orbitDBId, topicsDBId, postsDBId, dateOfRegister } = this.state;
     const { avatarUrl, username, address, numberOfTopics, numberOfPosts, self } = this.props;
 
     return (
@@ -117,6 +143,14 @@ class ProfileInformation extends Component {
             <tr>
               <td><strong>OrbitDB:</strong></td>
               <td>{orbitDBId}</td>
+            </tr>
+            <tr>
+              <td><strong>TopicsDB:</strong></td>
+              <td>{topicsDBId}</td>
+            </tr>
+            <tr>
+              <td><strong>PostsDB:</strong></td>
+              <td>{postsDBId}</td>
             </tr>
             <tr>
               <td><strong>Number of topics created:</strong></td>
