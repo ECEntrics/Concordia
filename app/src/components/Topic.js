@@ -8,7 +8,6 @@ import ContentLoader from 'react-content-loader';
 import { Card } from 'semantic-ui-react';
 
 import TimeAgo from 'react-timeago';
-import epochTimeConverter from '../helpers/EpochTimeConverter';
 import { addPeerDatabase } from '../redux/actions/orbitActions';
 
 class Topic extends Component {
@@ -83,7 +82,7 @@ class Topic extends Component {
               {topicData !== null
                 && (
                 <TimeAgo
-                  date={epochTimeConverter(topicData.value[3])}
+                  date={topicData.value[3]*1000}
                 />
                 )
                 }

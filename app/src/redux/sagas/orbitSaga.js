@@ -6,7 +6,7 @@ import { DRIZZLE_UTILS_SAGA_INITIALIZED } from '../actions/drizzleUtilsActions';
 import {
   ADD_PEER_DATABASE, PEER_DATABASE_ADDED,
   DATABASES_NOT_READY,
-  IPFS_INITIALIZED, OPENING_PEER_DATABASE,
+  IPFS_INITIALIZED,
   UPDATE_PEERS
 } from '../actions/orbitActions';
 
@@ -73,7 +73,7 @@ function* addPeerDatabase(action) {
   }
 }
 
-//Keeps track of connected pubsub peers in Redux store
+//Keeps track of currently connected pubsub peers in Redux store (for debugging purposes)
 function* updatePeersState() {
   const orbit = yield select(state => state.orbit);
   if(orbit.ready){

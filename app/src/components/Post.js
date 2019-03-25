@@ -11,7 +11,6 @@ import { Button, Divider, Grid, Icon, Label, Transition } from 'semantic-ui-reac
 import TimeAgo from 'react-timeago';
 import UserAvatar from 'react-user-avatar';
 import ReactMarkdown from 'react-markdown';
-import epochTimeConverter from '../helpers/EpochTimeConverter';
 
 class Post extends Component {
   constructor(props) {
@@ -177,9 +176,9 @@ class Post extends Component {
                     <span className="grey-text">
                       {postData !== null
                                             && (
-                                            <TimeAgo date={epochTimeConverter(
-                                              postData.value[3],
-                                            )}
+                                            <TimeAgo date={
+                                              postData.value[3]*1000
+                                            }
                                             />
                                             )
                                             }
