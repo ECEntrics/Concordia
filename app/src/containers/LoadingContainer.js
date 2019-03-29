@@ -7,11 +7,6 @@ import orbitdb_logo from '../assets/images/orbitdb_logo.png';
 class LoadingContainer extends Component {
   render() {
     if (this.props.web3.status === 'failed' || !this.props.web3.networkId) {
-
-      //TODO: wtf is this
-      if (this.props.errorComp)
-        return this.props.errorComp;
-
       return (
         <main className="container loading-screen">
           <div className="pure-g">
@@ -85,13 +80,8 @@ class LoadingContainer extends Component {
       )
     }
 
-    //TODO: wtf is this
     if (this.props.drizzleStatus.initialized)
       return Children.only(this.props.children);
-
-    //TODO: wtf is this
-    if (this.props.loadingComp)
-      return this.props.loadingComp;
 
     return(
       <main className="container loading-screen">
