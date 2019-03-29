@@ -2,8 +2,8 @@ import React, { Children, Component } from 'react';
 import { connect } from 'react-redux';
 import ethereum_logo from '../assets/images/ethereum_logo.svg';
 import ipfs_logo from '../assets/images/ipfs_logo.svg';
+import orbitdb_logo from '../assets/images/orbitdb_logo.png';
 
-//TODO: Add OrbitDB Loading thingy
 class LoadingContainer extends Component {
   render() {
     if (this.props.web3.status === 'failed' || !this.props.web3.networkId) {
@@ -74,6 +74,19 @@ class LoadingContainer extends Component {
       )
     }
 
+    if (!this.props.orbitReady) {
+      return(
+        <main className="loading-screen">
+          <div>
+            <div>
+              <img src={orbitdb_logo} alt="orbitdb_logo" height="50"/>
+              <p><strong>Initializing OrbitDB...</strong></p>
+            </div>
+          </div>
+        </main>
+      )
+    }
+
     //TODO: wtf is this
     if (this.props.drizzleStatus.initialized)
       return Children.only(this.props.children);
@@ -101,6 +114,7 @@ const mapStateToProps = state => {
     drizzleStatus: state.drizzleStatus,
     web3: state.web3,
     ipfsInitialized: state.orbit.ipfsInitialized,
+    orbitReady: state.orbit.ready,
     contractInitialized: state.contracts.Forum.initialized
   }
 };

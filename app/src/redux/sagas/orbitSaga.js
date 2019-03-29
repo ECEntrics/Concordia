@@ -1,13 +1,17 @@
 import { all, call, put, select, take, takeEvery, takeLatest } from 'redux-saga/effects';
 import isEqual from 'lodash.isequal';
 import { forumContract, getCurrentAccount } from './drizzleUtilsSaga';
-import { loadDatabases, orbitSagaOpen } from '../../utils/orbitUtils';
+import {
+  createTempDatabases,
+  loadDatabases,
+  orbitSagaOpen
+} from '../../utils/orbitUtils';
 import { DRIZZLE_UTILS_SAGA_INITIALIZED } from '../actions/drizzleUtilsActions';
 import {
   ADD_PEER_DATABASE, PEER_DATABASE_ADDED,
-  DATABASES_NOT_READY,
+  DATABASES_CREATED,
   IPFS_INITIALIZED,
-  UPDATE_PEERS, ORRBIT_GETTING_INFO, ORBIT_SAGA_ERROR
+  UPDATE_PEERS, ORBIT_INIT, ORBIT_SAGA_ERROR, updateDatabases
 } from '../actions/orbitActions';
 import { ACCOUNT_CHANGED } from '../actions/userActions';
 import { ACCOUNTS_FETCHED } from '../actions/drizzleActions';
@@ -16,7 +20,7 @@ let latestAccount;
 
 function* getOrbitDBInfo() {
   yield put({
-    type: ORRBIT_GETTING_INFO, ...[]
+    type: ORBIT_INIT, ...[]
   });
   const account = yield call(getCurrentAccount);
   if (account !== latestAccount) {
@@ -42,11 +46,13 @@ function* getOrbitDBInfo() {
           orbitDBInfo[0], orbitDBInfo[1], orbitDBInfo[2], orbitDBInfo[3],
           orbitDBInfo[4]);
       } else {
-        yield put({
-          type: DATABASES_NOT_READY, ...[]
-        });
+        const orbit = yield select(state => state.orbit);
+        if(!orbit.ready){
+          const { orbitdb, topicsDB, postsDB } = yield call(createTempDatabases);
+          yield put(updateDatabases(DATABASES_CREATED, orbitdb, topicsDB, postsDB ));
+          console.debug("Created temporary databases.");
+        }
       }
-
       latestAccount = account;
     } catch (error) {
       console.error(error);

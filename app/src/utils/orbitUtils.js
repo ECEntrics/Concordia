@@ -21,6 +21,15 @@ function initIPFS() {
   });
 }
 
+async function createTempDatabases() {
+  console.debug('Creating temporary databases...');
+  const ipfs = getIPFS();
+  const orbitdb = new OrbitDB(ipfs);
+  const topicsDB = await orbitdb.keyvalue('topics');
+  const postsDB = await orbitdb.keyvalue('posts');
+  return { orbitdb, topicsDB, postsDB };
+}
+
 async function createDatabases() {
   console.debug('Creating databases...');
   const ipfs = getIPFS();
@@ -108,4 +117,4 @@ async function orbitSagaOpen(orbitdb, address) {
   return store;
 }
 
-export { initIPFS, createDatabases, loadDatabases, orbitSagaPut, orbitSagaOpen };
+export { initIPFS, createTempDatabases, createDatabases, loadDatabases, orbitSagaPut, orbitSagaOpen };

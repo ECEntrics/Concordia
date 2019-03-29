@@ -55,16 +55,32 @@ class TopicList extends Component {
     const { dataKeys } = this.state;
     const { topicIDs, contracts } = this.props;
 
-    const topics = topicIDs.map(topicID => (
-      <Topic
-        topicData={(dataKeys[topicID]
-              && contracts[contract][getTopicMethod][dataKeys[topicID]])
-          ? contracts[contract][getTopicMethod][dataKeys[topicID]]
-          : null}
-        topicID={topicID}
-        key={topicID}
-      />
-    ));
+    const topics = topicIDs.map(topicID => {
+      let fetchedTopicData;
+      if(dataKeys[topicID])
+        fetchedTopicData = contracts[contract][getTopicMethod][dataKeys[topicID]];
+
+      if(fetchedTopicData) {
+        const topicData = {
+          userAddress: fetchedTopicData.value[0],
+          fullOrbitAddress: `/orbitdb/${fetchedTopicData.value[0]}/topics`,
+          userName: fetchedTopicData.value[2],
+          timestamp: fetchedTopicData.value[3]*1000,
+          nReplies: fetchedTopicData.value[4].length
+        };
+        return(
+          <Topic
+            topicData={topicData}
+            topicID={topicID}
+            key={topicID}
+          />
+        )
+      }
+
+      return(
+        <div>TODO: Add a loading thingy</div>
+      )
+    });
 
     return (
       <div className="topics-list">

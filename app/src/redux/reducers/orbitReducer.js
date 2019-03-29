@@ -2,7 +2,7 @@ import {
   DATABASES_CREATED,
   DATABASES_LOADED,
   DATABASES_NOT_READY,
-  IPFS_INITIALIZED, UPDATE_PEERS, PEER_DATABASE_ADDED
+  IPFS_INITIALIZED, UPDATE_PEERS, PEER_DATABASE_ADDED, ORBIT_INIT
 } from '../actions/orbitActions';
 
 const initialState = {
@@ -26,14 +26,6 @@ const orbitReducer = (state = initialState, action) => {
         ipfsInitialized: true
       };
     case DATABASES_CREATED:
-      return {
-        ...state,
-        ready: true,
-        orbitdb: action.orbitdb,
-        topicsDB: action.topicsDB,
-        postsDB: action.postsDB,
-        id: action.id
-      };
     case DATABASES_LOADED:
       return {
         ...state,
@@ -43,7 +35,7 @@ const orbitReducer = (state = initialState, action) => {
         postsDB: action.postsDB,
         id: action.id
       };
-    case DATABASES_NOT_READY:
+    case ORBIT_INIT:
       return {
         ...state,
         ready: false,
