@@ -77,11 +77,10 @@ class TopicList extends Component {
         )
       }
 
-      return(
-        <div>TODO: Add a loading thingy</div>
-      )
+      return (<div key={topicID}>TODO: Loading UI/fetching needs to be changed (?)</div>);
     });
 
+    //TODO: Return loading indicator instead of topics when not fully loaded (?)
     return (
       <div className="topics-list">
         {topics.slice(0).reverse()}
@@ -91,7 +90,7 @@ class TopicList extends Component {
 }
 
 TopicList.propTypes = {
-  topicIDs: PropTypes.arrayOf(PropTypes.string).isRequired,
+  topicIDs: PropTypes.arrayOf(PropTypes.number).isRequired,
   contracts: PropTypes.PropTypes.objectOf(PropTypes.object).isRequired,
   drizzleStatus: PropTypes.object.isRequired
 };

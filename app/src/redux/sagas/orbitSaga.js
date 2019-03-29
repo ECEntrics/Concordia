@@ -19,7 +19,7 @@ import { ACCOUNTS_FETCHED } from '../actions/drizzleActions';
 let latestAccount;
 
 function* getOrbitDBInfo() {
-  yield put({
+  yield put.resolve({
     type: ORBIT_INIT, ...[]
   });
   const account = yield call(getCurrentAccount);
@@ -82,18 +82,24 @@ function* addPeerDatabase(action) {
 }
 
 //Keeps track of currently connected pubsub peers in Redux store (for debugging purposes)
+//Feel free to disable it anytime
 function* updatePeersState() {
   const orbit = yield select(state => state.orbit);
   if(orbit.ready){
-    const topicsDBAddress = orbit.topicsDB.address.toString();
-    const postsDBAddress = orbit.postsDB.address.toString();
-    const topicsDBPeers = yield call(orbit.ipfs.pubsub.peers, topicsDBAddress);
-    const postsDBPeers = yield call(orbit.ipfs.pubsub.peers, postsDBAddress);
-    if(!isEqual(topicsDBPeers.sort(), orbit.pubsubPeers.topicsDBPeers.sort()) ||
-      !isEqual(postsDBPeers.sort(), orbit.pubsubPeers.postsDBPeers.sort())){
-      yield put({
-        type: UPDATE_PEERS, topicsDBPeers, postsDBPeers
-      });
+    // This try is here to ignore concurrency errors that arise from times to times
+    try{
+      const topicsDBAddress = orbit.topicsDB.address.toString();
+      const postsDBAddress = orbit.postsDB.address.toString();
+      const topicsDBPeers = yield call(orbit.ipfs.pubsub.peers, topicsDBAddress);
+      const postsDBPeers = yield call(orbit.ipfs.pubsub.peers, postsDBAddress);
+      if(!isEqual(topicsDBPeers.sort(), orbit.pubsubPeers.topicsDBPeers.sort()) ||
+        !isEqual(postsDBPeers.sort(), orbit.pubsubPeers.postsDBPeers.sort())){
+        yield put({
+          type: UPDATE_PEERS, topicsDBPeers, postsDBPeers
+        });
+      }
+    } catch (e) {
+      // No need to catch anything
     }
   }
 }

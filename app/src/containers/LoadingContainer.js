@@ -18,14 +18,12 @@ class LoadingContainer extends Component {
             <div className="pure-u-1-1">
               <img src={ethereum_logo} alt="ethereum_logo" height="50"/>
               <p><strong>This browser has no connection to the Ethereum network.</strong></p>
-              <p>
-                Please make sure that:
-                <ul>
-                  <li>You use MetaMask or a dedicated Ethereum browser (e.g. Mist or Parity)</li>
-                  <li>They are pointed to the correct network</li>
-                  <li>Your account is unlocked and the app has the rights to access it</li>
-                </ul>
-              </p>
+              Please make sure that:
+              <ul>
+                <li>You use MetaMask or a dedicated Ethereum browser (e.g. Mist or Parity)</li>
+                <li>They are pointed to the correct network</li>
+                <li>Your account is unlocked and the app has the rights to access it</li>
+              </ul>
             </div>
           </div>
         </main>
@@ -80,7 +78,7 @@ class LoadingContainer extends Component {
           <div>
             <div>
               <img src={orbitdb_logo} alt="orbitdb_logo" height="50"/>
-              <p><strong>Initializing OrbitDB...</strong></p>
+              <p><strong>Preparing OrbitDB...</strong></p>
             </div>
           </div>
         </main>

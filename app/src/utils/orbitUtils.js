@@ -3,7 +3,7 @@ import Keystore from 'orbit-db-keystore';
 import path from 'path';
 import IPFS from 'ipfs';
 import store from '../redux/store';
-import { DATABASES_CREATED, DATABASES_LOADED, IPFS_INITIALIZED, updateDatabases } from '../redux/actions/orbitActions';
+import {  DATABASES_LOADED, IPFS_INITIALIZED, updateDatabases } from '../redux/actions/orbitActions';
 import ipfsOptions from '../config/ipfsOptions';
 
 function initIPFS() {
@@ -36,9 +36,6 @@ async function createDatabases() {
   const orbitdb = new OrbitDB(ipfs);
   const topicsDB = await orbitdb.keyvalue('topics');
   const postsDB = await orbitdb.keyvalue('posts');
-  store.dispatch(
-    updateDatabases(DATABASES_CREATED, orbitdb, topicsDB, postsDB),
-  );
 
   const orbitKey = orbitdb.keystore.getKey(orbitdb.id);
 
@@ -46,7 +43,7 @@ async function createDatabases() {
     identityId: 'Tempus',
     identityPublicKey: 'edax',
     identityPrivateKey: 'rerum',
-    orbitId: orbitdb.id,
+    orbitdb: orbitdb,
     orbitPublicKey: orbitKey.getPublic('hex'),
     orbitPrivateKey: orbitKey.getPrivate('hex'),
     topicsDB: topicsDB.address.root,

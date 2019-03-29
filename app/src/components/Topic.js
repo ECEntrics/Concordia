@@ -67,7 +67,7 @@ class Topic extends Component {
 }
 
 Topic.propTypes = {
-  user: PropTypes.object.isRequired,
+  userAddress: PropTypes.string.isRequired,
   history: PropTypes.object.isRequired,
   //TODO: topicData: GetTopicResult.isRequired,
   orbitDB: PropTypes.object.isRequired,

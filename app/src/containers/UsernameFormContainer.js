@@ -8,6 +8,8 @@ import { drizzle } from '../index';
 import { createDatabases } from '../utils/orbitUtils';
 import { updateUsername } from '../redux/actions/transactionsActions';
 
+import { DATABASES_CREATED, updateDatabases } from '../redux/actions/orbitActions';
+
 const contract = 'Forum';
 const checkUsernameTakenMethod = 'isUserNameTaken';
 const signUpMethod = 'signUp';
@@ -77,18 +79,30 @@ class UsernameFormContainer extends Component {
       this.setState({
         signingUp: true
       });
-      const orbitdbInfo = await createDatabases();
+      const {
+        identityId,
+        identityPublicKey,
+        identityPrivateKey,
+        orbitdb,
+        orbitPublicKey,
+        orbitPrivateKey,
+        topicsDB,
+        postsDB
+      } = await createDatabases();
+      dispatch(
+        updateDatabases(DATABASES_CREATED, orbitdb, topicsDB, postsDB),
+      );
       this.stackId = drizzle.contracts[contract].methods[signUpMethod].cacheSend(
         ...[
           usernameInput,
-          orbitdbInfo.identityId,
-          orbitdbInfo.identityPublicKey,
-          orbitdbInfo.identityPrivateKey,
-          orbitdbInfo.orbitId,
-          orbitdbInfo.orbitPublicKey,
-          orbitdbInfo.orbitPrivateKey,
-          orbitdbInfo.topicsDB,
-          orbitdbInfo.postsDB
+          identityId,
+          identityPublicKey,
+          identityPrivateKey,
+          orbitdb.id,
+          orbitPublicKey,
+          orbitPrivateKey,
+          topicsDB,
+          postsDB
         ], {
           from: account
         },
@@ -201,7 +215,6 @@ UsernameFormContainer.propTypes = {
   transactionStack: PropTypes.array.isRequired,
   transactions: PropTypes.array.isRequired,
   contracts: PropTypes.array.isRequired,
-  hasSignedUp: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired
 };
 

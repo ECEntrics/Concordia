@@ -1,7 +1,6 @@
 import {
   DATABASES_CREATED,
   DATABASES_LOADED,
-  DATABASES_NOT_READY,
   IPFS_INITIALIZED, UPDATE_PEERS, PEER_DATABASE_ADDED, ORBIT_INIT
 } from '../actions/orbitActions';
 
@@ -42,6 +41,8 @@ const orbitReducer = (state = initialState, action) => {
         orbitdb: null,
         topicsDB: null,
         postsDB: null,
+        pubsubPeers: {topicsDBPeers:[], postsDBPeers:[]},
+        peerDatabases: [],
         id: null
       };
     case PEER_DATABASE_ADDED:
