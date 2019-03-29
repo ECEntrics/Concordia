@@ -1,3 +1,5 @@
+import { AUTH_USER_DATA_UPDATED, GUEST_USER_DATA_UPDATED } from '../actions/userActions';
+
 const initialState = {
   username: '',
   address: '0x0',
@@ -7,13 +9,13 @@ const initialState = {
 
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'USER_DATA_UPDATED_(AUTHENTICATED)':
+    case AUTH_USER_DATA_UPDATED:
       return {
         username: action.username,
         address: action.address,
         hasSignedUp: true
       };
-    case 'USER_DATA_UPDATED_(GUEST)':
+    case GUEST_USER_DATA_UPDATED:
       return {
         username: '',
         address: action.address,

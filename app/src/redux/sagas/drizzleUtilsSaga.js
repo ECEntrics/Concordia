@@ -3,6 +3,7 @@ import { getContractInstance, getWeb3 } from '../../utils/drizzleUtils';
 
 import Forum from '../../contracts/Forum';
 import { DRIZZLE_UTILS_SAGA_INITIALIZED } from '../actions/drizzleUtilsActions';
+import { DRIZZLE_INITIALIZED } from '../actions/drizzleActions';
 
 const accounts = state => state.accounts;
 let initFlag, web3, forumContract;
@@ -29,7 +30,7 @@ function* getCurrentAccount() {
 }
 
 function* drizzleUtilsSaga() {
-  yield takeLatest('DRIZZLE_INITIALIZED', init);
+  yield takeLatest(DRIZZLE_INITIALIZED, init);
 }
 
 export { web3, forumContract, getCurrentAccount };

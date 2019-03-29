@@ -2,6 +2,13 @@ import { call, put, select, take, takeEvery } from 'redux-saga/effects';
 
 import { forumContract, getCurrentAccount } from './drizzleUtilsSaga';
 import { DRIZZLE_UTILS_SAGA_INITIALIZED } from '../actions/drizzleUtilsActions';
+import {
+  ACCOUNT_CHANGED,
+  AUTH_USER_DATA_UPDATED,
+  GUEST_USER_DATA_UPDATED,
+  USER_FETCHING_ERROR
+} from '../actions/userActions';
+import { ACCOUNTS_FETCHED } from '../actions/drizzleActions';
 
 let account;
 
@@ -10,7 +17,7 @@ function* updateUserData() {
   if (currentAccount !== account) {
     account = currentAccount;
     yield put({
-      type: 'ACCOUNT_CHANGED', ...[]
+      type: ACCOUNT_CHANGED, ...[]
     });
   }
   const txObj1 = yield call(forumContract.methods.hasUserSignedUp, ...[account]);
@@ -30,7 +37,7 @@ function* updateUserData() {
           username
         };
         yield put({
-          type: 'USER_DATA_UPDATED_(AUTHENTICATED)', ...dispatchArgs
+          type: AUTH_USER_DATA_UPDATED, ...dispatchArgs
         });
       }
     } else if (account !== userState.address) {
@@ -38,13 +45,13 @@ function* updateUserData() {
         address: account
       };
       yield put({
-        type: 'USER_DATA_UPDATED_(GUEST)', ...dispatchArgs
+        type: GUEST_USER_DATA_UPDATED, ...dispatchArgs
       });
     }
   } catch (error) {
     console.error(error);
     yield put({
-      type: 'USER_FETCHING_ERROR', ...[]
+      type: USER_FETCHING_ERROR, ...[]
     });
   }
 }
@@ -55,7 +62,7 @@ function* getUserState() {
 
 function* userSaga() {
   yield take(DRIZZLE_UTILS_SAGA_INITIALIZED);
-  yield takeEvery('ACCOUNTS_FETCHED', updateUserData);
+  yield takeEvery(ACCOUNTS_FETCHED, updateUserData);
 }
 
 export default userSaga;

@@ -7,14 +7,16 @@ import {
   ADD_PEER_DATABASE, PEER_DATABASE_ADDED,
   DATABASES_NOT_READY,
   IPFS_INITIALIZED,
-  UPDATE_PEERS
+  UPDATE_PEERS, ORRBIT_GETTING_INFO, ORBIT_SAGA_ERROR
 } from '../actions/orbitActions';
+import { ACCOUNT_CHANGED } from '../actions/userActions';
+import { ACCOUNTS_FETCHED } from '../actions/drizzleActions';
 
 let latestAccount;
 
 function* getOrbitDBInfo() {
   yield put({
-    type: 'ORRBIT_GETTING_INFO', ...[]
+    type: ORRBIT_GETTING_INFO, ...[]
   });
   const account = yield call(getCurrentAccount);
   if (account !== latestAccount) {
@@ -49,7 +51,7 @@ function* getOrbitDBInfo() {
     } catch (error) {
       console.error(error);
       yield put({
-        type: 'ORBIT_SAGA_ERROR', ...[]
+        type: ORBIT_SAGA_ERROR, ...[]
       });
     }
   }
@@ -95,9 +97,9 @@ function* orbitSaga() {
     take(DRIZZLE_UTILS_SAGA_INITIALIZED),
     take(IPFS_INITIALIZED)
   ]);
-  yield takeLatest('ACCOUNT_CHANGED', getOrbitDBInfo);
+  yield takeLatest(ACCOUNT_CHANGED, getOrbitDBInfo);
   yield takeEvery(ADD_PEER_DATABASE, addPeerDatabase);
-  yield takeEvery('ACCOUNTS_FETCHED', updatePeersState);
+  yield takeEvery(ACCOUNTS_FETCHED, updatePeersState);
 }
 
 export default orbitSaga;
