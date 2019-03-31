@@ -6,9 +6,9 @@ import { connect } from 'react-redux';
 import { Tab } from 'semantic-ui-react';
 import { drizzle } from '../index';
 
-import ProfileInformation from '../components/ProfileInformation';
-import TopicList from '../components/TopicList';
-import PostList from '../components/PostList';
+import ProfileInformation from './ProfileInformation';
+import TopicList from './TopicList';
+import PostList from './PostList';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { setNavBarTitle } from '../redux/actions/userInterfaceActions';
 
@@ -214,8 +214,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 const mapStateToProps = state => ({
   user: state.user,
   drizzleStatus: state.drizzleStatus,
-  contracts: state.contracts,
-  orbitDB: state.orbitDB
+  contracts: state.contracts
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileContainer);

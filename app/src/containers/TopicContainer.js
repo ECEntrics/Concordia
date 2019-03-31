@@ -5,8 +5,8 @@ import { push } from 'connected-react-router';
 import { connect } from 'react-redux';
 import { drizzle } from '../index';
 
-import PostList from '../components/PostList';
-import NewPost from '../components/NewPost';
+import PostList from './PostList';
+import NewPost from './NewPost';
 import FloatingButton from '../components/FloatingButton';
 
 import { setNavBarTitle } from '../redux/actions/userInterfaceActions.js';

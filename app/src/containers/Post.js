@@ -74,10 +74,10 @@ class Post extends Component {
   }
 
   async fetchPost(postID) {
-    const { user, postData, orbitDB } = this.props;
+    const { address, postData, orbitDB } = this.props;
     let orbitPostData;
 
-    if (postData.value[1] === user.address) {
+    if (postData.value[1] === address) {
       orbitPostData = orbitDB.postsDB.get(postID);
     } else {
       const fullAddress = `/orbitdb/${postData.value[0]}/posts`;
@@ -288,7 +288,7 @@ class Post extends Component {
 
 Post.propTypes = {
   getFocus: PropTypes.bool.isRequired,
-  user: PropTypes.object.isRequired,
+  address: PropTypes.string.isRequired,
   orbitDB: PropTypes.object.isRequired,
   avatarUrl: PropTypes.string,
   postIndex: PropTypes.number.isRequired,
@@ -302,7 +302,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 }, dispatch);
 
 const mapStateToProps = state => ({
-  user: state.user,
+  address: state.user.address,
   orbitDB: state.orbit
 });
 

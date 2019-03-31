@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import { Header } from 'semantic-ui-react';
 import { drizzle } from '../index';
 
-import TopicList from '../components/TopicList';
+import TopicList from './TopicList';
 import FloatingButton from '../components/FloatingButton';
 
 /* import { showProgressBar, hideProgressBar } from '../redux/actions/userInterfaceActions'; */

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { Button, Form, Icon, TextArea } from 'semantic-ui-react';
-import NewTopicPreview from '../components/NewTopicPreview';
+import NewTopicPreview from './NewTopicPreview';
 
 import { createTopic } from '../redux/actions/transactionsActions';
 
@@ -77,9 +77,9 @@ class StartTopicContainer extends Component {
       previewDate, previewEnabled, topicSubjectInputEmptySubmit, topicSubjectInput,
       topicMessageInputEmptySubmit, topicMessageInput
     } = this.state;
-    const { user, history } = this.props;
+    const { hasSignedUp, history } = this.props;
 
-    if (!user.hasSignedUp) {
+    if (!hasSignedUp) {
       history.push('/signup');
       return (null);
     }
@@ -156,12 +156,11 @@ class StartTopicContainer extends Component {
 StartTopicContainer.propTypes = {
   dispatch: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired
+  hasSignedUp: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => ({
-  orbitDB: state.orbitDB,
-  user: state.user
+  hasSignedUp: state.user.hasSignedUp
 });
 
 export default connect(mapStateToProps)(StartTopicContainer);

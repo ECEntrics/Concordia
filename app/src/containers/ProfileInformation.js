@@ -6,7 +6,7 @@ import { drizzle } from '../index';
 
 import epochTimeConverter from '../helpers/EpochTimeConverter';
 
-import UsernameFormContainer from '../containers/UsernameFormContainer';
+import UsernameFormContainer from './UsernameFormContainer';
 
 const callsInfo = [
   {
@@ -189,8 +189,7 @@ ProfileInformation.propTypes = {
 
 const mapStateToProps = state => ({
   drizzleStatus: state.drizzleStatus,
-  contracts: state.contracts,
-  user: state.user
+  contracts: state.contracts
 });
 
 export default connect(mapStateToProps)(ProfileInformation);

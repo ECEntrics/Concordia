@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import CoreLayoutContainer from '../containers/CoreLayoutContainer';
-import HomeContainer from '../containers/HomeContainer';
+import CoreLayoutContainer from '../components/CoreLayoutContainer';
+import HomeContainer from '../components/HomeContainer';
 import SignUpContainer from '../containers/SignUpContainer';
 import StartTopicContainer from '../containers/StartTopicContainer';
 import TopicContainer from '../containers/TopicContainer';

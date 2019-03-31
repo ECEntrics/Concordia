@@ -86,7 +86,7 @@ class NewPost extends Component {
       previewDate, postSubjectInputEmptySubmit, postSubjectInput, postContentInputEmptySubmit,
       postContentInput, previewEnabled
     } = this.state;
-    const { postIndex, avatarUrl, user, onCancelClick } = this.props;
+    const { postIndex, avatarUrl, username, onCancelClick } = this.props;
 
     return (
       <div className="post" ref={this.newPostOuterRef}>
@@ -103,13 +103,13 @@ class NewPost extends Component {
                 size="52"
                 className="inline user-avatar"
                 src={avatarUrl}
-                name={user.username}
+                name={username}
               />
             </Grid.Column>
             <Grid.Column width={15}>
               <div className="">
                 <div className="stretch-space-between">
-                  <span><strong>{user.username}</strong></span>
+                  <span><strong>{username}</strong></span>
                   <span className="grey-text">
                     {previewEnabled
                                         && <TimeAgo date={previewDate} />
@@ -218,15 +218,14 @@ NewPost.propTypes = {
   topicID: PropTypes.number.isRequired,
   postIndex: PropTypes.number.isRequired,
   avatarUrl: PropTypes.string,
-  user: PropTypes.object.isRequired,
+  username: PropTypes.string.isRequired,
   onCancelClick: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
   onPostCreated: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  orbitDB: state.orbitDB,
-  user: state.user
+  username: state.user.username
 });
 
 export default connect(mapStateToProps)(NewPost);

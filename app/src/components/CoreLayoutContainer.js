@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import NavBarContainer from './NavBarContainer';
-import RightSideBarContainer from './TransactionsMonitorContainer';
+import NavBarContainer from '../containers/NavBarContainer';
+import RightSideBarContainer from '../containers/TransactionsMonitorContainer';
 // Styles
 import '../assets/fonts/fontawesome-free-5.7.2/all.js'; // TODO: check https://fontawesome.com/how-to-use/on-the-web/setup/using-package-managers
 import '../assets/css/App.css';
@@ -12,8 +12,6 @@ import '../assets/css/board-container.css';
 import '../assets/css/start-topic-container.css';
 import '../assets/css/topic-container.css';
 import '../assets/css/profile-container.css';
-
-/* import TransactionsMonitorContainer from '../../containers/TransactionsMonitorContainer'; */
 
 const CoreLayout = ({ children }) => (
   <div className="App">
