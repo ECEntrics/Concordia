@@ -191,7 +191,7 @@ TopicContainer.propTypes = {
   drizzleStatus: PropTypes.object.isRequired,
   orbitDB: PropTypes.object.isRequired,
   setNavBarTitle: PropTypes.func.isRequired,
-  contracts: PropTypes.array.isRequired,
+  contracts: PropTypes.PropTypes.objectOf(PropTypes.object).isRequired,
   user: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired

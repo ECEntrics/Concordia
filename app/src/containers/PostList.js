@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { drizzle } from '../index';
 
 import Post from './Post';
+import PlaceholderContainer from './PlaceholderContainer';
 
 const contract = 'Forum';
 const getPostMethod = 'getPost';
@@ -56,19 +57,34 @@ class PostList extends Component {
     const { dataKeys } = this.state;
     const { postIDs, contracts, focusOnPost, recentToTheTop } = this.props;
 
-    const posts = postIDs.map((postID, index) => (
-      <Post
-        postData={(dataKeys[postID]
-              && contracts[contract][getPostMethod][dataKeys[postID]])
-          ? contracts[contract][getPostMethod][dataKeys[postID]]
-          : null}
-        avatarUrl=""
-        postIndex={index}
-        postID={postID}
-        getFocus={focusOnPost === postID}
-        key={postID}
-      />
-    ));
+    const posts = postIDs.map((postID, index) => {
+      let fetchedPostData;
+      if(dataKeys[postID])
+        fetchedPostData = contracts[contract][getPostMethod][dataKeys[postID]];
+
+      if(fetchedPostData) {
+        const postData = {
+          userAddress: fetchedPostData.value[1],
+          fullOrbitAddress: `/orbitdb/${fetchedPostData.value[0]}/posts`,
+          userName: fetchedPostData.value[2],
+          timestamp: fetchedPostData.value[3]*1000,
+          topicID: fetchedPostData.value[4]
+        };
+        return(
+          <Post
+            postData={postData}
+            avatarUrl=""
+            postIndex={index}
+            postID={postID}
+            getFocus={focusOnPost === postID}
+            key={postID}
+          />
+        )
+      }
+
+      return (<PlaceholderContainer placeholderType='Post'
+        extra={{postIndex: index}} key={postID} />);
+    });
 
     return (
       <div>
@@ -84,7 +100,7 @@ class PostList extends Component {
 PostList.propTypes = {
   drizzleStatus: PropTypes.object.isRequired,
   postIDs: PropTypes.array.isRequired,
-  contracts: PropTypes.array.isRequired,
+  contracts: PropTypes.PropTypes.objectOf(PropTypes.object).isRequired,
   focusOnPost: PropTypes.number,
   recentToTheTop: PropTypes.bool
 };

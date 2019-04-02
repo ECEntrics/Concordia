@@ -6,7 +6,9 @@ import { drizzle } from '../index';
 
 import epochTimeConverter from '../helpers/EpochTimeConverter';
 
+import ContentLoader from 'react-content-loader';
 import UsernameFormContainer from './UsernameFormContainer';
+import { Table } from 'semantic-ui-react'
 
 const callsInfo = [
   {
@@ -130,46 +132,76 @@ class ProfileInformation extends Component {
             name={username}
           />
         )}
-        <table className="highlight centered responsive-table">
-          <tbody>
-            <tr>
-              <td><strong>Username:</strong></td>
-              <td>{username}</td>
-            </tr>
-            <tr>
-              <td><strong>Account address:</strong></td>
-              <td>{address}</td>
-            </tr>
-            <tr>
-              <td><strong>OrbitDB:</strong></td>
-              <td>{orbitDBId}</td>
-            </tr>
-            <tr>
-              <td><strong>TopicsDB:</strong></td>
-              <td>{topicsDBId}</td>
-            </tr>
-            <tr>
-              <td><strong>PostsDB:</strong></td>
-              <td>{postsDBId}</td>
-            </tr>
-            <tr>
-              <td><strong>Number of topics created:</strong></td>
-              <td>{numberOfTopics}</td>
-            </tr>
-            <tr>
-              <td><strong>Number of posts:</strong></td>
-              <td>{numberOfPosts}</td>
-            </tr>
+        <Table basic='very' singleLine>
+          <Table.Body>
+            <Table.Row>
+              <Table.Cell><strong>Username:</strong></Table.Cell>
+              <Table.Cell>{username}</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell><strong>Account address:</strong></Table.Cell>
+              <Table.Cell>{address}</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell><strong>OrbitDB:</strong></Table.Cell>
+              <Table.Cell>{orbitDBId ? orbitDBId
+                : <ContentLoader height={5.8} width={300} speed={2}
+                    primaryColor="#b2e8e6" secondaryColor="#00b5ad"
+                  >
+                    <rect x="0" y="0" rx="3" ry="3" width="80" height="5.5" />
+                  </ContentLoader>
+              }</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell><strong>TopicsDB:</strong></Table.Cell>
+              <Table.Cell>{topicsDBId ? topicsDBId
+                : <ContentLoader height={5.8} width={300} speed={2}
+                    primaryColor="#b2e8e6" secondaryColor="#00b5ad"
+                  >
+                    <rect x="0" y="0" rx="3" ry="3" width="80" height="5.5" />
+                  </ContentLoader>
+              }</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell><strong>PostsDB:</strong></Table.Cell>
+              <Table.Cell>{postsDBId ? postsDBId
+                : <ContentLoader height={5.8} width={300} speed={2}
+                    primaryColor="#b2e8e6" secondaryColor="#00b5ad"
+                  >
+                    <rect x="0" y="0" rx="3" ry="3" width="80" height="5.5" />
+                  </ContentLoader>
+              }</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell><strong>Number of topics created:</strong></Table.Cell>
+              <Table.Cell>{numberOfTopics !== -1 ? numberOfTopics
+                : <ContentLoader height={5.8} width={300} speed={2}
+                    primaryColor="#b2e8e6" secondaryColor="#00b5ad"
+                  >
+                    <rect x="0" y="0" rx="3" ry="3" width="15" height="5.5" />
+                  </ContentLoader>
+              }</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell><strong>Number of posts:</strong></Table.Cell>
+              <Table.Cell>{numberOfPosts !== -1 ? numberOfPosts
+                : <ContentLoader height={5.8} width={300} speed={2}
+                    primaryColor="#b2e8e6" secondaryColor="#00b5ad"
+                  >
+                    <rect x="0" y="0" rx="3" ry="3" width="15" height="5.5" />
+                  </ContentLoader>
+              }</Table.Cell>
+            </Table.Row>
             {dateOfRegister
             && (
-            <tr>
-              <td><strong>Member since:</strong></td>
-              <td>{epochTimeConverter(dateOfRegister)}</td>
-            </tr>
+            <Table.Row>
+              <Table.Cell><strong>Member since:</strong></Table.Cell>
+              <Table.Cell>{epochTimeConverter(dateOfRegister)}</Table.Cell>
+            </Table.Row>
             )
             }
-          </tbody>
-        </table>
+          </Table.Body>
+        </Table>
         {self && <UsernameFormContainer />}
       </div>
     );
@@ -178,7 +210,7 @@ class ProfileInformation extends Component {
 
 ProfileInformation.propTypes = {
   drizzleStatus: PropTypes.object.isRequired,
-  contracts: PropTypes.array.isRequired,
+  contracts: PropTypes.PropTypes.objectOf(PropTypes.object).isRequired,
   avatarUrl: PropTypes.string,
   username: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,

@@ -213,8 +213,8 @@ UsernameFormContainer.propTypes = {
   dispatch: PropTypes.func.isRequired,
   account: PropTypes.string.isRequired,
   transactionStack: PropTypes.array.isRequired,
-  transactions: PropTypes.array.isRequired,
-  contracts: PropTypes.array.isRequired,
+  transactions: PropTypes.PropTypes.objectOf(PropTypes.object).isRequired,
+  contracts: PropTypes.PropTypes.objectOf(PropTypes.object).isRequired,
   user: PropTypes.object.isRequired
 };
 

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { drizzle } from '../index';
 
 import Topic from './Topic';
+import PlaceholderContainer from './PlaceholderContainer';
 
 const contract = 'Forum';
 const getTopicMethod = 'getTopic';
@@ -62,11 +63,11 @@ class TopicList extends Component {
 
       if(fetchedTopicData) {
         const topicData = {
-          userAddress: fetchedTopicData.value[0],
+          userAddress: fetchedTopicData.value[1],
           fullOrbitAddress: `/orbitdb/${fetchedTopicData.value[0]}/topics`,
           userName: fetchedTopicData.value[2],
           timestamp: fetchedTopicData.value[3]*1000,
-          nReplies: fetchedTopicData.value[4].length
+          numberOfReplies: fetchedTopicData.value[4].length
         };
         return(
           <Topic
@@ -77,7 +78,8 @@ class TopicList extends Component {
         )
       }
 
-      return (<div key={topicID}>TODO: Loading UI/fetching needs to be changed (?)</div>);
+      return (<PlaceholderContainer placeholderType='Topic'
+        extra={{topicID: topicID}} key={topicID} />);
     });
 
     //TODO: Return loading indicator instead of topics when not fully loaded (?)

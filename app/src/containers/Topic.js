@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { GetTopicResult } from '../CustomPropTypes'
 
 import ContentLoader from 'react-content-loader';
 import { Card } from 'semantic-ui-react';
@@ -54,7 +55,7 @@ class Topic extends Component {
               {topicData.userName}
             </p>
             <p className="no-margin">
-              Number of Replies: {topicData.nReplies}
+              Number of Replies: {topicData.numberOfReplies}
             </p>
             <p className="topic-date grey-text">
               <TimeAgo date={topicData.timestamp}/>
@@ -69,7 +70,7 @@ class Topic extends Component {
 Topic.propTypes = {
   userAddress: PropTypes.string.isRequired,
   history: PropTypes.object.isRequired,
-  //TODO: topicData: GetTopicResult.isRequired,
+  topicData: GetTopicResult.isRequired,
   orbitDB: PropTypes.object.isRequired,
   topicID: PropTypes.number.isRequired
 };

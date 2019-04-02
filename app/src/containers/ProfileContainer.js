@@ -136,8 +136,8 @@ class ProfileContainer extends Component {
       <ProfileInformation
         address={userAddress}
         username={username}
-        numberOfTopics={topicIDs && topicIDs.length}
-        numberOfPosts={postIDs && postIDs.length}
+        numberOfTopics={topicIDs ? topicIDs.length : -1}
+        numberOfPosts={postIDs ? postIDs.length : -1}
         self={userAddress === user.address}
         key="profileInfo"
       />
@@ -200,7 +200,7 @@ class ProfileContainer extends Component {
 ProfileContainer.propTypes = {
   match: PropTypes.object.isRequired,
   drizzleStatus: PropTypes.object.isRequired,
-  contracts: PropTypes.array.isRequired,
+  contracts: PropTypes.PropTypes.objectOf(PropTypes.object).isRequired,
   navigateTo: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
   setNavBarTitle: PropTypes.func.isRequired
