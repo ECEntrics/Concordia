@@ -1,8 +1,10 @@
 import React, { Children, Component } from 'react';
 import { connect } from 'react-redux';
+import '../assets/css/loading-container.css';
 import ethereum_logo from '../assets/images/ethereum_logo.svg';
 import ipfs_logo from '../assets/images/ipfs_logo.svg';
 import orbitdb_logo from '../assets/images/orbitdb_logo.png';
+import logo from '../assets/images/logo.png';
 
 class LoadingContainer extends Component {
   render() {
@@ -11,7 +13,7 @@ class LoadingContainer extends Component {
         <main className="container loading-screen">
           <div className="pure-g">
             <div className="pure-u-1-1">
-              <img src={ethereum_logo} alt="ethereum_logo" height="50"/>
+              <img src={ethereum_logo} alt="ethereum_logo" className="loading-img"/>
               <p><strong>This browser has no connection to the Ethereum network.</strong></p>
               Please make sure that:
               <ul>
@@ -30,7 +32,7 @@ class LoadingContainer extends Component {
         <main className="loading-screen">
           <div>
             <div>
-              <img src={ethereum_logo} alt="ethereum_logo" height="50"/>
+              <img src={ethereum_logo} alt="ethereum_logo" className="loading-img"/>
               <p><strong>We can't find any Ethereum accounts!</strong>.</p>
             </div>
           </div>
@@ -43,7 +45,7 @@ class LoadingContainer extends Component {
         <main className="loading-screen">
           <div>
             <div>
-              <img src={ethereum_logo} alt="ethereum_logo" height="50"/>
+              <img src={ethereum_logo} alt="ethereum_logo" className="loading-img"/>
               <p><strong>Initializing contracts...</strong></p>
               <p>If this takes too long please make sure they are deployed to the network
                 and you are connected to the correct one.
@@ -59,7 +61,7 @@ class LoadingContainer extends Component {
         <main className="loading-screen">
           <div>
             <div>
-              <img src={ipfs_logo} alt="ipfs_logo" height="50"/>
+              <img src={ipfs_logo} alt="ipfs_logo" className="loading-img"/>
               <p><strong>Initializing IPFS...</strong></p>
             </div>
           </div>
@@ -72,7 +74,7 @@ class LoadingContainer extends Component {
         <main className="loading-screen">
           <div>
             <div>
-              <img src={orbitdb_logo} alt="orbitdb_logo" height="50"/>
+              <img src={orbitdb_logo} alt="orbitdb_logo" className="loading-img"/>
               <p><strong>Preparing OrbitDB...</strong></p>
             </div>
           </div>
@@ -87,8 +89,8 @@ class LoadingContainer extends Component {
       <main className="container loading-screen">
         <div>
           <div>
-            <h1><span role="img" aria-label="Gear">⚙</span></h1>
-            <p>Loading dapp...</p>
+            <img src={logo} alt="app_logo" className="loading-img"/>
+            <p><strong>Loading dapp...</strong></p>
           </div>
         </div>
       </main>
