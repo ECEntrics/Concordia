@@ -1,8 +1,8 @@
 import { call, put, select, takeLatest } from 'redux-saga/effects';
-import { getContractInstance, getWeb3 } from '../../utils/drizzleUtils';
+import { getContractInstance, getWeb3 } from '../../utils/web3Utils';
 
 import Forum from '../../contracts/Forum';
-import { DRIZZLE_UTILS_SAGA_INITIALIZED } from '../actions/drizzleUtilsActions';
+import { WEB3_UTILS_SAGA_INITIALIZED } from '../actions/web3UtilsActions';
 import { DRIZZLE_INITIALIZED } from '../actions/drizzleActions';
 
 const accounts = state => state.accounts;
@@ -16,10 +16,10 @@ function* init() {
     });
     initFlag = true;
     yield put({
-      type: DRIZZLE_UTILS_SAGA_INITIALIZED, ...[]
+      type: WEB3_UTILS_SAGA_INITIALIZED, ...[]
     });
   }
-  else console.warn('Attempted to reinitialize drizzleUtilsSaga!');
+  else console.warn('Attempted to reinitialize web3UtilsSaga!');
 }
 
 // If the method below proves to be problematic/ineffective (i.e. getting current account
@@ -29,10 +29,10 @@ function* getCurrentAccount() {
   return (yield select(accounts))[0];
 }
 
-function* drizzleUtilsSaga() {
+function* web3UtilsSaga() {
   yield takeLatest(DRIZZLE_INITIALIZED, init);
 }
 
 export { web3, forumContract, getCurrentAccount };
 
-export default drizzleUtilsSaga;
+export default web3UtilsSaga;
