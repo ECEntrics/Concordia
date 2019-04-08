@@ -118,12 +118,13 @@ class TopicContainer extends Component {
         });
       }
     }
-
-    setNavBarTitle(orbitData.subject);
-    this.setState({
-      topicSubject: orbitData.subject,
-      fetchTopicSubjectStatus: 'fetched'
-    });
+    if(orbitData && orbitData.subject){
+      setNavBarTitle(orbitData.subject);
+      this.setState({
+        topicSubject: orbitData.subject,
+        fetchTopicSubjectStatus: 'fetched'
+      });
+    }
   }
 
   togglePostingState(event) {

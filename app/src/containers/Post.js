@@ -4,116 +4,33 @@ import { bindActionCreators } from 'redux';
 import { push } from 'connected-react-router';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { GetPostResult } from '../CustomPropTypes'
-
 import ContentLoader from 'react-content-loader';
-import { Button, Divider, Grid, Icon, Label, Transition } from 'semantic-ui-react';
-
+import { Button, Divider, Grid, Icon, Label } from 'semantic-ui-react';
 import TimeAgo from 'react-timeago';
 import UserAvatar from 'react-user-avatar';
 import ReactMarkdown from 'react-markdown';
+
+import { GetPostResult } from '../CustomPropTypes'
+import { addPeerDatabase } from '../redux/actions/orbitActions';
 
 class Post extends Component {
   constructor(props) {
     super(props);
 
-    const { getFocus } = props;
-
-    this.getBlockchainData = this.getBlockchainData.bind(this);
-    this.fetchPost = this.fetchPost.bind(this);
-    if (getFocus) {
+    if (props.getFocus)
       this.postRef = React.createRef();
-    }
-
-    this.state = {
-      fetchPostDataStatus: 'pending',
-      postContent: '',
-      postSubject: '',
-      readyForAnimation: false,
-      animateOnToggle: true
-    };
   }
 
   componentDidMount() {
-    this.getBlockchainData();
-  }
-
-  componentDidUpdate() {
-    this.getBlockchainData();
-    const { readyForAnimation } = this.state;
-    if (readyForAnimation) {
-      if (this.postRef) {
-        setTimeout(() => {
-          this.postRef.current.scrollIntoView(
-            {
-              block: 'start', behavior: 'smooth'
-            },
-          );
-          setTimeout(() => {
-            this.setState({
-              animateOnToggle: false
-            });
-          }, 300);
-        }, 100);
-        this.setState({
-          readyForAnimation: false
-        });
-      }
-    }
-  }
-
-  getBlockchainData() {
-    const { fetchPostDataStatus } = this.state;
-    const { postData, orbitDB, postID } = this.props;
-
-    if (orbitDB.orbitdb && fetchPostDataStatus === 'pending') {
-      this.setState({
-        fetchPostDataStatus: 'fetching'
-      });
-      this.fetchPost(postID);
-    }
-  }
-
-  async fetchPost(postID) {
-    const { address, postData, orbitDB } = this.props;
-    let orbitPostData;
-
-    if (postData.userAddress === address) {
-      orbitPostData = orbitDB.postsDB.get(postID);
-    } else {
-      const fullAddress = `/orbitdb/${postData.fullOrbitAddress}/posts`;
-      const store = await orbitDB.orbitdb.keyvalue(fullAddress);
-      await store.load();
-
-      const localOrbitData = store.get(postID);
-      if (localOrbitData) {
-        orbitPostData = localOrbitData;
-      } else {
-        // Wait until we have received something from the network
-        store.events.on('replicated', () => {
-          orbitPostData = store.get(postID);
-        });
-      }
-    }
-
-    this.setState({
-      postContent: orbitPostData.content,
-      postSubject: orbitPostData.subject,
-      fetchPostDataStatus: 'fetched',
-      readyForAnimation: true
-    });
+    const { addPeerDB, userAddress, postData } = this.props;
+    if(postData.userAddress !== userAddress )
+      addPeerDB(postData.fullOrbitAddress);
   }
 
   render() {
-    const { animateOnToggle, postSubject, postContent } = this.state;
-    const { avatarUrl, postIndex, navigateTo, postData, postID } = this.props;
+    const { avatarUrl, postIndex, navigateTo, postData, postID, postSubject, postContent } = this.props;
 
     return (
-      <Transition
-        animation="tada"
-        duration={500}
-        visible={animateOnToggle}
-      >
         <div className="post" ref={this.postRef ? this.postRef : null}>
           <Divider horizontal>
             <span className="grey-text">
@@ -239,14 +156,13 @@ class Post extends Component {
             </Grid.Row>
           </Grid>
         </div>
-      </Transition>
     );
   }
 }
 
 Post.propTypes = {
   getFocus: PropTypes.bool.isRequired,
-  address: PropTypes.string.isRequired,
+  userAddress: PropTypes.string.isRequired,
   orbitDB: PropTypes.object.isRequired,
   avatarUrl: PropTypes.string,
   postIndex: PropTypes.number.isRequired,
@@ -255,13 +171,56 @@ Post.propTypes = {
   postID: PropTypes.string.isRequired
 };
 
+function getPostSubject(state, props){
+  const { user: {address: userAddress}, orbit } = state;
+  const { postData, postID } = props;
+  if(userAddress === postData.userAddress) {
+    const orbitData = orbit.postsDB.get(postID);
+    if(orbitData && orbitData.subject)
+      return orbitData.subject;
+  }
+  else{
+    const db = orbit.peerDatabases.find(db => db.fullAddress === postData.fullOrbitAddress);
+    if(db && db.store){
+      const localOrbitData = db.store.get(postID);
+      if (localOrbitData)
+        return localOrbitData.subject;
+    }
+  }
+  return '';
+}
+
+function getPostContent(state, props){
+  const { user: {address: userAddress}, orbit } = state;
+  const { postData, postID } = props;
+  if(userAddress === postData.userAddress) {
+    const orbitData = orbit.postsDB.get(postID);
+    if(orbitData && orbitData.content)
+      return orbitData.content;
+  }
+  else{
+    const db = orbit.peerDatabases.find(db => db.fullAddress === postData.fullOrbitAddress);
+    if(db && db.store){
+      const localOrbitData = db.store.get(postID);
+      if (localOrbitData)
+        return localOrbitData.content;
+    }
+  }
+  return '';
+}
+
 const mapDispatchToProps = dispatch => bindActionCreators({
-  navigateTo: location => push(location)
+  navigateTo: location => push(location),
+  addPeerDB: fullOrbitAddress => addPeerDatabase(fullOrbitAddress)
 }, dispatch);
 
-const mapStateToProps = state => ({
-  address: state.user.address,
-  orbitDB: state.orbit
-});
+function mapStateToProps(state, ownProps) {
+  return {
+    userAddress: state.user.address,
+    orbitDB: state.orbit,
+    postSubject: getPostSubject(state, ownProps),
+    postContent: getPostContent(state, ownProps)
+  }
+}
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Post));
