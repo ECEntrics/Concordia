@@ -17,7 +17,7 @@ class LoadingContainer extends Component {
               <p><strong>This browser has no connection to the Ethereum network.</strong></p>
               Please make sure that:
               <ul>
-                <li>You use MetaMask or a dedicated Ethereum browser (e.g. Mist or Parity)</li>
+                <li>You use MetaMask or a dedicated Ethereum browser</li>
                 <li>They are pointed to the correct network</li>
                 <li>Your account is unlocked and the app has the rights to access it</li>
               </ul>

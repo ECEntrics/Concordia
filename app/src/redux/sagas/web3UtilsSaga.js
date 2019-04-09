@@ -10,16 +10,22 @@ let initFlag, web3, forumContract;
 
 function* init() {
   if (!initFlag) {
-    web3 = yield call(getWeb3);
-    forumContract = yield call(getContractInstance, {
-      web3, artifact: Forum
-    });
-    initFlag = true;
-    yield put({
-      type: WEB3_UTILS_SAGA_INITIALIZED, ...[]
-    });
+    try{
+      web3 = yield call(getWeb3);
+      forumContract = yield call(getContractInstance, {
+        web3, artifact: Forum
+      });
+      initFlag = true;
+      yield put({
+        type: WEB3_UTILS_SAGA_INITIALIZED, ...[]
+      });
+    }
+    catch (error) {
+      console.error(`Error while initializing web3UtilsSaga: ${error}`);
+    }
   }
-  else console.warn('Attempted to reinitialize web3UtilsSaga!');
+  else
+    console.warn('Attempted to reinitialize web3UtilsSaga!');
 }
 
 // If the method below proves to be problematic/ineffective (i.e. getting current account
