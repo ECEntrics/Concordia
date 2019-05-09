@@ -1,4 +1,4 @@
-pragma solidity >=0.5.7 <0.6.0;
+pragma solidity >=0.5.8 <0.6.0;
 
 contract Forum {
 
