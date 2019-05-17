@@ -10,6 +10,7 @@ import NewPost from './NewPost';
 import FloatingButton from '../components/FloatingButton';
 
 import { setNavBarTitle } from '../redux/actions/userInterfaceActions.js';
+import { determineDBAddress } from '../utils/orbitUtils';
 
 const contract = 'Forum';
 const getTopicMethod = 'getTopic';
@@ -95,16 +96,16 @@ class TopicContainer extends Component {
     }
   }
 
-  async fetchTopicSubject(orbitDBAddress) {
+  async fetchTopicSubject(userAddress) {
     const { topicID } = this.state;
-    const { contracts, user, orbitDB, setNavBarTitle } = this.props;
+    const { user, orbitDB, setNavBarTitle } = this.props;
 
     let orbitData;
-    if (contracts[contract][getTopicMethod][this.dataKey].value[1]
-        === user.address) {
+    if (userAddress === user.address) {
       orbitData = orbitDB.topicsDB.get(topicID);
     } else {
-      const fullAddress = `/orbitdb/${orbitDBAddress}/topics`;
+      const dbAddress = await determineDBAddress('topics', userAddress);
+      const fullAddress = `/orbitdb/${dbAddress}/topics`;
       const store = await orbitDB.orbitdb.keyvalue(fullAddress);
       await store.load();
 
@@ -152,7 +153,7 @@ class TopicContainer extends Component {
         (
           <div>
             <PostList
-              postIDs={contracts[contract][getTopicMethod][this.dataKey].value[4]}
+              postIDs={contracts[contract][getTopicMethod][this.dataKey].value[3]}
               focusOnPost={postFocus
                 ? postFocus
                 : null}
@@ -162,7 +163,7 @@ class TopicContainer extends Component {
             <NewPost
               topicID={topicID}
               subject={topicSubject}
-              postIndex={contracts[contract][getTopicMethod][this.dataKey].value[4].length}
+              postIndex={contracts[contract][getTopicMethod][this.dataKey].value[3].length}
               onCancelClick={() => { this.togglePostingState(); }}
               onPostCreated={() => { this.postCreated(); }}
             />

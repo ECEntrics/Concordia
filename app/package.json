@@ -10,10 +10,11 @@
     "connected-react-router": "6.4.0",
     "drizzle": "1.4.0",
     "history": "4.9.0",
-    "ipfs": "github:ipfs/js-ipfs#e849dbcab4a313f7ffc1532a389097ee76344067",
+    "ipfs": "0.35.0",
     "lodash.isequal": "4.5.0",
-    "orbit-db": "0.19.9",
-    "orbit-db-keystore": "0.1.0",
+    "orbit-db": "0.21.0-rc.1",
+    "orbit-db-keystore": "0.2.1",
+    "orbit-db-identity-provider": "0.1.0",
     "prop-types": "15.7.2",
     "react": "16.8.6",
     "react-content-loader": "4.2.1",
@@ -28,7 +29,7 @@
     "redux-saga": "0.16.2",
     "semantic-ui-react": "0.87.1",
     "uuid": "3.3.2",
-    "web3": "1.0.0-beta.54"
+    "web3": "1.0.0-beta.55"
   },
   "devDependencies": {
     "libp2p-websocket-star-rendezvous": "0.3.0"

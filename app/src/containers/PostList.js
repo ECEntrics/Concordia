@@ -5,6 +5,7 @@ import { drizzle } from '../index';
 
 import Post from './Post';
 import PlaceholderContainer from './PlaceholderContainer';
+import { determineDBAddress } from '../utils/orbitUtils';
 
 const contract = 'Forum';
 const getPostMethod = 'getPost';
@@ -16,7 +17,8 @@ class PostList extends Component {
     this.getBlockchainData = this.getBlockchainData.bind(this);
 
     this.state = {
-      dataKeys: []
+      dataKeys: [],
+      dbAddresses: []
     };
   }
 
@@ -29,19 +31,30 @@ class PostList extends Component {
   }
 
   getBlockchainData() {
-    const { dataKeys } = this.state;
-    const { drizzleStatus, postIDs } = this.props;
+    const { dataKeys, dbAddresses } = this.state;
+    const { drizzleStatus, postIDs, contracts } = this.props;
 
     if (drizzleStatus.initialized) {
       const dataKeysShallowCopy = dataKeys.slice();
       let fetchingNewData = false;
 
-      postIDs.forEach((postID) => {
+      postIDs.forEach(async (postID) => {
         if (!dataKeys[postID]) {
           dataKeysShallowCopy[postID] = drizzle.contracts[contract].methods[getPostMethod].cacheCall(
-            postID,
+            postID
           );
           fetchingNewData = true;
+        }
+        else if (!dbAddresses[postID]){
+          const fetchedPostData = contracts[contract][getPostMethod][dataKeys[postID]];
+          if(fetchedPostData) {
+            const dbAddress = await determineDBAddress('posts', fetchedPostData.value[0]);
+            const dbAddressesShallowCopy = dbAddresses.slice();
+            dbAddressesShallowCopy[postID] = dbAddress;
+            this.setState({
+              dbAddresses: dbAddressesShallowCopy
+            });
+          }
         }
       });
 
@@ -54,7 +67,7 @@ class PostList extends Component {
   }
 
   render() {
-    const { dataKeys } = this.state;
+    const { dataKeys, dbAddresses } = this.state;
     const { postIDs, contracts, focusOnPost, recentToTheTop } = this.props;
 
     const posts = postIDs.map((postID, index) => {
@@ -62,13 +75,16 @@ class PostList extends Component {
       if(dataKeys[postID])
         fetchedPostData = contracts[contract][getPostMethod][dataKeys[postID]];
 
-      if(fetchedPostData) {
+      const dbAddress = dbAddresses[postID];
+      if(fetchedPostData && dbAddress) {
+        const userAddress = fetchedPostData.value[0]; //Also works as an Orbit Identity ID
+
         const postData = {
-          userAddress: fetchedPostData.value[1],
-          fullOrbitAddress: `/orbitdb/${fetchedPostData.value[0]}/posts`,
-          userName: fetchedPostData.value[2],
-          timestamp: fetchedPostData.value[3]*1000,
-          topicID: fetchedPostData.value[4]
+          userAddress,
+          fullOrbitAddress: `/orbitdb/${dbAddress}/posts`,
+          userName: fetchedPostData.value[1],
+          timestamp: fetchedPostData.value[2]*1000,
+          topicID: fetchedPostData.value[3]
         };
         return(
           <Post

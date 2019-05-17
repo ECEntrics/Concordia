@@ -10,9 +10,8 @@ const transactionsHistory = Object.create(null);
 function* initTransaction(action) {
   const dataKey = drizzle.contracts[action.transactionDescriptor.contract]
     .methods[action.transactionDescriptor.method].cacheSend(
-    ...(action.transactionDescriptor.params),
+    ...(action.transactionDescriptor.params)
   );
-
   transactionsHistory[dataKey] = action;
   transactionsHistory[dataKey].state = 'initialized';
 }

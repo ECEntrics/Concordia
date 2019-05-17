@@ -10,20 +10,13 @@ import ContentLoader from 'react-content-loader';
 import UsernameFormContainer from './UsernameFormContainer';
 import { Table } from 'semantic-ui-react'
 
+//TODO: No array needed unless we add more calls
 const callsInfo = [
   {
     contract: 'Forum',
     method: 'getUserDateOfRegister'
-  }, {
-    contract: 'Forum',
-    method: 'getOrbitDBId'
-  }, {
-    contract: 'Forum',
-    method: 'getOrbitTopicsDB'
-  }, {
-    contract: 'Forum',
-    method: 'getOrbitPostsDB'
-  }];
+  }
+];
 
 class ProfileInformation extends Component {
   constructor(props) {
@@ -50,7 +43,7 @@ class ProfileInformation extends Component {
   }
 
   getBlockchainData() {
-    const { pageStatus, dateOfRegister, orbitDBId, topicsDBId, postsDBId } = this.state;
+    const { pageStatus, dateOfRegister, topicsDBId, postsDBId } = this.state;
     const { drizzleStatus, address, contracts } = this.props;
 
     if (pageStatus === 'initialized'
@@ -89,37 +82,26 @@ class ProfileInformation extends Component {
           });
         }
       }
-      if (orbitDBId === '') {
-        const transaction = contracts[callsInfo[1].contract][callsInfo[1].method][this.dataKey[1]];
-        if (transaction) {
-          this.setState({
-            orbitDBId: transaction.value
-          });
-        }
-      }
 
       if (topicsDBId === '') {
-        const transaction = contracts[callsInfo[2].contract][callsInfo[2].method][this.dataKey[2]];
-        if (transaction) {
-          this.setState({
-            topicsDBId: transaction.value
-          });
-        }
+        //TODO: can be displayed using determineDBAddress
+        this.setState({
+          topicsDBId: "TODO"
+        });
+
       }
 
       if (postsDBId === '') {
-        const transaction = contracts[callsInfo[3].contract][callsInfo[3].method][this.dataKey[3]];
-        if (transaction) {
-          this.setState({
-            postsDBId: transaction.value
-          });
-        }
+        //TODO: can be displayed using determineDBAddress
+        this.setState({
+          postsDBId: "TODO"
+        });
       }
     }
   }
 
   render() {
-    const { orbitDBId, topicsDBId, postsDBId, dateOfRegister } = this.state;
+    const { topicsDBId, postsDBId, dateOfRegister } = this.state;
     const { avatarUrl, username, address, numberOfTopics, numberOfPosts, self } = this.props;
 
     return (
@@ -141,16 +123,6 @@ class ProfileInformation extends Component {
             <Table.Row>
               <Table.Cell><strong>Account address:</strong></Table.Cell>
               <Table.Cell>{address}</Table.Cell>
-            </Table.Row>
-            <Table.Row>
-              <Table.Cell><strong>OrbitDB:</strong></Table.Cell>
-              <Table.Cell>{orbitDBId ? orbitDBId
-                : <ContentLoader height={5.8} width={300} speed={2}
-                    primaryColor="#b2e8e6" secondaryColor="#00b5ad"
-                  >
-                    <rect x="0" y="0" rx="3" ry="3" width="80" height="5.5" />
-                  </ContentLoader>
-              }</Table.Cell>
             </Table.Row>
             <Table.Row>
               <Table.Cell><strong>TopicsDB:</strong></Table.Cell>

@@ -1,12 +1,13 @@
 import OrbitDB from 'orbit-db';
-import Keystore from 'orbit-db-keystore';
-import path from 'path';
+import Identities from 'orbit-db-identity-provider';
 import IPFS from 'ipfs';
 import store from '../redux/store';
-import {  DATABASES_LOADED, IPFS_INITIALIZED, updateDatabases } from '../redux/actions/orbitActions';
+import { DATABASES_LOADED, IPFS_INITIALIZED, updateDatabases } from '../redux/actions/orbitActions';
 import ipfsOptions from '../config/ipfsOptions';
+import EthereumIdentityProvider from './EthereumIdentityProvider';
 
 function initIPFS() {
+  Identities.addIdentityProvider(EthereumIdentityProvider);
   const ipfs = new IPFS(ipfsOptions);
   ipfs.on('error', (error) => console.error(`IPFS error: ${error}`));
   ipfs.on('ready', async () => {
@@ -21,63 +22,23 @@ function initIPFS() {
   });
 }
 
-async function createTempDatabases() {
-  console.debug('Creating temporary databases...');
-  const ipfs = getIPFS();
-  const orbitdb = new OrbitDB(ipfs);
-  const topicsDB = await orbitdb.keyvalue('topics');
-  const postsDB = await orbitdb.keyvalue('posts');
-  return { orbitdb, topicsDB, postsDB };
-}
-
 async function createDatabases() {
   console.debug('Creating databases...');
-  const ipfs = getIPFS();
-  const orbitdb = new OrbitDB(ipfs);
-  const topicsDB = await orbitdb.keyvalue('topics');
-  const postsDB = await orbitdb.keyvalue('posts');
-
-  const orbitKey = orbitdb.keystore.getKey(orbitdb.id);
-
-  return {
-    identityId: 'Tempus',
-    identityPublicKey: 'edax',
-    identityPrivateKey: 'rerum',
-    orbitdb: orbitdb,
-    orbitPublicKey: orbitKey.getPublic('hex'),
-    orbitPrivateKey: orbitKey.getPrivate('hex'),
-    topicsDB: topicsDB.address.root,
-    postsDB: postsDB.address.root
-  };
+  const databases = await createDBs();
+  console.debug('Databases created successfully.');
+  return databases;
 }
 
-async function loadDatabases(identityId, identityPublicKey, identityPrivateKey,
-                             orbitId, orbitPublicKey, orbitPrivateKey,
-                             topicsDBId, postsDBId) {
-  const directory = './orbitdb';
-  const keystore = Keystore.create(path.join(directory, orbitId, '/keystore'));
-
-  keystore._storage.setItem(orbitId, JSON.stringify({
-    publicKey: orbitPublicKey,
-    privateKey: orbitPrivateKey
-  }));
-
-  const ipfs = getIPFS();
-  const orbitdb = new OrbitDB(ipfs, directory,
-    {
-      peerId: orbitId, keystore
-    });
-  const topicsDB = await orbitdb.keyvalue(`/orbitdb/${topicsDBId}/topics`)
-    .catch((error) => console.error(`TopicsDB init error: ${error}`));
-  const postsDB = await orbitdb.keyvalue(`/orbitdb/${postsDBId}/posts`)
-    .catch((error) => console.error(`PostsDB init error: ${error}`));
+async function loadDatabases() {
+  console.debug('Loading databases...');
+  const { orbitdb, topicsDB, postsDB } = await createDBs();
 
   await topicsDB.load().catch((error) => console.error(`TopicsDB loading error: ${error}`));
   await postsDB.load().catch((error) => console.error(`PostsDB loading error: ${error}`));
 
   //It is possible that we lack our own data and need to replicate them from somewhere else
   topicsDB.events.on('replicate', (address) => {
-    console.log(`TopicsDB Replicating (${address}).`);
+    console.log(`TopicsDB replicating (${address}).`);
   });
   topicsDB.events.on('replicated', (address) => {
     console.log(`TopicsDB replicated (${address}).`);
@@ -89,12 +50,24 @@ async function loadDatabases(identityId, identityPublicKey, identityPrivateKey,
     console.log(`PostsDB replicated (${address}).`);
   });
 
-  console.debug('Orbit databases loaded successfully.');
+  console.debug('Databases loaded successfully.');
   store.dispatch(updateDatabases(DATABASES_LOADED, orbitdb, topicsDB, postsDB));
+}
+
+async function determineDBAddress(name, identityId){
+  return (await getOrbitDB().determineAddress(name, 'keyvalue', {
+    accessController: {
+      write: [identityId]}
+    }
+  )).root;
 }
 
 function getIPFS() {
   return store.getState().orbit.ipfs;
+}
+
+function getOrbitDB() {
+  return store.getState().orbit.orbitdb;
 }
 
 async function orbitSagaPut(db, key, value) {
@@ -114,4 +87,24 @@ async function orbitSagaOpen(orbitdb, address) {
   return store;
 }
 
-export { initIPFS, createTempDatabases, createDatabases, loadDatabases, orbitSagaPut, orbitSagaOpen };
+async function createDBs(){
+  const ipfs = getIPFS();
+  const identity = await Identities.createIdentity({type: 'ethereum'});
+  const orbitdb = await OrbitDB.createInstance(ipfs, {identity});
+  const topicsDB = await orbitdb.keyvalue('topics')
+    .catch((error) => console.error(`TopicsDB init error: ${error}`));
+  const postsDB = await orbitdb.keyvalue('posts')
+    .catch((error) => console.error(`PostsDB init error: ${error}`));
+
+  return { orbitdb, topicsDB, postsDB };
+}
+
+
+export {
+  initIPFS,
+  createDatabases,
+  loadDatabases,
+  orbitSagaPut,
+  orbitSagaOpen,
+  determineDBAddress
+};
