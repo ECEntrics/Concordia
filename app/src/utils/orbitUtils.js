@@ -2,10 +2,9 @@ import OrbitDB from 'orbit-db';
 import Identities from 'orbit-db-identity-provider';
 import IPFS from 'ipfs';
 import store from '../redux/store';
-import {  DATABASES_LOADED, IPFS_INITIALIZED, updateDatabases } from '../redux/actions/orbitActions';
+import { DATABASES_LOADED, IPFS_INITIALIZED, updateDatabases } from '../redux/actions/orbitActions';
 import ipfsOptions from '../config/ipfsOptions';
 import EthereumIdentityProvider from './EthereumIdentityProvider';
-import { getPrivateKey, setKeyPair } from './levelUtils';
 
 function initIPFS() {
   Identities.addIdentityProvider(EthereumIdentityProvider);
@@ -23,63 +22,17 @@ function initIPFS() {
   });
 }
 
-async function createTempDatabases() {
-  console.debug('Creating temporary databases...');
-  const ipfs = getIPFS();
-  const identity = await Identities.createIdentity({type: 'ethereum'});
-  const orbitdb = await OrbitDB.createInstance(ipfs, {identity});
-  console.dir(orbitdb)
-  const topicsDB = await orbitdb.keyvalue('topics');
-  const postsDB = await orbitdb.keyvalue('posts');
-  return { orbitdb, topicsDB, postsDB };
-}
-
 async function createDatabases() {
   console.debug('Creating databases...');
-  const ipfs = getIPFS();
-  const identity = await Identities.createIdentity({type: 'ethereum'});
-  const orbitdb = await OrbitDB.createInstance(ipfs, {identity});
-  const options = {
-    // Give write access to ourselves
-    accessController: {
-      write: ['*']
-    }
-  };
-  const topicsDB = await orbitdb.keyvalue('topics', options);
-  const postsDB = await orbitdb.keyvalue('posts', options);
-  const privateKey = await getPrivateKey(identity.id);
-
-  return {
-    identityId: identity.id,
-    identityPublicKey: identity.publicKey,
-    identityPrivateKey: privateKey,
-    orbitdb: orbitdb,
-    orbitPublicKey: "eeeee",
-    orbitPrivateKey: "fffffff",
-    topicsDB: topicsDB.address.root,
-    postsDB: postsDB.address.root
-  };
+  const databases = await createDBs();
+  console.debug('Databases created successfully.');
+  return databases;
 }
 
-async function loadDatabases(identityId, identityPublicKey, identityPrivateKey,
-                             orbitId, orbitPublicKey, orbitPrivateKey,
-                             topicsDBId, postsDBId) {
+async function loadDatabases() {
   console.debug('Loading databases...');
-  const ipfs = getIPFS();
-  await setKeyPair(identityId, identityPublicKey, identityPrivateKey);
-  const identity = await Identities.createIdentity({type: 'ethereum' });
-  const orbitdb = await OrbitDB.createInstance(ipfs, {identity});
+  const { orbitdb, topicsDB, postsDB } = await createDBs();
 
-  console.dir(orbitdb)
-
-  const topicsDB = await orbitdb.keyvalue('topics')
-    .catch((error) => console.error(`TopicsDB init error: ${error}`));
-
-  console.dir(topicsDB)
-
-  const postsDB = await orbitdb.keyvalue('posts')
-    .catch((error) => console.error(`PostsDB init error: ${error}`));
-  console.dir(topicsDB)
   await topicsDB.load().catch((error) => console.error(`TopicsDB loading error: ${error}`));
   await postsDB.load().catch((error) => console.error(`PostsDB loading error: ${error}`));
 
@@ -101,8 +54,20 @@ async function loadDatabases(identityId, identityPublicKey, identityPrivateKey,
   store.dispatch(updateDatabases(DATABASES_LOADED, orbitdb, topicsDB, postsDB));
 }
 
+async function determineDBAddress(name, identityId){
+  return (await getOrbitDB().determineAddress(name, 'keyvalue', {
+    accessController: {
+      write: [identityId]}
+    }
+  )).root;
+}
+
 function getIPFS() {
   return store.getState().orbit.ipfs;
+}
+
+function getOrbitDB() {
+  return store.getState().orbit.orbitdb;
 }
 
 async function orbitSagaPut(db, key, value) {
@@ -122,4 +87,24 @@ async function orbitSagaOpen(orbitdb, address) {
   return store;
 }
 
-export { initIPFS, createTempDatabases, createDatabases, loadDatabases, orbitSagaPut, orbitSagaOpen };
+async function createDBs(){
+  const ipfs = getIPFS();
+  const identity = await Identities.createIdentity({type: 'ethereum'});
+  const orbitdb = await OrbitDB.createInstance(ipfs, {identity});
+  const topicsDB = await orbitdb.keyvalue('topics')
+    .catch((error) => console.error(`TopicsDB init error: ${error}`));
+  const postsDB = await orbitdb.keyvalue('posts')
+    .catch((error) => console.error(`PostsDB init error: ${error}`));
+
+  return { orbitdb, topicsDB, postsDB };
+}
+
+
+export {
+  initIPFS,
+  createDatabases,
+  loadDatabases,
+  orbitSagaPut,
+  orbitSagaOpen,
+  determineDBAddress
+};

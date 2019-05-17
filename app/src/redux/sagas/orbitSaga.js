@@ -2,7 +2,7 @@ import { all, call, put, select, take, takeEvery, takeLatest } from 'redux-saga/
 import isEqual from 'lodash.isequal';
 import { forumContract, getCurrentAccount } from './web3UtilsSaga';
 import {
-  createTempDatabases,
+  createDatabases,
   loadDatabases,
   orbitSagaOpen
 } from '../../utils/orbitUtils';
@@ -31,26 +31,12 @@ function* getOrbitDBInfo() {
         address: account
       });
       if (callResult) {
-        const txObj2 = yield call(forumContract.methods.getOrbitIdentityInfo,
-          ...[account]);
-        const orbitIdentityInfo = yield call(txObj2.call, {
-          address: account
-        });
-        const txObj3 = yield call(forumContract.methods.getOrbitDBInfo,
-          ...[account]);
-        const orbitDBInfo = yield call(txObj3.call, {
-          address: account
-        });
-        yield call(loadDatabases, orbitIdentityInfo[0], orbitIdentityInfo[1],
-          orbitIdentityInfo[2],
-          orbitDBInfo[0], orbitDBInfo[1], orbitDBInfo[2], orbitDBInfo[3],
-          orbitDBInfo[4]);
+        yield call(loadDatabases);
       } else {
         const orbit = yield select(state => state.orbit);
         if(!orbit.ready){
-          const { orbitdb, topicsDB, postsDB } = yield call(createTempDatabases);
+          const { orbitdb, topicsDB, postsDB } = yield call(createDatabases);
           yield put(updateDatabases(DATABASES_CREATED, orbitdb, topicsDB, postsDB ));
-          console.debug("Created temporary databases.");
         }
       }
       latestAccount = account;

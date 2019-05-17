@@ -17,9 +17,8 @@ class LoadingContainer extends Component {
               <p><strong>This browser has no connection to the Ethereum network.</strong></p>
               Please make sure that:
               <ul>
-                <li>You use MetaMask or a dedicated Ethereum browser</li>
-                <li>They are pointed to the correct network</li>
-                <li>Your account is unlocked and the app has the rights to access it</li>
+                <li>MetaMask is unlocked and pointed to the correct network</li>
+                <li>The app has been granted the right to connect to your account</li>
               </ul>
             </div>
           </div>
@@ -34,6 +33,7 @@ class LoadingContainer extends Component {
             <div>
               <img src={ethereum_logo} alt="ethereum_logo" className="loading-img"/>
               <p><strong>We can't find any Ethereum accounts!</strong></p>
+              <p>Please make sure that MetaMask is unlocked.</p>
             </div>
           </div>
         </main>
@@ -76,6 +76,7 @@ class LoadingContainer extends Component {
             <div>
               <img src={orbitdb_logo} alt="orbitdb_logo" className="loading-img"/>
               <p><strong>Preparing OrbitDB...</strong></p>
+              <p>Please sign the transaction in MetaMask to create the databases.</p>
             </div>
           </div>
         </main>

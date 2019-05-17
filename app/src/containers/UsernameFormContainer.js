@@ -79,33 +79,12 @@ class UsernameFormContainer extends Component {
       this.setState({
         signingUp: true
       });
-      const {
-        identityId,
-        identityPublicKey,
-        identityPrivateKey,
-        orbitdb,
-        orbitPublicKey,
-        orbitPrivateKey,
-        topicsDB,
-        postsDB
-      } = await createDatabases();
+      const { orbitdb,topicsDB,postsDB } = await createDatabases();
       dispatch(
         updateDatabases(DATABASES_CREATED, orbitdb, topicsDB, postsDB),
       );
       this.stackId = drizzle.contracts[contract].methods[signUpMethod].cacheSend(
-        ...[
-          usernameInput,
-          identityId,
-          identityPublicKey,
-          identityPrivateKey,
-          orbitdb.id,
-          orbitPublicKey,
-          orbitPrivateKey,
-          topicsDB,
-          postsDB
-        ], {
-          from: account
-        },
+        ...[usernameInput], { from: account }
       );
     }
     this.setState({
