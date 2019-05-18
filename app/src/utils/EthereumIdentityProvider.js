@@ -10,7 +10,14 @@ class EthereumIdentityProvider {
   async getId () { return this.id; }
 
   async signIdentity (data) {
-    return await web3.eth.personal.sign(data, this.id,"");  //Password not required for MetaMask
+    while(true){  //Insist (e.g. if user dismisses dialog)
+      try{
+        return await web3.eth.personal.sign(data, this.id,"");  //Password not required for MetaMask
+      }
+      catch (e) {
+        console.error("Failed to sign data.");
+      }
+    }
   }
 
   static async verifyIdentity (identity) {

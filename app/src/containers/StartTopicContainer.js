@@ -120,7 +120,7 @@ class StartTopicContainer extends Component {
                 placeholder="Post"
                 id="topicMessageInput"
                 rows={5}
-                autoHeight
+                autoheight="true"
                 onChange={this.handleInputChange}
               />]
             }
