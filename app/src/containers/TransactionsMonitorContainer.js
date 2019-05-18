@@ -80,36 +80,36 @@ class RightSideBar extends Component {
     }
 
     const transactionMessages = transactionStack.map(
-      (transaction, index) => {
-        if (isTransactionMessageDismissed[index]) {
+      (transactionIndex, index) => {
+        if (isTransactionMessageDismissed[index])
           return null;
-        }
 
         let color = 'black';
         const message = [];
-        message.push(
-          'New transaction has been queued and is waiting your confirmation.',
-        );
-        if (transactions[transaction]) {
+        const transaction = transactions[transactionIndex];
+
+        if(!transaction)
+          message.push('New transaction has been queued and is waiting your confirmation.');
+
+        if (transaction && transaction.status === 'pending') {
+          message.push('New transaction has been queued and is waiting your confirmation.');
           message.push(<br key="confirmed" />);
           message.push('- transaction confirmed');
         }
-        if (transactions[transaction]
-              && transactions[transaction].status === 'success') {
+        if (transaction && transaction.status === 'success') {
           /*      Transaction completed successfully      */
+          message.push('New transaction has been queued and is waiting your confirmation.');
+          message.push(<br key="confirmed" />);
+          message.push('- transaction confirmed');
           message.push(<br key="mined" />);
           message.push('- transaction mined');
           color = 'green';
           message.push(<br key="success" />);
           message.push('- transaction completed successfully');
-        } else if (transactions[transaction]
-              && transactions[transaction].status === 'error') {
+        } else if (transaction && transaction.status === 'error') {
           /*      Transaction failed to complete      */
-          message.push(<br key="mined" />);
-          message.push('- transaction mined');
           color = 'red';
-          message.push(<br key="fail" />);
-          message.push('Transaction failed to complete!');
+          message.push('Transaction failed!');
         }
 
         return (
