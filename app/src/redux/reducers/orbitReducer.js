@@ -52,7 +52,13 @@ const orbitReducer = (state = initialState, action) => {
       return {
         ...state,
         peerDatabases:[...state.peerDatabases,
-          {fullAddress: action.fullAddress, store: action.store}]
+          {
+            fullAddress: action.fullAddress,
+            userAddress: action.userAddress,
+            name: action.fullAddress.split('/')[3],
+            store: action.store
+          }
+        ]
       };
     case UPDATE_PEERS:
       return {

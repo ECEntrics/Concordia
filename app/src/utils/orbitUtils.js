@@ -54,8 +54,8 @@ async function loadDatabases() {
   store.dispatch(updateDatabases(DATABASES_LOADED, orbitdb, topicsDB, postsDB));
 }
 
-async function determineDBAddress(name, identityId){
-  return (await getOrbitDB().determineAddress(name, 'keyvalue', {
+async function determineDBAddress(dbName, identityId){
+  return (await getOrbitDB().determineAddress(dbName, 'keyvalue', {
     accessController: {
       write: [identityId]}
     }

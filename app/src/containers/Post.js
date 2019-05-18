@@ -24,7 +24,7 @@ class Post extends Component {
   componentDidMount() {
     const { addPeerDB, userAddress, postData } = this.props;
     if(postData.userAddress !== userAddress )
-      addPeerDB(postData.fullOrbitAddress);
+      addPeerDB(postData.userAddress, 'posts');
   }
 
   render() {
@@ -180,7 +180,8 @@ function getPostSubject(state, props){
       return orbitData.subject;
   }
   else{
-    const db = orbit.peerDatabases.find(db => db.fullAddress === postData.fullOrbitAddress);
+    const db = orbit.peerDatabases.find(db =>
+      (db.userAddress === postData.userAddress) && (db.name === 'posts'));
     if(db && db.store){
       const localOrbitData = db.store.get(postID);
       if (localOrbitData)
@@ -199,7 +200,8 @@ function getPostContent(state, props){
       return orbitData.content;
   }
   else{
-    const db = orbit.peerDatabases.find(db => db.fullAddress === postData.fullOrbitAddress);
+    const db = orbit.peerDatabases.find(db =>
+      (db.userAddress === postData.userAddress) && (db.name === 'posts'));
     if(db && db.store){
       const localOrbitData = db.store.get(postID);
       if (localOrbitData)
@@ -211,7 +213,7 @@ function getPostContent(state, props){
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   navigateTo: location => push(location),
-  addPeerDB: fullOrbitAddress => addPeerDatabase(fullOrbitAddress)
+  addPeerDB: (userAddress, name) => addPeerDatabase(userAddress, name)
 }, dispatch);
 
 function mapStateToProps(state, ownProps) {

@@ -5,7 +5,6 @@ import { drizzle } from '../index';
 
 import Post from './Post';
 import PlaceholderContainer from './PlaceholderContainer';
-import { determineDBAddress } from '../utils/orbitUtils';
 
 const contract = 'Forum';
 const getPostMethod = 'getPost';
@@ -17,8 +16,7 @@ class PostList extends Component {
     this.getBlockchainData = this.getBlockchainData.bind(this);
 
     this.state = {
-      dataKeys: [],
-      dbAddresses: []
+      dataKeys: []
     };
   }
 
@@ -31,8 +29,8 @@ class PostList extends Component {
   }
 
   getBlockchainData() {
-    const { dataKeys, dbAddresses } = this.state;
-    const { drizzleStatus, postIDs, contracts } = this.props;
+    const { dataKeys } = this.state;
+    const { drizzleStatus, postIDs } = this.props;
 
     if (drizzleStatus.initialized) {
       const dataKeysShallowCopy = dataKeys.slice();
@@ -45,17 +43,6 @@ class PostList extends Component {
           );
           fetchingNewData = true;
         }
-        else if (!dbAddresses[postID]){
-          const fetchedPostData = contracts[contract][getPostMethod][dataKeys[postID]];
-          if(fetchedPostData) {
-            const dbAddress = await determineDBAddress('posts', fetchedPostData.value[0]);
-            const dbAddressesShallowCopy = dbAddresses.slice();
-            dbAddressesShallowCopy[postID] = dbAddress;
-            this.setState({
-              dbAddresses: dbAddressesShallowCopy
-            });
-          }
-        }
       });
 
       if (fetchingNewData) {
@@ -67,7 +54,7 @@ class PostList extends Component {
   }
 
   render() {
-    const { dataKeys, dbAddresses } = this.state;
+    const { dataKeys } = this.state;
     const { postIDs, contracts, focusOnPost, recentToTheTop } = this.props;
 
     const posts = postIDs.map((postID, index) => {
@@ -75,13 +62,9 @@ class PostList extends Component {
       if(dataKeys[postID])
         fetchedPostData = contracts[contract][getPostMethod][dataKeys[postID]];
 
-      const dbAddress = dbAddresses[postID];
-      if(fetchedPostData && dbAddress) {
-        const userAddress = fetchedPostData.value[0]; //Also works as an Orbit Identity ID
-
+      if(fetchedPostData) {
         const postData = {
-          userAddress,
-          fullOrbitAddress: `/orbitdb/${dbAddress}/posts`,
+          userAddress: fetchedPostData.value[0],  //Also works as an Orbit Identity ID
           userName: fetchedPostData.value[1],
           timestamp: fetchedPostData.value[2]*1000,
           topicID: fetchedPostData.value[3]

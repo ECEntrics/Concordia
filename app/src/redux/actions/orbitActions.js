@@ -17,10 +17,11 @@ function updateDatabases(type, orbitdb, topicsDB, postsDB) {
   };
 }
 
-function addPeerDatabase(fullAddress) {
+function addPeerDatabase(userAddress, dbName) {
   return {
     type: ADD_PEER_DATABASE,
-    fullAddress
+    userAddress, //User's Ethereum address - it's also his Orbit Identity Id
+    dbName  //e.g. topics or posts
   };
 }
 

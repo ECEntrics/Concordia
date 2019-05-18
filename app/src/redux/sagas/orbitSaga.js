@@ -2,7 +2,7 @@ import { all, call, put, select, take, takeEvery, takeLatest } from 'redux-saga/
 import isEqual from 'lodash.isequal';
 import { forumContract, getCurrentAccount } from './web3UtilsSaga';
 import {
-  createDatabases,
+  createDatabases, determineDBAddress,
   loadDatabases,
   orbitSagaOpen
 } from '../../utils/orbitUtils';
@@ -52,16 +52,19 @@ function* getOrbitDBInfo() {
 let peerOrbitAddresses = new Set();
 
 function* addPeerDatabase(action) {
-  const fullAddress = action.fullAddress;
+  const userAddress = action.userAddress;
+  const dbName = action.dbName;
   const size = peerOrbitAddresses.size;
-  peerOrbitAddresses.add(fullAddress);
+  peerOrbitAddresses.add(userAddress + '/' + dbName);
 
   if(peerOrbitAddresses.size>size){
     const { orbitdb } = yield select(state => state.orbit);
     if(orbitdb){
+      const dbAddress = yield call(determineDBAddress,dbName, userAddress);
+      const fullAddress = `/orbitdb/${dbAddress}/${dbName}`;
       const store = yield call(orbitSagaOpen, orbitdb, fullAddress);
       yield put({
-        type: PEER_DATABASE_ADDED, fullAddress, store: store
+        type: PEER_DATABASE_ADDED, fullAddress, userAddress, store
       });
     }
   }

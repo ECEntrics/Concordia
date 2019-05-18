@@ -14,7 +14,7 @@ class Topic extends Component {
   componentDidMount() {
     const { dispatch, userAddress, topicData } = this.props;
     if(topicData.userAddress !== userAddress )
-      dispatch(addPeerDatabase(topicData.fullOrbitAddress));
+      dispatch(addPeerDatabase(topicData.userAddress, 'topics'));
   }
 
   render() {
@@ -84,7 +84,8 @@ function getTopicSubject(state, props){
       return orbitData.subject;
   }
   else{
-    const db = orbit.peerDatabases.find(db => db.fullAddress === topicData.fullOrbitAddress);
+    const db = orbit.peerDatabases.find(db =>
+      (db.userAddress === topicData.userAddress) && (db.name === 'topics'));
     if(db && db.store){
       const localOrbitData = db.store.get(topicID);
       if (localOrbitData)

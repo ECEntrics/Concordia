@@ -5,7 +5,6 @@ import { drizzle } from '../index';
 
 import Topic from './Topic';
 import PlaceholderContainer from './PlaceholderContainer';
-import { determineDBAddress } from '../utils/orbitUtils';
 
 const contract = 'Forum';
 const getTopicMethod = 'getTopic';
@@ -17,8 +16,7 @@ class TopicList extends Component {
     this.getBlockchainData = this.getBlockchainData.bind(this);
 
     this.state = {
-      dataKeys: [],
-      dbAddresses: []
+      dataKeys: []
     };
   }
 
@@ -31,8 +29,8 @@ class TopicList extends Component {
   }
 
   getBlockchainData() {
-    const { dataKeys, dbAddresses } = this.state;
-    const { drizzleStatus, topicIDs, contracts } = this.props;
+    const { dataKeys } = this.state;
+    const { drizzleStatus, topicIDs } = this.props;
 
     if (drizzleStatus.initialized) {
       const dataKeysShallowCopy = dataKeys.slice();
@@ -43,17 +41,6 @@ class TopicList extends Component {
           dataKeysShallowCopy[topicID] = drizzle.contracts[contract].methods[getTopicMethod]
             .cacheCall(topicID);
           fetchingNewData = true;
-        }
-        else if (!dbAddresses[topicID]){
-          const fetchedTopicData = contracts[contract][getTopicMethod][dataKeys[topicID]];
-          if(fetchedTopicData) {
-            const dbAddress = await determineDBAddress('topics', fetchedTopicData.value[0]);
-            const dbAddressesShallowCopy = dbAddresses.slice();
-            dbAddressesShallowCopy[topicID] = dbAddress;
-            this.setState({
-              dbAddresses: dbAddressesShallowCopy
-            });
-          }
         }
       });
 
@@ -66,7 +53,7 @@ class TopicList extends Component {
   }
 
   render() {
-    const { dataKeys, dbAddresses } = this.state;
+    const { dataKeys } = this.state;
     const { topicIDs, contracts } = this.props;
 
     const topics = topicIDs.map(topicID => {
@@ -74,12 +61,9 @@ class TopicList extends Component {
       if(dataKeys[topicID])
         fetchedTopicData = contracts[contract][getTopicMethod][dataKeys[topicID]];
 
-      const dbAddress = dbAddresses[topicID];
-      if(fetchedTopicData && dbAddress) {
-        const userAddress = fetchedTopicData.value[0]; //Also works as an Orbit Identity ID
+      if(fetchedTopicData) {
         const topicData = {
-          userAddress,
-          fullOrbitAddress: `/orbitdb/${dbAddress}/topics`,
+          userAddress: fetchedTopicData.value[0], //Also works as an Orbit Identity ID
           userName: fetchedTopicData.value[1],
           timestamp: fetchedTopicData.value[2]*1000,
           numberOfReplies: fetchedTopicData.value[3].length
