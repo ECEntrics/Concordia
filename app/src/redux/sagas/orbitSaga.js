@@ -31,11 +31,11 @@ function* getOrbitDBInfo() {
         address: account
       });
       if (callResult) {
-        yield call(loadDatabases);
+        yield call(loadDatabases, account);
       } else {
         const orbit = yield select(state => state.orbit);
         if(!orbit.ready){
-          const { orbitdb, topicsDB, postsDB } = yield call(createDatabases);
+          const { orbitdb, topicsDB, postsDB } = yield call(createDatabases, account);
           yield put(updateDatabases(DATABASES_CREATED, orbitdb, topicsDB, postsDB ));
         }
       }

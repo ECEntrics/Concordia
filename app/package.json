@@ -13,7 +13,6 @@
     "ipfs": "0.35.0",
     "lodash.isequal": "4.5.0",
     "orbit-db": "0.21.0-rc.1",
-    "orbit-db-keystore": "0.2.1",
     "orbit-db-identity-provider": "0.1.0",
     "prop-types": "15.7.2",
     "react": "16.8.6",

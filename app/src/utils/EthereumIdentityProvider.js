@@ -1,22 +1,16 @@
 import { web3 } from '../redux/sagas/web3UtilsSaga';
 
 class EthereumIdentityProvider {
-  constructor () {
-    this.web3 = web3;
+  constructor (options = {}) {  // Orbit's Identity Id (equals user's Ethereum address)
+    this.id = options.id; // web3.eth.getAccounts())[0]
   }
 
-  // Returns the type of the identity provider
-  static get type () { return 'ethereum' }
+  static get type () { return 'ethereum'; }
 
-  // Returns the signer's id
-  async getId () {
-    return (await this.web3.eth.getAccounts())[0];
-  }
+  async getId () { return this.id; }
 
-  // Returns a signature of pubkeysignature
   async signIdentity (data) {
-    const address = await this.getId();
-    return await this.web3.eth.personal.sign(data,address,"");  //Password not required for MetaMask
+    return await web3.eth.personal.sign(data, this.id,"");  //Password not required for MetaMask
   }
 
   static async verifyIdentity (identity) {

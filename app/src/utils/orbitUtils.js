@@ -22,16 +22,16 @@ function initIPFS() {
   });
 }
 
-async function createDatabases() {
+async function createDatabases(identityId) {
   console.debug('Creating databases...');
-  const databases = await createDBs();
+  const databases = await createDBs(identityId);
   console.debug('Databases created successfully.');
   return databases;
 }
 
-async function loadDatabases() {
+async function loadDatabases(identityId) {
   console.debug('Loading databases...');
-  const { orbitdb, topicsDB, postsDB } = await createDBs();
+  const { orbitdb, topicsDB, postsDB } = await createDBs(identityId);
 
   await topicsDB.load().catch((error) => console.error(`TopicsDB loading error: ${error}`));
   await postsDB.load().catch((error) => console.error(`PostsDB loading error: ${error}`));
@@ -87,9 +87,9 @@ async function orbitSagaOpen(orbitdb, address) {
   return store;
 }
 
-async function createDBs(){
+async function createDBs(identityId){
   const ipfs = getIPFS();
-  const identity = await Identities.createIdentity({type: 'ethereum'});
+  const identity = await Identities.createIdentity({id: identityId, type: 'ethereum'});
   const orbitdb = await OrbitDB.createInstance(ipfs, {identity});
   const topicsDB = await orbitdb.keyvalue('topics')
     .catch((error) => console.error(`TopicsDB init error: ${error}`));
