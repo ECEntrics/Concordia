@@ -9,6 +9,7 @@ import epochTimeConverter from '../helpers/EpochTimeConverter';
 import ContentLoader from 'react-content-loader';
 import UsernameFormContainer from './UsernameFormContainer';
 import { Table } from 'semantic-ui-react'
+import { determineDBAddress } from '../utils/orbitUtils';
 
 //TODO: No array needed unless we add more calls
 const callsInfo = [
@@ -28,7 +29,6 @@ class ProfileInformation extends Component {
     this.state = {
       pageStatus: 'initialized',
       dateOfRegister: '',
-      orbitDBId: '',
       topicsDBId: '',
       postsDBId: ''
     };
@@ -43,7 +43,7 @@ class ProfileInformation extends Component {
   }
 
   getBlockchainData() {
-    const { pageStatus, dateOfRegister, topicsDBId, postsDBId } = this.state;
+    const { pageStatus, dateOfRegister } = this.state;
     const { drizzleStatus, address, contracts } = this.props;
 
     if (pageStatus === 'initialized'
@@ -56,6 +56,16 @@ class ProfileInformation extends Component {
       this.setState({
         pageStatus: 'loading'
       });
+      determineDBAddress('topics', address).then(topicsDBAddress => {
+        this.setState({
+          topicsDBId: topicsDBAddress
+        });}
+      ).catch(() => {});
+      determineDBAddress('posts', address).then(postsDBAddress => {
+        this.setState({
+          postsDBId: postsDBAddress
+        });}
+      ).catch(() => {});
     }
 
     if (pageStatus === 'loading') {
@@ -81,21 +91,6 @@ class ProfileInformation extends Component {
             dateOfRegister: transaction.value
           });
         }
-      }
-
-      if (topicsDBId === '') {
-        //TODO: can be displayed using determineDBAddress
-        this.setState({
-          topicsDBId: "TODO"
-        });
-
-      }
-
-      if (postsDBId === '') {
-        //TODO: can be displayed using determineDBAddress
-        this.setState({
-          postsDBId: "TODO"
-        });
       }
     }
   }
