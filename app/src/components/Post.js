@@ -5,7 +5,7 @@ import { push } from 'connected-react-router';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ContentLoader from 'react-content-loader';
-import { Button, Divider, Grid, Icon, Label } from 'semantic-ui-react';
+import { Button, Divider, Grid, Icon } from 'semantic-ui-react';
 import TimeAgo from 'react-timeago';
 import UserAvatar from 'react-user-avatar';
 import ReactMarkdown from 'react-markdown';
@@ -126,6 +126,7 @@ class Post extends Component {
             </Grid.Row>
             <Grid.Row>
               <Grid.Column floated="right" textAlign="right">
+                {/*  TODO (also in PlaceHolderContainer)
                 <Button
                   icon
                   size="mini"
@@ -139,6 +140,8 @@ class Post extends Component {
                 <Button icon size="mini">
                   <Icon name="chevron down" />
                 </Button>
+                */
+                }
                 <Button
                   icon
                   size="mini"
@@ -163,7 +166,6 @@ class Post extends Component {
 Post.propTypes = {
   getFocus: PropTypes.bool.isRequired,
   userAddress: PropTypes.string.isRequired,
-  orbitDB: PropTypes.object.isRequired,
   avatarUrl: PropTypes.string,
   postIndex: PropTypes.number.isRequired,
   navigateTo: PropTypes.func.isRequired,
@@ -219,7 +221,6 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 function mapStateToProps(state, ownProps) {
   return {
     userAddress: state.user.address,
-    orbitDB: state.orbit,
     postSubject: getPostSubject(state, ownProps),
     postContent: getPostContent(state, ownProps)
   }

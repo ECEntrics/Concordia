@@ -4,7 +4,10 @@ import getWeb3 from "@drizzle-utils/get-web3";
 import Web3 from "web3";
 
 import Forum from '../../contracts/Forum';
-import { WEB3_UTILS_SAGA_INITIALIZED } from '../actions/web3UtilsActions';
+import {
+  DRIZZLE_UTILS_SAGA_ERROR,
+  DRIZZLE_UTILS_SAGA_INITIALIZED
+} from '../actions/drizzleUtilsActions';
 import { DRIZZLE_INITIALIZED } from '../actions/drizzleActions';
 import { fork, take } from 'redux-saga/effects';
 
@@ -21,11 +24,14 @@ function* init() {
       forumContract = yield call(getContractInstance, { web3, artifact: Forum });
       initFlag = true;
       yield put({
-        type: WEB3_UTILS_SAGA_INITIALIZED, ...[]
+        type: DRIZZLE_UTILS_SAGA_INITIALIZED, ...[]
       });
     }
     catch (error) {
-      console.error(`Error while initializing web3UtilsSaga: ${error}`);
+      console.error(`Error while initializing drizzleUtilsSaga: ${error}`);
+      yield put({
+        type: DRIZZLE_UTILS_SAGA_ERROR, ...[]
+      });
     }
   }
   else

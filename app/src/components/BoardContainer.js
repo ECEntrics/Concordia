@@ -7,7 +7,7 @@ import { Header } from 'semantic-ui-react';
 import { drizzle } from '../index';
 
 import TopicList from './TopicList';
-import FloatingButton from '../components/FloatingButton';
+import FloatingButton from './FloatingButton';
 
 /* import { showProgressBar, hideProgressBar } from '../redux/actions/userInterfaceActions'; */
 

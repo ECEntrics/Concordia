@@ -7,7 +7,7 @@ import { drizzle } from '../index';
 
 import PostList from './PostList';
 import NewPost from './NewPost';
-import FloatingButton from '../components/FloatingButton';
+import FloatingButton from './FloatingButton';
 
 import { setNavBarTitle } from '../redux/actions/userInterfaceActions.js';
 import { determineDBAddress } from '../utils/orbitUtils';

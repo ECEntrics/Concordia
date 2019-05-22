@@ -9,7 +9,7 @@ import { drizzle } from '../index';
 import ProfileInformation from './ProfileInformation';
 import TopicList from './TopicList';
 import PostList from './PostList';
-import LoadingSpinner from '../components/LoadingSpinner';
+import LoadingSpinner from './LoadingSpinner';
 import { setNavBarTitle } from '../redux/actions/userInterfaceActions';
 
 const callsInfo = [

@@ -71,7 +71,6 @@ Topic.propTypes = {
   userAddress: PropTypes.string.isRequired,
   history: PropTypes.object.isRequired,
   topicData: GetTopicResult.isRequired,
-  orbitDB: PropTypes.object.isRequired,
   topicID: PropTypes.number.isRequired
 };
 
@@ -99,7 +98,6 @@ function getTopicSubject(state, props){
 function mapStateToProps(state, ownProps) {
   return {
     userAddress: state.user.address,
-    orbitDB: state.orbit,
     topicSubject: getTopicSubject(state, ownProps)
   }
 }

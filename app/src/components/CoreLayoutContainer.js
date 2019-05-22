@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import NavBarContainer from '../containers/NavBarContainer';
-import RightSideBarContainer from '../containers/TransactionsMonitorContainer';
+import NavBarContainer from './NavBarContainer';
+import RightSideBarContainer from './TransactionsMonitorContainer';
 // Styles
 import '../assets/fonts/fontawesome-free-5.7.2/all.js'; // TODO: check https://fontawesome.com/how-to-use/on-the-web/setup/using-package-managers
 import '../assets/css/App.css';

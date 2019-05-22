@@ -130,17 +130,20 @@ class PlaceholderContainer extends Component {
               </Grid.Row>
               <Grid.Row>
                 <Grid.Column floated="right" textAlign="right">
-                  <Button icon size="mini" disabled
-                    style={{
-                      marginRight: '0px'
-                    }}
-                  >
-                    <Icon name="chevron up" />
-                  </Button>
-                  <Label color="teal">Loading...</Label>
-                  <Button icon size="mini" disabled >
-                    <Icon name="chevron down" />
-                  </Button>
+                  {/* TODO
+                    <Button icon size="mini" disabled
+                      style={{
+                        marginRight: '0px'
+                      }}
+                    >
+                      <Icon name="chevron up" />
+                    </Button>
+                    <Label color="teal">Loading...</Label>
+                    <Button icon size="mini" disabled >
+                      <Icon name="chevron down" />
+                    </Button>
+                     */
+                  }
                   <Button icon size="mini" disabled >
                     <Icon name="linkify" />
                   </Button>

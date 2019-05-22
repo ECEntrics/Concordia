@@ -11,7 +11,7 @@ import * as serviceWorker from './utils/serviceWorker';
 
 import './assets/css/index.css';
 import drizzleOptions from './config/drizzleOptions';
-import LoadingContainer from './containers/LoadingContainer';
+import LoadingContainer from './components/LoadingContainer';
 
 initIPFS();
 

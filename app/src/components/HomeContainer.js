@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import BoardContainer from '../containers/BoardContainer';
+import BoardContainer from './BoardContainer';
 
 class HomeContainer extends Component {
   render() {

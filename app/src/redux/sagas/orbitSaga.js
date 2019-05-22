@@ -6,7 +6,7 @@ import {
   loadDatabases,
   orbitSagaOpen
 } from '../../utils/orbitUtils';
-import { WEB3_UTILS_SAGA_INITIALIZED } from '../actions/web3UtilsActions';
+import { DRIZZLE_UTILS_SAGA_INITIALIZED } from '../actions/drizzleUtilsActions';
 import {
   ADD_PEER_DATABASE, PEER_DATABASE_ADDED,
   DATABASES_CREATED,
@@ -95,7 +95,7 @@ function* updatePeersState() {
 
 function* orbitSaga() {
   yield all([
-    take(WEB3_UTILS_SAGA_INITIALIZED),
+    take(DRIZZLE_UTILS_SAGA_INITIALIZED),
     take(IPFS_INITIALIZED)
   ]);
   yield takeLatest(ACCOUNT_CHANGED, getOrbitDBInfo);

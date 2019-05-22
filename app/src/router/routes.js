@@ -2,10 +2,10 @@ import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import CoreLayoutContainer from '../components/CoreLayoutContainer';
 import HomeContainer from '../components/HomeContainer';
-import SignUpContainer from '../containers/SignUpContainer';
-import StartTopicContainer from '../containers/StartTopicContainer';
-import TopicContainer from '../containers/TopicContainer';
-import ProfileContainer from '../containers/ProfileContainer';
+import SignUpContainer from '../components/SignUpContainer';
+import StartTopicContainer from '../components/StartTopicContainer';
+import TopicContainer from '../components/TopicContainer';
+import ProfileContainer from '../components/ProfileContainer';
 import NotFound from '../components/NotFound';
 
 const routes = (

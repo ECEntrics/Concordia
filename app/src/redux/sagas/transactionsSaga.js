@@ -2,7 +2,7 @@ import { call, select, take, takeEvery } from 'redux-saga/effects';
 
 import { drizzle } from '../../index';
 import { orbitSagaPut } from '../../utils/orbitUtils';
-import { WEB3_UTILS_SAGA_INITIALIZED } from '../actions/web3UtilsActions';
+import { DRIZZLE_UTILS_SAGA_INITIALIZED } from '../actions/drizzleUtilsActions';
 import { CONTRACT_EVENT_FIRED } from './eventSaga';
 
 const transactionsHistory = Object.create(null);
@@ -72,7 +72,7 @@ function* handleError() {
 }
 
 function* transactionsSaga() {
-  yield take(WEB3_UTILS_SAGA_INITIALIZED);
+  yield take(DRIZZLE_UTILS_SAGA_INITIALIZED);
   yield takeEvery('INIT_TRANSACTION', initTransaction);
   yield takeEvery(CONTRACT_EVENT_FIRED, handleEvent);
   yield takeEvery('TX_ERROR', handleError);
