@@ -4,7 +4,7 @@ import IPFS from 'ipfs';
 import store from '../redux/store';
 import { DATABASES_LOADED, IPFS_INITIALIZED, updateDatabases } from '../redux/actions/orbitActions';
 import ipfsOptions from '../config/ipfsOptions';
-import EthereumIdentityProvider from './EthereumIdentityProvider';
+import EthereumIdentityProvider from './ethereumIdentityProvider';
 
 function initIPFS() {
   Identities.addIdentityProvider(EthereumIdentityProvider);
@@ -98,7 +98,6 @@ async function createDBs(identityId){
 
   return { orbitdb, topicsDB, postsDB };
 }
-
 
 export {
   initIPFS,
