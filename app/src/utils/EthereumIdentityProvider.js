@@ -1,4 +1,4 @@
-import { web3 } from '../redux/sagas/web3UtilsSaga';
+import { web3 } from '../redux/sagas/drizzleUtilsSaga';
 
 class EthereumIdentityProvider {
   constructor (options = {}) {  // Orbit's Identity Id (equals user's Ethereum address)

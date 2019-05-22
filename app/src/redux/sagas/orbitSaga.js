@@ -1,6 +1,6 @@
 import { all, call, put, select, take, takeEvery, takeLatest } from 'redux-saga/effects';
 import isEqual from 'lodash.isequal';
-import { forumContract, getCurrentAccount } from './web3UtilsSaga';
+import { forumContract, getCurrentAccount } from './drizzleUtilsSaga';
 import {
   createDatabases, determineDBAddress,
   loadDatabases,

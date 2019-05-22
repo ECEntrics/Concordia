@@ -1,6 +1,6 @@
 import { call, put, select, take, takeEvery } from 'redux-saga/effects';
 
-import { forumContract, getCurrentAccount } from './web3UtilsSaga';
+import { forumContract, getCurrentAccount } from './drizzleUtilsSaga';
 import { WEB3_UTILS_SAGA_INITIALIZED } from '../actions/web3UtilsActions';
 import {
   ACCOUNT_CHANGED,
