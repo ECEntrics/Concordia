@@ -5,10 +5,7 @@ import { connect } from 'react-redux';
 import { Button, Dimmer, Form, Header, Loader, Message } from 'semantic-ui-react';
 
 import { drizzle } from '../index';
-import { createDatabases } from '../utils/orbitUtils';
 import { updateUsername } from '../redux/actions/transactionsActions';
-
-import { DATABASES_CREATED, updateDatabases } from '../redux/actions/orbitActions';
 
 const contract = 'Forum';
 const checkUsernameTakenMethod = 'isUserNameTaken';
@@ -79,10 +76,6 @@ class UsernameFormContainer extends Component {
       this.setState({
         signingUp: true
       });
-      const { orbitdb,topicsDB,postsDB } = await createDatabases();
-      dispatch(
-        updateDatabases(DATABASES_CREATED, orbitdb, topicsDB, postsDB),
-      );
       this.stackId = drizzle.contracts[contract].methods[signUpMethod].cacheSend(
         ...[usernameInput], { from: account }
       );

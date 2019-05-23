@@ -6,7 +6,7 @@ const epochTimeConverter = (timestamp) => {
     timestampDate.getFullYear()}, ${
     timestampDate.getHours()}:${
     ("0"+timestampDate.getMinutes()).slice(-2)}:${
-    timestampDate.getSeconds()}`);
+    ("0"+timestampDate.getSeconds()).slice(-2)}`);
 };
 
 export default epochTimeConverter;
