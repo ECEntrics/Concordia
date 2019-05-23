@@ -30,11 +30,9 @@ class LoadingContainer extends Component {
       return(
         <main className="loading-screen">
           <div>
-            <div>
-              <img src={ethereum_logo} alt="ethereum_logo" className="loading-img"/>
-              <p><strong>We can't find any Ethereum accounts!</strong></p>
-              <p>Please make sure that MetaMask is unlocked.</p>
-            </div>
+            <img src={ethereum_logo} alt="ethereum_logo" className="loading-img"/>
+            <p><strong>We can't find any Ethereum accounts!</strong></p>
+            <p>Please make sure that MetaMask is unlocked.</p>
           </div>
         </main>
       )
@@ -44,13 +42,11 @@ class LoadingContainer extends Component {
       return(
         <main className="loading-screen">
           <div>
-            <div>
-              <img src={ethereum_logo} alt="ethereum_logo" className="loading-img"/>
-              <p><strong>Initializing contracts...</strong></p>
-              <p>If this takes too long please make sure they are deployed to the network
-                and you are connected to the correct one.
-              </p>
-            </div>
+            <img src={ethereum_logo} alt="ethereum_logo" className="loading-img"/>
+            <p><strong>Initializing contracts...</strong></p>
+            <p>If this takes too long please make sure they are deployed to the network
+              and you are connected to the correct one.
+            </p>
           </div>
         </main>
       )
@@ -60,24 +56,23 @@ class LoadingContainer extends Component {
       return(
         <main className="loading-screen">
           <div>
-            <div>
-              <img src={ipfs_logo} alt="ipfs_logo" className="loading-img"/>
-              <p><strong>Initializing IPFS...</strong></p>
-            </div>
+            <img src={ipfs_logo} alt="ipfs_logo" className="loading-img"/>
+            <p><strong>Initializing IPFS...</strong></p>
           </div>
         </main>
       )
     }
 
     if (!this.props.orbitReady) {
+      const message = process.env.NODE_ENV ==='development' ?
+        "If needed, please sign the transaction in MetaMask to create the databases." :
+        "Please sign the transaction in MetaMask to create the databases.";
       return(
         <main className="loading-screen">
           <div>
-            <div>
-              <img src={orbitdb_logo} alt="orbitdb_logo" className="loading-img"/>
-              <p><strong>Preparing OrbitDB...</strong></p>
-              <p>Please sign the transaction in MetaMask to create the databases.</p>
-            </div>
+            <img src={orbitdb_logo} alt="orbitdb_logo" className="loading-img"/>
+            <p><strong>Preparing OrbitDB...</strong></p>
+            <p>{message}</p>
           </div>
         </main>
       )
@@ -89,10 +84,8 @@ class LoadingContainer extends Component {
     return(
       <main className="loading-screen">
         <div>
-          <div>
-            <img src={logo} alt="app_logo" className="loading-img"/>
-            <p><strong>Loading dapp...</strong></p>
-          </div>
+          <img src={logo} alt="app_logo" className="loading-img"/>
+          <p><strong>Loading dapp...</strong></p>
         </div>
       </main>
     )

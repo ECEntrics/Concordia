@@ -92,8 +92,7 @@ class NewPost extends Component {
       <div className="post" ref={this.newPostOuterRef}>
         <Divider horizontal>
           <span className="grey-text">
-#
-            {postIndex}
+            #{postIndex}
           </span>
         </Divider>
         <Grid>
@@ -111,18 +110,13 @@ class NewPost extends Component {
                 <div className="stretch-space-between">
                   <span><strong>{username}</strong></span>
                   <span className="grey-text">
-                    {previewEnabled
-                                        && <TimeAgo date={previewDate} />
-                                        }
+                    {previewEnabled && <TimeAgo date={previewDate} />}
                   </span>
                 </div>
                 <div className="stretch-space-between">
                   <span>
                     <strong>
-                      {previewEnabled
-                                        && (`Subject: ${
-                                          postSubjectInput}`)
-                                        }
+                      {previewEnabled && (`Subject: ${postSubjectInput}`)}
                     </strong>
                   </span>
                 </div>

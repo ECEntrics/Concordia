@@ -100,7 +100,8 @@ function* orbitSaga() {
   ]);
   yield takeLatest(ACCOUNT_CHANGED, getOrbitDBInfo);
   yield takeEvery(ADD_PEER_DATABASE, addPeerDatabase);
-  yield takeEvery(ACCOUNTS_FETCHED, updatePeersState);
+  if(process.env.NODE_ENV==='development')
+    yield takeEvery(ACCOUNTS_FETCHED, updatePeersState);
 }
 
 export default orbitSaga;

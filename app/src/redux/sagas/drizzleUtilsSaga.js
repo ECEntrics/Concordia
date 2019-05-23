@@ -20,7 +20,6 @@ function* init() {
       const host = "http://127.0.0.1:8545"; //Ganache development blockchain
       const fallbackProvider = new Web3.providers.HttpProvider(host);
       web3 = yield call(getWeb3, { fallbackProvider });
-
       forumContract = yield call(getContractInstance, { web3, artifact: Forum });
       initFlag = true;
       yield put({
@@ -40,7 +39,6 @@ function* init() {
 
 // If the method below proves to be problematic/ineffective (i.e. getting current account
 // from state), consider getting it from @drizzle-utils/get-accounts instead
-// with (yield call(getAccounts, {web3}))[0];
 function* getCurrentAccount() {
   return (yield select(accounts))[0];
 }
