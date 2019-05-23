@@ -4,13 +4,15 @@ import { drizzle } from '../../index';
 import { orbitSagaPut } from '../../utils/orbitUtils';
 import { DRIZZLE_UTILS_SAGA_INITIALIZED } from '../actions/drizzleUtilsActions';
 import { CONTRACT_EVENT_FIRED } from './eventSaga';
+import { getCurrentAccount } from './drizzleUtilsSaga';
 
 const transactionsHistory = Object.create(null);
 
 function* initTransaction(action) {
+  const account = yield call(getCurrentAccount);
   const dataKey = drizzle.contracts[action.transactionDescriptor.contract]
     .methods[action.transactionDescriptor.method].cacheSend(
-    ...(action.transactionDescriptor.params)
+    ...action.transactionDescriptor.params, { from: account }
   );
   transactionsHistory[dataKey] = action;
   transactionsHistory[dataKey].state = 'initialized';
