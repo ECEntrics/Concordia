@@ -16,7 +16,7 @@
     "ipfs": "0.35.0",
     "level": "5.0.1",
     "lodash.isequal": "4.5.0",
-    "orbit-db": "0.21.0-rc.1",
+    "orbit-db": "0.21.0",
     "orbit-db-identity-provider": "0.1.0",
     "prop-types": "15.7.2",
     "react": "16.8.6",
