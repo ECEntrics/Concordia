@@ -34,3 +34,6 @@ yarn-error.log*
 
 # Jetbrains
 .idea
+
+/env/*.env
+/volumes
