@@ -10,7 +10,8 @@ module.exports = {
     development: {
       host: GANACHE_HOST,
       port: GANACHE_PORT,
-      network_id: '*' // Match any network id
+      network_id: '*', // Match any network id
+      gasPrice: '0'
     }
   },
   compilers: {
