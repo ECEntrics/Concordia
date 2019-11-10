@@ -30,8 +30,6 @@ services:
       - ./env/apella.env
     networks:
       - apella-net
-    volumes:
-      - ./volumes/node_modules:/usr/apella/node_modules
     expose:
       - "3000"
 
@@ -57,11 +55,11 @@ services:
       - "443:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./volumes/nginx/conf:/etc/nginx/conf.d
-      - ./volumes/nginx/vhost:/etc/nginx/vhost.d
-      - ./volumes/nginx/html:/usr/share/nginx/html
-      - ./volumes/nginx/dhparam:/etc/nginx/dhparam
-      - ./volumes/nginx/certs:/etc/nginx/certs:ro
+      - conf:/etc/nginx/conf.d
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - dhparam:/etc/nginx/dhparam
+      - certs:/etc/nginx/certs:ro
 
   # Letsencrypt automated creation, renewal and use of Let's Encrypt certificates
   # Reference:
@@ -79,14 +77,20 @@ services:
     networks:
       - apella-net
     volumes:
-      - ./volumes/nginx/conf:/etc/nginx/conf.d
-      - ./volumes/nginx/vhost:/etc/nginx/vhost.d
-      - ./volumes/nginx/html:/usr/share/nginx/html
-      - ./volumes/nginx/dhparam:/etc/nginx/dhparam
-      - ./volumes/nginx/certs:/etc/nginx/certs:rw
+      - conf:/etc/nginx/conf.d
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - dhparam:/etc/nginx/dhparam
+      - certs:/etc/nginx/certs:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
 # Networks in use
 networks:
   apella-net:
     driver: bridge
+volumes:
+  conf:
+  vhost:
+  html:
+  dhparam:
+  certs:

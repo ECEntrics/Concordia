@@ -38,7 +38,7 @@
     "libp2p-websocket-star-rendezvous": "0.3.0"
   },
   "scripts": {
-    "start": "HOST=${APELLA_HOST} react-scripts start",
+    "start": "react-scripts start",
     "rendezvous": "rendezvous --port=9090 --host=83.212.109.171",
     "build": "react-scripts build",
     "test": "react-scripts test",

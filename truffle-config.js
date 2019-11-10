@@ -1,4 +1,6 @@
 const path = require('path');
+const GANACHE_HOST = process.env.GANACHE_HOST || 'localhost';
+const GANACHE_PORT = process.env.GANACHE_PORT || '8545';
 
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
@@ -6,8 +8,8 @@ module.exports = {
   contracts_build_directory: path.join(__dirname, 'app/src/contracts'),
   networks: {
     development: {
-      host: process.env.GANACHE_HOST,
-      port: process.env.GANACHE_PORT,
+      host: GANACHE_HOST,
+      port: GANACHE_PORT,
       network_id: '*' // Match any network id
     }
   },

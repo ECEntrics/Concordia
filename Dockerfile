@@ -5,9 +5,6 @@ LABEL maintainer="apotwohd@gmail.com"
 ENV DOCKER true
 
 # Installs a couple (dozen) more tools like python, c++, make and others
-RUN apk --no-cache add build-base
-
-# Installs a couple (dozen) more tools like python, c++, make and others
 RUN apk --no-cache add build-base \
     python3 && \
     if [ ! -e /usr/bin/python ]; then ln -sf python3 /usr/bin/python ; fi
