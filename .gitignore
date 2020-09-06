@@ -1,0 +1,34 @@
+# Node
+/node_modules
+packages/*/node_modules
+packages/concordia-contracts/build
+
+# IDE
+.DS_Store
+.idea
+
+# Build Directories
+/build
+/src/build
+/packages/concordia-app/build
+/packages/concordia-contracts/build
+
+# Logs
+/log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker volumes
+docker/volumes
+docker/reports
+docker/env/concordia.env
+
+# Misc
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Lerna
+*.lerna_backup

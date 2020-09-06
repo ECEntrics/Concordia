@@ -1,0 +1,8 @@
+{
+  "name": "apella",
+  "private": true,
+  "workspaces": {
+    "packages": ["packages/*"],
+    "nohoist": ["**/web3", "**/web3/**"]
+  }
+}
