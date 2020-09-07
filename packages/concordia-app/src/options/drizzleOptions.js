@@ -9,7 +9,8 @@ const drizzleOptions = {
     contracts,
     events: {
         Forum: ['UserSignedUp', 'UsernameUpdated', 'TopicCreated', 'PostCreated']
-    }
+    },
+    reloadWindowOnAccountChange: true   // We need it to reinitialize breeze and create new Orbit databases
 };
 
 export default drizzleOptions;
