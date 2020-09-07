@@ -26,7 +26,7 @@
     ]
   },
   "dependencies": {
-    "@ezerous/breeze": "0.1.0",
+    "@ezerous/breeze": "0.1.1",
     "@ezerous/drizzle": "0.3.0",
     "@reduxjs/toolkit": "1.4.0",
     "concordia-contracts": "0.1.0",
