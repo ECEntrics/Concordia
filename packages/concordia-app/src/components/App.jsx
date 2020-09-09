@@ -3,6 +3,9 @@ import { Provider } from 'react-redux'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import LoadingContainer from './LoadingContainer'
 import PropTypes from 'prop-types'
+
+import 'semantic-ui-css/semantic.min.css'
+
 import NotFound from '../components/NotFound';
 
 const App = ({ store }) => (

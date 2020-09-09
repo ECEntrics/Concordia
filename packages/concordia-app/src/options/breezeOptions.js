@@ -13,17 +13,16 @@ const breezeOptions = {
                     // Use local signaling server (see also rendezvous script in package.json)
                     // For more information: https://github.com/libp2p/js-libp2p-webrtc-star
                     '/ip4/127.0.0.1/tcp/9090/wss/p2p-webrtc-star'
-                ],
+                ]
             },
         },
         preload: {
-            enabled: false,
+            enabled: false
         },
         init: {
-            emptyRepo: true,
+            emptyRepo: true
         }
     },
-    web3,
     orbit: {
         identityProvider: EthereumIdentityProvider,
         databases: [

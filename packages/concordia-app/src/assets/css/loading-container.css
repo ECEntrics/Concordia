@@ -1,12 +1,21 @@
+html {
+    overflow: hidden;
+}
+
 .loading-screen {
     text-align: center;
+    font-size: large;
 }
 
 .loading-img {
-    margin-bottom: 30px;
-    height: 100px;
+    margin-bottom: 3em;
+    height: 12em;
 }
 
 ul {
     list-style-position: inside;
+}
+
+.bar {
+    margin-top: 5em;
 }
