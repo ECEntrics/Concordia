@@ -5,7 +5,3 @@ export async function determineDBAddress({orbit, dbName, type, identityId}) {
     })).root;
     return `/orbitdb/${ipfsMultihash}/${dbName}`;
 }
-
-
-
-

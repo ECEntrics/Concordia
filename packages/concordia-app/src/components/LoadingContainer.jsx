@@ -1,164 +1,143 @@
 import React, { Children, Component } from 'react';
 import { connect } from 'react-redux';
-import { Progress } from 'semantic-ui-react'
+import { Container, Progress } from 'semantic-ui-react'
+
+import { breezeConstants } from '@ezerous/breeze'
+
+import LoadingComponent from './LoadingComponent';
 
 // CSS
-import '../assets/css/loading-container.css';
+import '../assets/css/loading-component.css';
 
 // Images
 import ethereum_logo from '../assets/images/ethereum_logo.svg';
 import ipfs_logo from '../assets/images/ipfs_logo.svg';
 import orbitdb_logo from '../assets/images/orbitdb_logo.png';
-import logo from '../assets/images/logo.png';
+import logo from '../assets/images/app_logo.png';
 
 class LoadingContainer extends Component {
     render() {
-        if (this.props.web3.status === 'initializing') {
-            return (
-                <main className="loading-screen">
-                    <div className="ui container">
-                        <img src={ethereum_logo} alt="ethereum_logo" className="loading-img" />
-                        <p><strong>Connecting to the Ethereum network...</strong></p>
-                        <p>Please make sure to unlock MetaMask.</p>
-                        <Progress percent="20" size='tiny' active />
-                    </div>
-                </main>
-            );
+        if ((this.props.web3.status === 'initializing' || !this.props.web3.networkId)
+            && !this.props.web3.networkFailed) {
+            return <LoadingComponent
+                title="Connecting to the Ethereum network..."
+                message="Please make sure to unlock MetaMask."
+                image_type="ethereum"
+                progress={20}
+                progress_type="indicating"
+            />
         }
 
         if (this.props.web3.status === 'failed' || this.props.web3.networkFailed) {
-            return (
-                <main className="loading-screen">
-                        <div className="ui container">
-                            <img src={ethereum_logo} alt="ethereum_logo" className="loading-img" />
-                            <p><strong>No connection to the Ethereum network!</strong></p>
-                            Please make sure that:
-                            <ul>
-                                <li>MetaMask is unlocked and pointed to the correct network</li>
-                                <li>The app has been granted the right to connect to your account</li>
-                            </ul>
-                            <Progress percent="20" size='tiny' error />
-                        </div>
-                </main>
-            );
+            return <LoadingComponent
+                title="No connection to the Ethereum network!"
+                message="Please make sure that:"
+                message_list={['MetaMask is unlocked and pointed to the correct, available network',
+                    'The app has been granted the right to connect to your account']}
+                image_type="ethereum"
+                progress={20}
+                progress_type="error"
+            />
         }
 
         if (this.props.web3.status === 'initialized' && this.props.web3.accountsFailed) {
-            return (
-                <main className="loading-screen">
-                    <div className="ui container">
-                        <img src={ethereum_logo} alt="ethereum_logo" className="loading-img" />
-                        <p><strong>We can't find any Ethereum accounts!</strong></p>
-                        <p>Please make sure that MetaMask is unlocked.</p>
-                        <Progress percent="20" size='tiny' error />
-                    </div>
-                </main>
-            );
+            return <LoadingComponent
+                title="We can't find any Ethereum accounts!"
+                message="Please make sure that MetaMask is unlocked."
+                image_type="ethereum"
+                progress={20}
+                progress_type="error"
+            />
         }
 
-        if (!this.props.contractInitialized) {
-            return (
-                <main className="loading-screen">
-                    <div className="ui container">
-                        <img src={ethereum_logo} alt="ethereum_logo" className="loading-img" />
-                        <p><strong>Initializing contracts...</strong></p><p/>
-                        <Progress percent="40" size='tiny' active />
-                    </div>
-                </main>
-            );
+        if (this.props.drizzleStatus.initializing
+            || (!this.props.drizzleStatus.failed && !this.props.contractInitialized && this.props.contractDeployed )){
+            return <LoadingComponent
+                title="Initializing contracts..."
+                message=""
+                image_type="ethereum"
+                progress={40}
+                progress_type="indicating"
+            />
         }
 
         if (!this.props.contractDeployed) {
-            return (
-                <main className="loading-screen">
-                    <div className="ui container">
-                        <img src={ethereum_logo} alt="ethereum_logo" className="loading-img" />
-                        <p><strong>No contracts found on the current network!</strong></p>
-                        <p>Please make sure that you are connected to the correct network
-                            and the contracts are deployed.</p>
-                        <Progress percent="40" size='tiny' error />
-                    </div>
-                </main>
-            );
+            return <LoadingComponent
+                title="No contracts found on the current network!"
+                message="Please make sure that you are connected to the correct network and the contracts are deployed."
+                image_type="ethereum"
+                progress={40}
+                progress_type="error"
+            />
         }
 
-        if (!this.props.ipfsInitialized && !this.props.ipfsFailed) {
-            return (
-                <main className="loading-screen">
-                    <div className="ui container">
-                        <img src={ipfs_logo} alt="ipfs_logo" className="loading-img" />
-                        <p><strong>Initializing IPFS...</strong></p><p/>
-                        <Progress percent="60" size='tiny' active />
-                    </div>
-                </main>
-            );
+        if (this.props.ipfsStatus === breezeConstants.STATUS_INITIALIZING) {
+            return <LoadingComponent
+                title="Initializing IPFS..."
+                message=""
+                image_type="ipfs"
+                progress={60}
+                progress_type="indicating"
+            />
         }
 
-        if (this.props.ipfsFailed) {
-            return (
-                <main className="loading-screen">
-                    <div className="ui container">
-                        <img src={ipfs_logo} alt="ipfs_logo" className="loading-img" />
-                        <p><strong>IPFS initialization failed!</strong></p><p/>
-                        <Progress percent="60" size='tiny' error />
-                    </div>
-                </main>
-            );
+        if (this.props.ipfsStatus === breezeConstants.STATUS_FAILED) {
+            return <LoadingComponent
+                title="IPFS initialization failed!"
+                message=""
+                image_type="ipfs"
+                progress={60}
+                progress_type="error"
+            />
         }
 
-        if (!this.props.orbitInitialized  && !this.props.orbitFailed) {
+        if (this.props.orbitStatus === breezeConstants.STATUS_INITIALIZING) {
             const message = process.env.NODE_ENV === 'development'
                 ? 'If needed, please sign the transaction in MetaMask to create the databases.'
                 : 'Please sign the transaction in MetaMask to create the databases.';
-            return (
-                <main className="loading-screen">
-                    <div className="ui container">
-                        <img src={orbitdb_logo} alt="orbitdb_logo" className="loading-img" />
-                        <p><strong>Preparing OrbitDB...</strong></p>
-                        <p>{message}</p>
-                        <Progress percent="80" size='tiny' active />
-                    </div>
-                </main>
-            );
+            return <LoadingComponent
+                title="Preparing OrbitDB..."
+                message={message}
+                image_type="orbit"
+                progress={80}
+                progress_type="indicating"
+            />
         }
 
-        if (this.props.orbitFailed) {
-            return (
-                <main className="loading-screen">
-                    <div className="ui container">
-                        <img src={orbitdb_logo} alt="orbitdb_logo" className="loading-img" />
-                        <p><strong>OrbitDB initialization failed!</strong></p><p/>
-                        <Progress percent="80" size='tiny' error />
-                    </div>
-                </main>
-            );
+        if (this.props.orbitStatus === breezeConstants.STATUS_FAILED) {
+            return <LoadingComponent
+                title="OrbitDB initialization failed!"
+                message=""
+                image_type="orbit"
+                progress={80}
+                progress_type="error"
+            />
         }
 
-        if (this.props.drizzleStatus.initialized) return Children.only(this.props.children);
+        // Just in case our redux logic changes in the future
+        if (!this.props.drizzleStatus.initialized){
+            return <LoadingComponent
+                title="Loading dapp..."
+                message=""
+                image_type="app"
+                progress={90}
+                progress_type="error"
+            />
+        }
 
-        return (
-            <main className="loading-screen">
-                <div className="ui container">
-                    <img src={logo} alt="app_logo" className="loading-img" />
-                    <p><strong>Loading dapp...</strong></p><p/>
-                    <Progress percent="90" size='tiny' error />
-                </div>
-            </main>
-        );
+        return Children.only(this.props.children);
     }
 }
 
 const mapStateToProps = (state) => ({
-    accounts: state.accounts,
     drizzleStatus: state.drizzleStatus,
     breezeStatus: state.breezeStatus,
+    ipfsStatus: state.ipfs.status,
+    orbitStatus: state.orbit.status,
     web3: state.web3,
+    accounts: state.accounts,
     contractInitialized: state.contracts.Forum.initialized,
     contractDeployed: state.contracts.Forum.deployed,
-    ipfsInitialized: state.ipfs.initialized,
-    ipfsFailed: state.ipfs.failed,
-    orbitInitialized: state.orbit.initialized,
-    orbitFailed: state.orbit.failed
 });
 
 export default connect(mapStateToProps)(LoadingContainer);

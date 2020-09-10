@@ -11,12 +11,12 @@ export function * initOrbitDatabases (action) {
 function * orbitSaga () {
     // Not sure which will come first
     const res = yield all([
+        take(drizzleActions.drizzle.DRIZZLE_INITIALIZED),
         take(breezeActions.breeze.BREEZE_INITIALIZED),
-        take(action => action.type === drizzleActions.account.ACCOUNTS_FETCHED
-            && action.accounts.length > 0)
+        take(action => action.type === drizzleActions.account.ACCOUNTS_FETCHED)
     ]);
 
-    yield initOrbitDatabases({breeze:res[0].breeze, account: res[1].accounts[0]});
+    yield initOrbitDatabases({breeze:res[1].breeze, account: res[2].accounts[0]});
 }
 
 export default orbitSaga

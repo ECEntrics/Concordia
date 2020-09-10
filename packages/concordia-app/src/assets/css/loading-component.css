@@ -1,0 +1,27 @@
+body {
+    overflow: hidden;
+}
+
+ul {
+    list-style-position: inside;
+}
+
+.loading-screen {
+    text-align: center;
+    font-size: large;
+}
+
+.loading-img {
+    margin-bottom: 3em;
+    height: 12em;
+}
+
+.ui.container {
+    height: 26em;
+}
+
+.ui.progress {
+    width: 40vw;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}

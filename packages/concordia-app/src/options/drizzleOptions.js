@@ -10,6 +10,7 @@ const drizzleOptions = {
     events: {
         Forum: ['UserSignedUp', 'UsernameUpdated', 'TopicCreated', 'PostCreated']
     },
+    reloadWindowOnNetworkChange: true,
     reloadWindowOnAccountChange: true   // We need it to reinitialize breeze and create new Orbit databases
 };
 
