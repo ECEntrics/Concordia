@@ -4,18 +4,25 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import LoadingContainer from './LoadingContainer'
 import PropTypes from 'prop-types'
 
-import 'semantic-ui-css/semantic.min.css'
+// CSS
+import '../assets/css/app.css';
 
+import CoreLayoutContainer from './CoreLayoutContainer';
+import HomeContainer from './HomeContainer';
 import NotFound from '../components/NotFound';
+
 
 const App = ({ store }) => (
     <Provider store={store}>
         <LoadingContainer>
-            <Router>
-                <Switch>
-                    <Route component={NotFound} />
-                </Switch>
-            </Router>
+                <Router>
+                    <CoreLayoutContainer>
+                        <Switch>
+                            <Route exact path="/" component={HomeContainer} />
+                            <Route component={NotFound} />
+                        </Switch>
+                    </CoreLayoutContainer>
+                </Router>
         </LoadingContainer>
     </Provider>
 )

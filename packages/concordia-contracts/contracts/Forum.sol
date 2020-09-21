@@ -131,7 +131,6 @@ contract Forum {
     }
 
     function getTopic(uint topicID) public view returns (address, string memory, uint, uint[] memory) {
-        //TODO: require(hasUserSignedUp(msg.sender)); needed?
         require(topicID<numTopics);
         return (
             topics[topicID].author,
@@ -147,7 +146,6 @@ contract Forum {
     }
 
     function getPost(uint postID) public view returns (address, string memory, uint, uint) {
-        //TODO: require(hasUserSignedUp(msg.sender)); needed?
         require(postID<numPosts);
         return (
             posts[postID].author,

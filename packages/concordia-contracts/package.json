@@ -13,10 +13,10 @@
     "migrate": "yarn truffle migrate --network develop"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "3.1.0",
-    "truffle": "5.1.43"
+    "@openzeppelin/contracts": "~3.2.0",
+    "truffle": "~5.1.45"
   },
   "devDependencies": {
-    "solhint": "3.2.0"
+    "solhint": "~3.2.0"
   }
 }

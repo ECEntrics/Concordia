@@ -1,6 +1,5 @@
 import React, { Children, Component } from 'react';
 import { connect } from 'react-redux';
-import { Container, Progress } from 'semantic-ui-react'
 
 import { breezeConstants } from '@ezerous/breeze'
 
@@ -9,19 +8,13 @@ import LoadingComponent from './LoadingComponent';
 // CSS
 import '../assets/css/loading-component.css';
 
-// Images
-import ethereum_logo from '../assets/images/ethereum_logo.svg';
-import ipfs_logo from '../assets/images/ipfs_logo.svg';
-import orbitdb_logo from '../assets/images/orbitdb_logo.png';
-import logo from '../assets/images/app_logo.png';
-
 class LoadingContainer extends Component {
     render() {
         if ((this.props.web3.status === 'initializing' || !this.props.web3.networkId)
             && !this.props.web3.networkFailed) {
             return <LoadingComponent
                 title="Connecting to the Ethereum network..."
-                message="Please make sure to unlock MetaMask."
+                message="Please make sure to unlock MetaMask and grant the app the right to connect to your account."
                 image_type="ethereum"
                 progress={20}
                 progress_type="indicating"
@@ -114,14 +107,13 @@ class LoadingContainer extends Component {
             />
         }
 
-        // Just in case our redux logic changes in the future
-        if (!this.props.drizzleStatus.initialized){
+        if (!this.props.userFetched){
             return <LoadingComponent
                 title="Loading dapp..."
                 message=""
                 image_type="app"
                 progress={90}
-                progress_type="error"
+                progress_type="indicating"
             />
         }
 
@@ -138,6 +130,7 @@ const mapStateToProps = (state) => ({
     accounts: state.accounts,
     contractInitialized: state.contracts.Forum.initialized,
     contractDeployed: state.contracts.Forum.deployed,
+    userFetched: state.user.address
 });
 
 export default connect(mapStateToProps)(LoadingContainer);
