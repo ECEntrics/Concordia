@@ -9,5 +9,5 @@ try {
 }
 
 module.exports = {
-    contracts: [Forum]
+    contracts: [Forum],
 };
