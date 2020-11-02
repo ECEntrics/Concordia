@@ -17,9 +17,6 @@ module.exports = {
         'assert': 'readonly'
     },
     'parserOptions': {
-        'ecmaFeatures': {
-            'jsx': true
-        },
         'ecmaVersion': 2018,
         'sourceType': 'module'
     },
@@ -27,11 +24,6 @@ module.exports = {
         'react'
     ],
     'rules': {
-        "indent": ["error", 4],
-        "react/jsx-indent": ["error", 4],
-        "react/jsx-indent-props": ["error", 4],
-        'react/jsx-filename-extension': 'off',
-        'react/jsx-props-no-spreading': 'off',
         'import/extensions': 'off',
         'react/require-default-props': 'off',
         'react/prop-types': 'off',
@@ -39,11 +31,12 @@ module.exports = {
         'no-unused-vars': 'warn',
         'no-console': 'warn',
         'no-shadow': 'warn',
+        "no-multi-str": "warn"
     },
     'settings': {
         'import/resolver': {
             'node': {
-                'extensions': ['.js', '.jsx']
+                'extensions': ['.js']
             }
         }
     },

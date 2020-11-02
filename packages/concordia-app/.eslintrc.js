@@ -23,18 +23,23 @@ module.exports = {
         'react'
     ],
     'rules': {
-        "indent": ["error", 4],
-        "react/jsx-indent": ["error", 4],
-        "react/jsx-indent-props": ["error", 4],
-        'react/jsx-filename-extension': 'off',
         'react/jsx-props-no-spreading': 'off',
         'import/extensions': 'off',
+        "react/jsx-indent": [
+            'error',
+            4,
+            {
+                checkAttributes: true,
+                indentLogicalExpressions: true
+            }
+        ],
         'react/require-default-props': 'off',
         'react/prop-types': 'off',
         'max-len': ['warn', {'code': 120, 'tabWidth': 4}],
         'no-unused-vars': 'warn',
         'no-console': 'warn',
         'no-shadow': 'warn',
+        "no-multi-str": "warn"
     },
     'settings': {
         'import/resolver': {
