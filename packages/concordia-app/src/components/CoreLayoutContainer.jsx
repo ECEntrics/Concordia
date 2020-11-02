@@ -1,19 +1,21 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import MenuComponent from './MenuComponent';
 
-export default class CoreLayout extends Component {
-    render() {
-        return (
-            <div>
-                <MenuComponent/>
-                {this.props.children}
-            </div>
-        )
-    }
-}
+const CoreLayout = (props) => {
+  const { children } = props;
+
+  return (
+      <div>
+          <MenuComponent />
+          {children}
+      </div>
+  );
+};
 
 CoreLayout.propTypes = {
-    children: PropTypes.element.isRequired
+  children: PropTypes.element.isRequired,
 };
+
+export default CoreLayout;

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Container, Progress } from 'semantic-ui-react';
@@ -7,67 +7,61 @@ import { Container, Progress } from 'semantic-ui-react';
 import '../assets/css/loading-component.css';
 
 // Images
-import ethereum_logo from '../assets/images/ethereum_logo.svg';
-import ipfs_logo from '../assets/images/ipfs_logo.svg';
-import orbitdb_logo from '../assets/images/orbitdb_logo.png';
-import app_logo from '../assets/images/app_logo.png';
+import ethereumLogo from '../assets/images/ethereum_logo.svg';
+import ipfsLogo from '../assets/images/ipfs_logo.svg';
+import orbitdbLogo from '../assets/images/orbitdb_logo.png';
+import appLogo from '../assets/images/app_logo.png';
 
-class LoadingComponent extends Component {
-    render(){
-        const { image_type, message_list, progress_type } = this.props ;
-        let imageSrc, imageAlt, listItems, indicating, error;
+const LoadingComponent = (props) => {
+  const {
+    imageType, messageList, progressType, title, message, progress,
+  } = props;
+  let imageSrc; let imageAlt; let listItems; let indicating; let
+    error;
 
-        if (image_type === "ethereum"){
-            imageSrc = ethereum_logo;
-            imageAlt = "ethereum_logo";
-        }
-        else if (image_type === "ipfs"){
-            imageSrc = ipfs_logo;
-            imageAlt = "ipfs_logo";
-        }
-        else if (image_type === "orbit"){
-            imageSrc = orbitdb_logo;
-            imageAlt = "orbitdb_logo";
-        }
-        else if (image_type === "app"){
-            imageSrc = app_logo;
-            imageAlt = "app_logo";
-        }
+  if (imageType === 'ethereum') {
+    imageSrc = ethereumLogo;
+    imageAlt = 'ethereum_logo';
+  } else if (imageType === 'ipfs') {
+    imageSrc = ipfsLogo;
+    imageAlt = 'ipfs_logo';
+  } else if (imageType === 'orbit') {
+    imageSrc = orbitdbLogo;
+    imageAlt = 'orbitdb_logo';
+  } else if (imageType === 'app') {
+    imageSrc = appLogo;
+    imageAlt = 'app_logo';
+  }
 
-        if(progress_type === "indicating")
-            indicating = true;
-        else if(progress_type === "error")
-            error = true;
+  if (progressType === 'indicating') indicating = true;
+  else if (progressType === 'error') error = true;
 
-        if(message_list){
-            listItems = message_list.map((listItem) =>
-                <li>{listItem}</li>
-            );
-        }
+  if (messageList) {
+    listItems = messageList.map((listItem) => <li>{listItem}</li>);
+  }
 
-        const list = message_list ? <ul>{listItems}</ul> : '';
+  const list = messageList ? <ul>{listItems}</ul> : '';
 
-        return(
-            <main className="loading-screen">
-                <Container>
-                    <img src={imageSrc} alt={imageAlt} className="loading-img" />
-                    <p><strong>{this.props.title}</strong></p>
-                    <p>{this.props.message}</p>
-                    {list}
-                </Container>
-                <Progress percent={this.props.progress} size='small' indicating={indicating} error={error}/>
-            </main>
-        );
-    }
-}
+  return (
+      <main className="loading-screen">
+          <Container>
+              <img src={imageSrc} alt={imageAlt} className="loading-img" />
+              <p><strong>{title}</strong></p>
+              <p>{message}</p>
+              {list}
+          </Container>
+          <Progress percent={progress} size="small" indicating={indicating} error={error} />
+      </main>
+  );
+};
 
 LoadingComponent.propTypes = {
-    title: PropTypes.string.isRequired,
-    message: PropTypes.string.isRequired,
-    message_list: PropTypes.arrayOf(PropTypes.string),
-    image_type: PropTypes.string.isRequired,
-    progress: PropTypes.number.isRequired,
-    progress_type: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  message: PropTypes.string.isRequired,
+  messageList: PropTypes.arrayOf(PropTypes.string),
+  imageType: PropTypes.string.isRequired,
+  progress: PropTypes.number.isRequired,
+  progressType: PropTypes.string.isRequired,
 };
 
 export default LoadingComponent;

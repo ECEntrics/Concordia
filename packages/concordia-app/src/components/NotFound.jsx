@@ -3,7 +3,7 @@ import pageNotFound from '../assets/images/PageNotFound.jpg';
 
 const NotFound = () => (
     <div style={{
-        textAlign: 'center',
+      textAlign: 'center',
     }}
     >
         <img src={pageNotFound} alt="Page not found!" />

@@ -9,7 +9,7 @@
     "eject": "react-scripts eject",
     "postinstall": "patch-package",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "lint": "yarn run eslint . --format table"
+    "lint": "yarn run eslint --ext js,jsx . --format table"
   },
   "browserslist": {
     "production": [
