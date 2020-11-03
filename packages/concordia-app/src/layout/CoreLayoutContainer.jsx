@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import MenuComponent from './MenuComponent';
+import MenuComponent from '../components/MenuComponent';
 
 const CoreLayout = (props) => {
   const { children } = props;

@@ -28,7 +28,6 @@
     "@ezerous/drizzle": "~0.4.0",
     "@reduxjs/toolkit": "~1.4.0",
     "concordia-contracts": "~0.1.0",
-    "history": "^5.0.0",
     "i18next": "^19.8.3",
     "i18next-browser-languagedetector": "^6.0.1",
     "i18next-http-backend": "^1.0.21",
