@@ -4,6 +4,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import LoadingContainer from './components/LoadingContainer';
 import Routes from './Routes';
+import './intl/index';
 
 // CSS
 import './assets/css/app.css';

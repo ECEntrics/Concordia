@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   Button, Form, Menu, Message, Modal,
 } from 'semantic-ui-react';
-
+import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import AppContext from './AppContext';
 
@@ -78,7 +78,6 @@ class SignUpForm extends Component {
     const { user, account } = this.props;
 
     if (user.hasSignedUp) {
-      console.log('Signing up..');
       this.contract.methods.signUp.cacheSend(usernameInput);
     } else {
       this.setState({
@@ -97,6 +96,7 @@ class SignUpForm extends Component {
     const {
       error, usernameInput, errorHeader, errorMessage, signingUp,
     } = this.state;
+    const { t } = this.props;
 
     return (
         <Modal
@@ -106,7 +106,7 @@ class SignUpForm extends Component {
               <Menu.Item
                 name="signup"
                 position="right"
-                content="Sign Up"
+                content={t('topbar.button.signup')}
               />
           )}
         >
@@ -127,7 +127,7 @@ class SignUpForm extends Component {
                   header={errorHeader}
                   content={errorMessage}
                 />
-                <Button type="submit" color="black" content="Sign Up" />
+                <Button type="submit" color="black" content={t('signup.form.button.submit')} />
 
             </Modal.Content>
         </Modal>
@@ -141,4 +141,4 @@ const mapStateToProps = (state) => ({
   user: state.user,
 });
 
-export default connect(mapStateToProps)(SignUpForm);
+export default connect(mapStateToProps)(withTranslation()(SignUpForm));
