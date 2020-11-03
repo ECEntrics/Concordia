@@ -6,8 +6,6 @@ import LoadingContainer from './components/LoadingContainer';
 import Routes from './Routes';
 import './intl/index';
 import 'semantic-ui-css/semantic.min.css';
-
-// CSS
 import './assets/css/app.css';
 
 const App = ({ store }) => (

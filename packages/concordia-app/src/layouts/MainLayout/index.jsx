@@ -1,21 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import MenuComponent from '../components/MenuComponent';
+import MainLayoutMenu from './MainLayoutMenu';
 
-const CoreLayout = (props) => {
+const MainLayout = (props) => {
   const { children } = props;
 
   return (
-      <div>
-          <MenuComponent />
+      <div id="main-layout">
+          <MainLayoutMenu />
           {children}
       </div>
   );
 };
 
-CoreLayout.propTypes = {
+MainLayout.propTypes = {
   children: PropTypes.element.isRequired,
 };
 
-export default CoreLayout;
+export default MainLayout;

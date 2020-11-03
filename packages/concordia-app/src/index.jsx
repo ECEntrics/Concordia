@@ -8,7 +8,6 @@ import AppContext from './components/AppContext';
 import drizzleOptions from './options/drizzleOptions';
 import breezeOptions from './options/breezeOptions';
 import * as serviceWorker from './utils/serviceWorker';
-import './assets/css/index.css';
 import LoadingScreen from './components/LoadingScreen';
 
 const drizzle = new Drizzle(drizzleOptions, store);

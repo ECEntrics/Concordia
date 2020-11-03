@@ -1,17 +1,18 @@
 import React, { Fragment, lazy, Suspense } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import CoreLayoutContainer from './layout/CoreLayoutContainer';
+import MainLayout from './layouts/MainLayout';
 import LoadingScreen from './components/LoadingScreen';
 
 const routesConfig = [
   {
     exact: true,
     path: '/404',
+    layout: MainLayout,
     component: lazy(() => import('./components/NotFound')),
   },
   {
     path: '*',
-    layout: CoreLayoutContainer,
+    layout: MainLayout,
     routes: [
       {
         exact: true,
