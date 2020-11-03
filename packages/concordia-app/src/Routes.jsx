@@ -2,6 +2,7 @@ import React, { Fragment, lazy, Suspense } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import LoadingScreen from './components/LoadingScreen';
+import RegisterLayout from './layouts/RegisterLayout';
 
 const routesConfig = [
   {
@@ -9,6 +10,20 @@ const routesConfig = [
     path: '/404',
     layout: MainLayout,
     component: lazy(() => import('./components/NotFound')),
+  },
+  {
+    path: '/auth',
+    layout: RegisterLayout,
+    routes: [
+      {
+        exact: true,
+        path: '/auth/register',
+        component: lazy(() => import('./views/Register')),
+      },
+      {
+        component: () => <Redirect to="/404" />,
+      },
+    ],
   },
   {
     path: '*',
