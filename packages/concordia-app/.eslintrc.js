@@ -12,6 +12,7 @@ module.exports = {
         'Atomics': 'readonly',
         'SharedArrayBuffer': 'readonly'
     },
+    parser: 'babel-eslint',
     'parserOptions': {
         'ecmaFeatures': {
             'jsx': true
@@ -20,7 +21,8 @@ module.exports = {
         'sourceType': 'module'
     },
     'plugins': [
-        'react'
+        'react',
+        'react-hooks',
     ],
     'rules': {
         'react/jsx-props-no-spreading': 'off',
@@ -35,6 +37,8 @@ module.exports = {
         ],
         'react/require-default-props': 'off',
         'react/prop-types': 'off',
+        'react-hooks/rules-of-hooks': 'error',
+        'react-hooks/exhaustive-deps': 'error',
         'max-len': ['warn', {'code': 120, 'tabWidth': 4}],
         'no-unused-vars': 'warn',
         'no-console': 'warn',
