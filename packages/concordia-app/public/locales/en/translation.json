@@ -1,4 +1,13 @@
 {
-  "topbar.button.signup": "Sign Up",
-  "signup.form.button.submit": "Sign Up"
+  "register.card.header": "Sign Up",
+  "register.form.button.back": "Back",
+  "register.form.button.guest": "Continue as guest",
+  "register.form.button.submit": "Sign Up",
+  "register.form.error.message.header": "Form contains errors",
+  "register.form.error.username.taken.message": "The username {{username}} is already taken.",
+  "register.form.header.already.member.message": "There is already an account for this address.\nIf you want to create another account please change your address.",
+  "register.form.username.field.label": "Username",
+  "register.form.username.field.placeholder": "Username",
+  "register.p.account.address": "Account address:",
+  "topbar.button.register": "Sign Up"
 }

@@ -43,7 +43,12 @@ module.exports = {
         'no-unused-vars': 'warn',
         'no-console': 'warn',
         'no-shadow': 'warn',
-        "no-multi-str": "warn"
+        "no-multi-str": "warn",
+        "jsx-a11y/label-has-associated-control": [ 2, {
+            "labelAttributes": ["label"],
+            "controlComponents": ["Input"],
+            "depth": 3,
+        }],
     },
     'settings': {
         'import/resolver': {

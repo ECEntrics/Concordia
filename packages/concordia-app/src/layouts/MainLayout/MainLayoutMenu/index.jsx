@@ -29,7 +29,7 @@ const MainLayoutMenu = (props) => {
                         onClick={() => { push('/auth/register'); }}
                         position="right"
                       >
-                          {t('topbar.button.signup')}
+                          {t('topbar.button.register')}
                       </Menu.Item>
                   </Menu>
               </div>
