@@ -32,7 +32,7 @@ const routesConfig = [
       {
         exact: true,
         path: '/',
-        component: lazy(() => import('./components/HomeContainer')),
+        component: lazy(() => import('./views/Home')),
       },
       {
         component: () => <Redirect to="/404" />,

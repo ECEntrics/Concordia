@@ -1,4 +1,7 @@
 {
+  "board.header.no.topics.message": "There are no topics yet!",
+  "board.sub.header.no.topics.guest": "Sign up and be the first to post.",
+  "board.sub.header.no.topics.user": "Be the first to post.",
   "register.card.header": "Sign Up",
   "register.form.button.back": "Back",
   "register.form.button.guest": "Continue as guest",
@@ -9,6 +12,7 @@
   "register.form.username.field.label": "Username",
   "register.form.username.field.placeholder": "Username",
   "register.p.account.address": "Account address:",
+  "topbar.button.create.topic": "Create topic",
   "topbar.button.profile": "Profile",
   "topbar.button.register": "Sign Up"
 }

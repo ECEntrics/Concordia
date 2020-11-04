@@ -14,16 +14,27 @@ const MainLayoutMenu = (props) => {
   return (
       <AppContext.Consumer>
           {() => (
-              <div>
-                  <Menu color="black" inverted>
-                      <Menu.Item
-                        link
-                        name="home"
-                        key="home"
-                        onClick={() => { history.push('/'); }}
-                      >
-                          <img src={appLogo} alt="app_logo" />
-                      </Menu.Item>
+              <Menu color="black" inverted>
+                  <Menu.Item
+                    link
+                    name="home"
+                    key="home"
+                    onClick={() => { history.push('/'); }}
+                  >
+                      <img src={appLogo} alt="app_logo" />
+                  </Menu.Item>
+                  <Menu.Menu position="right">
+                      {hasSignedUp && history.location.pathname === '/' && (
+                          <Menu.Item
+                            link
+                            name="create-topic"
+                            key="create-topic"
+                            onClick={() => { history.push('/topics/new'); }}
+                            position="right"
+                          >
+                              {t('topbar.button.create.topic')}
+                          </Menu.Item>
+                      )}
                       {hasSignedUp
                         ? (
                             <Menu.Item
@@ -31,7 +42,6 @@ const MainLayoutMenu = (props) => {
                               name="profile"
                               key="profile"
                               onClick={() => { history.push('/profile'); }}
-                              position="right"
                             >
                                 {t('topbar.button.profile')}
                             </Menu.Item>
@@ -42,13 +52,12 @@ const MainLayoutMenu = (props) => {
                               name="register"
                               key="register"
                               onClick={() => { history.push('/auth/register'); }}
-                              position="right"
                             >
                                 {t('topbar.button.register')}
                             </Menu.Item>
                         )}
-                  </Menu>
-              </div>
+                  </Menu.Menu>
+              </Menu>
           )}
       </AppContext.Consumer>
   );
