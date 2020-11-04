@@ -9,5 +9,6 @@
   "register.form.username.field.label": "Username",
   "register.form.username.field.placeholder": "Username",
   "register.p.account.address": "Account address:",
+  "topbar.button.profile": "Profile",
   "topbar.button.register": "Sign Up"
 }
