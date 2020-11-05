@@ -6,13 +6,14 @@ import {
 } from 'semantic-ui-react';
 import throttle from 'lodash/throttle';
 import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import AppContext from '../../components/AppContext';
 import './styles.css';
 
 const Register = (props) => {
-  const { user, account, isUserNameTakenResults } = props;
+  const { account } = props;
+
   const {
     drizzle: {
       contracts: {
@@ -22,12 +23,20 @@ const Register = (props) => {
       },
     },
   } = useContext(AppContext.Context);
+
+  const user = useSelector((state) => state.user);
+  const isUserNameTakenResults = useSelector((state) => state.contracts.Forum.isUserNameTaken);
+  const transactionStack = useSelector((state) => state.transactionStack);
+  const transactions = useSelector((state) => state.transactions);
+
   const [usernameInput, setUsernameInput] = useState('');
   const [usernameIsChecked, setUsernameIsChecked] = useState(true);
   const [usernameIsTaken, setUsernameIsTaken] = useState(true);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [signingUp, setSigningUp] = useState(false);
+  const [registerCacheSendStackId, setRegisterCacheSendStackId] = useState('');
+
   const history = useHistory();
   const { t } = useTranslation();
 
@@ -55,6 +64,18 @@ const Register = (props) => {
     }
   }, [isUserNameTakenResults, t, usernameInput]);
 
+  useEffect(() => {
+    if (signingUp && transactionStack && transactionStack[registerCacheSendStackId]
+        && transactions[transactionStack[registerCacheSendStackId]]) {
+      if (transactions[transactionStack[registerCacheSendStackId]].status === 'error') {
+        setSigningUp(false);
+      } else if (transactions[transactionStack[registerCacheSendStackId]].status === 'success') {
+        history.push('/');
+        // TODO: display a welcome message?
+      }
+    }
+  }, [registerCacheSendStackId, signingUp, transactions, transactionStack, history]);
+
   const checkUsernameTaken = useMemo(() => throttle(
     (username) => {
       isUserNameTaken.cacheCall(username);
@@ -74,9 +95,7 @@ const Register = (props) => {
       signUp.cacheSend(usernameInput);
     } else {
       setSigningUp(true);
-      signUp.cacheSend(
-        ...[usernameInput], { from: account },
-      );
+      setRegisterCacheSendStackId(signUp.cacheSend(...[usernameInput], { from: account }));
     }
   }, [account, signUp, user.hasSignedUp, usernameInput]);
 
@@ -155,6 +174,7 @@ const Register = (props) => {
                               basic
                               content={t('register.form.button.guest')}
                               onClick={goToHomePage}
+                              disabled={signingUp}
                             />
                         </>
                     )}
@@ -164,9 +184,4 @@ const Register = (props) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  user: state.user,
-  isUserNameTakenResults: state.contracts.Forum.isUserNameTaken,
-});
-
-export default connect(mapStateToProps)(Register);
+export default Register;
