@@ -2,12 +2,12 @@ import React from 'react';
 import { Menu } from 'semantic-ui-react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import AppContext from '../../../components/AppContext';
 import appLogo from '../../../assets/images/app_logo.png';
 
-const MainLayoutMenu = (props) => {
-  const { user: { hasSignedUp } } = props;
+const MainLayoutMenu = () => {
+  const hasSignedUp = useSelector((state) => state.user.hasSignedUp);
   const history = useHistory();
   const { t } = useTranslation();
 
@@ -24,7 +24,7 @@ const MainLayoutMenu = (props) => {
                       <img src={appLogo} alt="app_logo" />
                   </Menu.Item>
                   <Menu.Menu position="right">
-                      {hasSignedUp && history.location.pathname === '/' && (
+                      {hasSignedUp && history.location.pathname === '/home' && (
                           <Menu.Item
                             link
                             name="create-topic"
@@ -63,8 +63,4 @@ const MainLayoutMenu = (props) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  user: state.user,
-});
-
-export default connect(mapStateToProps)(MainLayoutMenu);
+export default MainLayoutMenu;

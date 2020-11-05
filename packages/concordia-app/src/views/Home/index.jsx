@@ -2,12 +2,12 @@ import React, {
   useContext, useEffect, useMemo, useState,
 } from 'react';
 import { Container } from 'semantic-ui-react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import AppContext from '../../components/AppContext';
 import Board from './Board';
 
-const Home = (props) => {
-  const { getNumberOfTopicsResults } = props;
+const Home = () => {
+  const getNumberOfTopicsResults = useSelector((state) => state.contracts.Forum.getNumberOfTopics);
   const { drizzle: { contracts: { Forum: { methods: { getNumberOfTopics } } } } } = useContext(AppContext.Context);
   const [numberOfTopicsCallHash, setNumberOfTopicsCallHash] = useState('');
 
@@ -27,8 +27,4 @@ const Home = (props) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  getNumberOfTopicsResults: state.contracts.Forum.getNumberOfTopics,
-});
-
-export default connect(mapStateToProps)(Home);
+export default Home;

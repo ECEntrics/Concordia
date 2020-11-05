@@ -1,11 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { Header } from 'semantic-ui-react';
-import { connect } from 'react-redux';
 import _ from 'lodash';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
 const Board = (props) => {
-  const { numberOfTopics, userHasSignedUp } = props;
+  const { numberOfTopics } = props;
+  const userHasSignedUp = useSelector((state) => state.user.hasSignedUp);
   const [topicIds, setTopicIds] = useState([]);
   const { t } = useTranslation();
 
@@ -46,8 +47,4 @@ const Board = (props) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  userHasSignedUp: state.user.hasSignedUp,
-});
-
-export default connect(mapStateToProps)(Board);
+export default Board;
