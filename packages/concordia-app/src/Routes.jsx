@@ -7,6 +7,11 @@ import RegisterLayout from './layouts/RegisterLayout';
 const routesConfig = [
   {
     exact: true,
+    path: '/',
+    component: () => <Redirect to="/home" />,
+  },
+  {
+    exact: true,
     path: '/404',
     layout: MainLayout,
     component: lazy(() => import('./components/NotFound')),
@@ -31,8 +36,13 @@ const routesConfig = [
     routes: [
       {
         exact: true,
-        path: '/',
+        path: '/home',
         component: lazy(() => import('./views/Home')),
+      },
+      {
+        exact: true,
+        path: '/topics/:id(\\bnew\\b|\\d+)',
+        component: lazy(() => import('./views/Topic')),
       },
       {
         component: () => <Redirect to="/404" />,
