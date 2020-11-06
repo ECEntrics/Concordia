@@ -5,11 +5,12 @@ import { Container } from 'semantic-ui-react';
 import { useSelector } from 'react-redux';
 import AppContext from '../../components/AppContext';
 import Board from './Board';
+import './styles.css';
 
 const Home = () => {
-  const getNumberOfTopicsResults = useSelector((state) => state.contracts.Forum.getNumberOfTopics);
   const { drizzle: { contracts: { Forum: { methods: { getNumberOfTopics } } } } } = useContext(AppContext.Context);
   const [numberOfTopicsCallHash, setNumberOfTopicsCallHash] = useState('');
+  const getNumberOfTopicsResults = useSelector((state) => state.contracts.Forum.getNumberOfTopics);
 
   useEffect(() => {
     setNumberOfTopicsCallHash(getNumberOfTopics.cacheCall());
@@ -21,7 +22,7 @@ const Home = () => {
   [getNumberOfTopicsResults, numberOfTopicsCallHash]);
 
   return (
-      <Container textAlign="center">
+      <Container id="home-container" textAlign="center">
           {numberOfTopics !== null && <Board numberOfTopics={numberOfTopics} />}
       </Container>
   );

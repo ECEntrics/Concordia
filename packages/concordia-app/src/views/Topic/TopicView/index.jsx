@@ -12,7 +12,7 @@ const TopicView = (props) => {
 };
 
 TopicView.propTypes = {
-  topicId: PropTypes.number,
+  topicId: PropTypes.number.isRequired,
 };
 
 export default TopicView;
