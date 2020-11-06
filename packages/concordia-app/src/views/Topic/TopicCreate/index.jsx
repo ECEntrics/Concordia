@@ -21,9 +21,13 @@ const TopicCreate = (props) => {
         },
       },
     },
+    breeze: {
+      orbit: {
+        stores,
+      },
+    },
   } = useContext(AppContext.Context);
 
-  const orbit = useSelector((state) => state.orbit);
   const transactionStack = useSelector((state) => state.transactionStack);
   const transactions = useSelector((state) => state.transactions);
 
@@ -73,23 +77,26 @@ const TopicCreate = (props) => {
           },
         } = transactions[transactionStack[createTopicCacheSendStackId]];
 
-        // Promise.all(
-        //   orbit.topicsDB
-        //     .put(topicId, { subject: subjectInput }),
-        //   orbit.postsDB
-        //     .put(postId, {
-        //       subject: subjectInput,
-        //       content: messageInput,
-        //     }),
-        // ).then((value) => {
-        //   console.log(value);
-        //   history.push('/');
-        // })
-        //   .catch((reason) => console.log(reason));
+        const topicsDb = Object.values(stores).find((store) => store.dbname === 'topics');
+        const postsDb = Object.values(stores).find((store) => store.dbname === 'posts');
+
+        topicsDb
+          .put(topicId, { subject: subjectInput })
+          .then(() => postsDb
+            .put(postId, {
+              subject: subjectInput,
+              content: messageInput,
+            }))
+          .then(() => {
+            history.push(`/topics/${topicId}`);
+          })
+          .catch((reason) => {
+            console.log(reason);
+          });
       }
     }
   }, [
-    transactions, transactionStack, history, posting, createTopicCacheSendStackId, orbit, subjectInput, messageInput,
+    transactions, transactionStack, history, posting, createTopicCacheSendStackId, subjectInput, messageInput, stores,
   ]);
 
   const validateAndPost = useCallback(() => {
