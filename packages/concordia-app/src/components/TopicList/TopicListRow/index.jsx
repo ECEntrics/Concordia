@@ -1,14 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { List } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AppContext from '../../AppContext';
+import { FETCH_USER_TOPIC } from '../../../redux/actions/peerDbReplicationActions';
 
 const TopicListRow = (props) => {
   const { topicData, topicId } = props;
   const { breeze: { orbit } } = useContext(AppContext.Context);
   const [topicSubject, setTopicSubject] = useState();
   const userAddress = useSelector((state) => state.user.address);
+  const topics = useSelector((state) => state.orbitData.topics);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (userAddress === topicData.userAddress) {
@@ -18,24 +21,21 @@ const TopicListRow = (props) => {
       return;
     }
 
-    // TODO: this is not correct, each TopicListRow inside the TopicList overrides the on.replicated callback. As a
-    //  result, for the topics of each user, only the callback of the last TopicListRow in the list survives and gets
-    //  executed. Moving these calls up on the TopicList helps with this issue but introduces other problems.
-    orbit
-      .determineAddress('topics', 'keyvalue', { accessController: { write: [topicData.userAddress] } })
-      .then((ipfsMultihash) => {
-        const peerDbAddress = `/orbitdb/${ipfsMultihash.root}/topics`;
+    dispatch({
+      type: FETCH_USER_TOPIC,
+      orbit,
+      userAddress: topicData.userAddress,
+      topicId,
+    });
+  }, [dispatch, orbit, topicData.userAddress, topicId, userAddress]);
 
-        return orbit.keyvalue(peerDbAddress)
-          .then((keyValueStore) => {
-            keyValueStore.events.on('replicated', () => {
-              setTopicSubject(keyValueStore.get(topicId));
-            });
-          })
-          .catch((error) => console.error(`Error opening a peer's db: ${error}`));
-      })
-      .catch((error) => console.error(`Error opening a peer's db: ${error}`));
-  }, [orbit, topicData.userAddress, topicId, userAddress]);
+  useEffect(() => {
+    const topicFound = topics.find((topic) => topic.topicId === topicId);
+
+    if (topicFound) {
+      setTopicSubject(topicFound);
+    }
+  }, [topicId, topics]);
 
   return (
       <>

@@ -3,6 +3,7 @@ import { drizzleSagas } from '@ezerous/drizzle';
 import { breezeSagas } from '@ezerous/breeze';
 import orbitSaga from './orbitSaga';
 import userSaga from './userSaga';
+import peerDbReplicationSaga from './peerDbReplicationSaga';
 
 export default function* root() {
   const sagas = [
@@ -10,6 +11,7 @@ export default function* root() {
     ...breezeSagas,
     orbitSaga,
     userSaga,
+    peerDbReplicationSaga,
   ];
   yield all(
     sagas.map((saga) => fork(saga)),

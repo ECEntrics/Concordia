@@ -32,11 +32,11 @@ const breezeOptions = {
     databases: [
       {
         name: 'topics',
-        type: orbitConstants.ORBIT_TYPE_KEYVALUE,
+        type: 'keyvalue',
       },
       {
         name: 'posts',
-        type: orbitConstants.ORBIT_TYPE_KEYVALUE,
+        type: 'keyvalue',
       },
     ],
   },
