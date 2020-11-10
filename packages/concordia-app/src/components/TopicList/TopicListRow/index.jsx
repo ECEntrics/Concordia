@@ -3,7 +3,7 @@ import { List } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import AppContext from '../../AppContext';
-import { FETCH_USER_TOPIC } from '../../../redux/actions/peerDbReplicationActions';
+import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 
 const TopicListRow = (props) => {
   const { topicData, topicId } = props;
@@ -22,15 +22,14 @@ const TopicListRow = (props) => {
     }
 
     dispatch({
-      type: FETCH_USER_TOPIC,
+      type: FETCH_USER_DATABASE,
       orbit,
       userAddress: topicData.userAddress,
-      topicId,
     });
   }, [dispatch, orbit, topicData.userAddress, topicId, userAddress]);
 
   useEffect(() => {
-    const topicFound = topics.find((topic) => topic.topicId === topicId);
+    const topicFound = topics.find((topic) => topic.id === topicId);
 
     if (topicFound) {
       setTopicSubject(topicFound);

@@ -5,96 +5,55 @@ import {
   createOrbitDatabase,
   ORBIT_DATABASE_READY,
   ORBIT_DATABASE_REPLICATED,
+  ORBIT_DATABASE_WRITE,
 } from '@ezerous/breeze/src/orbit/orbitActions';
 import determineDBAddress from '../../orbit/orbitUtils';
-import {
-  ADD_USER_POST,
-  ADD_USER_TOPIC,
-  FETCH_USER_POST,
-  FETCH_USER_TOPIC,
-  UPDATE_ORBIT_DATA,
-} from '../actions/peerDbReplicationActions';
+import { FETCH_USER_DATABASE, UPDATE_ORBIT_DATA } from '../actions/peerDbReplicationActions';
 
-function* fetchUserDb({ orbit, peerDbAddress }) {
-  yield put(createOrbitDatabase(orbit, { name: peerDbAddress, type: 'keyvalue' }));
-}
-
-function* fetchTopic({ orbit, userAddress, topicId }) {
-  const previousTopics = yield select((state) => state.orbitData.topics);
+function* fetchUserDb({ orbit, userAddress }) {
   const peerDbAddress = yield call(determineDBAddress, {
     orbit, dbName: 'topics', type: 'keyvalue', identityId: userAddress,
   });
 
-  if (previousTopics === undefined || !previousTopics.some((topic) => topic.topicId === topicId)) {
-    yield put({
-      type: ADD_USER_TOPIC,
-      topic: {
-        userAddress,
-        dbAddress: peerDbAddress,
-        topicId,
-        subject: null,
-      },
-    });
-  }
-
-  yield call(fetchUserDb, { orbit, peerDbAddress });
-}
-
-function* fetchUserPost({ orbit, userAddress, postId }) {
-  const previousPosts = yield select((state) => state.orbitData.posts);
-  const peerDbAddress = yield call(determineDBAddress, {
-    orbit, dbName: 'posts', type: 'keyvalue', identityId: userAddress,
-  });
-
-  if (previousPosts === undefined || !previousPosts.some((post) => post.postId === postId)) {
-    yield put({
-      type: ADD_USER_POST,
-      posts: {
-        userAddress,
-        dbAddress: peerDbAddress,
-        postId,
-        subject: null,
-        message: null,
-      },
-    });
-  }
-
-  yield call(fetchUserDb, { orbit, peerDbAddress });
+  yield put(createOrbitDatabase(orbit, { name: peerDbAddress, type: 'keyvalue' }));
 }
 
 function* updateReduxState({ database }) {
-  const { topics, posts } = yield select((state) => ({ topics: state.orbitData.topics, posts: state.orbitData.posts }));
+  const { topics, posts } = yield select((state) => ({
+    topics: state.orbitData.topics,
+    posts: state.orbitData.posts,
+  }));
 
-  yield put({
-    type: UPDATE_ORBIT_DATA,
-    topics: topics.map((topic) => {
-      if (database.id === topic.dbAddress) {
-        return ({
-          ...topic,
-          ...database.get(topic.topicId),
-        });
-      }
+  if (database.dbname === 'topics') {
+    yield put({
+      type: UPDATE_ORBIT_DATA,
+      topics: [...Object.entries(database.all).map(([key, value]) => ({
+        id: parseInt(key, 10),
+        subject: value.subject,
+      }))],
+      posts: [...posts],
+    });
+  }
 
-      return { ...topic };
-    }),
-    posts: posts.map((post) => {
-      if (database.id === post.dbAddress) {
-        return ({
-          ...post,
-          ...database.get(post.postId),
-        });
-      }
-
-      return { ...post };
-    }),
-  });
+  if (database.dbname === 'posts') {
+    yield put({
+      type: UPDATE_ORBIT_DATA,
+      topics: [...topics],
+      posts: [...Object.entries(database.all).map(([key, value]) => ({
+        id: parseInt(key, 10),
+        subject: value.subject,
+        message: value.message,
+      }))],
+    });
+  }
 }
 
 function* peerDbReplicationSaga() {
-  yield takeEvery(FETCH_USER_TOPIC, fetchTopic);
-  yield takeEvery(FETCH_USER_POST, fetchUserPost);
+  yield takeEvery(FETCH_USER_DATABASE, fetchUserDb);
+
   yield takeEvery(ORBIT_DATABASE_REPLICATED, updateReduxState);
   yield takeEvery(ORBIT_DATABASE_READY, updateReduxState);
+  yield takeEvery(ORBIT_DATABASE_WRITE, updateReduxState);
 }
 
 export default peerDbReplicationSaga;
