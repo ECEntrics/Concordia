@@ -5,12 +5,12 @@ import React, {
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { List } from 'semantic-ui-react';
+import { useHistory } from 'react-router';
 import AppContext from '../AppContext';
 import TopicListRow from './TopicListRow';
 import { PLACEHOLDER_TYPE_TOPIC } from '../../constants/PlaceholderTypes';
 import Placeholder from '../Placeholder';
 import './styles.css';
-import { useHistory } from 'react-router';
 
 const TopicList = (props) => {
   const { topicIds } = props;
@@ -22,11 +22,26 @@ const TopicList = (props) => {
 
   useEffect(() => {
     // TODO: is the drizzleStatus check necessary?
-    if (drizzleStatus.initialized && !drizzleStatus.failed && getTopicCallHashes.length === 0) {
-      setGetTopicCallHashes(topicIds.map((topicId) => ({
-        id: topicId,
-        hash: getTopic.cacheCall(topicId),
-      })));
+    if (drizzleStatus.initialized && !drizzleStatus.failed) {
+      const newTopicPosted = topicIds
+        .some((topicId) => !getTopicCallHashes
+          .map((getTopicCallHash) => getTopicCallHash.id)
+          .includes(topicId));
+
+      if (newTopicPosted) {
+        setGetTopicCallHashes(topicIds.map((topicId) => {
+          const foundGetTopicCallHash = getTopicCallHashes.find((getTopicCallHash) => getTopicCallHash.id === topicId);
+
+          if (foundGetTopicCallHash !== undefined) {
+            return ({ ...foundGetTopicCallHash });
+          }
+
+          return ({
+            id: topicId,
+            hash: getTopic.cacheCall(topicId),
+          });
+        }));
+      }
     }
   }, [drizzleStatus.failed, drizzleStatus.initialized, getTopic, getTopicCallHashes, topicIds]);
 
@@ -45,6 +60,7 @@ const TopicList = (props) => {
           timestamp: getTopicResults[getTopicHash.hash].value[2] * 1000,
           numberOfReplies: getTopicResults[getTopicHash.hash].value[3].length,
         };
+
         return (
             <List.Item key={topicId} className="list-item" name={topicId} onClick={() => handleTopicClick(topicId)}>
                 <TopicListRow
