@@ -25,25 +25,45 @@ function* updateReduxState({ database }) {
   }));
 
   if (database.dbname === 'topics') {
+    const oldTopicsUnchanged = topics
+      .filter((topic) => !Object
+        .keys(database.all)
+        .map((key) => parseInt(key, 10))
+        .includes(topic.id));
+
     yield put({
       type: UPDATE_ORBIT_DATA,
-      topics: [...Object.entries(database.all).map(([key, value]) => ({
-        id: parseInt(key, 10),
-        subject: value.subject,
-      }))],
+      topics: [
+        ...oldTopicsUnchanged,
+        ...Object
+          .entries(database.all)
+          .map(([key, value]) => ({
+            id: parseInt(key, 10),
+            subject: value.subject,
+          })),
+      ],
       posts: [...posts],
     });
   }
 
   if (database.dbname === 'posts') {
+    const oldPostsUnchanged = posts
+      .filter((post) => !Object
+        .keys(database.all)
+        .map((key) => parseInt(key, 10))
+        .includes(post.id));
+
     yield put({
       type: UPDATE_ORBIT_DATA,
       topics: [...topics],
-      posts: [...Object.entries(database.all).map(([key, value]) => ({
-        id: parseInt(key, 10),
-        subject: value.subject,
-        message: value.message,
-      }))],
+      posts: [
+        ...oldPostsUnchanged,
+        ...Object.entries(database.all).map(([key, value]) => ({
+          id: parseInt(key, 10),
+          subject: value.subject,
+          message: value.message,
+        })),
+      ],
     });
   }
 }
