@@ -14,22 +14,18 @@ const TopicListRow = (props) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (userAddress === topicData.userAddress) {
-      const topicsDb = Object.values(orbit.stores).find((store) => store.dbname === 'topics');
-
-      setTopicSubject(topicsDb.get(topicId));
-      return;
+    if (userAddress !== topicData.userAddress) {
+      dispatch({
+        type: FETCH_USER_DATABASE,
+        orbit,
+        userAddress: topicData.userAddress,
+      });
     }
-
-    dispatch({
-      type: FETCH_USER_DATABASE,
-      orbit,
-      userAddress: topicData.userAddress,
-    });
   }, [dispatch, orbit, topicData.userAddress, topicId, userAddress]);
 
   useEffect(() => {
-    const topicFound = topics.find((topic) => topic.id === topicId);
+    const topicFound = topics
+      .find((topic) => topic.id === topicId);
 
     if (topicFound) {
       setTopicSubject(topicFound);
