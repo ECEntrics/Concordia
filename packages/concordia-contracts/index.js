@@ -10,4 +10,5 @@ try {
 
 module.exports = {
   contracts: [Forum],
+  forumContract: Forum,
 };

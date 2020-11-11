@@ -1,4 +1,6 @@
 // https://github.com/orbitdb/orbit-db/blob/master/GUIDE.md#address
+import EthereumIdentityProvider from './ΕthereumIdentityProvider';
+
 async function determineDBAddress({
   orbit, dbName, type, identityId,
 }) {
@@ -8,4 +10,10 @@ async function determineDBAddress({
   return `/orbitdb/${ipfsMultihash}/${dbName}`;
 }
 
-export default determineDBAddress;
+async function determineKVAddress({ orbit, dbName, userAddress }) {
+  return determineDBAddress({
+    orbit, dbName, type: 'keyvalue', identityId: userAddress + EthereumIdentityProvider.contractAddress,
+  });
+}
+
+export default determineKVAddress;

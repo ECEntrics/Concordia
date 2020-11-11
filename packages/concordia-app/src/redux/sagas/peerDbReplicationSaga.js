@@ -7,12 +7,12 @@ import {
   ORBIT_DATABASE_REPLICATED,
   ORBIT_DATABASE_WRITE,
 } from '@ezerous/breeze/src/orbit/orbitActions';
-import determineDBAddress from '../../orbit/orbitUtils';
+import determineKVAddress from '../../orbit/orbitUtils';
 import { FETCH_USER_DATABASE, UPDATE_ORBIT_DATA } from '../actions/peerDbReplicationActions';
 
 function* fetchUserDb({ orbit, userAddress }) {
-  const peerDbAddress = yield call(determineDBAddress, {
-    orbit, dbName: 'topics', type: 'keyvalue', identityId: userAddress,
+  const peerDbAddress = yield call(determineKVAddress, {
+    orbit, dbName: 'topics', userAddress,
   });
 
   yield put(createOrbitDatabase(orbit, { name: peerDbAddress, type: 'keyvalue' }));

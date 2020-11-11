@@ -1,9 +1,4 @@
-import { orbitConstants } from '@ezerous/breeze';
-import web3Options from './web3Options';
 import EthereumIdentityProvider from '../orbit/ΕthereumIdentityProvider';
-
-const { web3 } = web3Options;
-EthereumIdentityProvider.setWeb3(web3);
 
 const breezeOptions = {
   ipfs: {

@@ -10,7 +10,7 @@ async function storeIdentitySignaturePubKey(key, signaturePubKey) {
 }
 
 // If it exists, it returns the identity.signatures.publicKey for the given key (key is the
-// concatenation of identity.publicKey + identity.signatures.id
+// concatenation of identity.publicKey + identity.signatures.id)
 async function getIdentitySignaturePubKey(key) {
   try {
     return await concordiaDB.get(key);

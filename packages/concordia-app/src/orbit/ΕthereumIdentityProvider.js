@@ -12,13 +12,22 @@ class EthereumIdentityProvider extends IdentityProvider {
                 + 'Please use setWeb3(web3) first!');
     }
 
+    if (!EthereumIdentityProvider.contractAddress) {
+      throw new Error(`${LOGGING_PREFIX}Couldn't create identity, because contractAddress wasn't set. `
+          + 'Please use setContractAddress(contractAddress) first!');
+    }
+
     super(options);
 
     // Orbit's Identity Id (user's Ethereum address) - Optional (will be grabbed later if omitted)
     const { id } = options;
     if (id) {
-      if (EthereumIdentityProvider.web3.utils.isAddress(id)) this.id = options.id;
-      else throw new Error(`${LOGGING_PREFIX}Couldn't create identity, because an invalid id was supplied.`);
+      const { userAddress, contractAddress } = EthereumIdentityProvider.splitId(id);
+      if (EthereumIdentityProvider.web3.utils.isAddress(userAddress)
+          && EthereumIdentityProvider.contractAddress === contractAddress) {
+        this.id = id;
+        this.userAddress = userAddress;
+      } else throw new Error(`${LOGGING_PREFIX}Couldn't create identity, because an invalid id was supplied.`);
     }
   }
 
@@ -32,8 +41,8 @@ class EthereumIdentityProvider extends IdentityProvider {
         throw new Error(`${LOGGING_PREFIX}Couldn't create identity, because no web3 accounts were found (
                 locked Metamask?).`);
       }
-
-      [this.id] = accounts;
+      [this.userAddress] = accounts;
+      this.id = this.userAddress + EthereumIdentityProvider.contractAddress;
     }
     return this.id;
   }
@@ -44,7 +53,7 @@ class EthereumIdentityProvider extends IdentityProvider {
       const signaturePubKey = await getIdentitySignaturePubKey(data);
       if (signaturePubKey) {
         const identityInfo = {
-          id: this.id,
+          userAddress: this.userAddress,
           pubKeySignId: data,
           signaturePubKey,
         };
@@ -61,7 +70,7 @@ class EthereumIdentityProvider extends IdentityProvider {
   // eslint-disable-next-line consistent-return
   async doSignIdentity(data) {
     try {
-      const signaturePubKey = await EthereumIdentityProvider.web3.eth.personal.sign(data, this.id, '');
+      const signaturePubKey = await EthereumIdentityProvider.web3.eth.personal.sign(data, this.userAddress, '');
       if (process.env.NODE_ENV === 'development') {
         storeIdentitySignaturePubKey(data, signaturePubKey)
           .then(() => {
@@ -84,10 +93,12 @@ class EthereumIdentityProvider extends IdentityProvider {
   }
 
   static async verifyIdentity(identity) {
+    const { userAddress } = EthereumIdentityProvider.splitId(identity.id);
+
     // Verify that identity was signed by the ID
     return new Promise((resolve) => {
       resolve(EthereumIdentityProvider.web3.eth.accounts.recover(identity.publicKey + identity.signatures.id,
-        identity.signatures.publicKey) === identity.id);
+        identity.signatures.publicKey) === userAddress);
     });
   }
 
@@ -95,7 +106,7 @@ class EthereumIdentityProvider extends IdentityProvider {
     // Verify that identity was signed by the ID
     return new Promise((resolve) => {
       resolve(EthereumIdentityProvider.web3.eth.accounts.recover(identityInfo.pubKeySignId,
-        identityInfo.signaturePubKey) === identityInfo.id);
+        identityInfo.signaturePubKey) === identityInfo.userAddress);
     });
   }
 
@@ -103,8 +114,23 @@ class EthereumIdentityProvider extends IdentityProvider {
   static setWeb3(web3) {
     EthereumIdentityProvider.web3 = web3;
   }
+
+  // Initialize by supplying a contract's address (to be used as a point of reference)
+  static setContractAddress(contractAddress) {
+    EthereumIdentityProvider.contractAddress = contractAddress;
+  }
+
+  static splitId(id) {
+    const regex = /(0x.*)(0x.*)/g;
+    const match = regex.exec(id);
+    if (match && match.length === 3) {
+      return { userAddress: match[1], contractAddress: match[2] };
+    }
+    throw new Error(`${LOGGING_PREFIX}Invalid id ${id}! Couldn't split it to userAddress, contractAddress.`);
+  }
 }
 
 EthereumIdentityProvider.web3 = {};
+EthereumIdentityProvider.contractAddress = {};
 
 export default EthereumIdentityProvider;

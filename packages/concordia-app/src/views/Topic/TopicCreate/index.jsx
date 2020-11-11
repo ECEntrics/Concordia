@@ -81,12 +81,12 @@ const TopicCreate = (props) => {
         const postsDb = Object.values(stores).find((store) => store.dbname === 'posts');
 
         topicsDb
-          .put(topicId, { subject: subjectInput })
+          .put(topicId, { subject: subjectInput }, { pin: true })
           .then(() => postsDb
             .put(postId, {
               subject: subjectInput,
               content: messageInput,
-            }))
+            }, { pin: true }))
           .then(() => {
             history.push(`/topics/${topicId}`);
           })
