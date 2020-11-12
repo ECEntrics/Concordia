@@ -26,11 +26,11 @@ const breezeOptions = {
     identityProvider: EthereumIdentityProvider,
     databases: [
       {
-        name: 'topics',
+        address: 'topics',
         type: 'keyvalue',
       },
       {
-        name: 'posts',
+        address: 'posts',
         type: 'keyvalue',
       },
     ],

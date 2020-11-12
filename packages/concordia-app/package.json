@@ -8,8 +8,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "postinstall": "patch-package",
-    "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "lint": "yarn run eslint --ext js,jsx . --format table"
+    "analyze": "react-scripts build && source-map-explorer 'build/static/js/*.js' --gzip",
+    "lint": "eslint --ext js,jsx . --format table"
   },
   "browserslist": {
     "production": [
@@ -24,7 +24,7 @@
     ]
   },
   "dependencies": {
-    "@ezerous/breeze": "~0.3.0",
+    "@ezerous/breeze": "~0.4.0",
     "@ezerous/drizzle": "~0.4.0",
     "@reduxjs/toolkit": "~1.4.0",
     "@welldone-software/why-did-you-render": "^6.0.0-rc.1",

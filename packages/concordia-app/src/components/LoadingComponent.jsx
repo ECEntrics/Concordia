@@ -9,7 +9,7 @@ import '../assets/css/loading-component.css';
 // Images
 import ethereumLogo from '../assets/images/ethereum_logo.svg';
 import ipfsLogo from '../assets/images/ipfs_logo.svg';
-import orbitdbLogo from '../assets/images/orbitdb_logo.png';
+import orbitdbLogo from '../assets/images/orbitdb_logo.svg';
 import appLogo from '../assets/images/app_logo.png';
 
 const LoadingComponent = (props) => {

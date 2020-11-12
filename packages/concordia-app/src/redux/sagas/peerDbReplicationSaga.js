@@ -2,10 +2,10 @@ import {
   call, put, select, takeEvery,
 } from 'redux-saga/effects';
 import {
-  createOrbitDatabase,
-  ORBIT_DATABASE_READY,
-  ORBIT_DATABASE_REPLICATED,
-  ORBIT_DATABASE_WRITE,
+  addOrbitDB,
+  ORBIT_DB_READY,
+  ORBIT_DB_REPLICATED,
+  ORBIT_DB_WRITE,
 } from '@ezerous/breeze/src/orbit/orbitActions';
 import determineKVAddress from '../../orbit/orbitUtils';
 import { FETCH_USER_DATABASE, UPDATE_ORBIT_DATA } from '../actions/peerDbReplicationActions';
@@ -15,7 +15,7 @@ function* fetchUserDb({ orbit, userAddress }) {
     orbit, dbName: 'topics', userAddress,
   });
 
-  yield put(createOrbitDatabase(orbit, { name: peerDbAddress, type: 'keyvalue' }));
+  yield put(addOrbitDB({ address: peerDbAddress, type: 'keyvalue' }));
 }
 
 function* updateReduxState({ database }) {
@@ -71,9 +71,9 @@ function* updateReduxState({ database }) {
 function* peerDbReplicationSaga() {
   yield takeEvery(FETCH_USER_DATABASE, fetchUserDb);
 
-  yield takeEvery(ORBIT_DATABASE_REPLICATED, updateReduxState);
-  yield takeEvery(ORBIT_DATABASE_READY, updateReduxState);
-  yield takeEvery(ORBIT_DATABASE_WRITE, updateReduxState);
+  yield takeEvery(ORBIT_DB_REPLICATED, updateReduxState);
+  yield takeEvery(ORBIT_DB_READY, updateReduxState);
+  yield takeEvery(ORBIT_DB_WRITE, updateReduxState);
 }
 
 export default peerDbReplicationSaga;
