@@ -7,7 +7,7 @@ import {
   ORBIT_DB_REPLICATED,
   ORBIT_DB_WRITE,
 } from '@ezerous/breeze/src/orbit/orbitActions';
-import determineKVAddress from '../../orbit/orbitUtils';
+import determineKVAddress from '../../utils/orbitUtils';
 import { FETCH_USER_DATABASE, UPDATE_ORBIT_DATA } from '../actions/peerDbReplicationActions';
 
 function* fetchUserDb({ orbit, userAddress }) {
