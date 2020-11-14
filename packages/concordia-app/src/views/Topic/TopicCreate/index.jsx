@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useContext, useEffect, useState,
+  useCallback, useEffect, useState,
 } from 'react';
 import {
   Button, Container, Form, Icon, Input, TextArea,
@@ -7,30 +7,16 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
 import { useSelector } from 'react-redux';
-import AppContext from '../../../components/AppContext';
 import './styles.css';
+import { drizzle, breeze } from '../../../redux/store';
+
+const { contracts: { Forum: { methods: { createTopic } } } } = drizzle;
+const { orbit: { stores } } = breeze;
 
 const TopicCreate = (props) => {
   const { account } = props;
-
-  const {
-    drizzle: {
-      contracts: {
-        Forum: {
-          methods: { createTopic },
-        },
-      },
-    },
-    breeze: {
-      orbit: {
-        stores,
-      },
-    },
-  } = useContext(AppContext.Context);
-
   const transactionStack = useSelector((state) => state.transactionStack);
   const transactions = useSelector((state) => state.transactions);
-
   const [subjectInput, setSubjectInput] = useState('');
   const [messageInput, setMessageInput] = useState('');
   const [topicSubjectInputEmptySubmit, setTopicSubjectInputEmptySubmit] = useState(false);

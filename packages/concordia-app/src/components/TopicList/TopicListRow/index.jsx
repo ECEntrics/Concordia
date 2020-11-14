@@ -1,27 +1,44 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  memo, useEffect, useMemo, useState,
+} from 'react';
 import { List } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import AppContext from '../../AppContext';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
+import { breeze } from '../../../redux/store';
+
+const { orbit } = breeze;
 
 const TopicListRow = (props) => {
-  const { topicData, topicId } = props;
-  const { breeze: { orbit } } = useContext(AppContext.Context);
-  const [topicSubject, setTopicSubject] = useState();
+  const { id: topicId, topicCallHash } = props;
+  const getTopicResults = useSelector((state) => state.contracts.Forum.getTopic);
+  const [numberOfReplies, setNumberOfReplies] = useState(null);
+  const [username, setUsername] = useState(null);
+  const [topicAuthor, setTopicAuthor] = useState(null);
+  const [timestamp, setTimestamp] = useState(null);
+  const [topicSubject, setTopicSubject] = useState(null);
   const userAddress = useSelector((state) => state.user.address);
   const topics = useSelector((state) => state.orbitData.topics);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (userAddress !== topicData.userAddress) {
+    if (topicCallHash && getTopicResults[topicCallHash] !== undefined) {
+      setTopicAuthor(getTopicResults[topicCallHash].value[0]);
+      setUsername(getTopicResults[topicCallHash].value[1]);
+      setTimestamp(getTopicResults[topicCallHash].value[2] * 1000);
+      setNumberOfReplies(getTopicResults[topicCallHash].value[3].length);
+    }
+  }, [getTopicResults, topicCallHash]);
+
+  useEffect(() => {
+    if (topicAuthor && userAddress !== topicAuthor) {
       dispatch({
         type: FETCH_USER_DATABASE,
         orbit,
-        userAddress: topicData.userAddress,
+        userAddress: topicAuthor,
       });
     }
-  }, [dispatch, orbit, topicData.userAddress, topicId, userAddress]);
+  }, [dispatch, topicAuthor, userAddress]);
 
   useEffect(() => {
     const topicFound = topics
@@ -32,33 +49,28 @@ const TopicListRow = (props) => {
     }
   }, [topicId, topics]);
 
-  return (
+  return useMemo(() => (
       <>
           <List.Header>
               <List.Icon name="right triangle" />
               {topicSubject && topicSubject.subject}
           </List.Header>
           <List.Content>
-              {topicData.username}
-              {topicData.numberOfReplies}
+              {username}
+              {numberOfReplies}
               {' '}
               replies
-              timestamp
+              {timestamp}
           </List.Content>
       </>
-  );
+  ), [topicSubject, username, numberOfReplies, timestamp]);
 };
-
-const TopicData = PropTypes.PropTypes.shape({
-  userAddress: PropTypes.string.isRequired,
-  username: PropTypes.string.isRequired,
-  timestamp: PropTypes.number.isRequired,
-  numberOfReplies: PropTypes.number.isRequired,
-});
 
 TopicListRow.propTypes = {
-  topicData: TopicData.isRequired,
-  topicId: PropTypes.number.isRequired,
+  id: PropTypes.number.isRequired,
+  topicCallHash: PropTypes.string.isRequired,
 };
 
-export default TopicListRow;
+TopicListRow.whyDidYouRender = true;
+
+export default memo(TopicListRow);
