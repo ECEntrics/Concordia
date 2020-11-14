@@ -81,9 +81,7 @@ const TopicCreate = (props) => {
           });
       }
     }
-  }, [
-    transactions, transactionStack, history, posting, createTopicCacheSendStackId, subjectInput, messageInput, stores,
-  ]);
+  }, [createTopicCacheSendStackId, history, messageInput, posting, subjectInput, transactionStack, transactions]);
 
   const validateAndPost = useCallback(() => {
     if (subjectInput === '') {
@@ -98,7 +96,7 @@ const TopicCreate = (props) => {
 
     setPosting(true);
     setCreateTopicCacheSendStackId(createTopic.cacheSend(...[], { from: account }));
-  }, [account, createTopic, messageInput, subjectInput]);
+  }, [account, messageInput, subjectInput]);
 
   return (
       <Container>
