@@ -4,11 +4,7 @@ import React, {
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { List } from 'semantic-ui-react';
-import { useHistory } from 'react-router';
 import TopicListRow from './TopicListRow';
-import { PLACEHOLDER_TYPE_TOPIC } from '../../constants/PlaceholderTypes';
-import Placeholder from '../Placeholder';
-import './styles.css';
 import { drizzle } from '../../redux/store';
 
 const { contracts: { Forum: { methods: { getTopic: { cacheCall: getTopicChainData } } } } } = drizzle;
@@ -18,7 +14,6 @@ const TopicList = (props) => {
   const [getTopicCallHashes, setGetTopicCallHashes] = useState([]);
   const drizzleInitialized = useSelector((state) => state.drizzleStatus.initialized);
   const drizzleInitializationFailed = useSelector((state) => state.drizzleStatus.failed);
-  const history = useHistory();
 
   useEffect(() => {
     if (drizzleInitialized && !drizzleInitializationFailed) {
@@ -44,27 +39,15 @@ const TopicList = (props) => {
     .map((topicId) => {
       const topicHash = getTopicCallHashes.find((getTopicCallHash) => getTopicCallHash.id === topicId);
 
-      const handleTopicClick = () => {
-        history.push(`/topics/${topicId}`);
-      };
-
-      if (topicHash) {
-        return (
-            <List.Item key={topicId} className="list-item" name={topicId} onClick={handleTopicClick}>
-                <TopicListRow id={topicId} topicCallHash={topicHash.hash} />
-            </List.Item>
-        );
-      }
-
       return (
-          <List.Item key={topicId} className="list-item" name={topicId} onClick={() => handleTopicClick(topicId)}>
-              <Placeholder
-                placeholderType={PLACEHOLDER_TYPE_TOPIC}
-                extra={{ topicId }}
-              />
-          </List.Item>
+          <TopicListRow
+            id={topicId}
+            key={topicId}
+            topicCallHash={topicHash && topicHash.hash}
+            loading={topicHash === undefined}
+          />
       );
-    }), [getTopicCallHashes, history, topicIds]);
+    }), [getTopicCallHashes, topicIds]);
 
   return (
       <List selection divided id="topic-list" size="big">

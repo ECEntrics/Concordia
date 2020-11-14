@@ -1,34 +1,42 @@
 import React, {
   memo, useEffect, useMemo, useState,
 } from 'react';
-import { List } from 'semantic-ui-react';
+import {
+  Dimmer, Grid, List, Loader, Placeholder,
+} from 'semantic-ui-react';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+import moment from 'moment';
+import { useHistory } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import { breeze } from '../../../redux/store';
+import './styles.css';
 
 const { orbit } = breeze;
 
 const TopicListRow = (props) => {
-  const { id: topicId, topicCallHash } = props;
+  const { id: topicId, topicCallHash, loading } = props;
   const getTopicResults = useSelector((state) => state.contracts.Forum.getTopic);
   const [numberOfReplies, setNumberOfReplies] = useState(null);
   const [username, setUsername] = useState(null);
   const [topicAuthor, setTopicAuthor] = useState(null);
-  const [timestamp, setTimestamp] = useState(null);
+  const [timeAgo, setTimeAgo] = useState(null);
   const [topicSubject, setTopicSubject] = useState(null);
   const userAddress = useSelector((state) => state.user.address);
   const topics = useSelector((state) => state.orbitData.topics);
   const dispatch = useDispatch();
+  const history = useHistory();
+  const { t } = useTranslation();
 
   useEffect(() => {
-    if (topicCallHash && getTopicResults[topicCallHash] !== undefined) {
+    if (!loading && topicCallHash && getTopicResults[topicCallHash] !== undefined) {
       setTopicAuthor(getTopicResults[topicCallHash].value[0]);
       setUsername(getTopicResults[topicCallHash].value[1]);
-      setTimestamp(getTopicResults[topicCallHash].value[2] * 1000);
+      setTimeAgo(moment(getTopicResults[topicCallHash].value[2] * 1000).fromNow());
       setNumberOfReplies(getTopicResults[topicCallHash].value[3].length);
     }
-  }, [getTopicResults, topicCallHash]);
+  }, [getTopicResults, loading, topicCallHash]);
 
   useEffect(() => {
     if (topicAuthor && userAddress !== topicAuthor) {
@@ -45,30 +53,68 @@ const TopicListRow = (props) => {
       .find((topic) => topic.id === topicId);
 
     if (topicFound) {
-      setTopicSubject(topicFound);
+      setTopicSubject(topicFound.subject);
     }
   }, [topicId, topics]);
 
-  return useMemo(() => (
-      <>
-          <List.Header>
-              <List.Icon name="right triangle" />
-              {topicSubject && topicSubject.subject}
-          </List.Header>
-          <List.Content>
-              {username}
-              {numberOfReplies}
-              {' '}
-              replies
-              {timestamp}
-          </List.Content>
-      </>
-  ), [topicSubject, username, numberOfReplies, timestamp]);
+  return useMemo(() => {
+    const handleTopicClick = () => {
+      history.push(`/topics/${topicId}`);
+    };
+
+    return (
+        <Dimmer.Dimmable as={List.Item} onClick={handleTopicClick} blurring dimmed={loading} className="list-item">
+            <Dimmer>
+                <Loader />
+            </Dimmer>
+            <List.Icon name="user circle" size="big" inverted color="black" verticalAlign="middle" />
+            <List.Content>
+                <List.Header>
+                    <Grid>
+                        <Grid.Column floated="left" width={14}>
+                            {topicSubject !== null
+                              ? topicSubject
+                              : <Placeholder><Placeholder.Line length="very long" /></Placeholder>}
+                        </Grid.Column>
+                        <Grid.Column floated="right" width={2} textAlign="right">
+                            <span className="topic-metadata">
+                                {t('topic.list.row.topic.id', { id: topicId })}
+                            </span>
+                        </Grid.Column>
+                    </Grid>
+                </List.Header>
+                <List.Description>
+                    <Grid verticalAlign="middle">
+                        <Grid.Column floated="left" width={14}>
+                            {username !== null && timeAgo !== null
+                              ? t('topic.list.row.author.date', { author: username, timeAgo })
+                              : <Placeholder><Placeholder.Line length="long" /></Placeholder>}
+                        </Grid.Column>
+                        <Grid.Column floated="right" width={2} textAlign="right">
+                            {numberOfReplies !== null
+                              ? (
+                                  <span className="topic-metadata">
+                                      {t('topic.list.row.number.of.replies', { numberOfReplies })}
+                                  </span>
+                              )
+                              : <Placeholder fluid><Placeholder.Line /></Placeholder>}
+                        </Grid.Column>
+                    </Grid>
+                </List.Description>
+            </List.Content>
+        </Dimmer.Dimmable>
+    );
+  }, [history, loading, numberOfReplies, t, timeAgo, topicId, topicSubject, username]);
+};
+
+TopicListRow.defaultProps = {
+  loading: false,
 };
 
 TopicListRow.propTypes = {
   id: PropTypes.number.isRequired,
-  topicCallHash: PropTypes.string.isRequired,
+  topicCallHash: PropTypes.string,
+  loading: PropTypes.bool,
 };
 
 TopicListRow.whyDidYouRender = true;
