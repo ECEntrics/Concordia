@@ -29,6 +29,4 @@ const Home = () => {
   ), [numberOfTopics]);
 };
 
-Home.whyDidYouRender = true;
-
 export default memo(Home);

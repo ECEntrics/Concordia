@@ -46,6 +46,4 @@ Board.propTypes = {
   numberOfTopics: PropTypes.number.isRequired,
 };
 
-Board.whyDidYouRender = true;
-
 export default Board;

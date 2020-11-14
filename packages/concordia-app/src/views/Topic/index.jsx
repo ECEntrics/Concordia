@@ -16,6 +16,4 @@ const Topic = () => {
     );
 };
 
-Topic.whyDidYouRender = true;
-
 export default Topic;

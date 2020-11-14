@@ -60,6 +60,4 @@ TopicList.propTypes = {
   topicIds: PropTypes.arrayOf(PropTypes.number).isRequired,
 };
 
-TopicList.whyDidYouRender = true;
-
 export default TopicList;

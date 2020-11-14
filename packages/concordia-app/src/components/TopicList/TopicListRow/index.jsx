@@ -117,6 +117,4 @@ TopicListRow.propTypes = {
   loading: PropTypes.bool,
 };
 
-TopicListRow.whyDidYouRender = true;
-
 export default memo(TopicListRow);
