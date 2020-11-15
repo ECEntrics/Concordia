@@ -10,9 +10,9 @@ import {
 import determineKVAddress from '../../orbit/orbitUtils';
 import { FETCH_USER_DATABASE, UPDATE_ORBIT_DATA } from '../actions/peerDbReplicationActions';
 
-function* fetchUserDb({ orbit, userAddress }) {
+function* fetchUserDb({ orbit, userAddress, dbName }) {
   const peerDbAddress = yield call(determineKVAddress, {
-    orbit, dbName: 'topics', userAddress,
+    orbit, dbName, userAddress,
   });
 
   yield put(createOrbitDatabase(orbit, { name: peerDbAddress, type: 'keyvalue' }));

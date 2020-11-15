@@ -2,7 +2,7 @@ import React, {
   memo, useEffect, useMemo, useState,
 } from 'react';
 import {
-  Dimmer, Grid, List, Loader, Placeholder,
+  Dimmer, Grid, List, Placeholder,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -43,6 +43,7 @@ const TopicListRow = (props) => {
       dispatch({
         type: FETCH_USER_DATABASE,
         orbit,
+        dbName: 'topics',
         userAddress: topicAuthorAddress,
       });
     }

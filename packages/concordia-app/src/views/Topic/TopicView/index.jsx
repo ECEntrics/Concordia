@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  Container, Dimmer, Icon, Loader, Placeholder, Step,
+  Container, Dimmer, Icon, Placeholder, Step,
 } from 'semantic-ui-react';
 import moment from 'moment';
 import { breeze, drizzle } from '../../../redux/store';
@@ -49,7 +49,7 @@ const TopicView = (props) => {
       setTopicAuthorAddress(getTopicResults[getTopicCallHash].value[0]);
       setTopicAuthor(getTopicResults[getTopicCallHash].value[1]);
       setTimestamp(getTopicResults[getTopicCallHash].value[2]);
-      setPostIds(getTopicResults[getTopicCallHash].value[3]);
+      setPostIds(getTopicResults[getTopicCallHash].value[3].map((postId) => parseInt(postId, 10)));
 
       const topicFound = topics
         .find((topic) => topic.id === topicId);
@@ -58,6 +58,7 @@ const TopicView = (props) => {
         dispatch({
           type: FETCH_USER_DATABASE,
           orbit,
+          dbName: 'topics',
           userAddress: getTopicResults[getTopicCallHash].value[0],
         });
       }
