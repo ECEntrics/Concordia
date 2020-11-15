@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  Container, Dimmer, Icon, Placeholder, Step,
+  Container, Dimmer, Icon, Image, Placeholder, Step,
 } from 'semantic-ui-react';
 import moment from 'moment';
 import { breeze, drizzle } from '../../../redux/store';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import './styles.css';
 import PostList from '../../../components/PostList';
-import { TOPICS_DATABASE } from '../../../constants/OrbitDatabases';
+import { TOPICS_DATABASE, USER_DATABASE } from '../../../constants/OrbitDatabases';
+import determineKVAddress from '../../../utils/orbitUtils';
+import { PROFILE_PICTURE } from '../../../constants/UserDatabaseKeys';
 
 const { contracts: { Forum: { methods: { getTopic: { cacheCall: getTopicChainData } } } } } = drizzle;
 const { orbit } = breeze;
@@ -24,9 +26,11 @@ const TopicView = (props) => {
   const userAddress = useSelector((state) => state.user.address);
   const getTopicResults = useSelector((state) => state.contracts.Forum.getTopic);
   const topics = useSelector((state) => state.orbitData.topics);
+  const users = useSelector((state) => state.orbitData.users);
   const [getTopicCallHash, setGetTopicCallHash] = useState([]);
   const [topicAuthorAddress, setTopicAuthorAddress] = useState(initialTopicAuthorAddress || null);
   const [topicAuthor, setTopicAuthor] = useState(initialTopicAuthor || null);
+  const [topicAuthorMeta, setTopicAuthorMeta] = useState(null);
   const [timestamp, setTimestamp] = useState(initialTimestamp || null);
   const [postIds, setPostIds] = useState(initialPostIds || null);
   const [topicSubject, setTopicSubject] = useState(null);
@@ -68,6 +72,30 @@ const TopicView = (props) => {
   }, [dispatch, getTopicCallHash, getTopicResults, topicId, topics, userAddress]);
 
   useEffect(() => {
+    if (topicAuthorAddress !== null) {
+      determineKVAddress({ orbit, dbName: USER_DATABASE, userAddress: topicAuthorAddress })
+        .then((userOrbitAddress) => {
+          const userFound = users
+            .find((user) => user.id === userOrbitAddress);
+
+          if (userFound) {
+            setTopicAuthorMeta(userFound);
+          } else {
+            dispatch({
+              type: FETCH_USER_DATABASE,
+              orbit,
+              dbName: USER_DATABASE,
+              userAddress: topicAuthorAddress,
+            });
+          }
+        })
+        .catch((error) => {
+          console.error('Error during determination of key-value DB address:', error);
+        });
+    }
+  }, [dispatch, topicAuthorAddress, users]);
+
+  useEffect(() => {
     const topicFound = topics
       .find((topic) => topic.id === topicId);
 
@@ -84,7 +112,21 @@ const TopicView = (props) => {
           >
               <Step.Group fluid>
                   <Step key="topic-header-step-user">
-                      <Icon name="user circle" size="big" inverted color="black" />
+                      {topicAuthorMeta !== null && topicAuthorMeta[PROFILE_PICTURE]
+                        ? (
+                            <Image
+                              avatar
+                              src={topicAuthorMeta[PROFILE_PICTURE]}
+                            />
+                        )
+                        : (
+                            <Icon
+                              name="user circle"
+                              size="big"
+                              inverted
+                              color="black"
+                            />
+                        )}
                       <Step.Content>
                           <Step.Title>
                               {topicAuthor || (

@@ -82,7 +82,7 @@ const TopicListRow = (props) => {
           }
         })
         .catch((error) => {
-          console.error('Error during service worker registration:', error);
+          console.error('Error during determination of key-value DB address:', error);
         });
     }
   }, [topicAuthorAddress, users]);
