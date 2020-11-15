@@ -1,5 +1,5 @@
 // https://github.com/orbitdb/orbit-db/blob/master/GUIDE.md#address
-import EthereumIdentityProvider from './ΕthereumIdentityProvider';
+import { EthereumContractIdentityProvider } from '@ezerous/eth-identity-provider';
 
 async function determineDBAddress({
   orbit, dbName, type, identityId,
@@ -12,7 +12,7 @@ async function determineDBAddress({
 
 async function determineKVAddress({ orbit, dbName, userAddress }) {
   return determineDBAddress({
-    orbit, dbName, type: 'keyvalue', identityId: userAddress + EthereumIdentityProvider.contractAddress,
+    orbit, dbName, type: 'keyvalue', identityId: userAddress + EthereumContractIdentityProvider.contractAddress,
   });
 }
 

@@ -6,11 +6,11 @@ import { breezeActions } from '@ezerous/breeze';
 import { drizzleActions } from '@ezerous/drizzle';
 
 import { forumContract } from 'concordia-contracts';
-import EthereumIdentityProvider from '../../orbit/ΕthereumIdentityProvider';
+import { EthereumContractIdentityProvider } from '@ezerous/eth-identity-provider';
 
 function* initOrbitDatabases(action) {
   const { account, breeze } = action;
-  yield put(breezeActions.orbit.orbitInit(breeze, account + EthereumIdentityProvider.contractAddress)); // same as breeze.initOrbit(account);
+  yield put(breezeActions.orbit.orbitInit(breeze, account + EthereumContractIdentityProvider.contractAddress)); // same as breeze.initOrbit(account);
 }
 
 function* orbitSaga() {
@@ -24,8 +24,8 @@ function* orbitSaga() {
   const networkId = yield call([web3.eth.net, web3.eth.net.getId]);
   const contractAddress = forumContract.networks[networkId].address;
 
-  EthereumIdentityProvider.setContractAddress(contractAddress);
-  EthereumIdentityProvider.setWeb3(web3);
+  EthereumContractIdentityProvider.setContractAddress(contractAddress);
+  EthereumContractIdentityProvider.setWeb3(web3);
 
   yield initOrbitDatabases({ breeze: res[1].breeze, account: res[2].accounts[0] });
 }
