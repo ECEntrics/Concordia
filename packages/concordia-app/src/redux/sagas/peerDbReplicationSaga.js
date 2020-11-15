@@ -9,6 +9,7 @@ import {
 } from '@ezerous/breeze/src/orbit/orbitActions';
 import determineKVAddress from '../../utils/orbitUtils';
 import { FETCH_USER_DATABASE, UPDATE_ORBIT_DATA } from '../actions/peerDbReplicationActions';
+import { POSTS_DATABASE, TOPICS_DATABASE } from '../../constants/OrbitDatabases';
 
 function* fetchUserDb({ orbit, userAddress, dbName }) {
   const peerDbAddress = yield call(determineKVAddress, {
@@ -24,7 +25,7 @@ function* updateReduxState({ database }) {
     posts: state.orbitData.posts,
   }));
 
-  if (database.dbname === 'topics') {
+  if (database.dbname === TOPICS_DATABASE) {
     const oldTopicsUnchanged = topics
       .filter((topic) => !Object
         .keys(database.all)
@@ -46,7 +47,7 @@ function* updateReduxState({ database }) {
     });
   }
 
-  if (database.dbname === 'posts') {
+  if (database.dbname === POSTS_DATABASE) {
     const oldPostsUnchanged = posts
       .filter((post) => !Object
         .keys(database.all)

@@ -19,11 +19,11 @@ const Register = () => {
   const goToHomePage = useCallback(() => history.push('/'), [history]);
 
   const pushNextStep = useCallback(() => {
-    if (currentStep === 'signup') {
-      setCurrentStep('profile-information');
+    if (currentStep === REGISTER_STEP_SIGNUP) {
+      setCurrentStep(REGISTER_STEP_PROFILE_INFORMATION);
     }
 
-    if (currentStep === 'profile-information') {
+    if (currentStep === REGISTER_STEP_PROFILE_INFORMATION) {
       goToHomePage();
     }
   }, [currentStep, goToHomePage]);

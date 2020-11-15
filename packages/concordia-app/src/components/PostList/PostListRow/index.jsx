@@ -2,7 +2,7 @@ import React, {
   memo, useEffect, useMemo, useState,
 } from 'react';
 import {
-  Dimmer, Grid, List, Loader, Placeholder,
+  Dimmer, Grid, List, Placeholder,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import { breeze } from '../../../redux/store';
 import './styles.css';
+import { POSTS_DATABASE } from '../../../constants/OrbitDatabases';
 
 const { orbit } = breeze;
 
@@ -42,7 +43,7 @@ const PostListRow = (props) => {
       dispatch({
         type: FETCH_USER_DATABASE,
         orbit,
-        dbName: 'posts',
+        dbName: POSTS_DATABASE,
         userAddress: postAuthorAddress,
       });
     }

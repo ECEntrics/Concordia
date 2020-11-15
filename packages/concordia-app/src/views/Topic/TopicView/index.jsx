@@ -9,6 +9,7 @@ import { breeze, drizzle } from '../../../redux/store';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import './styles.css';
 import PostList from '../../../components/PostList';
+import { TOPICS_DATABASE } from '../../../constants/OrbitDatabases';
 
 const { contracts: { Forum: { methods: { getTopic: { cacheCall: getTopicChainData } } } } } = drizzle;
 const { orbit } = breeze;
@@ -59,7 +60,7 @@ const TopicView = (props) => {
         dispatch({
           type: FETCH_USER_DATABASE,
           orbit,
-          dbName: 'topics',
+          dbName: TOPICS_DATABASE,
           userAddress: getTopicResults[getTopicCallHash].value[0],
         });
       }

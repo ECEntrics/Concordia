@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import { breeze } from '../../../redux/store';
 import './styles.css';
+import { TOPICS_DATABASE } from '../../../constants/OrbitDatabases';
 
 const { orbit } = breeze;
 
@@ -43,7 +44,7 @@ const TopicListRow = (props) => {
       dispatch({
         type: FETCH_USER_DATABASE,
         orbit,
-        dbName: 'topics',
+        dbName: TOPICS_DATABASE,
         userAddress: topicAuthorAddress,
       });
     }

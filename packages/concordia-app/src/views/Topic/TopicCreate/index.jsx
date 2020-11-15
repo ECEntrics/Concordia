@@ -9,6 +9,8 @@ import { useHistory } from 'react-router';
 import { useSelector } from 'react-redux';
 import './styles.css';
 import { drizzle, breeze } from '../../../redux/store';
+import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../../constants/TransactionStatus';
+import { POSTS_DATABASE, TOPICS_DATABASE } from '../../../constants/OrbitDatabases';
 
 const { contracts: { Forum: { methods: { createTopic } } } } = drizzle;
 const { orbit: { stores } } = breeze;
@@ -47,9 +49,9 @@ const TopicCreate = (props) => {
   useEffect(() => {
     if (posting && transactionStack && transactionStack[createTopicCacheSendStackId]
             && transactions[transactionStack[createTopicCacheSendStackId]]) {
-      if (transactions[transactionStack[createTopicCacheSendStackId]].status === 'error') {
+      if (transactions[transactionStack[createTopicCacheSendStackId]].status === TRANSACTION_ERROR) {
         setPosting(false);
-      } else if (transactions[transactionStack[createTopicCacheSendStackId]].status === 'success') {
+      } else if (transactions[transactionStack[createTopicCacheSendStackId]].status === TRANSACTION_SUCCESS) {
         const {
           receipt: {
             events: {
@@ -63,8 +65,8 @@ const TopicCreate = (props) => {
           },
         } = transactions[transactionStack[createTopicCacheSendStackId]];
 
-        const topicsDb = Object.values(stores).find((store) => store.dbname === 'topics');
-        const postsDb = Object.values(stores).find((store) => store.dbname === 'posts');
+        const topicsDb = Object.values(stores).find((store) => store.dbname === TOPICS_DATABASE);
+        const postsDb = Object.values(stores).find((store) => store.dbname === POSTS_DATABASE);
 
         topicsDb
           .put(topicId, { subject: subjectInput }, { pin: true })
