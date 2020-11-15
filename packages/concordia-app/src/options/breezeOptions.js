@@ -1,4 +1,5 @@
 import { EthereumContractIdentityProvider } from '@ezerous/eth-identity-provider';
+import databases from '../constants/OrbitDatabases';
 
 const breezeOptions = {
   ipfs: {
@@ -24,16 +25,7 @@ const breezeOptions = {
   },
   orbit: {
     identityProvider: EthereumContractIdentityProvider,
-    databases: [
-      {
-        address: 'topics',
-        type: 'keyvalue',
-      },
-      {
-        address: 'posts',
-        type: 'keyvalue',
-      },
-    ],
+    databases,
   },
 };
 
