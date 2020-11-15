@@ -8,6 +8,7 @@ import moment from 'moment';
 import { breeze, drizzle } from '../../../redux/store';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import './styles.css';
+import PostList from '../../../components/PostList';
 
 const { contracts: { Forum: { methods: { getTopic: { cacheCall: getTopicChainData } } } } } = drizzle;
 const { orbit } = breeze;
@@ -115,6 +116,7 @@ const TopicView = (props) => {
                   </Step>
               </Step.Group>
           </Dimmer.Dimmable>
+          <PostList postIds={postIds || []} loading={postIds === null} />
       </Container>
   );
 };
