@@ -74,53 +74,47 @@ const TopicView = (props) => {
   }, [topicId, topics]);
 
   return (
-      <Dimmer.Dimmable
-        as={Container}
-        id="topic-container"
-        blurring
-        dimmed={topicAuthorAddress === null && topicAuthor === null && timestamp === null}
-        textAlign="center"
-        className="list-item"
-      >
-          <Dimmer>
-              <Loader />
-          </Dimmer>
-          <Step.Group fluid>
-              <Step key="topic-header-step-user">
-                  <Icon name="user circle" size="big" inverted color="black" />
-                  <Step.Content>
-                      <Step.Title>
-                          {topicAuthor || (
-                              <Placeholder id="author-placeholder" inverted>
-                                  <Placeholder.Line length="full" />
-                              </Placeholder>
-                          )}
-                      </Step.Title>
-                  </Step.Content>
-              </Step>
-
-              <Step key="topic-header-step-title">
-                  <Step.Content>
-                      <Step.Title>
-                          {topicSubject || (
-                              <Placeholder id="subject-placeholder">
-                                  <Placeholder.Line length="full" />
-                              </Placeholder>
-                          )}
-                      </Step.Title>
-                      <Step.Description>
-                          {timestamp
-                            ? moment(timestamp * 1000).fromNow()
-                            : (
-                                <Placeholder id="date-placeholder">
-                                    <Placeholder.Line length="full" />
-                                </Placeholder>
-                            )}
-                      </Step.Description>
-                  </Step.Content>
-              </Step>
-          </Step.Group>
-      </Dimmer.Dimmable>
+      <Container id="topic-container" textAlign="center">
+          <Dimmer.Dimmable
+            blurring
+            dimmed={topicAuthorAddress === null && topicAuthor === null && timestamp === null}
+          >
+              <Step.Group fluid>
+                  <Step key="topic-header-step-user">
+                      <Icon name="user circle" size="big" inverted color="black" />
+                      <Step.Content>
+                          <Step.Title>
+                              {topicAuthor || (
+                                  <Placeholder id="author-placeholder" inverted>
+                                      <Placeholder.Line length="full" />
+                                  </Placeholder>
+                              )}
+                          </Step.Title>
+                      </Step.Content>
+                  </Step>
+                  <Step key="topic-header-step-title">
+                      <Step.Content>
+                          <Step.Title>
+                              {topicSubject || (
+                                  <Placeholder id="subject-placeholder">
+                                      <Placeholder.Line length="full" />
+                                  </Placeholder>
+                              )}
+                          </Step.Title>
+                          <Step.Description>
+                              {timestamp
+                                ? moment(timestamp * 1000).fromNow()
+                                : (
+                                    <Placeholder id="date-placeholder">
+                                        <Placeholder.Line length="full" />
+                                    </Placeholder>
+                                )}
+                          </Step.Description>
+                      </Step.Content>
+                  </Step>
+              </Step.Group>
+          </Dimmer.Dimmable>
+      </Container>
   );
 };
 

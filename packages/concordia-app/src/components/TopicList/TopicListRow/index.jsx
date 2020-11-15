@@ -64,9 +64,6 @@ const TopicListRow = (props) => {
 
     return (
         <Dimmer.Dimmable as={List.Item} onClick={handleTopicClick} blurring dimmed={loading} className="list-item">
-            <Dimmer>
-                <Loader />
-            </Dimmer>
             <List.Icon name="user circle" size="big" inverted color="black" verticalAlign="middle" />
             <List.Content>
                 <List.Header>
