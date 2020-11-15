@@ -19,7 +19,7 @@ const TopicListRow = (props) => {
   const { id: topicId, topicCallHash, loading } = props;
   const getTopicResults = useSelector((state) => state.contracts.Forum.getTopic);
   const [numberOfReplies, setNumberOfReplies] = useState(null);
-  const [username, setUsername] = useState(null);
+  const [topicAuthorAddress, setTopicAuthorAddress] = useState(null);
   const [topicAuthor, setTopicAuthor] = useState(null);
   const [timeAgo, setTimeAgo] = useState(null);
   const [topicSubject, setTopicSubject] = useState(null);
@@ -31,22 +31,22 @@ const TopicListRow = (props) => {
 
   useEffect(() => {
     if (!loading && topicCallHash && getTopicResults[topicCallHash] !== undefined) {
-      setTopicAuthor(getTopicResults[topicCallHash].value[0]);
-      setUsername(getTopicResults[topicCallHash].value[1]);
+      setTopicAuthorAddress(getTopicResults[topicCallHash].value[0]);
+      setTopicAuthor(getTopicResults[topicCallHash].value[1]);
       setTimeAgo(moment(getTopicResults[topicCallHash].value[2] * 1000).fromNow());
       setNumberOfReplies(getTopicResults[topicCallHash].value[3].length);
     }
   }, [getTopicResults, loading, topicCallHash]);
 
   useEffect(() => {
-    if (topicAuthor && userAddress !== topicAuthor) {
+    if (topicAuthorAddress && userAddress !== topicAuthorAddress) {
       dispatch({
         type: FETCH_USER_DATABASE,
         orbit,
-        userAddress: topicAuthor,
+        userAddress: topicAuthorAddress,
       });
     }
-  }, [dispatch, topicAuthor, userAddress]);
+  }, [dispatch, topicAuthorAddress, userAddress]);
 
   useEffect(() => {
     const topicFound = topics
@@ -86,8 +86,8 @@ const TopicListRow = (props) => {
                 <List.Description>
                     <Grid verticalAlign="middle">
                         <Grid.Column floated="left" width={14}>
-                            {username !== null && timeAgo !== null
-                              ? t('topic.list.row.author.date', { author: username, timeAgo })
+                            {topicAuthor !== null && timeAgo !== null
+                              ? t('topic.list.row.author.date', { author: topicAuthor, timeAgo })
                               : <Placeholder><Placeholder.Line length="long" /></Placeholder>}
                         </Grid.Column>
                         <Grid.Column floated="right" width={2} textAlign="right">
@@ -104,7 +104,7 @@ const TopicListRow = (props) => {
             </List.Content>
         </Dimmer.Dimmable>
     );
-  }, [history, loading, numberOfReplies, t, timeAgo, topicId, topicSubject, username]);
+  }, [history, loading, numberOfReplies, t, timeAgo, topicAuthor, topicId, topicSubject]);
 };
 
 TopicListRow.defaultProps = {
