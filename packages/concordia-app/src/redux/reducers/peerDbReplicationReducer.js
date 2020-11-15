@@ -1,7 +1,7 @@
 import { UPDATE_ORBIT_DATA } from '../actions/peerDbReplicationActions';
 
 const initialState = {
-  fetchedPeerDatabases: [],
+  users: [],
   topics: [],
   posts: [],
 };
@@ -10,10 +10,13 @@ const peerDbReplicationReducer = (state = initialState, action) => {
   const { type } = action;
 
   if (type === UPDATE_ORBIT_DATA) {
-    const { topics, posts } = action;
+    const { users, topics, posts } = action;
 
     return {
       ...state,
+      users: [
+        ...users,
+      ],
       topics: [
         ...topics,
       ],

@@ -9,7 +9,8 @@ import {
 } from '@ezerous/breeze/src/orbit/orbitActions';
 import determineKVAddress from '../../utils/orbitUtils';
 import { FETCH_USER_DATABASE, UPDATE_ORBIT_DATA } from '../actions/peerDbReplicationActions';
-import { POSTS_DATABASE, TOPICS_DATABASE } from '../../constants/OrbitDatabases';
+import { POSTS_DATABASE, TOPICS_DATABASE, USER_DATABASE } from '../../constants/OrbitDatabases';
+import userDatabaseKeys from '../../constants/UserDatabaseKeys';
 
 function* fetchUserDb({ orbit, userAddress, dbName }) {
   const peerDbAddress = yield call(determineKVAddress, {
@@ -20,10 +21,38 @@ function* fetchUserDb({ orbit, userAddress, dbName }) {
 }
 
 function* updateReduxState({ database }) {
-  const { topics, posts } = yield select((state) => ({
+  const { users, topics, posts } = yield select((state) => ({
+    users: state.orbitData.users,
     topics: state.orbitData.topics,
     posts: state.orbitData.posts,
   }));
+
+  if (database.dbname === USER_DATABASE) {
+    const oldUsersUnchanged = users
+      .filter((user) => !database.id !== user.id);
+
+    yield put({
+      type: UPDATE_ORBIT_DATA,
+      users: [
+        ...oldUsersUnchanged,
+        {
+          id: database.id,
+          // Don't ask how.. it just works
+          ...Object
+            .entries(database.all)
+            .filter(([key]) => userDatabaseKeys.includes(key))
+            .reduce(((acc, keyValue) => {
+              const [key, value] = keyValue;
+              acc[key] = value;
+
+              return acc;
+            }), {}),
+        },
+      ],
+      topics: [...topics],
+      posts: [...posts],
+    });
+  }
 
   if (database.dbname === TOPICS_DATABASE) {
     const oldTopicsUnchanged = topics
@@ -34,6 +63,7 @@ function* updateReduxState({ database }) {
 
     yield put({
       type: UPDATE_ORBIT_DATA,
+      users: [...users],
       topics: [
         ...oldTopicsUnchanged,
         ...Object
@@ -56,6 +86,7 @@ function* updateReduxState({ database }) {
 
     yield put({
       type: UPDATE_ORBIT_DATA,
+      users: [...users],
       topics: [...topics],
       posts: [
         ...oldPostsUnchanged,

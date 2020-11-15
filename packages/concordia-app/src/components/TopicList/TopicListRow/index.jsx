@@ -2,7 +2,7 @@ import React, {
   memo, useEffect, useMemo, useState,
 } from 'react';
 import {
-  Dimmer, Grid, List, Placeholder,
+  Dimmer, Grid, Image, List, Placeholder,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import { breeze } from '../../../redux/store';
 import './styles.css';
-import { TOPICS_DATABASE } from '../../../constants/OrbitDatabases';
+import { TOPICS_DATABASE, USER_DATABASE } from '../../../constants/OrbitDatabases';
+import determineKVAddress from '../../../utils/orbitUtils';
+import { PROFILE_PICTURE } from '../../../constants/UserDatabaseKeys';
 
 const { orbit } = breeze;
 
@@ -24,8 +26,10 @@ const TopicListRow = (props) => {
   const [topicAuthor, setTopicAuthor] = useState(null);
   const [timeAgo, setTimeAgo] = useState(null);
   const [topicSubject, setTopicSubject] = useState(null);
+  const [topicAuthorMeta, setTopicAuthorMeta] = useState(null);
   const userAddress = useSelector((state) => state.user.address);
   const topics = useSelector((state) => state.orbitData.topics);
+  const users = useSelector((state) => state.orbitData.users);
   const dispatch = useDispatch();
   const history = useHistory();
   const { t } = useTranslation();
@@ -47,6 +51,13 @@ const TopicListRow = (props) => {
         dbName: TOPICS_DATABASE,
         userAddress: topicAuthorAddress,
       });
+
+      dispatch({
+        type: FETCH_USER_DATABASE,
+        orbit,
+        dbName: USER_DATABASE,
+        userAddress: topicAuthorAddress,
+      });
     }
   }, [dispatch, topicAuthorAddress, userAddress]);
 
@@ -59,6 +70,23 @@ const TopicListRow = (props) => {
     }
   }, [topicId, topics]);
 
+  useEffect(() => {
+    if (topicAuthorAddress !== null) {
+      determineKVAddress({ orbit, dbName: USER_DATABASE, userAddress: topicAuthorAddress })
+        .then((userOrbitAddress) => {
+          const userFound = users
+            .find((user) => user.id === userOrbitAddress);
+
+          if (userFound) {
+            setTopicAuthorMeta(userFound);
+          }
+        })
+        .catch((error) => {
+          console.error('Error during service worker registration:', error);
+        });
+    }
+  }, [topicAuthorAddress, users]);
+
   return useMemo(() => {
     const handleTopicClick = () => {
       history.push(`/topics/${topicId}`);
@@ -66,8 +94,24 @@ const TopicListRow = (props) => {
 
     return (
         <Dimmer.Dimmable as={List.Item} onClick={handleTopicClick} blurring dimmed={loading} className="list-item">
-            <List.Icon name="user circle" size="big" inverted color="black" verticalAlign="middle" />
-            <List.Content>
+            {topicAuthorMeta !== null && topicAuthorMeta[PROFILE_PICTURE]
+              ? (
+                  <Image
+                    className="profile-picture"
+                    avatar
+                    src={topicAuthorMeta[PROFILE_PICTURE]}
+                  />
+              )
+              : (
+                  <List.Icon
+                    name="user circle"
+                    size="big"
+                    inverted
+                    color="black"
+                    verticalAlign="middle"
+                  />
+              )}
+            <List.Content className="list-content">
                 <List.Header>
                     <Grid>
                         <Grid.Column floated="left" width={14}>
@@ -103,7 +147,7 @@ const TopicListRow = (props) => {
             </List.Content>
         </Dimmer.Dimmable>
     );
-  }, [history, loading, numberOfReplies, t, timeAgo, topicAuthor, topicId, topicSubject]);
+  }, [history, loading, numberOfReplies, t, timeAgo, topicAuthor, topicAuthorMeta, topicId, topicSubject]);
 };
 
 TopicListRow.defaultProps = {
