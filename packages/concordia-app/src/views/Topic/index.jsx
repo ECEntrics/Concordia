@@ -12,7 +12,7 @@ const Topic = () => {
         <TopicCreate />
     )
     : (
-        <TopicView topicId={topicId} />
+        <TopicView topicId={parseInt(topicId, 10)} />
     );
 };
 
