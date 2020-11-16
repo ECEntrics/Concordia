@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.7.1;
+pragma solidity 0.7.4;
 
 contract Forum {
 
@@ -133,10 +133,10 @@ contract Forum {
     function getTopic(uint topicID) public view returns (address, string memory, uint, uint[] memory) {
         require(topicID<numTopics);
         return (
-            topics[topicID].author,
-            users[topics[topicID].author].username,
-            topics[topicID].timestamp,
-            topics[topicID].postIDs
+        topics[topicID].author,
+        users[topics[topicID].author].username,
+        topics[topicID].timestamp,
+        topics[topicID].postIDs
         );
     }
 
@@ -145,13 +145,18 @@ contract Forum {
         return topics[topicID].postIDs;
     }
 
+    function getTopicAuthor(uint topicID) public view returns (address) {
+        require(topicID<numTopics); // Topic should exist
+        return topics[topicID].author;
+    }
+
     function getPost(uint postID) public view returns (address, string memory, uint, uint) {
         require(postID<numPosts);
         return (
-            posts[postID].author,
-            users[posts[postID].author].username,
-            posts[postID].timestamp,
-            posts[postID].topicID
+        posts[postID].author,
+        users[posts[postID].author].username,
+        posts[postID].timestamp,
+        posts[postID].topicID
         );
     }
 }
