@@ -11,6 +11,8 @@ import './styles.css';
 import { drizzle, breeze } from '../../../redux/store';
 import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../../constants/TransactionStatus';
 import { POSTS_DATABASE, TOPICS_DATABASE } from '../../../constants/OrbitDatabases';
+import { TOPIC_SUBJECT } from '../../../constants/TopicsDatabaseKeys';
+import { POST_CONTENT, POST_SUBJECT } from '../../../constants/PostsDatabaseKeys';
 
 const { contracts: { Forum: { methods: { createTopic } } } } = drizzle;
 const { orbit: { stores } } = breeze;
@@ -69,11 +71,11 @@ const TopicCreate = (props) => {
         const postsDb = Object.values(stores).find((store) => store.dbname === POSTS_DATABASE);
 
         topicsDb
-          .put(topicId, { subject: subjectInput }, { pin: true })
+          .put(topicId, { [TOPIC_SUBJECT]: subjectInput }, { pin: true })
           .then(() => postsDb
             .put(postId, {
-              subject: subjectInput,
-              content: messageInput,
+              [POST_SUBJECT]: subjectInput,
+              [POST_CONTENT]: messageInput,
             }, { pin: true }))
           .then(() => {
             history.push(`/topics/${topicId}`);
@@ -119,7 +121,7 @@ const TopicCreate = (props) => {
               </Form.Field>
               <Form.Field required>
                   <label htmlFor="form-topic-create-field-message">
-                      {t('topic.create.form.message.field.label')}
+                      {t('topic.create.form.content.field.label')}
                   </label>
                   <TextArea
                     id="form-topic-create-field-message"
@@ -128,7 +130,7 @@ const TopicCreate = (props) => {
                       ? 'form-textarea-required'
                       : ''}
                     value={messageInput}
-                    placeholder={t('topic.create.form.message.field.placeholder')}
+                    placeholder={t('topic.create.form.content.field.placeholder')}
                     rows={5}
                     autoheight="true"
                     onChange={handleSubjectInputChange}

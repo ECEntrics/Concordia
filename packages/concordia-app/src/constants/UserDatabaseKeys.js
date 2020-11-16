@@ -1,9 +1,9 @@
-export const PROFILE_PICTURE = 'profile_picture';
-export const LOCATION = 'location';
+export const USER_PROFILE_PICTURE = 'profile_picture';
+export const USER_LOCATION = 'location';
 
 const userDatabaseKeys = [
-  PROFILE_PICTURE,
-  LOCATION,
+  USER_PROFILE_PICTURE,
+  USER_LOCATION,
 ];
 
 export default userDatabaseKeys;

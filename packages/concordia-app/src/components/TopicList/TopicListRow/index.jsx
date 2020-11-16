@@ -14,7 +14,8 @@ import { breeze } from '../../../redux/store';
 import './styles.css';
 import { TOPICS_DATABASE, USER_DATABASE } from '../../../constants/OrbitDatabases';
 import determineKVAddress from '../../../utils/orbitUtils';
-import { PROFILE_PICTURE } from '../../../constants/UserDatabaseKeys';
+import { USER_PROFILE_PICTURE } from '../../../constants/UserDatabaseKeys';
+import { TOPIC_SUBJECT } from '../../../constants/TopicsDatabaseKeys';
 
 const { orbit } = breeze;
 
@@ -66,7 +67,7 @@ const TopicListRow = (props) => {
       .find((topic) => topic.id === topicId);
 
     if (topicFound) {
-      setTopicSubject(topicFound.subject);
+      setTopicSubject(topicFound[TOPIC_SUBJECT]);
     }
   }, [topicId, topics]);
 
@@ -94,12 +95,12 @@ const TopicListRow = (props) => {
 
     return (
         <Dimmer.Dimmable as={List.Item} onClick={handleTopicClick} blurring dimmed={loading} className="list-item">
-            {topicAuthorMeta !== null && topicAuthorMeta[PROFILE_PICTURE]
+            {topicAuthorMeta !== null && topicAuthorMeta[USER_PROFILE_PICTURE]
               ? (
                   <Image
                     className="profile-picture"
                     avatar
-                    src={topicAuthorMeta[PROFILE_PICTURE]}
+                    src={topicAuthorMeta[USER_PROFILE_PICTURE]}
                   />
               )
               : (

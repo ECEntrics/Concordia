@@ -14,7 +14,8 @@ import { breeze } from '../../../redux/store';
 import './styles.css';
 import { POSTS_DATABASE, USER_DATABASE } from '../../../constants/OrbitDatabases';
 import determineKVAddress from '../../../utils/orbitUtils';
-import { PROFILE_PICTURE } from '../../../constants/UserDatabaseKeys';
+import { USER_PROFILE_PICTURE } from '../../../constants/UserDatabaseKeys';
+import { POST_CONTENT, POST_SUBJECT } from '../../../constants/PostsDatabaseKeys';
 
 const { orbit } = breeze;
 
@@ -65,8 +66,8 @@ const PostListRow = (props) => {
       .find((post) => post.id === postId);
 
     if (postFound) {
-      setPostSubject(postFound.subject);
-      setPostMessage(postFound.message);
+      setPostSubject(postFound[POST_SUBJECT]);
+      setPostMessage(postFound[POST_CONTENT]);
     }
   }, [postId, posts]);
 
@@ -90,11 +91,11 @@ const PostListRow = (props) => {
   return useMemo(() => (
       <Dimmer.Dimmable as={Feed.Event} blurring dimmed={loading}>
           <Feed.Label className="post-profile-picture">
-              {postAuthorMeta !== null && postAuthorMeta[PROFILE_PICTURE]
+              {postAuthorMeta !== null && postAuthorMeta[USER_PROFILE_PICTURE]
                 ? (
                     <Image
                       avatar
-                      src={postAuthorMeta[PROFILE_PICTURE]}
+                      src={postAuthorMeta[USER_PROFILE_PICTURE]}
                     />
                 )
                 : (

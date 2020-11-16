@@ -11,7 +11,7 @@ import checkUrlValid from '../../../utils/urlUtils';
 import { breeze } from '../../../redux/store';
 import './styles.css';
 import { USER_DATABASE } from '../../../constants/OrbitDatabases';
-import { LOCATION, PROFILE_PICTURE } from '../../../constants/UserDatabaseKeys';
+import { USER_LOCATION, USER_PROFILE_PICTURE } from '../../../constants/UserDatabaseKeys';
 
 const { orbit: { stores } } = breeze;
 
@@ -72,14 +72,14 @@ const PersonalInformationStep = (props) => {
 
     if (profilePictureInput.length > 0) {
       keyValuesToStore.push({
-        key: PROFILE_PICTURE,
+        key: USER_PROFILE_PICTURE,
         value: profilePictureInput,
       });
     }
 
     if (locationInput.length > 0) {
       keyValuesToStore.push({
-        key: LOCATION,
+        key: USER_LOCATION,
         value: locationInput,
       });
     }

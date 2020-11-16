@@ -11,7 +11,8 @@ import './styles.css';
 import PostList from '../../../components/PostList';
 import { TOPICS_DATABASE, USER_DATABASE } from '../../../constants/OrbitDatabases';
 import determineKVAddress from '../../../utils/orbitUtils';
-import { PROFILE_PICTURE } from '../../../constants/UserDatabaseKeys';
+import { USER_PROFILE_PICTURE } from '../../../constants/UserDatabaseKeys';
+import { TOPIC_SUBJECT } from '../../../constants/TopicsDatabaseKeys';
 
 const { contracts: { Forum: { methods: { getTopic: { cacheCall: getTopicChainData } } } } } = drizzle;
 const { orbit } = breeze;
@@ -100,7 +101,7 @@ const TopicView = (props) => {
       .find((topic) => topic.id === topicId);
 
     if (topicFound) {
-      setTopicSubject(topicFound.subject);
+      setTopicSubject(topicFound[TOPIC_SUBJECT]);
     }
   }, [topicId, topics]);
 
@@ -112,11 +113,11 @@ const TopicView = (props) => {
           >
               <Step.Group fluid>
                   <Step key="topic-header-step-user">
-                      {topicAuthorMeta !== null && topicAuthorMeta[PROFILE_PICTURE]
+                      {topicAuthorMeta !== null && topicAuthorMeta[USER_PROFILE_PICTURE]
                         ? (
                             <Image
                               avatar
-                              src={topicAuthorMeta[PROFILE_PICTURE]}
+                              src={topicAuthorMeta[USER_PROFILE_PICTURE]}
                             />
                         )
                         : (

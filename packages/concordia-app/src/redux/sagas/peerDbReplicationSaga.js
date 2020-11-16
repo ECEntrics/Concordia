@@ -11,6 +11,8 @@ import determineKVAddress from '../../utils/orbitUtils';
 import { FETCH_USER_DATABASE, UPDATE_ORBIT_DATA } from '../actions/peerDbReplicationActions';
 import { POSTS_DATABASE, TOPICS_DATABASE, USER_DATABASE } from '../../constants/OrbitDatabases';
 import userDatabaseKeys from '../../constants/UserDatabaseKeys';
+import { TOPIC_SUBJECT } from '../../constants/TopicsDatabaseKeys';
+import { POST_CONTENT, POST_SUBJECT } from '../../constants/PostsDatabaseKeys';
 
 function* fetchUserDb({ orbit, userAddress, dbName }) {
   const peerDbAddress = yield call(determineKVAddress, {
@@ -70,7 +72,7 @@ function* updateReduxState({ database }) {
           .entries(database.all)
           .map(([key, value]) => ({
             id: parseInt(key, 10),
-            subject: value.subject,
+            [TOPIC_SUBJECT]: value[TOPIC_SUBJECT],
           })),
       ],
       posts: [...posts],
@@ -92,8 +94,8 @@ function* updateReduxState({ database }) {
         ...oldPostsUnchanged,
         ...Object.entries(database.all).map(([key, value]) => ({
           id: parseInt(key, 10),
-          subject: value.subject,
-          message: value.message,
+          [POST_SUBJECT]: value[POST_SUBJECT],
+          [POST_CONTENT]: value[POST_CONTENT],
         })),
       ],
     });
