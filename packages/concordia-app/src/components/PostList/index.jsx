@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { Dimmer, List, Loader } from 'semantic-ui-react';
+import { Dimmer, Feed, Loader } from 'semantic-ui-react';
 import PostListRow from './PostListRow';
 import { drizzle } from '../../redux/store';
 
@@ -55,7 +55,7 @@ const PostList = (props) => {
   }, [getPostCallHashes, loading, postIds]);
 
   return (
-      <Dimmer.Dimmable as={List} blurring dimmed={loading} selection divided id="post-list" size="big">
+      <Dimmer.Dimmable as={Feed} blurring dimmed={loading} selection divided id="post-list" size="big">
           <Loader active={loading} />
           {posts}
       </Dimmer.Dimmable>

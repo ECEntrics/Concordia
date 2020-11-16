@@ -2,7 +2,7 @@ import React, {
   memo, useEffect, useMemo, useState,
 } from 'react';
 import {
-  Dimmer, Grid, Image, List, Placeholder,
+  Dimmer, Icon, Image, Feed, Placeholder,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -88,52 +88,50 @@ const PostListRow = (props) => {
   }, [postAuthorAddress, users]);
 
   return useMemo(() => (
-      <Dimmer.Dimmable as={List.Item} blurring dimmed={loading} className="list-item">
-          {postAuthorMeta !== null && postAuthorMeta[PROFILE_PICTURE]
-            ? (
-                <Image
-                  className="profile-picture"
-                  avatar
-                  src={postAuthorMeta[PROFILE_PICTURE]}
-                />
-            )
-            : (
-                <List.Icon
-                  name="user circle"
-                  size="big"
-                  inverted
-                  color="black"
-                  verticalAlign="middle"
-                />
-            )}
-          <List.Content className="list-content">
-              <List.Header>
-                  <Grid>
-                      <Grid.Column floated="left" width={14}>
-                          {postSubject !== null
-                            ? postSubject
-                            : <Placeholder><Placeholder.Line length="very long" /></Placeholder>}
-                      </Grid.Column>
-                      <Grid.Column floated="right" width={2} textAlign="right">
-                          <span className="post-metadata">
-                              {t('post.list.row.post.id', { id: postId })}
-                          </span>
-                      </Grid.Column>
-                  </Grid>
-              </List.Header>
-              <List.Description>
-                  <Grid verticalAlign="middle">
-                      <Grid.Column floated="left" width={14}>
-                          {postAuthor !== null && timeAgo !== null
-                            ? t('post.list.row.author.date', { author: postAuthor, timeAgo })
-                            : <Placeholder><Placeholder.Line length="long" /></Placeholder>}
-                      </Grid.Column>
-                  </Grid>
-              </List.Description>
-          </List.Content>
-          <List.Content>
-              {postMessage}
-          </List.Content>
+      <Dimmer.Dimmable as={Feed.Event} blurring dimmed={loading}>
+          <Feed.Label className="post-profile-picture">
+              {postAuthorMeta !== null && postAuthorMeta[PROFILE_PICTURE]
+                ? (
+                    <Image
+                      avatar
+                      src={postAuthorMeta[PROFILE_PICTURE]}
+                    />
+                )
+                : (
+                    <Icon
+                      name="user circle"
+                      size="big"
+                      inverted
+                      color="black"
+                      verticalAlign="middle"
+                    />
+                )}
+          </Feed.Label>
+          <Feed.Content>
+              <Feed.Summary>
+                  <div>
+                      {postSubject !== null
+                        ? postSubject
+                        : <Placeholder><Placeholder.Line length="very long" /></Placeholder>}
+                      <span className="post-summary-meta-index">
+                          {t('post.list.row.post.id', { id: postId })}
+                      </span>
+                  </div>
+                  {postAuthor !== null && timeAgo !== null
+                    ? (
+                        <>
+                            {t('post.list.row.author.pre')}
+                            &nbsp;
+                            <Feed.User>{postAuthor}</Feed.User>
+                            <Feed.Date className="post-summary-meta-date">{timeAgo}</Feed.Date>
+                        </>
+                    )
+                    : <Placeholder><Placeholder.Line length="medium" /></Placeholder>}
+              </Feed.Summary>
+              <Feed.Extra>
+                  {postMessage}
+              </Feed.Extra>
+          </Feed.Content>
       </Dimmer.Dimmable>
   ), [loading, postAuthor, postAuthorMeta, postId, postMessage, postSubject, t, timeAgo]);
 };

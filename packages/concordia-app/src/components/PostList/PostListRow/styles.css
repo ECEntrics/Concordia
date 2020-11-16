@@ -1,21 +1,13 @@
-.post-metadata {
-    font-size: 12px !important;
-    font-weight: initial;
+.post-profile-picture {
+    margin: 5px 0 0 0;
 }
 
-.list-item {
-    display: flex !important;
-    text-align: start;
+.post-summary-meta-index {
+    float: right;
+    font-size: 12px;
+    opacity: 0.4;
 }
 
-.profile-picture {
-    cursor: pointer;
-    max-width: 36px;
-    max-height: 36px;
-    margin: 0;
-    vertical-align: middle;
-}
-
-.list-content {
-    flex-grow: 1;
+.post-summary-meta-date {
+    float: right !important;
 }
