@@ -2,7 +2,7 @@ import React, {
   memo, useEffect, useMemo, useState,
 } from 'react';
 import {
-  Dimmer, Grid, List, Placeholder,
+  Dimmer, Grid, Image, List, Placeholder,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import { breeze } from '../../../redux/store';
 import './styles.css';
-import { POSTS_DATABASE } from '../../../constants/OrbitDatabases';
+import { POSTS_DATABASE, USER_DATABASE } from '../../../constants/OrbitDatabases';
+import determineKVAddress from '../../../utils/orbitUtils';
+import { PROFILE_PICTURE } from '../../../constants/UserDatabaseKeys';
 
 const { orbit } = breeze;
 
@@ -24,8 +26,10 @@ const PostListRow = (props) => {
   const [timeAgo, setTimeAgo] = useState(null);
   const [postSubject, setPostSubject] = useState(null);
   const [postMessage, setPostMessage] = useState(null);
+  const [postAuthorMeta, setPostAuthorMeta] = useState(null);
   const userAddress = useSelector((state) => state.user.address);
   const posts = useSelector((state) => state.orbitData.posts);
+  const users = useSelector((state) => state.orbitData.users);
   const dispatch = useDispatch();
   const history = useHistory();
   const { t } = useTranslation();
@@ -46,6 +50,13 @@ const PostListRow = (props) => {
         dbName: POSTS_DATABASE,
         userAddress: postAuthorAddress,
       });
+
+      dispatch({
+        type: FETCH_USER_DATABASE,
+        orbit,
+        dbName: USER_DATABASE,
+        userAddress: postAuthorAddress,
+      });
     }
   }, [dispatch, postAuthorAddress, userAddress]);
 
@@ -59,10 +70,43 @@ const PostListRow = (props) => {
     }
   }, [postId, posts]);
 
+  useEffect(() => {
+    if (postAuthorAddress !== null) {
+      determineKVAddress({ orbit, dbName: USER_DATABASE, userAddress: postAuthorAddress })
+        .then((userOrbitAddress) => {
+          const userFound = users
+            .find((user) => user.id === userOrbitAddress);
+
+          if (userFound) {
+            setPostAuthorMeta(userFound);
+          }
+        })
+        .catch((error) => {
+          console.error('Error during determination of key-value DB address:', error);
+        });
+    }
+  }, [postAuthorAddress, users]);
+
   return useMemo(() => (
       <Dimmer.Dimmable as={List.Item} blurring dimmed={loading} className="list-item">
-          <List.Icon name="user circle" size="big" inverted color="black" verticalAlign="middle" />
-          <List.Content>
+          {postAuthorMeta !== null && postAuthorMeta[PROFILE_PICTURE]
+            ? (
+                <Image
+                  className="profile-picture"
+                  avatar
+                  src={postAuthorMeta[PROFILE_PICTURE]}
+                />
+            )
+            : (
+                <List.Icon
+                  name="user circle"
+                  size="big"
+                  inverted
+                  color="black"
+                  verticalAlign="middle"
+                />
+            )}
+          <List.Content className="list-content">
               <List.Header>
                   <Grid>
                       <Grid.Column floated="left" width={14}>
@@ -87,8 +131,11 @@ const PostListRow = (props) => {
                   </Grid>
               </List.Description>
           </List.Content>
+          <List.Content>
+              {postMessage}
+          </List.Content>
       </Dimmer.Dimmable>
-  ), [loading, postAuthor, postId, postSubject, t, timeAgo]);
+  ), [loading, postAuthor, postAuthorMeta, postId, postMessage, postSubject, t, timeAgo]);
 };
 
 PostListRow.defaultProps = {
