@@ -14,9 +14,9 @@ contract Voting {
         uint topicID;
         uint numOptions;
         string dataHash;
-        mapping (address => uint) voters;
+        mapping (address => uint) votes;
         uint[] voteCounts;  // First element will hold total count
-        uint timestamp;
+        uint timestamp; // Timestamp of creation
     }
 
     mapping (uint => Poll) polls;
@@ -50,9 +50,14 @@ contract Voting {
 
     function hasVoted(uint topicID, address voter) public view returns (bool) {
         require(isPollExistent(topicID));
-        if (polls[topicID].voters[voter] != 0)
+        if (polls[topicID].votes[voter] != 0)
             return true;
         return false;
+    }
+
+    function getVote(uint topicID, address voter) public view returns (uint) {
+        require(hasVoted(topicID, voter));
+        return polls[topicID].votes[voter];
     }
 
     function getPollInfo(uint topicID) public view returns (uint, string memory, uint, uint) {
@@ -71,12 +76,16 @@ contract Voting {
         return (polls[topicID].voteCounts[option]);
     }
 
+    function getTotalVotes(uint topicID) public view returns (uint) {
+        return getVoteCount(topicID, 0);
+    }
+
     function vote(uint topicID, uint option) public {
         require(isPollExistent(topicID));
         Poll storage poll = polls[topicID];
         require(option > 0 && option <= poll.numOptions); // Verify that this option exists
         address voter = msg.sender;
-        uint currentVote = poll.voters[voter];
+        uint currentVote = poll.votes[voter];
         if(currentVote == option)
             return;
         if(currentVote == 0)   // Voter hadn't voted before
@@ -84,7 +93,7 @@ contract Voting {
         else
             poll.voteCounts[currentVote]--;
         poll.voteCounts[option]++;
-        poll.voters[voter] = option;
+        poll.votes[voter] = option;
         emit UserVoted(voter);
     }
 }
