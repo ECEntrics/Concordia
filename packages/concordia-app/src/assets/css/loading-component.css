@@ -2,14 +2,15 @@ body {
     overflow: hidden;
 }
 
-ul {
-    list-style-position: inside;
-}
-
 .loading-screen {
+    overflow: hidden;
     margin-top: 10em;
     text-align: center;
     font-size: large;
+}
+
+.loading-screen ul {
+    list-style-position: inside;
 }
 
 .loading-img {
