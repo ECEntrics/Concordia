@@ -1,4 +1,5 @@
 body {
+    overflow: auto;
     margin: 1em !important;
 }
 

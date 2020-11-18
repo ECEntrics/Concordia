@@ -37,7 +37,7 @@ const LoadingContainer = ({ children }) => {
         <LoadingComponent
           title="No connection to the Ethereum network!"
           message="Please make sure that:"
-          message_list={['MetaMask is unlocked and pointed to the correct, available network',
+          messageList={['MetaMask is unlocked and pointed to the correct, available network',
             'The app has been granted the right to connect to your account']}
           imageType="ethereum"
           progress={20}
