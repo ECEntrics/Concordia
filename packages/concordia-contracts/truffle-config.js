@@ -20,7 +20,7 @@ module.exports = {
     },
     test: {
       host: GANACHE_HOST || '127.0.0.1',
-      port: GANACHE_PORT || '8546',
+      port: GANACHE_PORT || '8545',
       network_id: '*',
     },
   },

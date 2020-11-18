@@ -15,8 +15,9 @@ contract Voting {
         uint numOptions;
         string dataHash;
         mapping (address => uint) votes;
-        uint[] voteCounts;  // First element will hold total count
-        uint timestamp; // Timestamp of creation
+        mapping (uint => address[]) voters;
+        bool enableVoteChanges;
+        uint timestamp;
     }
 
     mapping (uint => Poll) polls;
@@ -24,26 +25,46 @@ contract Voting {
     event PollCreated(uint topicID);
     event UserVoted(address userAddress);
 
-    function createPoll(uint topicID, uint numOptions, string memory dataHash) public returns (uint) {
+    // Verify that poll exists
+    function isPollExistent(uint topicID) public view returns (bool) {
+        if (polls[topicID].timestamp != 0)
+            return true;
+        return false;
+    }
+
+    function createPoll(uint topicID, uint numOptions, string memory dataHash, bool enableVoteChanges) public returns (uint) {
         require(forum.hasUserSignedUp(msg.sender));  // Only registered users can create polls
         require(topicID<forum.getNumberOfTopics()); // Only allow poll creation if topic exists
         require (forum.getTopicAuthor(topicID) == msg.sender); // Only allow poll creation from the author of the topic
-        require(polls[topicID].timestamp == 0); // Only allow poll creation if it doesn't exist yet
+        require(!isPollExistent(topicID)); // Only allow poll creation if it doesn't already exist
 
         Poll storage poll = polls[topicID];
         poll.topicID = topicID;
         poll.numOptions = numOptions;
         poll.dataHash = dataHash;
-        poll.voteCounts = new uint[](numOptions+1);
+        poll.enableVoteChanges = enableVoteChanges;
         poll.timestamp = block.timestamp;
 
         emit PollCreated(topicID);
         return topicID;
     }
 
-    // Verify that poll exists
-    function isPollExistent(uint topicID) public view returns (bool) {
-        if (polls[topicID].timestamp != 0)
+    function getPollInfo(uint topicID) public view returns (uint, string memory, uint, uint) {
+        require(isPollExistent(topicID));
+
+        uint totalVotes = getTotalVotes(topicID);
+
+        return (
+        polls[topicID].numOptions,
+        polls[topicID].dataHash,
+        polls[topicID].timestamp,
+        totalVotes
+        );
+    }
+
+    function isOptionValid(uint topicID, uint option) public view returns (bool) {
+        require(isPollExistent(topicID));
+        if (option <= polls[topicID].numOptions)    // Option 0 is valid as well (no option chosen)
             return true;
         return false;
     }
@@ -60,40 +81,70 @@ contract Voting {
         return polls[topicID].votes[voter];
     }
 
-    function getPollInfo(uint topicID) public view returns (uint, string memory, uint, uint) {
-        require(isPollExistent(topicID));
-        return (
-        polls[topicID].numOptions,
-        polls[topicID].dataHash,
-        polls[topicID].timestamp,
-        polls[topicID].voteCounts[0]
-        );
-    }
-
-    // Gets vote count for a specific option (option 0 will return total count)
+    // Gets vote count for a specific option
     function getVoteCount(uint topicID, uint option) public view returns (uint) {
-        require(isPollExistent(topicID)); // Verify that poll exists
-        return (polls[topicID].voteCounts[option]);
+        require(isPollExistent(topicID));
+        require(isOptionValid(topicID, option));
+        return (polls[topicID].voters[option].length);
     }
 
     function getTotalVotes(uint topicID) public view returns (uint) {
-        return getVoteCount(topicID, 0);
+        require(isPollExistent(topicID));
+
+        Poll storage poll = polls[topicID];
+        uint totalVotes = 0;
+
+        for (uint pollOption = 1; pollOption <= poll.numOptions; pollOption++)
+            totalVotes += poll.voters[pollOption].length;
+
+        return totalVotes;
+    }
+
+    // Gets voters for a specific option
+    function getVoters(uint topicID, uint option) public view returns (address[] memory) {
+        require(isPollExistent(topicID));
+        return (polls[topicID].voters[option]);
+    }
+
+    function getVoterIndex(uint topicID, address voter) public view returns (uint) {
+        require(isPollExistent(topicID));
+        require(hasVoted(topicID, voter));
+        Poll storage poll = polls[topicID];
+        uint votedOption = getVote(topicID, voter);
+        address[] storage optionVoters = poll.voters[votedOption];
+
+        for (uint voterIndex = 0; voterIndex < optionVoters.length; voterIndex++)
+            if (optionVoters[voterIndex] == voter)
+                return voterIndex;
+
+        revert("Couldn't find voter's index!");
     }
 
     function vote(uint topicID, uint option) public {
+        require(forum.hasUserSignedUp(msg.sender));
         require(isPollExistent(topicID));
+        require(isOptionValid(topicID, option));
         Poll storage poll = polls[topicID];
-        require(option > 0 && option <= poll.numOptions); // Verify that this option exists
         address voter = msg.sender;
-        uint currentVote = poll.votes[voter];
-        if(currentVote == option)
+        uint prevOption = poll.votes[voter];
+        if(prevOption == option)
             return;
-        if(currentVote == 0)   // Voter hadn't voted before
-            poll.voteCounts[0]++;
-        else
-            poll.voteCounts[currentVote]--;
-        poll.voteCounts[option]++;
-        poll.votes[voter] = option;
-        emit UserVoted(voter);
+
+        // Voter hadn't voted before
+        if(prevOption == 0){
+            poll.voters[option].push(voter);
+            poll.votes[voter] = option;
+            emit UserVoted(voter);
+        }
+        else if (poll.enableVoteChanges){
+            uint voterIndex = getVoterIndex(topicID, voter);
+            // Swap with last voter address and delete vote
+            poll.voters[prevOption][voterIndex] = poll.voters[prevOption][poll.voters[prevOption].length - 1];
+            poll.voters[prevOption].pop();
+            if(option != 0)
+                poll.voters[option].push(voter);
+            poll.votes[voter] = option;
+            emit UserVoted(voter);
+        }
     }
 }
