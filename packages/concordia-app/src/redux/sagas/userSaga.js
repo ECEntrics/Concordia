@@ -1,10 +1,11 @@
 /* eslint-disable no-console */
 import {
-  all, call, put, take,
+  all, call, put, take, takeLatest,
 } from 'redux-saga/effects';
 
 import { drizzleActions } from '@ezerous/drizzle';
 import { USER_DATA_UPDATED, USER_DATA_ERROR } from '../actions/userActions';
+import { FORUM_EVENT_USER_SIGNED_UP } from '../actions/contractEventActions';
 
 function* fetchUserData({ drizzle, account }) {
   const contract = drizzle.contracts.Forum;
@@ -31,6 +32,15 @@ function* fetchUserData({ drizzle, account }) {
   }
 }
 
+function* userHasSignedUp({ event }) {
+  yield put({
+    type: USER_DATA_UPDATED,
+    ...{
+      address: event.returnValues.userAddress, username: event.returnValues.username,
+    },
+  });
+}
+
 function* userSaga() {
   const res = yield all([
     take(drizzleActions.drizzle.DRIZZLE_INITIALIZED),
@@ -38,6 +48,8 @@ function* userSaga() {
   ]);
 
   yield fetchUserData({ drizzle: res[0].drizzle, account: res[1].accounts[0] });
+
+  yield takeLatest(FORUM_EVENT_USER_SIGNED_UP, userHasSignedUp);
 }
 
 export default userSaga;
