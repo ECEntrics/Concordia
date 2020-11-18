@@ -5,6 +5,7 @@ import App from './App';
 import store from './redux/store';
 import * as serviceWorker from './utils/serviceWorker';
 import LoadingScreen from './components/LoadingScreen';
+import './assets/css/index.css';
 
 render(
     <Suspense fallback={<LoadingScreen />}>

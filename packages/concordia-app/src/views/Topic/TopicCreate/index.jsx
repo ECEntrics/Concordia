@@ -22,7 +22,7 @@ const TopicCreate = (props) => {
   const transactionStack = useSelector((state) => state.transactionStack);
   const transactions = useSelector((state) => state.transactions);
   const [subjectInput, setSubjectInput] = useState('');
-  const [messageInput, setMessageInput] = useState('');
+  const [contentInput, setContentInput] = useState('');
   const [topicSubjectInputEmptySubmit, setTopicSubjectInputEmptySubmit] = useState(false);
   const [topicMessageInputEmptySubmit, setTopicMessageInputEmptySubmit] = useState(false);
   const [createTopicCacheSendStackId, setCreateTopicCacheSendStackId] = useState('');
@@ -40,8 +40,8 @@ const TopicCreate = (props) => {
       case 'subjectInput':
         setSubjectInput(event.target.value);
         break;
-      case 'messageInput':
-        setMessageInput(event.target.value);
+      case 'contentInput':
+        setContentInput(event.target.value);
         break;
       default:
         break;
@@ -75,7 +75,7 @@ const TopicCreate = (props) => {
           .then(() => postsDb
             .put(postId, {
               [POST_SUBJECT]: subjectInput,
-              [POST_CONTENT]: messageInput,
+              [POST_CONTENT]: contentInput,
             }, { pin: true }))
           .then(() => {
             history.push(`/topics/${topicId}`);
@@ -85,7 +85,7 @@ const TopicCreate = (props) => {
           });
       }
     }
-  }, [createTopicCacheSendStackId, history, messageInput, posting, subjectInput, transactionStack, transactions]);
+  }, [createTopicCacheSendStackId, history, contentInput, posting, subjectInput, transactionStack, transactions]);
 
   const validateAndPost = useCallback(() => {
     if (subjectInput === '') {
@@ -93,14 +93,14 @@ const TopicCreate = (props) => {
       return;
     }
 
-    if (messageInput === '') {
+    if (contentInput === '') {
       setTopicMessageInputEmptySubmit(true);
       return;
     }
 
     setPosting(true);
     setCreateTopicCacheSendStackId(createTopic.cacheSend(...[], { from: account }));
-  }, [account, messageInput, subjectInput]);
+  }, [account, contentInput, subjectInput]);
 
   return (
       <Container>
@@ -125,11 +125,11 @@ const TopicCreate = (props) => {
                   </label>
                   <TextArea
                     id="form-topic-create-field-message"
-                    name="messageInput"
+                    name="contentInput"
                     className={topicMessageInputEmptySubmit
                       ? 'form-textarea-required'
                       : ''}
-                    value={messageInput}
+                    value={contentInput}
                     placeholder={t('topic.create.form.content.field.placeholder')}
                     rows={5}
                     autoheight="true"

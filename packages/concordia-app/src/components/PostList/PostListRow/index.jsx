@@ -26,7 +26,7 @@ const PostListRow = (props) => {
   const [postAuthor, setPostAuthor] = useState(null);
   const [timeAgo, setTimeAgo] = useState(null);
   const [postSubject, setPostSubject] = useState(null);
-  const [postMessage, setPostMessage] = useState(null);
+  const [postContent, setPostContent] = useState(null);
   const [postAuthorMeta, setPostAuthorMeta] = useState(null);
   const userAddress = useSelector((state) => state.user.address);
   const posts = useSelector((state) => state.orbitData.posts);
@@ -67,7 +67,7 @@ const PostListRow = (props) => {
 
     if (postFound) {
       setPostSubject(postFound[POST_SUBJECT]);
-      setPostMessage(postFound[POST_CONTENT]);
+      setPostContent(postFound[POST_CONTENT]);
     }
   }, [postId, posts]);
 
@@ -130,11 +130,11 @@ const PostListRow = (props) => {
                     : <Placeholder><Placeholder.Line length="medium" /></Placeholder>}
               </Feed.Summary>
               <Feed.Extra>
-                  {postMessage}
+                  {postContent}
               </Feed.Extra>
           </Feed.Content>
       </Dimmer.Dimmable>
-  ), [loading, postAuthor, postAuthorMeta, postId, postMessage, postSubject, t, timeAgo]);
+  ), [loading, postAuthor, postAuthorMeta, postId, postContent, postSubject, t, timeAgo]);
 };
 
 PostListRow.defaultProps = {

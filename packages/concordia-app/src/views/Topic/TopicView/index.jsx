@@ -13,6 +13,7 @@ import { TOPICS_DATABASE, USER_DATABASE } from '../../../constants/OrbitDatabase
 import determineKVAddress from '../../../utils/orbitUtils';
 import { USER_PROFILE_PICTURE } from '../../../constants/UserDatabaseKeys';
 import { TOPIC_SUBJECT } from '../../../constants/TopicsDatabaseKeys';
+import PostCreate from '../../../components/PostCreate';
 
 const { contracts: { Forum: { methods: { getTopic: { cacheCall: getTopicChainData } } } } } = drizzle;
 const { orbit } = breeze;
@@ -161,6 +162,12 @@ const TopicView = (props) => {
               </Step.Group>
           </Dimmer.Dimmable>
           <PostList postIds={postIds || []} loading={postIds === null} />
+          {topicSubject !== null && postIds !== null && (
+              <PostCreate
+                id={postIds.length}
+                initialPostSubject={topicSubject}
+              />
+          )}
       </Container>
   );
 };

@@ -1,3 +1,11 @@
+#topic-container {
+    height: 100%;
+}
+
+#topic-grid {
+    height: 100%;
+}
+
 #author-placeholder {
     width: 150px !important;
 }

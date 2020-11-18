@@ -1,0 +1,17 @@
+.post-profile-picture {
+    margin: 5px 0 0 0;
+}
+
+.post-summary-meta-index {
+    float: right;
+    font-size: 12px;
+    opacity: 0.4;
+}
+
+.post-summary-meta-date {
+    float: right !important;
+}
+
+.subject-input {
+    min-width: 300px;
+}
