@@ -105,7 +105,9 @@ const PostCreate = (props) => {
           });
       }
     }
-  }, [createPostCacheSendStackId, postContent, postSubject, posting, transactionStack, transactions]);
+  }, [
+    createPostCacheSendStackId, initialPostSubject, postContent, postSubject, posting, transactionStack, transactions,
+  ]);
 
   const savePost = useCallback(() => {
     if (postSubject === '') {

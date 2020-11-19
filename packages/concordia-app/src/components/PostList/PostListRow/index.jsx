@@ -7,7 +7,6 @@ import {
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
-import { useHistory } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
@@ -35,7 +34,6 @@ const PostListRow = (props) => {
   const posts = useSelector((state) => state.orbitData.posts);
   const users = useSelector((state) => state.orbitData.users);
   const dispatch = useDispatch();
-  const history = useHistory();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -150,7 +148,9 @@ const PostListRow = (props) => {
               </Feed.Extra>
           </Feed.Content>
       </Dimmer.Dimmable>
-  ), [authorAvatarLink, loading, postAuthor, postContent, postIndexInTopic, postSubject, t, timeAgo]);
+  ), [
+    authorAvatarLink, loading, postAuthor, postAuthorAddress, postContent, postIndexInTopic, postSubject, t, timeAgo,
+  ]);
 };
 
 PostListRow.defaultProps = {

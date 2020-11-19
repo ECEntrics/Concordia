@@ -5,7 +5,6 @@ import {
   Container, Dimmer, Icon, Image, Placeholder, Step,
 } from 'semantic-ui-react';
 import moment from 'moment';
-import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import { breeze, drizzle } from '../../../redux/store';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
@@ -38,7 +37,6 @@ const TopicView = (props) => {
   const [timestamp, setTimestamp] = useState(initialTimestamp || null);
   const [postIds, setPostIds] = useState(initialPostIds || null);
   const [topicSubject, setTopicSubject] = useState(null);
-  const history = useHistory();
   const dispatch = useDispatch();
 
   useEffect(() => {
