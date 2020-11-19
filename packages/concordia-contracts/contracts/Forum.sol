@@ -15,8 +15,8 @@ contract Forum {
     mapping (address => User) users;
     mapping (string => address) userAddresses;
 
-    event UserSignedUp(string username, address userAddress);
-    event UsernameUpdated(string newName, string oldName,address userAddress);
+    event USER_SIGNED_UP(string username, address userAddress);
+    event USERNAME_UPDATED(string newName, string oldName, address userAddress);
 
     function signUp(string memory username) public returns (bool) {
         require (!hasUserSignedUp(msg.sender), "User has already signed up.");
@@ -24,7 +24,7 @@ contract Forum {
         users[msg.sender] = User(username,
             new uint[](0), new uint[](0), block.timestamp, true);
         userAddresses[username] = msg.sender;
-        emit UserSignedUp(username, msg.sender);
+        emit USER_SIGNED_UP(username, msg.sender);
         return true;
     }
 
@@ -35,7 +35,7 @@ contract Forum {
         delete userAddresses[users[msg.sender].username];
         users[msg.sender].username = newUsername;
         userAddresses[newUsername] = msg.sender;
-        emit UsernameUpdated(newUsername, oldUsername, msg.sender);
+        emit USERNAME_UPDATED(newUsername, oldUsername, msg.sender);
         return true;
     }
 
@@ -95,8 +95,8 @@ contract Forum {
     mapping (uint => Topic) topics;
     mapping (uint => Post) posts;
 
-    event TopicCreated(uint topicID, uint postID);
-    event PostCreated(uint postID, uint topicID);
+    event TOPIC_CREATED(uint topicID, uint postID);
+    event POST_CREATED(uint postID, uint topicID);
 
     function createTopic() public returns (uint, uint) {
         require(hasUserSignedUp(msg.sender));  // Only registered users can create topics
@@ -111,7 +111,7 @@ contract Forum {
         topics[topicID].postIDs.push(postID);
         users[msg.sender].postIDs.push(postID);
 
-        emit TopicCreated(topicID, postID);
+        emit TOPIC_CREATED(topicID, postID);
         return (topicID, postID);
     }
 
@@ -122,7 +122,7 @@ contract Forum {
         posts[postID] = Post(postID, msg.sender, block.timestamp, topicID);
         topics[topicID].postIDs.push(postID);
         users[msg.sender].postIDs.push(postID);
-        emit PostCreated(postID, topicID);
+        emit POST_CREATED(postID, topicID);
         return postID;
     }
 
