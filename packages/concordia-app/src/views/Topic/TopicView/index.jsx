@@ -6,6 +6,7 @@ import {
 } from 'semantic-ui-react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router';
 import { breeze, drizzle } from '../../../redux/store';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import './styles.css';
@@ -37,6 +38,7 @@ const TopicView = (props) => {
   const [timestamp, setTimestamp] = useState(initialTimestamp || null);
   const [postIds, setPostIds] = useState(initialPostIds || null);
   const [topicSubject, setTopicSubject] = useState(null);
+  const history = useHistory();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -54,6 +56,11 @@ const TopicView = (props) => {
 
   useEffect(() => {
     if (getTopicCallHash && getTopicResults && getTopicResults[getTopicCallHash]) {
+      if (getTopicResults[getTopicCallHash].value == null) {
+        history.push('/');
+        return;
+      }
+
       setTopicAuthorAddress(getTopicResults[getTopicCallHash].value[0]);
       setTopicAuthor(getTopicResults[getTopicCallHash].value[1]);
       setTimestamp(getTopicResults[getTopicCallHash].value[2]);
@@ -71,7 +78,7 @@ const TopicView = (props) => {
         });
       }
     }
-  }, [dispatch, getTopicCallHash, getTopicResults, topicId, topics, userAddress]);
+  }, [dispatch, getTopicCallHash, getTopicResults, history, topicId, topics, userAddress]);
 
   useEffect(() => {
     if (topicAuthorAddress !== null) {
