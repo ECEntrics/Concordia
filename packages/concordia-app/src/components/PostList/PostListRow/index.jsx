@@ -20,7 +20,9 @@ import { POST_CONTENT, POST_SUBJECT } from '../../../constants/PostsDatabaseKeys
 const { orbit } = breeze;
 
 const PostListRow = (props) => {
-  const { id: postId, postCallHash, loading } = props;
+  const {
+    id: postId, postIndexInTopic, postCallHash, loading,
+  } = props;
   const getPostResults = useSelector((state) => state.contracts.Forum.getPost);
   const [postAuthorAddress, setPostAuthorAddress] = useState(null);
   const [postAuthor, setPostAuthor] = useState(null);
@@ -114,7 +116,7 @@ const PostListRow = (props) => {
                         ? postSubject
                         : <Placeholder><Placeholder.Line length="very long" /></Placeholder>}
                       <span className="post-summary-meta-index">
-                          {t('post.list.row.post.id', { id: postId })}
+                          {t('post.list.row.post.id', { id: postIndexInTopic })}
                       </span>
                   </div>
                   {postAuthor !== null && timeAgo !== null
@@ -133,7 +135,7 @@ const PostListRow = (props) => {
               </Feed.Extra>
           </Feed.Content>
       </Dimmer.Dimmable>
-  ), [loading, postAuthor, postAuthorMeta, postId, postContent, postSubject, t, timeAgo]);
+  ), [loading, postAuthor, postAuthorMeta, postContent, postIndexInTopic, postSubject, t, timeAgo]);
 };
 
 PostListRow.defaultProps = {
@@ -142,6 +144,7 @@ PostListRow.defaultProps = {
 
 PostListRow.propTypes = {
   id: PropTypes.number.isRequired,
+  postIndexInTopic: PropTypes.number.isRequired,
   postCallHash: PropTypes.string,
   loading: PropTypes.bool,
 };

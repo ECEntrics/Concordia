@@ -40,12 +40,13 @@ const PostList = (props) => {
       return null;
     }
     return postIds
-      .map((postId) => {
+      .map((postId, index) => {
         const postHash = getPostCallHashes.find((getPostCallHash) => getPostCallHash.id === postId);
 
         return (
             <PostListRow
               id={postId}
+              postIndexInTopic={index + 1}
               key={postId}
               postCallHash={postHash && postHash.hash}
               loading={postHash === undefined}

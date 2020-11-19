@@ -164,7 +164,8 @@ const TopicView = (props) => {
           <PostList postIds={postIds || []} loading={postIds === null} />
           {topicSubject !== null && postIds !== null && (
               <PostCreate
-                id={postIds.length}
+                topicId={topicId}
+                postIndexInTopic={postIds.length + 1}
                 initialPostSubject={topicSubject}
               />
           )}
