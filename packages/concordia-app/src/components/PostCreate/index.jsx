@@ -101,6 +101,7 @@ const PostCreate = (props) => {
             setPostSubject(initialPostSubject);
             setPostContent('');
             setPosting(false);
+            setStoringPost(false);
             setPostSubjectInputEmptySubmit(false);
             setPostContentInputEmptySubmit(false);
             setCreatePostCacheSendStackId('');
