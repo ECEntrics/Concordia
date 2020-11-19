@@ -20,8 +20,19 @@ const LoadingContainer = ({ children }) => {
   const contractDeployed = useSelector((state) => state.contracts[FORUM_CONTRACT].deployed);
   const userFetched = useSelector((state) => state.user.address);
 
-  if ((web3Status === 'initializing' || !web3NetworkId)
-            && !web3NetworkFailed) {
+  if (!window.ethereum) {
+    return (
+        <LoadingComponent
+          title="Couldn't detect MetaMask!"
+          message={['Please make sure to install ', <a href="https://metamask.io/">MetaMask</a>, ' first.']}
+          imageType="ethereum"
+          progress={10}
+          progressType="indicating"
+        />
+    );
+  }
+
+  if ((web3Status === 'initializing' || !web3NetworkId) && !web3NetworkFailed) {
     return (
         <LoadingComponent
           title="Connecting to the Ethereum network..."
@@ -59,8 +70,7 @@ const LoadingContainer = ({ children }) => {
     );
   }
 
-  if (initializing
-            || (!failed && !contractInitialized && contractDeployed)) {
+  if (initializing || (!failed && !contractInitialized && contractDeployed)) {
     return (
         <LoadingComponent
           title="Initializing contracts..."
