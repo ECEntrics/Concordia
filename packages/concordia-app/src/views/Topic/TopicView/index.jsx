@@ -5,6 +5,8 @@ import {
   Container, Dimmer, Icon, Image, Placeholder, Step,
 } from 'semantic-ui-react';
 import moment from 'moment';
+import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 import { breeze, drizzle } from '../../../redux/store';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import './styles.css';
@@ -36,7 +38,7 @@ const TopicView = (props) => {
   const [timestamp, setTimestamp] = useState(initialTimestamp || null);
   const [postIds, setPostIds] = useState(initialPostIds || null);
   const [topicSubject, setTopicSubject] = useState(null);
-
+  const history = useHistory();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -114,28 +116,32 @@ const TopicView = (props) => {
           >
               <Step.Group fluid>
                   <Step key="topic-header-step-user">
-                      {topicAuthorMeta !== null && topicAuthorMeta[USER_PROFILE_PICTURE]
-                        ? (
-                            <Image
-                              avatar
-                              src={topicAuthorMeta[USER_PROFILE_PICTURE]}
-                            />
-                        )
-                        : (
-                            <Icon
-                              name="user circle"
-                              size="big"
-                              inverted
-                              color="black"
-                            />
-                        )}
+                      <Link to={`/users/${topicAuthorAddress}`}>
+                          {topicAuthorMeta !== null && topicAuthorMeta[USER_PROFILE_PICTURE]
+                            ? (
+                                <Image
+                                  avatar
+                                  src={topicAuthorMeta[USER_PROFILE_PICTURE]}
+                                />
+                            )
+                            : (
+                                <Icon
+                                  name="user circle"
+                                  size="big"
+                                  inverted
+                                  color="black"
+                                />
+                            )}
+                      </Link>
                       <Step.Content>
                           <Step.Title>
-                              {topicAuthor || (
-                                  <Placeholder id="author-placeholder" inverted>
-                                      <Placeholder.Line length="full" />
-                                  </Placeholder>
-                              )}
+                              <Link to={`/users/${topicAuthorAddress}`}>
+                                  {topicAuthor || (
+                                      <Placeholder id="author-placeholder" inverted>
+                                          <Placeholder.Line length="full" />
+                                      </Placeholder>
+                                  )}
+                              </Link>
                           </Step.Title>
                       </Step.Content>
                   </Step>

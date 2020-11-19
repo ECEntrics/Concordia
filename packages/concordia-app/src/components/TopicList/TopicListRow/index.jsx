@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { useHistory } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import { breeze } from '../../../redux/store';
 import './styles.css';
@@ -88,6 +89,40 @@ const TopicListRow = (props) => {
     }
   }, [topicAuthorAddress, users]);
 
+  const stopClickPropagation = (event) => {
+    event.stopPropagation();
+  };
+
+  const authorAvatar = useMemo(() => (topicAuthorMeta !== null && topicAuthorMeta[USER_PROFILE_PICTURE]
+    ? (
+        <Image
+          className="profile-picture"
+          avatar
+          src={topicAuthorMeta[USER_PROFILE_PICTURE]}
+        />
+    )
+    : (
+        <List.Icon
+          name="user circle"
+          size="big"
+          inverted
+          color="black"
+          verticalAlign="middle"
+        />
+    )), [topicAuthorMeta]);
+
+  const authorAvatarLink = useMemo(() => {
+    if (topicAuthorAddress) {
+      return (
+          <Link to={`/users/${topicAuthorAddress}`} onClick={stopClickPropagation}>
+              {authorAvatar}
+          </Link>
+      );
+    }
+
+    return authorAvatar;
+  }, [authorAvatar, topicAuthorAddress]);
+
   return useMemo(() => {
     const handleTopicClick = () => {
       history.push(`/topics/${topicId}`);
@@ -95,23 +130,7 @@ const TopicListRow = (props) => {
 
     return (
         <Dimmer.Dimmable as={List.Item} onClick={handleTopicClick} blurring dimmed={loading} className="list-item">
-            {topicAuthorMeta !== null && topicAuthorMeta[USER_PROFILE_PICTURE]
-              ? (
-                  <Image
-                    className="profile-picture"
-                    avatar
-                    src={topicAuthorMeta[USER_PROFILE_PICTURE]}
-                  />
-              )
-              : (
-                  <List.Icon
-                    name="user circle"
-                    size="big"
-                    inverted
-                    color="black"
-                    verticalAlign="middle"
-                  />
-              )}
+            {authorAvatarLink}
             <List.Content className="list-content">
                 <List.Header>
                     <Grid>
@@ -148,7 +167,7 @@ const TopicListRow = (props) => {
             </List.Content>
         </Dimmer.Dimmable>
     );
-  }, [history, loading, numberOfReplies, t, timeAgo, topicAuthor, topicAuthorMeta, topicId, topicSubject]);
+  }, [authorAvatarLink, history, loading, numberOfReplies, t, timeAgo, topicAuthor, topicId, topicSubject]);
 };
 
 TopicListRow.defaultProps = {

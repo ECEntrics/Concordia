@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { useHistory } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import { breeze } from '../../../redux/store';
 import './styles.css';
@@ -90,24 +91,38 @@ const PostListRow = (props) => {
     }
   }, [postAuthorAddress, users]);
 
+  const authorAvatar = useMemo(() => (postAuthorMeta !== null && postAuthorMeta[USER_PROFILE_PICTURE]
+    ? (
+        <Image
+          avatar
+          src={postAuthorMeta[USER_PROFILE_PICTURE]}
+        />
+    )
+    : (
+        <Icon
+          name="user circle"
+          size="big"
+          inverted
+          color="black"
+        />
+    )), [postAuthorMeta]);
+
+  const authorAvatarLink = useMemo(() => {
+    if (postAuthorAddress) {
+      return (
+          <Link to={`/users/${postAuthorAddress}`}>
+              {authorAvatar}
+          </Link>
+      );
+    }
+
+    return authorAvatar;
+  }, [authorAvatar, postAuthorAddress]);
+
   return useMemo(() => (
       <Dimmer.Dimmable as={Feed.Event} blurring dimmed={loading}>
           <Feed.Label className="post-profile-picture">
-              {postAuthorMeta !== null && postAuthorMeta[USER_PROFILE_PICTURE]
-                ? (
-                    <Image
-                      avatar
-                      src={postAuthorMeta[USER_PROFILE_PICTURE]}
-                    />
-                )
-                : (
-                    <Icon
-                      name="user circle"
-                      size="big"
-                      inverted
-                      color="black"
-                    />
-                )}
+              {authorAvatarLink}
           </Feed.Label>
           <Feed.Content>
               <Feed.Summary>
@@ -119,12 +134,12 @@ const PostListRow = (props) => {
                           {t('post.list.row.post.id', { id: postIndexInTopic })}
                       </span>
                   </div>
-                  {postAuthor !== null && timeAgo !== null
+                  {postAuthor !== null && setPostAuthorAddress !== null && timeAgo !== null
                     ? (
                         <>
                             {t('post.list.row.author.pre')}
                             &nbsp;
-                            <Feed.User>{postAuthor}</Feed.User>
+                            <Feed.User as={Link} to={`/users/${postAuthorAddress}`}>{postAuthor}</Feed.User>
                             <Feed.Date className="post-summary-meta-date">{timeAgo}</Feed.Date>
                         </>
                     )
@@ -135,7 +150,7 @@ const PostListRow = (props) => {
               </Feed.Extra>
           </Feed.Content>
       </Dimmer.Dimmable>
-  ), [loading, postAuthor, postAuthorMeta, postContent, postIndexInTopic, postSubject, t, timeAgo]);
+  ), [authorAvatarLink, loading, postAuthor, postContent, postIndexInTopic, postSubject, t, timeAgo]);
 };
 
 PostListRow.defaultProps = {
