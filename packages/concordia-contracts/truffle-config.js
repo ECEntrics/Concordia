@@ -8,7 +8,7 @@ module.exports = {
   // to customize your Truffle configuration!
   compilers: {
     solc: {
-      version: '0.7.4',
+      version: '0.7.5',
     },
   },
   contracts_build_directory: path.join(__dirname, 'build/'),
@@ -20,7 +20,7 @@ module.exports = {
     },
     test: {
       host: GANACHE_HOST || '127.0.0.1',
-      port: GANACHE_PORT || '8545',
+      port: GANACHE_PORT || '8546',
       network_id: '*',
     },
   },
