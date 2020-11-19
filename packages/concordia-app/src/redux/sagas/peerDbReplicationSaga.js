@@ -31,7 +31,7 @@ function* updateReduxState({ database }) {
 
   if (database.dbname === USER_DATABASE) {
     const oldUsersUnchanged = users
-      .filter((user) => !database.id !== user.id);
+      .filter((user) => database.id !== user.id);
 
     yield put({
       type: UPDATE_ORBIT_DATA,
