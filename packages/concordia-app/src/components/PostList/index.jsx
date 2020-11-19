@@ -41,12 +41,13 @@ const PostList = (props) => {
       return null;
     }
     return postIds
-      .map((postId) => {
+      .map((postId, index) => {
         const postHash = getPostCallHashes.find((getPostCallHash) => getPostCallHash.id === postId);
 
         return (
             <PostListRow
               id={postId}
+              postIndexInTopic={index + 1}
               key={postId}
               postCallHash={postHash && postHash.hash}
               loading={postHash === undefined}
@@ -56,7 +57,7 @@ const PostList = (props) => {
   }, [getPostCallHashes, loading, postIds]);
 
   return (
-      <Dimmer.Dimmable as={Feed} blurring dimmed={loading} selection divided id="post-list" size="big">
+      <Dimmer.Dimmable as={Feed} blurring dimmed={loading} id="post-list" size="large">
           <Loader active={loading} />
           {posts}
       </Dimmer.Dimmable>

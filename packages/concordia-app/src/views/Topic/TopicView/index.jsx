@@ -5,6 +5,8 @@ import {
   Container, Dimmer, Icon, Image, Placeholder, Step,
 } from 'semantic-ui-react';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router';
 import { breeze, drizzle } from '../../../redux/store';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import './styles.css';
@@ -37,7 +39,7 @@ const TopicView = (props) => {
   const [timestamp, setTimestamp] = useState(initialTimestamp || null);
   const [postIds, setPostIds] = useState(initialPostIds || null);
   const [topicSubject, setTopicSubject] = useState(null);
-
+  const history = useHistory();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -55,6 +57,11 @@ const TopicView = (props) => {
 
   useEffect(() => {
     if (getTopicCallHash && getTopicResults && getTopicResults[getTopicCallHash]) {
+      if (getTopicResults[getTopicCallHash].value == null) {
+        history.push('/');
+        return;
+      }
+
       setTopicAuthorAddress(getTopicResults[getTopicCallHash].value[0]);
       setTopicAuthor(getTopicResults[getTopicCallHash].value[1]);
       setTimestamp(getTopicResults[getTopicCallHash].value[2]);
@@ -72,7 +79,7 @@ const TopicView = (props) => {
         });
       }
     }
-  }, [dispatch, getTopicCallHash, getTopicResults, topicId, topics, userAddress]);
+  }, [dispatch, getTopicCallHash, getTopicResults, history, topicId, topics, userAddress]);
 
   useEffect(() => {
     if (topicAuthorAddress !== null) {
@@ -115,28 +122,32 @@ const TopicView = (props) => {
           >
               <Step.Group fluid>
                   <Step key="topic-header-step-user">
-                      {topicAuthorMeta !== null && topicAuthorMeta[USER_PROFILE_PICTURE]
-                        ? (
-                            <Image
-                              avatar
-                              src={topicAuthorMeta[USER_PROFILE_PICTURE]}
-                            />
-                        )
-                        : (
-                            <Icon
-                              name="user circle"
-                              size="big"
-                              inverted
-                              color="black"
-                            />
-                        )}
+                      <Link to={`/users/${topicAuthorAddress}`}>
+                          {topicAuthorMeta !== null && topicAuthorMeta[USER_PROFILE_PICTURE]
+                            ? (
+                                <Image
+                                  avatar
+                                  src={topicAuthorMeta[USER_PROFILE_PICTURE]}
+                                />
+                            )
+                            : (
+                                <Icon
+                                  name="user circle"
+                                  size="big"
+                                  inverted
+                                  color="black"
+                                />
+                            )}
+                      </Link>
                       <Step.Content>
                           <Step.Title>
-                              {topicAuthor || (
-                                  <Placeholder id="author-placeholder" inverted>
-                                      <Placeholder.Line length="full" />
-                                  </Placeholder>
-                              )}
+                              <Link to={`/users/${topicAuthorAddress}`}>
+                                  {topicAuthor || (
+                                      <Placeholder id="author-placeholder" inverted>
+                                          <Placeholder.Line length="full" />
+                                      </Placeholder>
+                                  )}
+                              </Link>
                           </Step.Title>
                       </Step.Content>
                   </Step>
@@ -165,7 +176,8 @@ const TopicView = (props) => {
           <PostList postIds={postIds || []} loading={postIds === null} />
           {topicSubject !== null && postIds !== null && (
               <PostCreate
-                id={postIds.length}
+                topicId={topicId}
+                postIndexInTopic={postIds.length + 1}
                 initialPostSubject={topicSubject}
               />
           )}

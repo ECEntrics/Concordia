@@ -7,8 +7,8 @@ import {
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
-import { useHistory } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import { breeze } from '../../../redux/store';
 import './styles.css';
@@ -21,7 +21,9 @@ import { FORUM_CONTRACT } from '../../../constants/ContractNames';
 const { orbit } = breeze;
 
 const PostListRow = (props) => {
-  const { id: postId, postCallHash, loading } = props;
+  const {
+    id: postId, postIndexInTopic, postCallHash, loading,
+  } = props;
   const getPostResults = useSelector((state) => state.contracts[FORUM_CONTRACT].getPost);
   const [postAuthorAddress, setPostAuthorAddress] = useState(null);
   const [postAuthor, setPostAuthor] = useState(null);
@@ -33,7 +35,6 @@ const PostListRow = (props) => {
   const posts = useSelector((state) => state.orbitData.posts);
   const users = useSelector((state) => state.orbitData.users);
   const dispatch = useDispatch();
-  const history = useHistory();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -89,25 +90,38 @@ const PostListRow = (props) => {
     }
   }, [postAuthorAddress, users]);
 
+  const authorAvatar = useMemo(() => (postAuthorMeta !== null && postAuthorMeta[USER_PROFILE_PICTURE]
+    ? (
+        <Image
+          avatar
+          src={postAuthorMeta[USER_PROFILE_PICTURE]}
+        />
+    )
+    : (
+        <Icon
+          name="user circle"
+          size="big"
+          inverted
+          color="black"
+        />
+    )), [postAuthorMeta]);
+
+  const authorAvatarLink = useMemo(() => {
+    if (postAuthorAddress) {
+      return (
+          <Link to={`/users/${postAuthorAddress}`}>
+              {authorAvatar}
+          </Link>
+      );
+    }
+
+    return authorAvatar;
+  }, [authorAvatar, postAuthorAddress]);
+
   return useMemo(() => (
       <Dimmer.Dimmable as={Feed.Event} blurring dimmed={loading}>
           <Feed.Label className="post-profile-picture">
-              {postAuthorMeta !== null && postAuthorMeta[USER_PROFILE_PICTURE]
-                ? (
-                    <Image
-                      avatar
-                      src={postAuthorMeta[USER_PROFILE_PICTURE]}
-                    />
-                )
-                : (
-                    <Icon
-                      name="user circle"
-                      size="big"
-                      inverted
-                      color="black"
-                      verticalAlign="middle"
-                    />
-                )}
+              {authorAvatarLink}
           </Feed.Label>
           <Feed.Content>
               <Feed.Summary>
@@ -116,15 +130,15 @@ const PostListRow = (props) => {
                         ? postSubject
                         : <Placeholder><Placeholder.Line length="very long" /></Placeholder>}
                       <span className="post-summary-meta-index">
-                          {t('post.list.row.post.id', { id: postId })}
+                          {t('post.list.row.post.id', { id: postIndexInTopic })}
                       </span>
                   </div>
-                  {postAuthor !== null && timeAgo !== null
+                  {postAuthor !== null && setPostAuthorAddress !== null && timeAgo !== null
                     ? (
                         <>
                             {t('post.list.row.author.pre')}
                             &nbsp;
-                            <Feed.User>{postAuthor}</Feed.User>
+                            <Feed.User as={Link} to={`/users/${postAuthorAddress}`}>{postAuthor}</Feed.User>
                             <Feed.Date className="post-summary-meta-date">{timeAgo}</Feed.Date>
                         </>
                     )
@@ -135,7 +149,9 @@ const PostListRow = (props) => {
               </Feed.Extra>
           </Feed.Content>
       </Dimmer.Dimmable>
-  ), [loading, postAuthor, postAuthorMeta, postId, postContent, postSubject, t, timeAgo]);
+  ), [
+    authorAvatarLink, loading, postAuthor, postAuthorAddress, postContent, postIndexInTopic, postSubject, t, timeAgo,
+  ]);
 };
 
 PostListRow.defaultProps = {
@@ -144,6 +160,7 @@ PostListRow.defaultProps = {
 
 PostListRow.propTypes = {
   id: PropTypes.number.isRequired,
+  postIndexInTopic: PropTypes.number.isRequired,
   postCallHash: PropTypes.string,
   loading: PropTypes.bool,
 };
