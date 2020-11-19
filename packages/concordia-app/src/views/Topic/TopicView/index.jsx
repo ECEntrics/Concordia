@@ -14,8 +14,9 @@ import determineKVAddress from '../../../utils/orbitUtils';
 import { USER_PROFILE_PICTURE } from '../../../constants/UserDatabaseKeys';
 import { TOPIC_SUBJECT } from '../../../constants/TopicsDatabaseKeys';
 import PostCreate from '../../../components/PostCreate';
+import { FORUM_CONTRACT } from '../../../constants/ContractNames';
 
-const { contracts: { Forum: { methods: { getTopic: { cacheCall: getTopicChainData } } } } } = drizzle;
+const { contracts: { [FORUM_CONTRACT]: { methods: { getTopic: { cacheCall: getTopicChainData } } } } } = drizzle;
 const { orbit } = breeze;
 
 const TopicView = (props) => {
@@ -26,7 +27,7 @@ const TopicView = (props) => {
   const drizzleInitialized = useSelector((state) => state.drizzleStatus.initialized);
   const drizzleInitializationFailed = useSelector((state) => state.drizzleStatus.failed);
   const userAddress = useSelector((state) => state.user.address);
-  const getTopicResults = useSelector((state) => state.contracts.Forum.getTopic);
+  const getTopicResults = useSelector((state) => state.contracts[FORUM_CONTRACT].getTopic);
   const topics = useSelector((state) => state.orbitData.topics);
   const users = useSelector((state) => state.orbitData.users);
   const [getTopicCallHash, setGetTopicCallHash] = useState([]);

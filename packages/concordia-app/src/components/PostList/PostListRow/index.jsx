@@ -16,12 +16,13 @@ import { POSTS_DATABASE, USER_DATABASE } from '../../../constants/OrbitDatabases
 import determineKVAddress from '../../../utils/orbitUtils';
 import { USER_PROFILE_PICTURE } from '../../../constants/UserDatabaseKeys';
 import { POST_CONTENT, POST_SUBJECT } from '../../../constants/PostsDatabaseKeys';
+import { FORUM_CONTRACT } from '../../../constants/ContractNames';
 
 const { orbit } = breeze;
 
 const PostListRow = (props) => {
   const { id: postId, postCallHash, loading } = props;
-  const getPostResults = useSelector((state) => state.contracts.Forum.getPost);
+  const getPostResults = useSelector((state) => state.contracts[FORUM_CONTRACT].getPost);
   const [postAuthorAddress, setPostAuthorAddress] = useState(null);
   const [postAuthor, setPostAuthor] = useState(null);
   const [timeAgo, setTimeAgo] = useState(null);

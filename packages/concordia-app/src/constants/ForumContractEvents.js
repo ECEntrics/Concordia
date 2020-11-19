@@ -1,0 +1,13 @@
+export const USER_SIGNED_UP_EVENT = 'USER_SIGNED_UP';
+export const USERNAME_UPDATED_EVENT = 'USERNAME_UPDATED';
+export const TOPIC_CREATED_EVENT = 'TOPIC_CREATED';
+export const POST_CREATED_EVENT = 'POST_CREATED';
+
+const forumContractEvents = [
+  USER_SIGNED_UP_EVENT,
+  USERNAME_UPDATED_EVENT,
+  TOPIC_CREATED_EVENT,
+  POST_CREATED_EVENT,
+];
+
+export default forumContractEvents;

@@ -16,12 +16,13 @@ import { TOPICS_DATABASE, USER_DATABASE } from '../../../constants/OrbitDatabase
 import determineKVAddress from '../../../utils/orbitUtils';
 import { USER_PROFILE_PICTURE } from '../../../constants/UserDatabaseKeys';
 import { TOPIC_SUBJECT } from '../../../constants/TopicsDatabaseKeys';
+import { FORUM_CONTRACT } from '../../../constants/ContractNames';
 
 const { orbit } = breeze;
 
 const TopicListRow = (props) => {
   const { id: topicId, topicCallHash, loading } = props;
-  const getTopicResults = useSelector((state) => state.contracts.Forum.getTopic);
+  const getTopicResults = useSelector((state) => state.contracts[FORUM_CONTRACT].getTopic);
   const [numberOfReplies, setNumberOfReplies] = useState(null);
   const [topicAuthorAddress, setTopicAuthorAddress] = useState(null);
   const [topicAuthor, setTopicAuthor] = useState(null);
