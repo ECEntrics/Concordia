@@ -25,8 +25,6 @@ const TopicCreate = (props) => {
   const transactions = useSelector((state) => state.transactions);
   const [subjectInput, setSubjectInput] = useState('');
   const [contentInput, setContentInput] = useState('');
-  const [topicSubjectInputEmptySubmit, setTopicSubjectInputEmptySubmit] = useState(false);
-  const [topicMessageInputEmptySubmit, setTopicMessageInputEmptySubmit] = useState(false);
   const [createTopicCacheSendStackId, setCreateTopicCacheSendStackId] = useState('');
   const [posting, setPosting] = useState(false);
 
@@ -90,13 +88,7 @@ const TopicCreate = (props) => {
   }, [createTopicCacheSendStackId, history, contentInput, posting, subjectInput, transactionStack, transactions]);
 
   const validateAndPost = useCallback(() => {
-    if (subjectInput === '') {
-      setTopicSubjectInputEmptySubmit(true);
-      return;
-    }
-
-    if (contentInput === '') {
-      setTopicMessageInputEmptySubmit(true);
+    if (subjectInput === '' || contentInput === '') {
       return;
     }
 
@@ -116,7 +108,6 @@ const TopicCreate = (props) => {
                     placeholder={t('topic.create.form.subject.field.placeholder')}
                     name="subjectInput"
                     className="form-input"
-                    error={topicSubjectInputEmptySubmit}
                     value={subjectInput}
                     onChange={handleSubjectInputChange}
                   />
@@ -128,9 +119,6 @@ const TopicCreate = (props) => {
                   <TextArea
                     id="form-topic-create-field-message"
                     name="contentInput"
-                    className={topicMessageInputEmptySubmit
-                      ? 'form-textarea-required'
-                      : ''}
                     value={contentInput}
                     placeholder={t('topic.create.form.content.field.placeholder')}
                     rows={5}
@@ -144,7 +132,7 @@ const TopicCreate = (props) => {
                     key="form-topic-create-button-submit"
                     type="button"
                     color="green"
-                    disabled={posting}
+                    disabled={posting || subjectInput === '' || contentInput === ''}
                     onClick={validateAndPost}
                   >
                       <Button.Content visible>
