@@ -104,7 +104,6 @@ const PostListRow = (props) => {
                       size="big"
                       inverted
                       color="black"
-                      verticalAlign="middle"
                     />
                 )}
           </Feed.Label>

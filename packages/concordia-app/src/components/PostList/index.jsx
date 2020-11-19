@@ -55,7 +55,7 @@ const PostList = (props) => {
   }, [getPostCallHashes, loading, postIds]);
 
   return (
-      <Dimmer.Dimmable as={Feed} blurring dimmed={loading} selection divided id="post-list" size="big">
+      <Dimmer.Dimmable as={Feed} blurring dimmed={loading} id="post-list" size="large">
           <Loader active={loading} />
           {posts}
       </Dimmer.Dimmable>
