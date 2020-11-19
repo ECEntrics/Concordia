@@ -3,7 +3,6 @@ body {
 }
 
 .loading-screen {
-    overflow: hidden;
     margin-top: 10em;
     text-align: center;
     font-size: large;

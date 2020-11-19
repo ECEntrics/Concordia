@@ -1,4 +1,4 @@
-body {
+body.app {
     overflow: auto;
     margin: 1em !important;
 }

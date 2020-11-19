@@ -1,10 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { Container, Progress } from 'semantic-ui-react';
-
-// CSS
-import '../assets/css/loading-component.css';
 
 // Images
 import ethereumLogo from '../assets/images/ethereum_logo.svg';
@@ -13,6 +10,10 @@ import orbitdbLogo from '../assets/images/orbitdb_logo.svg';
 import appLogo from '../assets/images/app_logo.png';
 
 const LoadingComponent = (props) => {
+  useEffect(() => function cleanup() {
+    document.body.classList.add('app');
+  }, []);
+
   const {
     imageType, messageList, progressType, title, message, progress,
   } = props;
