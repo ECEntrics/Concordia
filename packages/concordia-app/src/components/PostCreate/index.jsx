@@ -32,6 +32,7 @@ const PostCreate = (props) => {
   const [postContentInputEmptySubmit, setPostContentInputEmptySubmit] = useState(false);
   const [createPostCacheSendStackId, setCreatePostCacheSendStackId] = useState('');
   const [posting, setPosting] = useState(false);
+  const [storingPost, setStoringPost] = useState(false);
   const userAddress = useSelector((state) => state.user.address);
   const users = useSelector((state) => state.orbitData.users);
   const dispatch = useDispatch();
@@ -79,7 +80,7 @@ const PostCreate = (props) => {
   }, [posting]);
 
   useEffect(() => {
-    if (posting && transactionStack && transactionStack[createPostCacheSendStackId]
+    if (posting && !storingPost && transactionStack && transactionStack[createPostCacheSendStackId]
             && transactions[transactionStack[createPostCacheSendStackId]]) {
       if (transactions[transactionStack[createPostCacheSendStackId]].status === TRANSACTION_ERROR) {
         setPosting(false);
@@ -99,14 +100,21 @@ const PostCreate = (props) => {
           .then(() => {
             setPostSubject(initialPostSubject);
             setPostContent('');
+            setPosting(false);
+            setPostSubjectInputEmptySubmit(false);
+            setPostContentInputEmptySubmit(false);
+            setCreatePostCacheSendStackId('');
           })
           .catch((reason) => {
             console.log(reason);
           });
+
+        setStoringPost(true);
       }
     }
   }, [
-    createPostCacheSendStackId, initialPostSubject, postContent, postSubject, posting, transactionStack, transactions,
+    createPostCacheSendStackId, initialPostSubject, postContent, postSubject, posting, storingPost, transactionStack,
+    transactions,
   ]);
 
   const savePost = useCallback(() => {
