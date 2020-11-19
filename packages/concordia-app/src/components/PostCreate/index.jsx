@@ -28,8 +28,6 @@ const PostCreate = (props) => {
   const [postSubject, setPostSubject] = useState(initialPostSubject);
   const [postContent, setPostContent] = useState('');
   const [userProfilePictureUrl, setUserProfilePictureUrl] = useState();
-  const [postSubjectInputEmptySubmit, setPostSubjectInputEmptySubmit] = useState(false);
-  const [postContentInputEmptySubmit, setPostContentInputEmptySubmit] = useState(false);
   const [createPostCacheSendStackId, setCreatePostCacheSendStackId] = useState('');
   const [posting, setPosting] = useState(false);
   const [storingPost, setStoringPost] = useState(false);
@@ -102,8 +100,6 @@ const PostCreate = (props) => {
             setPostContent('');
             setPosting(false);
             setStoringPost(false);
-            setPostSubjectInputEmptySubmit(false);
-            setPostContentInputEmptySubmit(false);
             setCreatePostCacheSendStackId('');
           })
           .catch((reason) => {
@@ -119,13 +115,7 @@ const PostCreate = (props) => {
   ]);
 
   const savePost = useCallback(() => {
-    if (postSubject === '') {
-      setPostSubjectInputEmptySubmit(true);
-      return;
-    }
-
-    if (postContent === '') {
-      setPostContentInputEmptySubmit(true);
+    if (postSubject === '' || postContent === '') {
       return;
     }
 
@@ -161,7 +151,6 @@ const PostCreate = (props) => {
                             name="postSubject"
                             className="subject-input"
                             size="mini"
-                            error={postSubjectInputEmptySubmit}
                             value={postSubject}
                             onChange={handleInputChange}
                           />
@@ -175,10 +164,8 @@ const PostCreate = (props) => {
                           <TextArea
                             placeholder={t('post.form.content.field.placeholder')}
                             name="postContent"
-                            className="content-input"
                             size="mini"
                             rows={4}
-                            error={postContentInputEmptySubmit}
                             value={postContent}
                             onChange={handleInputChange}
                           />
