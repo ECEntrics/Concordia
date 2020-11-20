@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Dimmer, Loader, Placeholder, Segment, Tab,
+  Dimmer, Loader, Placeholder, Tab,
 } from 'semantic-ui-react';
 import { useTranslation } from 'react-i18next';
 

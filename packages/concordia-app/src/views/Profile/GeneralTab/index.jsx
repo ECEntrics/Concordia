@@ -5,6 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import determineKVAddress from '../../../utils/orbitUtils';
 import databases, { USER_DATABASE } from '../../../constants/OrbitDatabases';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
@@ -24,6 +25,7 @@ const GeneralTab = (props) => {
   const [profileMeta, setProfileMeta] = useState(null);
   const users = useSelector((state) => state.orbitData.users);
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (profileAddress) {
@@ -85,45 +87,45 @@ const GeneralTab = (props) => {
                   <Table.Cell colSpan="3">{authorAvatar}</Table.Cell>
               </Table.Row>
               <Table.Row>
-                  <Table.Cell><strong>Username:</strong></Table.Cell>
+                  <Table.Cell><strong>{t('profile.general.tab.username.row.title')}</strong></Table.Cell>
                   <Table.Cell>{username}</Table.Cell>
               </Table.Row>
               <Table.Row>
-                  <Table.Cell><strong>Account address:</strong></Table.Cell>
+                  <Table.Cell><strong>{t('profile.general.tab.address.row.title')}</strong></Table.Cell>
                   <Table.Cell>{profileAddress}</Table.Cell>
               </Table.Row>
               <Table.Row>
-                  <Table.Cell><strong>UserDB:</strong></Table.Cell>
+                  <Table.Cell><strong>{t('profile.general.tab.user.db.address.row.title')}</strong></Table.Cell>
                   <Table.Cell>
                       {userInfoOrbitAddress || (<Placeholder><Placeholder.Line /></Placeholder>)}
                   </Table.Cell>
               </Table.Row>
               <Table.Row>
-                  <Table.Cell><strong>TopicsDB:</strong></Table.Cell>
+                  <Table.Cell><strong>{t('profile.general.tab.topics.db.address.row.title')}</strong></Table.Cell>
                   <Table.Cell>
                       {userTopicsOrbitAddress || (<Placeholder><Placeholder.Line /></Placeholder>)}
                   </Table.Cell>
               </Table.Row>
               <Table.Row>
-                  <Table.Cell><strong>PostsDB:</strong></Table.Cell>
+                  <Table.Cell><strong>{t('profile.general.tab.posts.db.address.row.title')}</strong></Table.Cell>
                   <Table.Cell>
                       {userPostsOrbitAddress || (<Placeholder><Placeholder.Line /></Placeholder>)}
                   </Table.Cell>
               </Table.Row>
               <Table.Row>
-                  <Table.Cell><strong>Number of topics created:</strong></Table.Cell>
+                  <Table.Cell><strong>{t('profile.general.tab.number.of.topics.row.title')}</strong></Table.Cell>
                   <Table.Cell>
                       {numberOfTopics}
                   </Table.Cell>
               </Table.Row>
               <Table.Row>
-                  <Table.Cell><strong>Number of posts:</strong></Table.Cell>
+                  <Table.Cell><strong>{t('profile.general.tab.number.of.posts.row.title')}</strong></Table.Cell>
                   <Table.Cell>
                       {numberOfPosts}
                   </Table.Cell>
               </Table.Row>
               <Table.Row>
-                  <Table.Cell><strong>Number of posts:</strong></Table.Cell>
+                  <Table.Cell><strong>{t('profile.general.tab.location.row.title')}</strong></Table.Cell>
                   <Table.Cell>
                       {profileMeta !== null && profileMeta[USER_LOCATION]
                         ? profileMeta[USER_LOCATION]
@@ -131,7 +133,7 @@ const GeneralTab = (props) => {
                   </Table.Cell>
               </Table.Row>
               <Table.Row>
-                  <Table.Cell><strong>Member since:</strong></Table.Cell>
+                  <Table.Cell><strong>{t('profile.general.tab.registration.date.row.title')}</strong></Table.Cell>
                   <Table.Cell>
                       {moment(userRegistrationTimestamp * 1000).format('dddd, MMMM Do YYYY, h:mm:ss A')}
                   </Table.Cell>
