@@ -5,6 +5,7 @@ import LoadingComponent from './LoadingComponent';
 
 // CSS
 import '../assets/css/loading-component.css';
+import { FORUM_CONTRACT } from '../constants/ContractNames';
 
 const LoadingContainer = ({ children }) => {
   const initializing = useSelector((state) => state.drizzleStatus.initializing);
@@ -15,8 +16,8 @@ const LoadingContainer = ({ children }) => {
   const web3NetworkId = useSelector((state) => state.web3.networkId);
   const web3NetworkFailed = useSelector((state) => state.web3.networkFailed);
   const web3AccountsFailed = useSelector((state) => state.web3.accountsFailed);
-  const contractInitialized = useSelector((state) => state.contracts.Forum.initialized);
-  const contractDeployed = useSelector((state) => state.contracts.Forum.deployed);
+  const contractInitialized = useSelector((state) => state.contracts[FORUM_CONTRACT].initialized);
+  const contractDeployed = useSelector((state) => state.contracts[FORUM_CONTRACT].deployed);
   const userFetched = useSelector((state) => state.user.address);
 
   if (!window.ethereum) {

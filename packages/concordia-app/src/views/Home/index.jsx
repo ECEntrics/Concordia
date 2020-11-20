@@ -6,12 +6,13 @@ import { useSelector } from 'react-redux';
 import Board from './Board';
 import './styles.css';
 import { drizzle } from '../../redux/store';
+import { FORUM_CONTRACT } from '../../constants/ContractNames';
 
-const { contracts: { Forum: { methods: { getNumberOfTopics } } } } = drizzle;
+const { contracts: { [FORUM_CONTRACT]: { methods: { getNumberOfTopics } } } } = drizzle;
 
 const Home = () => {
   const [numberOfTopicsCallHash, setNumberOfTopicsCallHash] = useState('');
-  const getNumberOfTopicsResults = useSelector((state) => state.contracts.Forum.getNumberOfTopics);
+  const getNumberOfTopicsResults = useSelector((state) => state.contracts[FORUM_CONTRACT].getNumberOfTopics);
 
   useEffect(() => {
     setNumberOfTopicsCallHash(getNumberOfTopics.cacheCall());

@@ -13,6 +13,7 @@ import { REGISTER_STEP_PROFILE_INFORMATION, REGISTER_STEP_SIGNUP } from '../../c
 const Register = () => {
   const [currentStep, setCurrentStep] = useState('signup');
   const user = useSelector((state) => state.user);
+  const [signingUp] = useState(!user.hasSignedUp);
   const history = useHistory();
   const { t } = useTranslation();
 
@@ -92,7 +93,7 @@ const Register = () => {
                       </p>
                   </Card.Description>
               </Card.Content>
-              {user.hasSignedUp
+              {user.hasSignedUp && !signingUp
                 ? (
                     <>
                         <Card.Content>

@@ -13,8 +13,10 @@ import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../../constants/Trans
 import { POSTS_DATABASE, TOPICS_DATABASE } from '../../../constants/OrbitDatabases';
 import { TOPIC_SUBJECT } from '../../../constants/TopicsDatabaseKeys';
 import { POST_CONTENT, POST_SUBJECT } from '../../../constants/PostsDatabaseKeys';
+import { FORUM_CONTRACT } from '../../../constants/ContractNames';
+import { TOPIC_CREATED_EVENT } from '../../../constants/ForumContractEvents';
 
-const { contracts: { Forum: { methods: { createTopic } } } } = drizzle;
+const { contracts: { [FORUM_CONTRACT]: { methods: { createTopic } } } } = drizzle;
 const { orbit: { stores } } = breeze;
 
 const TopicCreate = (props) => {
@@ -55,7 +57,7 @@ const TopicCreate = (props) => {
         const {
           receipt: {
             events: {
-              TopicCreated: {
+              [TOPIC_CREATED_EVENT]: {
                 returnValues: {
                   topicID: topicId,
                   postID: postId,

@@ -15,8 +15,10 @@ import { breeze, drizzle } from '../../redux/store';
 import './styles.css';
 import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../constants/TransactionStatus';
 import { POST_CONTENT, POST_SUBJECT } from '../../constants/PostsDatabaseKeys';
+import { FORUM_CONTRACT } from '../../constants/ContractNames';
+import { POST_CREATED_EVENT } from '../../constants/ForumContractEvents';
 
-const { contracts: { Forum: { methods: { createPost } } } } = drizzle;
+const { contracts: { [FORUM_CONTRACT]: { methods: { createPost } } } } = drizzle;
 const { orbit } = breeze;
 
 const PostCreate = (props) => {
@@ -84,7 +86,7 @@ const PostCreate = (props) => {
         setPosting(false);
       } else if (transactions[transactionStack[createPostCacheSendStackId]].status === TRANSACTION_SUCCESS) {
         const {
-          receipt: { events: { PostCreated: { returnValues: { postID: contractPostId } } } },
+          receipt: { events: { [POST_CREATED_EVENT]: { returnValues: { postID: contractPostId } } } },
         } = transactions[transactionStack[createPostCacheSendStackId]];
 
         const { stores } = orbit;

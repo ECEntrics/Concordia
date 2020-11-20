@@ -11,13 +11,14 @@ import { useHistory } from 'react-router';
 import PropTypes from 'prop-types';
 import { drizzle } from '../../../redux/store';
 import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../../constants/TransactionStatus';
+import { FORUM_CONTRACT } from '../../../constants/ContractNames';
 
-const { contracts: { Forum: { methods: { isUserNameTaken, signUp } } } } = drizzle;
+const { contracts: { [FORUM_CONTRACT]: { methods: { isUserNameTaken, signUp } } } } = drizzle;
 
 const SignUpStep = (props) => {
   const { pushNextStep, account } = props;
   const user = useSelector((state) => state.user);
-  const isUserNameTakenResults = useSelector((state) => state.contracts.Forum.isUserNameTaken);
+  const isUserNameTakenResults = useSelector((state) => state.contracts[FORUM_CONTRACT].isUserNameTaken);
   const transactionStack = useSelector((state) => state.transactionStack);
   const transactions = useSelector((state) => state.transactions);
   const [usernameInput, setUsernameInput] = useState('');

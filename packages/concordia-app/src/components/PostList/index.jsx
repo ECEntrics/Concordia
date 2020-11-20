@@ -6,8 +6,9 @@ import { useSelector } from 'react-redux';
 import { Dimmer, Feed, Loader } from 'semantic-ui-react';
 import PostListRow from './PostListRow';
 import { drizzle } from '../../redux/store';
+import { FORUM_CONTRACT } from '../../constants/ContractNames';
 
-const { contracts: { Forum: { methods: { getPost: { cacheCall: getPostChainData } } } } } = drizzle;
+const { contracts: { [FORUM_CONTRACT]: { methods: { getPost: { cacheCall: getPostChainData } } } } } = drizzle;
 
 const PostList = (props) => {
   const { postIds, loading } = props;

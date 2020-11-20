@@ -1,1 +1,1 @@
-export const FORUM = 'Forum';
+export const FORUM_CONTRACT = 'Forum';

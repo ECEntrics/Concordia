@@ -16,7 +16,7 @@ contract Forum {
     mapping (string => address) userAddresses;
 
     event UserSignedUp(string username, address userAddress);
-    event UsernameUpdated(string newName, string oldName,address userAddress);
+    event UsernameUpdated(string newName, string oldName, address userAddress);
 
     function signUp(string memory username) public returns (bool) {
         require (!hasUserSignedUp(msg.sender), "User has already signed up.");
