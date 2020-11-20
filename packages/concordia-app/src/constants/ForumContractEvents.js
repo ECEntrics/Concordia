@@ -1,7 +1,7 @@
-export const USER_SIGNED_UP_EVENT = 'USER_SIGNED_UP';
-export const USERNAME_UPDATED_EVENT = 'USERNAME_UPDATED';
-export const TOPIC_CREATED_EVENT = 'TOPIC_CREATED';
-export const POST_CREATED_EVENT = 'POST_CREATED';
+export const USER_SIGNED_UP_EVENT = 'UserSignedUp';
+export const USERNAME_UPDATED_EVENT = 'UsernameUpdated';
+export const TOPIC_CREATED_EVENT = 'TopicCreated';
+export const POST_CREATED_EVENT = 'PostCreated';
 
 const forumContractEvents = [
   USER_SIGNED_UP_EVENT,
