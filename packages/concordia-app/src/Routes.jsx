@@ -45,6 +45,11 @@ const routesConfig = [
         component: lazy(() => import('./views/Topic')),
       },
       {
+        exact: true,
+        path: ['/users/:id', '/profiles/:id', '/profile'],
+        component: lazy(() => import('./views/Profile')),
+      },
+      {
         component: () => <Redirect to="/404" />,
       },
     ],

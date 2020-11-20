@@ -39,5 +39,11 @@
   "topic.create.form.subject.field.placeholder": "Subject",
   "topic.list.row.author.date": "Created by {{author}}, {{timeAgo}}",
   "topic.list.row.number.of.replies": "{{numberOfReplies}} replies",
-  "topic.list.row.topic.id": "#{{id}}"
+  "topic.list.row.topic.id": "#{{id}}",
+  "custom.loading.tab.pane.default.generic.message": "Magic in the background",
+  "profile.user.has.no.topics.header.message": "{{user}} has created no topics yet",
+  "profile.user.has.no.posts.header.message": "{{user}} has not posted yet",
+  "profile.general.tab.title": "General",
+  "profile.topics.tab.title": "Topics",
+  "profile.posts.tab.title": "Posts"
 }
