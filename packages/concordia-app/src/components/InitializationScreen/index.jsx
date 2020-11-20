@@ -1,13 +1,13 @@
 import React, { Children } from 'react';
 import { breezeConstants } from '@ezerous/breeze';
 import { useSelector } from 'react-redux';
-import LoadingComponent from './LoadingComponent';
+import CustomLoader from './CustomLoader';
 
 // CSS
-import '../assets/css/loading-component.css';
-import { FORUM_CONTRACT } from '../constants/ContractNames';
+import '../../assets/css/loading-component.css';
+import { FORUM_CONTRACT } from '../../constants/ContractNames';
 
-const LoadingContainer = ({ children }) => {
+const InitializationLoader = ({ children }) => {
   const initializing = useSelector((state) => state.drizzleStatus.initializing);
   const failed = useSelector((state) => state.drizzleStatus.failed);
   const ipfsStatus = useSelector((state) => state.ipfs.status);
@@ -22,7 +22,7 @@ const LoadingContainer = ({ children }) => {
 
   if (!window.ethereum) {
     return (
-        <LoadingComponent
+        <CustomLoader
           title="Couldn't detect MetaMask!"
           message={['Please make sure to install ', <a href="https://metamask.io/">MetaMask</a>, ' first.']}
           imageType="ethereum"
@@ -34,7 +34,7 @@ const LoadingContainer = ({ children }) => {
 
   if ((web3Status === 'initializing' || !web3NetworkId) && !web3NetworkFailed) {
     return (
-        <LoadingComponent
+        <CustomLoader
           title="Connecting to the Ethereum network..."
           message="Please make sure to unlock MetaMask and grant the app the right to connect to your account."
           imageType="ethereum"
@@ -46,7 +46,7 @@ const LoadingContainer = ({ children }) => {
 
   if (web3Status === 'failed' || web3NetworkFailed) {
     return (
-        <LoadingComponent
+        <CustomLoader
           title="No connection to the Ethereum network!"
           message="Please make sure that:"
           messageList={['MetaMask is unlocked and pointed to the correct, available network',
@@ -60,7 +60,7 @@ const LoadingContainer = ({ children }) => {
 
   if (web3Status === 'initialized' && web3AccountsFailed) {
     return (
-        <LoadingComponent
+        <CustomLoader
           title="We can't find any Ethereum accounts!"
           message="Please make sure that MetaMask is unlocked."
           imageType="ethereum"
@@ -72,7 +72,7 @@ const LoadingContainer = ({ children }) => {
 
   if (initializing || (!failed && !contractInitialized && contractDeployed)) {
     return (
-        <LoadingComponent
+        <CustomLoader
           title="Initializing contracts..."
           message=""
           imageType="ethereum"
@@ -84,7 +84,7 @@ const LoadingContainer = ({ children }) => {
 
   if (!contractDeployed) {
     return (
-        <LoadingComponent
+        <CustomLoader
           title="No contracts found on the current network!"
           message="Please make sure that you are connected to the correct network and the contracts are deployed."
           imageType="ethereum"
@@ -96,7 +96,7 @@ const LoadingContainer = ({ children }) => {
 
   if (ipfsStatus === breezeConstants.STATUS_INITIALIZING) {
     return (
-        <LoadingComponent
+        <CustomLoader
           title="Initializing IPFS..."
           message=""
           imageType="ipfs"
@@ -108,7 +108,7 @@ const LoadingContainer = ({ children }) => {
 
   if (ipfsStatus === breezeConstants.STATUS_FAILED) {
     return (
-        <LoadingComponent
+        <CustomLoader
           title="IPFS initialization failed!"
           message=""
           imageType="ipfs"
@@ -123,7 +123,7 @@ const LoadingContainer = ({ children }) => {
       ? 'If needed, please sign the transaction in MetaMask to create the databases.'
       : 'Please sign the transaction in MetaMask to create the databases.';
     return (
-        <LoadingComponent
+        <CustomLoader
           title="Preparing OrbitDB..."
           message={message}
           imageType="orbit"
@@ -135,7 +135,7 @@ const LoadingContainer = ({ children }) => {
 
   if (orbitStatus === breezeConstants.STATUS_FAILED) {
     return (
-        <LoadingComponent
+        <CustomLoader
           title="OrbitDB initialization failed!"
           message=""
           imageType="orbit"
@@ -147,7 +147,7 @@ const LoadingContainer = ({ children }) => {
 
   if (!userFetched) {
     return (
-        <LoadingComponent
+        <CustomLoader
           title="Loading dapp..."
           message=""
           imageType="app"
@@ -160,4 +160,4 @@ const LoadingContainer = ({ children }) => {
   return Children.only(children);
 };
 
-export default LoadingContainer;
+export default InitializationLoader;

@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import { Container, Progress } from 'semantic-ui-react';
 
 // Images
-import ethereumLogo from '../assets/images/ethereum_logo.svg';
-import ipfsLogo from '../assets/images/ipfs_logo.svg';
-import orbitdbLogo from '../assets/images/orbitdb_logo.svg';
-import appLogo from '../assets/images/app_logo.png';
+import ethereumLogo from '../../../assets/images/ethereum_logo.svg';
+import ipfsLogo from '../../../assets/images/ipfs_logo.svg';
+import orbitdbLogo from '../../../assets/images/orbitdb_logo.svg';
+import appLogo from '../../../assets/images/app_logo.png';
 
 const LoadingComponent = (props) => {
   useEffect(() => function cleanup() {
