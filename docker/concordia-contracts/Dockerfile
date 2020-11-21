@@ -42,25 +42,13 @@ RUN yarn compile
 # --------------------------------------------------
 FROM compile as test
 
+WORKDIR /opt/concordia-contracts
+
+COPY ./docker/concordia-contracts/test-contracts.sh .
+
 WORKDIR /usr/src/concordia/packages/concordia-contracts
 
-ARG SKIP_TESTS
-ARG CI
-
-RUN if [ -z "${SKIP_TESTS}" ]; then \
-      yarn _eslint -f html -o /usr/test-reports/concordia-contracts-eslint.html --no-color \
-      && (yarn _solhint > /usr/test-reports/concordia-contracts-solhint.report) \
-      && (yarn test > /usr/test-reports/concordia-contracts-truffle-tests.report); \
-      if [ $? -eq 0 ]; then \
-        if [ -n "${CI}" ]; then \
-          mkdir /usr/test-results && touch /usr/test-results/pass; \
-        fi \
-      else \
-        echo "SOME TESTS FAILED!"; \
-      fi \
-    else \
-      echo "Skipping tests..."; \
-    fi
+ENTRYPOINT ["/opt/concordia-contracts/test-contracts.sh"]
 
 # --------------------------------------------------
 # Stage 4 (Build)

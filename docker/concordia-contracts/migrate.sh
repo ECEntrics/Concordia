@@ -1,7 +1,3 @@
 #!/bin/sh
 
-if [ -z "${SKIP_MIGRATE}" ]; then
-  cd /usr/src/concordia/packages/concordia-contracts && yarn migrate --network develop
-else
-  echo "Skipping migration..."
-fi
+cd /usr/src/concordia/packages/concordia-contracts && yarn _migrate --network "${MIGRATE_NETWORK}"
