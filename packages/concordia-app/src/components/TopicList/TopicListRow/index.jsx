@@ -13,11 +13,11 @@ import { Link } from 'react-router-dom';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import { breeze } from '../../../redux/store';
 import './styles.css';
-import { TOPICS_DATABASE, USER_DATABASE } from '../../../constants/OrbitDatabases';
+import { TOPICS_DATABASE, USER_DATABASE } from '../../../constants/orbit/OrbitDatabases';
 import determineKVAddress from '../../../utils/orbitUtils';
-import { USER_PROFILE_PICTURE } from '../../../constants/UserDatabaseKeys';
-import { TOPIC_SUBJECT } from '../../../constants/TopicsDatabaseKeys';
-import { FORUM_CONTRACT } from '../../../constants/ContractNames';
+import { USER_PROFILE_PICTURE } from '../../../constants/orbit/UserDatabaseKeys';
+import { TOPIC_SUBJECT } from '../../../constants/orbit/TopicsDatabaseKeys';
+import { FORUM_CONTRACT } from '../../../constants/contracts/ContractNames';
 
 const { orbit } = breeze;
 

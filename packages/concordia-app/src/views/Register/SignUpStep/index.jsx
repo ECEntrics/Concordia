@@ -11,7 +11,7 @@ import { useHistory } from 'react-router';
 import PropTypes from 'prop-types';
 import { drizzle } from '../../../redux/store';
 import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../../constants/TransactionStatus';
-import { FORUM_CONTRACT } from '../../../constants/ContractNames';
+import { FORUM_CONTRACT } from '../../../constants/contracts/ContractNames';
 
 const { contracts: { [FORUM_CONTRACT]: { methods: { isUserNameTaken, signUp } } } } = drizzle;
 

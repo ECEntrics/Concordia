@@ -5,7 +5,7 @@ import {
 import { drizzleActions } from '@ezerous/drizzle';
 import { USER_DATA_UPDATED, USER_DATA_ERROR } from '../actions/userActions';
 import { FORUM_EVENT_USER_SIGNED_UP } from '../actions/contractEventActions';
-import { FORUM_CONTRACT } from '../../constants/ContractNames';
+import { FORUM_CONTRACT } from '../../constants/contracts/ContractNames';
 
 function* fetchUserData({ drizzle, account }) {
   const contract = drizzle.contracts[FORUM_CONTRACT];

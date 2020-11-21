@@ -11,12 +11,12 @@ import { breeze, drizzle } from '../../../redux/store';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import './styles.css';
 import PostList from '../../../components/PostList';
-import { TOPICS_DATABASE, USER_DATABASE } from '../../../constants/OrbitDatabases';
+import { TOPICS_DATABASE, USER_DATABASE } from '../../../constants/orbit/OrbitDatabases';
 import determineKVAddress from '../../../utils/orbitUtils';
-import { USER_PROFILE_PICTURE } from '../../../constants/UserDatabaseKeys';
-import { TOPIC_SUBJECT } from '../../../constants/TopicsDatabaseKeys';
+import { USER_PROFILE_PICTURE } from '../../../constants/orbit/UserDatabaseKeys';
+import { TOPIC_SUBJECT } from '../../../constants/orbit/TopicsDatabaseKeys';
 import PostCreate from '../../../components/PostCreate';
-import { FORUM_CONTRACT } from '../../../constants/ContractNames';
+import { FORUM_CONTRACT } from '../../../constants/contracts/ContractNames';
 
 const { contracts: { [FORUM_CONTRACT]: { methods: { getTopic: { cacheCall: getTopicChainData } } } } } = drizzle;
 const { orbit } = breeze;

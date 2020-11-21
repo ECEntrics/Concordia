@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { useHistory, useRouteMatch } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { drizzle } from '../../redux/store';
-import { FORUM_CONTRACT } from '../../constants/ContractNames';
+import { FORUM_CONTRACT } from '../../constants/contracts/ContractNames';
 import CustomLoadingTabPane from '../../components/CustomLoadingTabPane';
 import TopicList from '../../components/TopicList';
 import PostList from '../../components/PostList';

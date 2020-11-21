@@ -10,8 +10,8 @@ import { useHistory } from 'react-router';
 import checkUrlValid from '../../../utils/urlUtils';
 import { breeze } from '../../../redux/store';
 import './styles.css';
-import { USER_DATABASE } from '../../../constants/OrbitDatabases';
-import { USER_LOCATION, USER_PROFILE_PICTURE } from '../../../constants/UserDatabaseKeys';
+import { USER_DATABASE } from '../../../constants/orbit/OrbitDatabases';
+import { USER_LOCATION, USER_PROFILE_PICTURE } from '../../../constants/orbit/UserDatabaseKeys';
 
 const { orbit: { stores } } = breeze;
 

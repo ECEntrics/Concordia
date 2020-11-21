@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { List } from 'semantic-ui-react';
 import TopicListRow from './TopicListRow';
 import { drizzle } from '../../redux/store';
-import { FORUM_CONTRACT } from '../../constants/ContractNames';
+import { FORUM_CONTRACT } from '../../constants/contracts/ContractNames';
 
 const { contracts: { [FORUM_CONTRACT]: { methods: { getTopic: { cacheCall: getTopicChainData } } } } } = drizzle;
 

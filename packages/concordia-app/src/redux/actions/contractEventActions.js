@@ -3,7 +3,7 @@ import {
   TOPIC_CREATED_EVENT,
   USER_SIGNED_UP_EVENT,
   USERNAME_UPDATED_EVENT,
-} from '../../constants/ForumContractEvents';
+} from '../../constants/contracts/events/ForumContractEvents';
 
 export const FORUM_EVENT_USER_SIGNED_UP = 'FORUM_EVENT_USER_SIGNED_UP';
 export const FORUM_EVENT_USERNAME_UPDATED = 'FORUM_EVENT_USERNAME_UPDATED';
