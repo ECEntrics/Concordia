@@ -16,9 +16,9 @@ build-migrate-contracts:
 build-contracts-tests:
 	@docker build ../ -f ./concordia-contracts/Dockerfile --target test -t concordia-contracts-tests --build-arg TZ=Europe/Athens
 run-contract-tests:
-	@docker run --rm -v `pwd`/reports/:/usr/test-reports/ --env-file=./env/contracts.env concordia-contracts-tests:latest
+	@docker run --rm -v `pwd`/reports/contracts/:/usr/test-reports/ --env-file=./env/contracts.env concordia-contracts-tests:latest
 run-contract-tests-host-chain:
-	@docker run --rm -v `pwd`/reports/:/usr/test-reports/ --env-file=./env/contracts.env --net=host concordia-contracts-tests:latest
+	@docker run --rm -v `pwd`/reports/contracts/:/usr/test-reports/ --env-file=./env/contracts.env --net=host concordia-contracts-tests:latest
 run-contracts-migrate:
 	@docker run --rm --env-file=./env/contracts.env concordia-contracts-migrate:latest
 run-contracts-migrate-host-chain:
@@ -28,11 +28,11 @@ get-contracts:
 
 # App targets
 build-app:
-	@docker build ../ -f ./concordia-app/Dockerfile -t concordia-app --build-arg TZ=Europe/Athens --build-arg SKIP_TESTS="true"
+	@docker build ../ -f ./concordia-app/Dockerfile -t concordia-app --build-arg TZ=Europe/Athens
 build-app-tests:
 	@docker build ../ -f ./concordia-app/Dockerfile --target test -t concordia-app-tests --build-arg TZ=Europe/Athens
-get-app-tests:
-	@docker run --rm -v `pwd`/reports/:/app concordia-app-tests:latest sh -c 'mkdir -p /app/app && cp /usr/test-reports/* /app/app'
+run-app-tests:
+	@docker run --rm -v `pwd`/reports/app/:/usr/test-reports/ --env-file=./env/app.env concordia-app-tests:latest
 
 # Other
 clean-images:

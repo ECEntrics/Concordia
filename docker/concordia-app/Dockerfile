@@ -1,7 +1,7 @@
 # --------------------------------------------------
 # Stage 1 (Init contracts build base)
 # --------------------------------------------------
-FROM node:10-alpine as base
+FROM node:14-alpine as base
 LABEL maintainers.1="Apostolos Fanakis <apostolof@auth.gr>"
 LABEL maintainers.2="Panagiotis Nikolaidis <ezerous@gmail.com>"
 LABEL gr.thmmy.ecentrics.concordia-image.name="app"
@@ -28,30 +28,21 @@ COPY ./packages/concordia-app/package.json ./packages/concordia-app/
 RUN yarn install --frozen-lockfile
 
 # Gets the rest of the source code
-COPY ./packages ./packages
+COPY ./packages/concordia-contracts ./packages/concordia-contracts
+COPY ./packages/concordia-app ./packages/concordia-app
 
 # --------------------------------------------------
 # Stage 2 (Test)
 # --------------------------------------------------
 FROM base as test
 
+WORKDIR /opt/concordia-app
+
+COPY ./docker/concordia-app/test-app.sh .
+
 WORKDIR /usr/src/concordia/packages/concordia-app
 
-ARG SKIP_TESTS
-ARG CI
-
-RUN if [ -z "${SKIP_TESTS}" ]; then \
-      yarn lint -f html -o /usr/test-reports/concordia-app-eslint.html --no-color; \
-      if [ $? -eq 0 ]; then \
-        if [ -n "${CI}" ]; then \
-          mkdir /usr/test-results && touch /usr/test-results/pass; \
-        fi \
-      else \
-        echo "SOME TESTS FAILED!"; \
-      fi \
-    else \
-      echo "Skipping tests..."; \
-    fi
+ENTRYPOINT ["/opt/concordia-app/test-app.sh"]
 
 # --------------------------------------------------
 # Stage 3 (Build)
