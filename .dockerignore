@@ -5,6 +5,7 @@ node_modules
 
 docker/
 !docker/concordia-contracts/migrate.sh
+!docker/concordia-contracts/test-contracts.sh
 
 packages/*/node_modules
 packages/*/dist
