@@ -10,7 +10,8 @@
     "_eslint": "yarn eslint . --format table",
     "_solhint": "yarn solhint --formatter table contracts/*.sol test/*.sol",
     "test": "yarn truffle test",
-    "migrate": "yarn truffle migrate --network develop --reset"
+    "migrate": "yarn truffle migrate --network develop",
+    "migrate-reset": "yarn truffle migrate --network develop --reset"
   },
   "dependencies": {
     "@openzeppelin/contracts": "~3.2.0",
