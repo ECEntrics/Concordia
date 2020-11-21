@@ -23,6 +23,7 @@ yarn-error.log*
 docker/volumes
 docker/reports
 docker/env/concordia.env
+docker/env/contracts.env
 
 # Misc
 .env.local
