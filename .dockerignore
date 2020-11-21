@@ -4,14 +4,14 @@ node_modules
 .git
 
 docker/
-!docker/apella-contracts/migrate.sh
+!docker/concordia-contracts/migrate.sh
 
 packages/*/node_modules
 packages/*/dist
 packages/*/coverage
 # TO-NEVER-DO: exclude the build *folder* from contracts package, it's needed for building the app the JSON contract
 # artifacts can be ignored
-packages/apella-contracts/build/*
-packages/apella-app/build
+packages/concordia-contracts/build/*
+packages/concordia-app/build
 
 Jenkinsfile

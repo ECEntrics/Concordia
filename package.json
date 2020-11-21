@@ -1,5 +1,5 @@
 {
-  "name": "apella",
+  "name": "concordia",
   "private": true,
   "workspaces": {
     "packages": ["packages/*"],
