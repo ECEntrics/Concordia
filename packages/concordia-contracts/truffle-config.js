@@ -1,8 +1,9 @@
 const path = require('path');
 const defaults = require('./constants/config/defaults');
 
-const { CHAIN_HOST } = process.env;
-const { CHAIN_PORT } = process.env;
+const {
+  DEVELOP_CHAIN_HOST, DEVELOP_CHAIN_PORT, TEST_CHAIN_HOST, TEST_CHAIN_PORT,
+} = process.env;
 
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
@@ -15,13 +16,13 @@ module.exports = {
   contracts_build_directory: path.join(__dirname, 'build/'),
   networks: {
     develop: {
-      host: CHAIN_HOST || defaults.develop.chainHost,
-      port: CHAIN_PORT || defaults.develop.chainPort,
+      host: DEVELOP_CHAIN_HOST || defaults.develop.chainHost,
+      port: DEVELOP_CHAIN_PORT || defaults.develop.chainPort,
       network_id: '*',
     },
     test: {
-      host: CHAIN_HOST || defaults.test.chainHost,
-      port: CHAIN_PORT || defaults.test.chainPort,
+      host: TEST_CHAIN_HOST || defaults.test.chainHost,
+      port: TEST_CHAIN_PORT || defaults.test.chainPort,
       network_id: '*',
     },
   },

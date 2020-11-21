@@ -23,14 +23,14 @@ Default values are:
 
 Linux:
 ```shell script
-export CHAIN_HOST="127.0.0.1"
-export CHAIN_PORT="7545"
+export DEVELOP_CHAIN_HOST="127.0.0.1"
+export DEVELOP_CHAIN_PORT="7545"
 ```
 
 Windows:
 ```shell script
-SET CHAIN_HOST="127.0.0.1"
-SET CHAIN_PORT="7545"
+SET DEVELOP_CHAIN_HOST="127.0.0.1"
+SET DEVELOP_CHAIN_PORT="7545"
 ```
 
 Migrate (using the development network here, change if necessary):
@@ -48,14 +48,14 @@ Default values are:
 
 Linux:
 ```shell script
-CHAIN_HOST="127.0.0.1"
-CHAIN_PORT="7545"
+TEST_CHAIN_HOST="127.0.0.1"
+TEST_CHAIN_PORT="7545"
 ```
 
 Windows:
 ```shell script
-SET CHAIN_HOST="127.0.0.1"
-SET CHAIN_PORT="7545"
+SET TEST_CHAIN_HOST="127.0.0.1"
+SET TEST_CHAIN_PORT="7545"
 ```
 
 Test:
