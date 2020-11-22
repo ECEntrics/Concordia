@@ -11,3 +11,8 @@ services:
     volumes:
       - ./volumes/ganache_db:/home/ganache_db
       - ./volumes/ganache_keys:/home/ganache_keys
+    networks:
+      ganache-network:
+
+networks:
+  ganache-network:

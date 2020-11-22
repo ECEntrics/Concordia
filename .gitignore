@@ -21,6 +21,7 @@ yarn-error.log*
 
 # Docker volumes
 docker/volumes
+docker/ganache/volumes
 docker/reports
 docker/env/concordia.env
 docker/env/contracts.env

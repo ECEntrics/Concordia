@@ -16,12 +16,12 @@ build-contracts-migrate:
 build-contracts-tests:
 	@docker build ../ -f ./concordia-contracts/Dockerfile --target test -t concordia-contracts-tests --build-arg TZ=Europe/Athens
 run-contract-tests:
-	@docker run --rm -v `pwd`/reports/contracts/:/usr/test-reports/ --env-file=./env/contracts.env concordia-contracts-tests:latest
+	@docker run --rm -v `pwd`/reports/contracts/:/usr/test-reports/ --env-file=./env/contracts.env --net=concordia_ganache-network concordia-contracts-tests:latest
 run-contract-tests-host-chain:
 	@docker run --rm -v `pwd`/reports/contracts/:/usr/test-reports/ --env-file=./env/contracts.env --net=host concordia-contracts-tests:latest
 run-contracts-migrate:
 	@cd .. &&\
-	docker run --rm -v `pwd`/packages/concordia-contracts/build/:/usr/src/concordia/packages/concordia-contracts/build/ --env-file=./docker/env/contracts.env concordia-contracts-migrate:latest
+	docker run --rm -v `pwd`/packages/concordia-contracts/build/:/usr/src/concordia/packages/concordia-contracts/build/ --env-file=./docker/env/contracts.env --net=concordia_ganache-network concordia-contracts-migrate:latest
 run-contracts-migrate-host-chain:
 	@cd .. &&\
 	docker run --rm -v `pwd`/packages/concordia-contracts/build/:/usr/src/concordia/packages/concordia-contracts/build/ --env-file=./docker/env/contracts.env --net=host concordia-contracts-migrate:latest
@@ -37,9 +37,23 @@ build-app-tests:
 run-app-tests:
 	@docker run --rm -v `pwd`/reports/app/:/usr/test-reports/ --env-file=./env/concordia.env concordia-app-tests:latest
 run-app:
-	@docker run -d --env-file=./env/concordia.env -p 8473:80 --name concordia-app concordia-app:latest
+	@docker create --env-file=./env/concordia.env -p 8473:80 --name concordia-app --net=concordia_ganache-network concordia-app:latest &&\
+	docker network connect concordia_rendezvous-network concordia-app &&\
+	docker start concordia-app
 run-app-host-chain:
 	@docker run -d --env-file=./env/concordia.env --name concordia-app --net=host concordia-app:latest
+
+# Ganache targets
+build-ganache:
+	@docker build -f ./ganache/Dockerfile -t concordia-ganache
+run-ganache:
+	@docker-compose -f ./ganache/docker-compose.yml -p concordia up -d
+
+# Rendezvous targets
+build-rendezvous:
+	@docker build -f ./rendezvous/Dockerfile -t concordia-rendezvous
+run-rendezvous:
+	@docker-compose -f ./rendezvous/docker-compose.yml -p concordia up -d
 
 # Other
 clean-images:
