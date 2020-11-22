@@ -1,7 +1,7 @@
 # --------------------------------------------------
 # Stage 1 (Init contracts build base)
 # --------------------------------------------------
-FROM node:10-alpine as base
+FROM node:14-alpine as base
 LABEL maintainers.1="Apostolos Fanakis <apostolof@auth.gr>"
 LABEL maintainers.2="Panagiotis Nikolaidis <ezerous@gmail.com>"
 LABEL gr.thmmy.ecentrics.concordia-image.name="contracts"

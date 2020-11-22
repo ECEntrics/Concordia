@@ -6,13 +6,15 @@ node_modules
 docker/
 !docker/concordia-contracts/migrate.sh
 !docker/concordia-contracts/test-contracts.sh
+!docker/concordia-app/test-app.sh
 
 packages/*/node_modules
 packages/*/dist
 packages/*/coverage
-# TO-NEVER-DO: exclude the build *folder* from contracts package, it's needed for building the app the JSON contract
-# artifacts can be ignored
-packages/concordia-contracts/build/*
+# TO-NEVER-DO: exclude the build folder of the contracts package, it's needed for building the application image.
 packages/concordia-app/build
 
 Jenkinsfile
+
+README.md
+packages/*/README.md

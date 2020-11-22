@@ -1,19 +1,10 @@
 # --------------------------------------------------
-# Stage 1 (Init contracts build base)
+# Stage 1 (Init application build base)
 # --------------------------------------------------
-FROM node:14-alpine as base
+FROM node:14-buster as base
 LABEL maintainers.1="Apostolos Fanakis <apostolof@auth.gr>"
 LABEL maintainers.2="Panagiotis Nikolaidis <ezerous@gmail.com>"
 LABEL gr.thmmy.ecentrics.concordia-image.name="app"
-
-# Fix timezome (needed for timestamps on report files)
-ARG TZ
-
-RUN apk add -U tzdata \
-    && cp /usr/share/zoneinfo/$TZ /etc/localtime \
-    && echo $TZ > /etc/timezone \
-    && apk del tzdata \
-    && rm -rf /var/cache/apk/*
 
 WORKDIR /usr/src/concordia
 
@@ -35,6 +26,11 @@ COPY ./packages/concordia-app ./packages/concordia-app
 # Stage 2 (Test)
 # --------------------------------------------------
 FROM base as test
+
+# Fix timezome (needed for timestamps on report files)
+ARG TZ
+ENV TZ=${TZ}
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 WORKDIR /opt/concordia-app
 
