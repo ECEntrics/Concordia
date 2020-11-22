@@ -21,7 +21,7 @@ run-contract-tests-host-chain:
 	@docker run --rm -v `pwd`/reports/contracts/:/usr/test-reports/ --env-file=./env/contracts.env --net=host concordia-contracts-tests:latest
 run-contracts-migrate:
 	@cd .. &&\
-	docker run --rm -v `pwd`/packages/concordia-contracts/build/:/usr/src/concordia/packages/concordia-contracts/build/ --env-file=./docker/env/contracts.env --net=concordia_ganache-network concordia-contracts-migrate:latest
+	docker run --rm -v `pwd`/packages/concordia-contracts/build/:/usr/src/concordia/packages/concordia-contracts/build/ --env-file=./docker/env/contracts.docker.env --net=concordia_ganache-network concordia-contracts-migrate:latest
 run-contracts-migrate-host-chain:
 	@cd .. &&\
 	docker run --rm -v `pwd`/packages/concordia-contracts/build/:/usr/src/concordia/packages/concordia-contracts/build/ --env-file=./docker/env/contracts.env --net=host concordia-contracts-migrate:latest
@@ -37,7 +37,7 @@ build-app-tests:
 run-app-tests:
 	@docker run --rm -v `pwd`/reports/app/:/usr/test-reports/ --env-file=./env/concordia.env concordia-app-tests:latest
 run-app:
-	@docker create --env-file=./env/concordia.env -p 8473:80 --name concordia-app --net=concordia_ganache-network concordia-app:latest &&\
+	@docker create --env-file=./env/concordia.docker.env -p 8473:80 --name concordia-app --net=concordia_ganache-network concordia-app:latest &&\
 	docker network connect concordia_rendezvous-network concordia-app &&\
 	docker start concordia-app
 run-app-host-chain:

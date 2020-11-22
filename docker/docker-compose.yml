@@ -34,10 +34,11 @@ services:
       context: ./..
       args:
         TZ: Europe/Athens
-        SKIP_TESTS: "true"
-    container_name: concordia-contracts
+    container_name: concordia-contracts-migrate
     env_file:
-      - ./env/contracts.env
+      - ./env/contracts.docker.env
+    volumes:
+      - ../packages/concordia-contracts/build/:/usr/src/concordia/packages/concordia-contracts/build/
     depends_on:
       - ganache
     networks:
@@ -49,17 +50,16 @@ services:
       context: ./..
       args:
         TZ: Europe/Athens
-        SKIP_TESTS: "true"
     container_name: concordia-app
     depends_on:
       - concordia-contracts
       - rendezvous
     env_file:
-      - ./env/concordia.env
+      - ./env/concordia.docker.env
     networks:
       ganache-network:
     ports:
-      - 3000:80
+      - 8473:80
     restart: always
 
 networks:
