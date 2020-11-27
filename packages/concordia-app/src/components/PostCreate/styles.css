@@ -15,3 +15,7 @@
 .subject-input {
     min-width: 300px;
 }
+
+.like:hover .icon {
+    color: #fff !important;
+}
