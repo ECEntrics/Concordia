@@ -6,7 +6,7 @@ import {
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import moment from 'moment';
+import TimeAgo from 'react-timeago';
 import { useHistory } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -41,7 +41,7 @@ const TopicListRow = (props) => {
     if (!loading && topicCallHash && getTopicResults[topicCallHash] !== undefined) {
       setTopicAuthorAddress(getTopicResults[topicCallHash].value[0]);
       setTopicAuthor(getTopicResults[topicCallHash].value[1]);
-      setTimeAgo(moment(getTopicResults[topicCallHash].value[2] * 1000).fromNow());
+      setTimeAgo(getTopicResults[topicCallHash].value[2] * 1000);
       setNumberOfReplies(getTopicResults[topicCallHash].value[3].length);
     }
   }, [getTopicResults, loading, topicCallHash]);
@@ -151,7 +151,13 @@ const TopicListRow = (props) => {
                     <Grid verticalAlign="middle">
                         <Grid.Column floated="left" width={14}>
                             {topicAuthor !== null && timeAgo !== null
-                              ? t('topic.list.row.author.date', { author: topicAuthor, timeAgo })
+                              ? (
+                                  <div>
+                                      {t('topic.list.row.author', { author: topicAuthor })}
+                                      ,&nbsp;
+                                      <TimeAgo date={timeAgo} />
+                                  </div>
+                              )
                               : <Placeholder><Placeholder.Line length="long" /></Placeholder>}
                         </Grid.Column>
                         <Grid.Column floated="right" width={2} textAlign="right">

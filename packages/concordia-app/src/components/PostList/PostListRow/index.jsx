@@ -6,7 +6,7 @@ import {
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import moment from 'moment';
+import TimeAgo from 'react-timeago';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
@@ -40,7 +40,7 @@ const PostListRow = (props) => {
     if (!loading && postCallHash && getPostResults[postCallHash] !== undefined) {
       setPostAuthorAddress(getPostResults[postCallHash].value[0]);
       setPostAuthor(getPostResults[postCallHash].value[1]);
-      setTimeAgo(moment(getPostResults[postCallHash].value[2] * 1000).fromNow());
+      setTimeAgo(getPostResults[postCallHash].value[2] * 1000);
     }
   }, [getPostResults, loading, postCallHash]);
 
@@ -132,7 +132,9 @@ const PostListRow = (props) => {
                     ? (
                         <>
                             <Feed.User as={Link} to={`/users/${postAuthorAddress}`}>{postAuthor}</Feed.User>
-                            <Feed.Date className="post-summary-meta-date">{timeAgo}</Feed.Date>
+                            <Feed.Date className="post-summary-meta-date">
+                                <TimeAgo date={timeAgo} />
+                            </Feed.Date>
                         </>
                     )
                     : <Placeholder><Placeholder.Line length="medium" /></Placeholder>}
