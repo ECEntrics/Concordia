@@ -51,7 +51,7 @@ WORKDIR /usr/src/concordia/packages/concordia-contracts
 ENTRYPOINT ["/opt/concordia-contracts/test-contracts.sh"]
 
 # --------------------------------------------------
-# Stage 4 (Build)
+# Stage 4 (Runtime)
 # --------------------------------------------------
 FROM compile as runtime
 LABEL maintainers.1="Apostolos Fanakis <apostolof@auth.gr>"
@@ -62,8 +62,5 @@ WORKDIR /opt/concordia-contracts
 
 COPY ./docker/concordia-contracts/migrate.sh .
 RUN ["chmod", "+x", "/opt/concordia-contracts/migrate.sh"]
-
-ARG SKIP_MIGRATE
-ENV SKIP_MIGRATE="${SKIP_MIGRATE}"
 
 ENTRYPOINT ["/opt/concordia-contracts/migrate.sh"]

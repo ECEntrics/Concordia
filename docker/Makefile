@@ -45,13 +45,11 @@ run-app-host-chain:
 
 # Ganache targets
 build-ganache:
-	@docker build -f ./ganache/Dockerfile -t concordia-ganache
+	@docker build . -f ./ganache/Dockerfile -t concordia-ganache
 run-ganache:
 	@docker-compose -f ./ganache/docker-compose.yml -p concordia up -d
 
 # Rendezvous targets
-build-rendezvous:
-	@docker build -f ./rendezvous/Dockerfile -t concordia-rendezvous
 run-rendezvous:
 	@docker-compose -f ./rendezvous/docker-compose.yml -p concordia up -d
 

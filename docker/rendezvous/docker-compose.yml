@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   rendezvous:
-    image: libp2p/websocket-star-rendezvous:release
+    image: libp2p/js-libp2p-webrtc-star:version-0.20.1
     container_name: rendezvous
     restart: always
     ports:
