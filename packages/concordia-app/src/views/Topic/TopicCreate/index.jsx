@@ -12,7 +12,7 @@ import { drizzle, breeze } from '../../../redux/store';
 import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../../constants/TransactionStatus';
 import { POSTS_DATABASE, TOPICS_DATABASE } from '../../../constants/OrbitDatabases';
 import { TOPIC_SUBJECT } from '../../../constants/TopicsDatabaseKeys';
-import { POST_CONTENT, POST_SUBJECT } from '../../../constants/PostsDatabaseKeys';
+import { POST_CONTENT } from '../../../constants/PostsDatabaseKeys';
 import { FORUM_CONTRACT } from '../../../constants/ContractNames';
 import { TOPIC_CREATED_EVENT } from '../../../constants/ForumContractEvents';
 
@@ -74,7 +74,6 @@ const TopicCreate = (props) => {
           .put(topicId, { [TOPIC_SUBJECT]: subjectInput }, { pin: true })
           .then(() => postsDb
             .put(postId, {
-              [POST_SUBJECT]: subjectInput,
               [POST_CONTENT]: contentInput,
             }, { pin: true }))
           .then(() => {

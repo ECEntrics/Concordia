@@ -6,7 +6,6 @@
   "post.create.form.send.button": "Post",
   "post.form.content.field.placeholder": "Message",
   "post.form.subject.field.placeholder": "Subject",
-  "post.list.row.author.pre": "Post by",
   "post.list.row.post.id": "#{{id}}",
   "profile.general.tab.address.row.title": "Account address:",
   "profile.general.tab.location.row.title": "Location:",

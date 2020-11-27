@@ -15,7 +15,7 @@ import './styles.css';
 import { POSTS_DATABASE, USER_DATABASE } from '../../../constants/OrbitDatabases';
 import determineKVAddress from '../../../utils/orbitUtils';
 import { USER_PROFILE_PICTURE } from '../../../constants/UserDatabaseKeys';
-import { POST_CONTENT, POST_SUBJECT } from '../../../constants/PostsDatabaseKeys';
+import { POST_CONTENT } from '../../../constants/PostsDatabaseKeys';
 import { FORUM_CONTRACT } from '../../../constants/ContractNames';
 
 const { orbit } = breeze;
@@ -28,7 +28,6 @@ const PostListRow = (props) => {
   const [postAuthorAddress, setPostAuthorAddress] = useState(null);
   const [postAuthor, setPostAuthor] = useState(null);
   const [timeAgo, setTimeAgo] = useState(null);
-  const [postSubject, setPostSubject] = useState(null);
   const [postContent, setPostContent] = useState(null);
   const [postAuthorMeta, setPostAuthorMeta] = useState(null);
   const userAddress = useSelector((state) => state.user.address);
@@ -68,7 +67,6 @@ const PostListRow = (props) => {
       .find((post) => post.id === postId);
 
     if (postFound) {
-      setPostSubject(postFound[POST_SUBJECT]);
       setPostContent(postFound[POST_CONTENT]);
     }
   }, [postId, posts]);
@@ -126,9 +124,6 @@ const PostListRow = (props) => {
           <Feed.Content>
               <Feed.Summary>
                   <div>
-                      {postSubject !== null
-                        ? postSubject
-                        : <Placeholder><Placeholder.Line length="very long" /></Placeholder>}
                       <span className="post-summary-meta-index">
                           {t('post.list.row.post.id', { id: postIndexInTopic })}
                       </span>
@@ -136,8 +131,6 @@ const PostListRow = (props) => {
                   {postAuthor !== null && setPostAuthorAddress !== null && timeAgo !== null
                     ? (
                         <>
-                            {t('post.list.row.author.pre')}
-                            &nbsp;
                             <Feed.User as={Link} to={`/users/${postAuthorAddress}`}>{postAuthor}</Feed.User>
                             <Feed.Date className="post-summary-meta-date">{timeAgo}</Feed.Date>
                         </>
@@ -150,7 +143,7 @@ const PostListRow = (props) => {
           </Feed.Content>
       </Dimmer.Dimmable>
   ), [
-    authorAvatarLink, loading, postAuthor, postAuthorAddress, postContent, postIndexInTopic, postSubject, t, timeAgo,
+    authorAvatarLink, loading, postAuthor, postAuthorAddress, postContent, postIndexInTopic, t, timeAgo,
   ]);
 };
 

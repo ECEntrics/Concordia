@@ -8,14 +8,6 @@
     opacity: 0.4;
 }
 
-.post-summary-meta-date {
-    float: right !important;
-}
-
-.subject-input {
-    min-width: 300px;
-}
-
 .like:hover .icon {
     color: #fff !important;
 }
