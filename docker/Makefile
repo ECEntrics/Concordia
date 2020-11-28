@@ -1,4 +1,4 @@
-# Targets for building/running/stopping both apps (uses the docker-compose file)
+# Targets for building/running/stopping the blockchain and rendezvous server (using the docker-compose file)
 build:
 	@docker-compose -f ./docker-compose.yml -p concordia build;
 run:
@@ -7,6 +7,16 @@ stop:
 	@docker-compose -f ./docker-compose.yml -p concordia down
 stop-clean-data:
 	@docker-compose -f ./docker-compose.yml -p concordia down -v
+
+# Ganache targets
+build-ganache:
+	@docker build . -f ./ganache/Dockerfile -t concordia-ganache
+run-ganache:
+	@docker-compose -f ./ganache/docker-compose.yml -p concordia up -d
+
+# Rendezvous targets
+run-rendezvous:
+	@docker-compose -f ./rendezvous/docker-compose.yml -p concordia up -d
 
 # Contracts targets
 build-contracts:
@@ -42,16 +52,6 @@ run-app:
 	docker start concordia-app
 run-app-host-chain:
 	@docker run -d --env-file=./env/concordia.env --name concordia-app --net=host concordia-app:latest
-
-# Ganache targets
-build-ganache:
-	@docker build . -f ./ganache/Dockerfile -t concordia-ganache
-run-ganache:
-	@docker-compose -f ./ganache/docker-compose.yml -p concordia up -d
-
-# Rendezvous targets
-run-rendezvous:
-	@docker-compose -f ./rendezvous/docker-compose.yml -p concordia up -d
 
 # Other
 clean-images:

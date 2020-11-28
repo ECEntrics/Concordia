@@ -10,56 +10,19 @@ services:
       - 8545:8545
     user: root
     volumes:
-      - ./volumes/ganache_db:/home/ganache_db
-      - ./volumes/ganache_keys:/home/ganache_keys
+      - ./ganache/volumes/ganache_db:/home/ganache_db
+      - ./ganache/volumes/ganache_keys:/home/ganache_keys
     networks:
       ganache-network:
     restart: always
 
-  # Simple rendezvous server image
-  # Reference:
-  # https://hub.docker.com/r/libp2p/websocket-star-rendezvous
   rendezvous:
-    image: libp2p/websocket-star-rendezvous:release
+    image: libp2p/js-libp2p-webrtc-star:version-0.20.1
     container_name: rendezvous
     networks:
       rendezvous-network:
     ports:
       - 9090:9090
-    restart: always
-
-  concordia-contracts:
-    build:
-      dockerfile: ./docker/concordia-contracts/Dockerfile
-      context: ./..
-      args:
-        TZ: Europe/Athens
-    container_name: concordia-contracts-migrate
-    env_file:
-      - ./env/contracts.docker.env
-    volumes:
-      - ../packages/concordia-contracts/build/:/usr/src/concordia/packages/concordia-contracts/build/
-    depends_on:
-      - ganache
-    networks:
-      ganache-network:
-
-  concordia-app:
-    build:
-      dockerfile: ./docker/concordia-app/Dockerfile
-      context: ./..
-      args:
-        TZ: Europe/Athens
-    container_name: concordia-app
-    depends_on:
-      - concordia-contracts
-      - rendezvous
-    env_file:
-      - ./env/concordia.docker.env
-    networks:
-      ganache-network:
-    ports:
-      - 8473:80
     restart: always
 
 networks:
