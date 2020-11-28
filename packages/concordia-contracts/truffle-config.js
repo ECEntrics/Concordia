@@ -2,7 +2,7 @@ const path = require('path');
 const defaults = require('./constants/config/defaults');
 
 const {
-  DEVELOP_CHAIN_HOST, DEVELOP_CHAIN_PORT, TEST_CHAIN_HOST, TEST_CHAIN_PORT,
+  CHAIN_HOST, CHAIN_PORT,
 } = process.env;
 
 module.exports = {
@@ -16,13 +16,18 @@ module.exports = {
   contracts_build_directory: path.join(__dirname, 'build/'),
   networks: {
     develop: {
-      host: DEVELOP_CHAIN_HOST || defaults.develop.chainHost,
-      port: DEVELOP_CHAIN_PORT || defaults.develop.chainPort,
+      host: defaults.develop.chainHost,
+      port: defaults.develop.chainPort,
       network_id: '*',
     },
     test: {
-      host: TEST_CHAIN_HOST || defaults.test.chainHost,
-      port: TEST_CHAIN_PORT || defaults.test.chainPort,
+      host: defaults.test.chainHost,
+      port: defaults.test.chainPort,
+      network_id: '*',
+    },
+    env: {
+      host: CHAIN_HOST,
+      port: CHAIN_PORT,
       network_id: '*',
     },
   },

@@ -14,51 +14,55 @@ yarn lint
 ```
 
 ## Migrate contracts
-Define the host and port of the blockchain in use.
-Default values are:
+Default host and port values of the blockchain are:
 
 | host | port |
 |---|---|
 | 127.0.0.1 | 8545 |
 
+Migrate (using the development network by default):
+```shell script
+yarn migrate
+```
+
+### Setting different host and port values
+Define the host and port of the blockchain in use.
+
 Linux:
 ```shell script
-export DEVELOP_CHAIN_HOST="127.0.0.1"
-export DEVELOP_CHAIN_PORT="7545"
+export CHAIN_HOST="127.0.0.1"
+export CHAIN_PORT="7545"
 ```
 
 Windows:
 ```shell script
-SET DEVELOP_CHAIN_HOST="127.0.0.1"
-SET DEVELOP_CHAIN_PORT="7545"
+SET CHAIN_HOST="127.0.0.1"
+SET CHAIN_PORT="7545"
 ```
 
-Migrate (using the development network here, change if necessary):
+Migrate using the `env` network :
 ```shell script
-yarn migrate --network develop
+yarn _migrate --network env
 ```
+**Notice the underscore `_` suffix in the script name. This is not a mistake.**
 
 ## Test contracts
-Define the host and port of the blockchain in use.
-Default values are:
+Default host and port values of the blockchain are:
 
 | host | port |
 |---|---|
 | 127.0.0.1 | 8546 |
 
-Linux:
-```shell script
-TEST_CHAIN_HOST="127.0.0.1"
-TEST_CHAIN_PORT="7545"
-```
-
-Windows:
-```shell script
-SET TEST_CHAIN_HOST="127.0.0.1"
-SET TEST_CHAIN_PORT="7545"
-```
 
 Test:
 ```shell script
 yarn test
+```
+
+### Setting different host and port values
+Define the host and port of the blockchain in use like above.
+
+Test:
+```shell script
+yarn test --network env
 ```
