@@ -13,6 +13,8 @@ build-ganache:
 	@docker build . -f ./ganache/Dockerfile -t concordia-ganache
 run-ganache:
 	@docker-compose -f ./ganache/docker-compose.yml -p concordia up -d
+run-ganache-test:
+	@docker-compose -f ./ganache/docker-compose.test.yml -p concordia up -d
 
 # Rendezvous targets
 run-rendezvous:
@@ -26,7 +28,7 @@ build-contracts-migrate:
 build-contracts-tests:
 	@docker build ../ -f ./concordia-contracts/Dockerfile --target test -t concordia-contracts-tests --build-arg TZ=Europe/Athens
 run-contract-tests:
-	@docker run --rm -v `pwd`/reports/contracts/:/usr/test-reports/ --env-file=./env/contracts.env --net=concordia_ganache-network concordia-contracts-tests:latest
+	@docker run --rm -v `pwd`/reports/contracts/:/usr/test-reports/ --env-file=./env/contracts.env --net=concordia_ganache-test-network concordia-contracts-tests:latest
 run-contract-tests-host-chain:
 	@docker run --rm -v `pwd`/reports/contracts/:/usr/test-reports/ --env-file=./env/contracts.env --net=host concordia-contracts-tests:latest
 run-contracts-migrate:
