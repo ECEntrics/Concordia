@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  ganache-test:
+    build: .
+    container_name: ganache-test
+    restart: always
+    ports:
+      - "8546:8545"
+    user: root
+    volumes:
+      - ./volumes/ganache_db:/home/ganache_db
+      - ./volumes/ganache_keys:/home/ganache_keys
+    networks:
+      ganache-test-network:
+
+networks:
+  ganache-test-network:
