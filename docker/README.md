@@ -1,9 +1,9 @@
 # Concordia Dockerized
 
-This README provides information about the provided docker images, their configuration and supported deployment
+This page provides information about the provided docker images, their configuration and supported deployment
 strategies.
 
-TLDR: head down to the [Putting it all together/Scripts](#piat-mkfile-targets) for a quick setup.
+TLDR: head down to [Putting it all together/Scripts](#piat-mkfile-targets) for a quick setup.
 
 ## Services
 
@@ -22,7 +22,7 @@ Note that any other Ethereum compliant blockchain can be used.
 ### Rendezvous
 
 Concordia uses a distributed database to store forum data. A rendezvous server is needed in order for users to discover
-peers in the network and get access to the network.
+peers in the network and get access to the data.
 
 ### Application
 
@@ -91,8 +91,8 @@ the resulting build using an nginx server. The image makes use of the environmen
 | REACT_APP_RENDEZVOUS_PORT | 9090 | Set the port of the rendezvous server |
 
 **Attention**: this image will copy the contract artifacts from the directory `/packages/concordia-contracts/build`.
-The image is bound the these artifacts after build. If the contracts (and hence the artifacts) change the image must be
-re-built for the changes to take effect.
+The image is bound the these artifacts after build. If the contracts change or get re=deployed the image must be
+re-built to use the new artifacts.
 
 **Attention**: make sure the contracts have been deployed before **building** this image. Also, make sure the rendezvous
 server is up and running.
