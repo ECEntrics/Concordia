@@ -1,7 +1,7 @@
 #!/bin/sh
 
 N_ACCOUNTS="${ACCOUNTS_NUMBER:-10}"
-ETHER="${ACCOUNTS_ETHER:-1000}"
+ETHER="${ACCOUNTS_ETHER:-10}"
 MNEMONIC="${MNEMONIC:-"myth like bonus scare over problem client lizard pioneer submit female collect"}"
 HOST="${HOST:-"0.0.0.0"}"
 PORT="${PORT:-8545}"
