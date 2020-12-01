@@ -117,7 +117,7 @@ contract Forum {
 
     function createPost(uint topicID) public returns (uint) {
         require(hasUserSignedUp(msg.sender));  // Only registered users can create posts
-        require(topicID<numTopics); // Only allow posting to a topic that exists
+        require(topicExists(topicID)); // Only allow posting to a topic that exists
         uint postID = numPosts++;
         posts[postID] = Post(postID, msg.sender, block.timestamp, topicID);
         topics[topicID].postIDs.push(postID);
@@ -126,37 +126,51 @@ contract Forum {
         return postID;
     }
 
+    // Verify that topic exists
+    function topicExists(uint topicID) public view returns (bool) {
+        return topicID<numTopics;
+    }
+
+    // Verify that post exists
+    function postExists(uint postID) public view returns (bool) {
+        return postID<numPosts;
+    }
+
     function getNumberOfTopics() public view returns (uint) {
         return numTopics;
     }
 
+    function getNumberOfPosts() public view returns (uint) {
+        return numPosts;
+    }
+
     function getTopic(uint topicID) public view returns (address, string memory, uint, uint[] memory) {
-        require(topicID<numTopics);
+        require(topicExists(topicID));
         return (
-        topics[topicID].author,
-        users[topics[topicID].author].username,
-        topics[topicID].timestamp,
-        topics[topicID].postIDs
+            topics[topicID].author,
+            users[topics[topicID].author].username,
+            topics[topicID].timestamp,
+            topics[topicID].postIDs
         );
     }
 
     function getTopicPosts(uint topicID) public view returns (uint[] memory) {
-        require(topicID<numTopics); // Topic should exist
+        require(topicExists(topicID)); // Topic should exist
         return topics[topicID].postIDs;
     }
 
     function getTopicAuthor(uint topicID) public view returns (address) {
-        require(topicID<numTopics); // Topic should exist
+        require(topicExists(topicID)); // Topic should exist
         return topics[topicID].author;
     }
 
     function getPost(uint postID) public view returns (address, string memory, uint, uint) {
-        require(postID<numPosts);
+        require(postExists(postID));
         return (
-        posts[postID].author,
-        users[posts[postID].author].username,
-        posts[postID].timestamp,
-        posts[postID].topicID
+            posts[postID].author,
+            users[posts[postID].author].username,
+            posts[postID].timestamp,
+            posts[postID].topicID
         );
     }
 }

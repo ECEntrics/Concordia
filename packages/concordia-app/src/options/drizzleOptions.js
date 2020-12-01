@@ -9,7 +9,8 @@ const drizzleOptions = {
   contracts,
   events: {
     Forum: ['UserSignedUp', 'UsernameUpdated', 'TopicCreated', 'PostCreated'],
-    Voting: ['PollCreated', 'UserVoted'],
+    Voting: ['PollCreated', 'UserVotedPoll'],
+    PostVoting: ['UserVotedPost'],
   },
   reloadWindowOnNetworkChange: true,
   reloadWindowOnAccountChange: true, // We need it to reinitialize breeze and create new Orbit databases

@@ -23,10 +23,10 @@ contract Voting {
     mapping (uint => Poll) polls;
 
     event PollCreated(uint topicID);
-    event UserVoted(address userAddress);
+    event UserVotedPoll(address userAddress, uint topicID, uint vote);
 
-    // Verify that poll exists
-    function isPollExistent(uint topicID) public view returns (bool) {
+    // Verifies that a poll exists
+    function pollExists(uint topicID) public view returns (bool) {
         if (polls[topicID].timestamp != 0)
             return true;
         return false;
@@ -34,9 +34,9 @@ contract Voting {
 
     function createPoll(uint topicID, uint numOptions, string memory dataHash, bool enableVoteChanges) public returns (uint) {
         require(forum.hasUserSignedUp(msg.sender));  // Only registered users can create polls
-        require(topicID<forum.getNumberOfTopics()); // Only allow poll creation if topic exists
+        require(forum.topicExists(topicID)); // Only allow poll creation if topic exists
         require (forum.getTopicAuthor(topicID) == msg.sender); // Only allow poll creation from the author of the topic
-        require(!isPollExistent(topicID)); // Only allow poll creation if it doesn't already exist
+        require(!pollExists(topicID)); // Only allow poll creation if it doesn't already exist
 
         Poll storage poll = polls[topicID];
         poll.topicID = topicID;
@@ -50,27 +50,27 @@ contract Voting {
     }
 
     function getPollInfo(uint topicID) public view returns (uint, string memory, uint, uint) {
-        require(isPollExistent(topicID));
+        require(pollExists(topicID));
 
         uint totalVotes = getTotalVotes(topicID);
 
         return (
-        polls[topicID].numOptions,
-        polls[topicID].dataHash,
-        polls[topicID].timestamp,
-        totalVotes
+            polls[topicID].numOptions,
+            polls[topicID].dataHash,
+            polls[topicID].timestamp,
+            totalVotes
         );
     }
 
     function isOptionValid(uint topicID, uint option) public view returns (bool) {
-        require(isPollExistent(topicID));
+        require(pollExists(topicID));
         if (option <= polls[topicID].numOptions)    // Option 0 is valid as well (no option chosen)
             return true;
         return false;
     }
 
     function hasVoted(uint topicID, address voter) public view returns (bool) {
-        require(isPollExistent(topicID));
+        require(pollExists(topicID));
         if (polls[topicID].votes[voter] != 0)
             return true;
         return false;
@@ -83,13 +83,13 @@ contract Voting {
 
     // Gets vote count for a specific option
     function getVoteCount(uint topicID, uint option) public view returns (uint) {
-        require(isPollExistent(topicID));
+        require(pollExists(topicID));
         require(isOptionValid(topicID, option));
         return (polls[topicID].voters[option].length);
     }
 
     function getTotalVotes(uint topicID) public view returns (uint) {
-        require(isPollExistent(topicID));
+        require(pollExists(topicID));
 
         Poll storage poll = polls[topicID];
         uint totalVotes = 0;
@@ -102,12 +102,12 @@ contract Voting {
 
     // Gets voters for a specific option
     function getVoters(uint topicID, uint option) public view returns (address[] memory) {
-        require(isPollExistent(topicID));
+        require(pollExists(topicID));
         return (polls[topicID].voters[option]);
     }
 
     function getVoterIndex(uint topicID, address voter) public view returns (uint) {
-        require(isPollExistent(topicID));
+        require(pollExists(topicID));
         require(hasVoted(topicID, voter));
         Poll storage poll = polls[topicID];
         uint votedOption = getVote(topicID, voter);
@@ -122,7 +122,7 @@ contract Voting {
 
     function vote(uint topicID, uint option) public {
         require(forum.hasUserSignedUp(msg.sender));
-        require(isPollExistent(topicID));
+        require(pollExists(topicID));
         require(isOptionValid(topicID, option));
         Poll storage poll = polls[topicID];
         address voter = msg.sender;
@@ -134,7 +134,7 @@ contract Voting {
         if(prevOption == 0){
             poll.voters[option].push(voter);
             poll.votes[voter] = option;
-            emit UserVoted(voter);
+            emit UserVotedPoll(voter, topicID, option);
         }
         else if (poll.enableVoteChanges){
             uint voterIndex = getVoterIndex(topicID, voter);
@@ -144,7 +144,7 @@ contract Voting {
             if(option != 0)
                 poll.voters[option].push(voter);
             poll.votes[voter] = option;
-            emit UserVoted(voter);
+            emit UserVotedPoll(voter, topicID, option);
         }
     }
 }
