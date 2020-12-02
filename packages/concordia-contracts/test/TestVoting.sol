@@ -17,10 +17,10 @@ contract TestVoting {
         (firstTopicId,) = forum.createTopic();
     }
 
-    function testIsPollExistent() public {
+    function testIfPollExists() public {
         Voting voting = Voting(DeployedAddresses.Voting());
 
-        bool actual = voting.isPollExistent(firstTopicId);
+        bool actual = voting.pollExists(firstTopicId);
 
         Assert.equal(actual, false, "Poll should not exist");
     }
