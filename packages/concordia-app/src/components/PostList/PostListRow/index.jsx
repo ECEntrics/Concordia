@@ -6,7 +6,7 @@ import {
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import moment from 'moment';
+import TimeAgo from 'react-timeago';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
@@ -15,7 +15,7 @@ import './styles.css';
 import { POSTS_DATABASE, USER_DATABASE } from '../../../constants/orbit/OrbitDatabases';
 import determineKVAddress from '../../../utils/orbitUtils';
 import { USER_PROFILE_PICTURE } from '../../../constants/orbit/UserDatabaseKeys';
-import { POST_CONTENT, POST_SUBJECT } from '../../../constants/orbit/PostsDatabaseKeys';
+import { POST_CONTENT } from '../../../constants/orbit/PostsDatabaseKeys';
 import { FORUM_CONTRACT } from '../../../constants/contracts/ContractNames';
 
 const { orbit } = breeze;
@@ -28,7 +28,6 @@ const PostListRow = (props) => {
   const [postAuthorAddress, setPostAuthorAddress] = useState(null);
   const [postAuthor, setPostAuthor] = useState(null);
   const [timeAgo, setTimeAgo] = useState(null);
-  const [postSubject, setPostSubject] = useState(null);
   const [postContent, setPostContent] = useState(null);
   const [postAuthorMeta, setPostAuthorMeta] = useState(null);
   const userAddress = useSelector((state) => state.user.address);
@@ -41,7 +40,7 @@ const PostListRow = (props) => {
     if (!loading && postCallHash && getPostResults[postCallHash] !== undefined) {
       setPostAuthorAddress(getPostResults[postCallHash].value[0]);
       setPostAuthor(getPostResults[postCallHash].value[1]);
-      setTimeAgo(moment(getPostResults[postCallHash].value[2] * 1000).fromNow());
+      setTimeAgo(getPostResults[postCallHash].value[2] * 1000);
     }
   }, [getPostResults, loading, postCallHash]);
 
@@ -68,7 +67,6 @@ const PostListRow = (props) => {
       .find((post) => post.id === postId);
 
     if (postFound) {
-      setPostSubject(postFound[POST_SUBJECT]);
       setPostContent(postFound[POST_CONTENT]);
     }
   }, [postId, posts]);
@@ -126,9 +124,6 @@ const PostListRow = (props) => {
           <Feed.Content>
               <Feed.Summary>
                   <div>
-                      {postSubject !== null
-                        ? postSubject
-                        : <Placeholder><Placeholder.Line length="very long" /></Placeholder>}
                       <span className="post-summary-meta-index">
                           {t('post.list.row.post.id', { id: postIndexInTopic })}
                       </span>
@@ -136,10 +131,10 @@ const PostListRow = (props) => {
                   {postAuthor !== null && setPostAuthorAddress !== null && timeAgo !== null
                     ? (
                         <>
-                            {t('post.list.row.author.pre')}
-                            &nbsp;
                             <Feed.User as={Link} to={`/users/${postAuthorAddress}`}>{postAuthor}</Feed.User>
-                            <Feed.Date className="post-summary-meta-date">{timeAgo}</Feed.Date>
+                            <Feed.Date className="post-summary-meta-date">
+                                <TimeAgo date={timeAgo} />
+                            </Feed.Date>
                         </>
                     )
                     : <Placeholder><Placeholder.Line length="medium" /></Placeholder>}
@@ -150,7 +145,7 @@ const PostListRow = (props) => {
           </Feed.Content>
       </Dimmer.Dimmable>
   ), [
-    authorAvatarLink, loading, postAuthor, postAuthorAddress, postContent, postIndexInTopic, postSubject, t, timeAgo,
+    authorAvatarLink, loading, postAuthor, postAuthorAddress, postContent, postIndexInTopic, t, timeAgo,
   ]);
 };
 

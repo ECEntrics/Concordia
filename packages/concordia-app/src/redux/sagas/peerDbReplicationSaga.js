@@ -12,7 +12,7 @@ import { FETCH_USER_DATABASE, UPDATE_ORBIT_DATA } from '../actions/peerDbReplica
 import { POSTS_DATABASE, TOPICS_DATABASE, USER_DATABASE } from '../../constants/orbit/OrbitDatabases';
 import userDatabaseKeys from '../../constants/orbit/UserDatabaseKeys';
 import { TOPIC_SUBJECT } from '../../constants/orbit/TopicsDatabaseKeys';
-import { POST_CONTENT, POST_SUBJECT } from '../../constants/orbit/PostsDatabaseKeys';
+import { POST_CONTENT } from '../../constants/orbit/PostsDatabaseKeys';
 
 function* fetchUserDb({ orbit, userAddress, dbName }) {
   const peerDbAddress = yield call(determineKVAddress, {
@@ -94,7 +94,6 @@ function* updateReduxState({ database }) {
         ...oldPostsUnchanged,
         ...Object.entries(database.all).map(([key, value]) => ({
           id: parseInt(key, 10),
-          [POST_SUBJECT]: value[POST_SUBJECT],
           [POST_CONTENT]: value[POST_CONTENT],
         })),
       ],

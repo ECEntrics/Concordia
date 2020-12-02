@@ -6,7 +6,6 @@
   "post.create.form.send.button": "Post",
   "post.form.content.field.placeholder": "Message",
   "post.form.subject.field.placeholder": "Subject",
-  "post.list.row.author.pre": "Post by",
   "post.list.row.post.id": "#{{id}}",
   "profile.general.tab.address.row.title": "Account address:",
   "profile.general.tab.location.row.title": "Location:",
@@ -52,7 +51,7 @@
   "topic.create.form.post.button": "Post",
   "topic.create.form.subject.field.label": "Topic subject",
   "topic.create.form.subject.field.placeholder": "Subject",
-  "topic.list.row.author.date": "Created by {{author}}, {{timeAgo}}",
+  "topic.list.row.author": "by {{author}}",
   "topic.list.row.number.of.replies": "{{numberOfReplies}} replies",
   "topic.list.row.topic.id": "#{{id}}"
 }

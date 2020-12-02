@@ -14,7 +14,7 @@ import { USER_PROFILE_PICTURE } from '../../constants/orbit/UserDatabaseKeys';
 import { breeze, drizzle } from '../../redux/store';
 import './styles.css';
 import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../constants/TransactionStatus';
-import { POST_CONTENT, POST_SUBJECT } from '../../constants/orbit/PostsDatabaseKeys';
+import { POST_CONTENT } from '../../constants/orbit/PostsDatabaseKeys';
 import { FORUM_CONTRACT } from '../../constants/contracts/ContractNames';
 import { POST_CREATED_EVENT } from '../../constants/contracts/events/ForumContractEvents';
 
@@ -27,7 +27,7 @@ const PostCreate = (props) => {
   } = props;
   const transactionStack = useSelector((state) => state.transactionStack);
   const transactions = useSelector((state) => state.transactions);
-  const [postSubject, setPostSubject] = useState(initialPostSubject);
+  const [postSubject] = useState(initialPostSubject);
   const [postContent, setPostContent] = useState('');
   const [userProfilePictureUrl, setUserProfilePictureUrl] = useState();
   const [createPostCacheSendStackId, setCreatePostCacheSendStackId] = useState('');
@@ -68,9 +68,6 @@ const PostCreate = (props) => {
     }
 
     switch (event.target.name) {
-      case 'postSubject':
-        setPostSubject(event.target.value);
-        break;
       case 'postContent':
         setPostContent(event.target.value);
         break;
@@ -94,11 +91,9 @@ const PostCreate = (props) => {
 
         postsDb
           .put(contractPostId, {
-            [POST_SUBJECT]: postSubject,
             [POST_CONTENT]: postContent,
           }, { pin: true })
           .then(() => {
-            setPostSubject(initialPostSubject);
             setPostContent('');
             setPosting(false);
             setStoringPost(false);
@@ -147,21 +142,6 @@ const PostCreate = (props) => {
               </Feed.Label>
               <Feed.Content>
                   <Feed.Summary>
-                      <div>
-                          <Input
-                            placeholder={t('post.form.subject.field.placeholder')}
-                            name="postSubject"
-                            className="subject-input"
-                            size="mini"
-                            value={postSubject}
-                            onChange={handleInputChange}
-                          />
-                          <span className="post-summary-meta-index">
-                              {t('post.list.row.post.id', { id: postIndexInTopic })}
-                          </span>
-                      </div>
-                  </Feed.Summary>
-                  <Feed.Extra>
                       <Form>
                           <TextArea
                             placeholder={t('post.form.content.field.placeholder')}
@@ -172,8 +152,7 @@ const PostCreate = (props) => {
                             onChange={handleInputChange}
                           />
                       </Form>
-                  </Feed.Extra>
-
+                  </Feed.Summary>
                   <Feed.Meta>
                       <Feed.Like>
                           <Form.Button
