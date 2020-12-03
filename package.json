@@ -2,7 +2,42 @@
   "name": "concordia",
   "private": true,
   "workspaces": {
-    "packages": ["packages/*"],
-    "nohoist": ["**/web3", "**/web3/**"]
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/web3",
+      "**/web3/**"
+    ]
+  },
+  "scripts": {
+    "build": "docker/docker.js build",
+    "run": "docker/docker.js run",
+    "stop": "docker/docker.js stop",
+    "stop-clean-data": "docker/docker.js stop-clean-data",
+
+    "build-ganache": "docker/docker.js build-ganache",
+    "run-ganache": "docker/docker.js run-ganache",
+    "run-ganache-test": "docker/docker.js run-ganache-test",
+
+    "run-rendezvous": "docker/docker.js run-rendezvous",
+
+    "build-contracts": "docker/docker.js build-contracts",
+    "build-contracts-migrate": "docker/docker.js build-contracts-migrate",
+    "build-contracts-tests": "docker/docker.js build-contracts-tests",
+    "run-contract-tests": "docker/docker.js run-contract-tests",
+    "run-contract-tests-host-chain": "docker/docker.js run-contract-tests-host-chain",
+    "run-contracts-migrate": "docker/docker.js run-contracts-migrate",
+    "run-contracts-migrate-host-chain": "docker/docker.js run-contracts-migrate-host-chain",
+    "get-contracts": "docker/docker.js get-contracts",
+
+    "build-app": "docker/docker.js build-app",
+    "build-app-tests": "docker/docker.js build-app-tests",
+    "run-app-tests": "docker/docker.js run-app-tests",
+    "run-app": "docker/docker.js run-app",
+    "run-app-host-chain": "docker/docker.js run-app-host-chain"
+  },
+  "devDependencies": {
+    "shelljs": "^0.8.4"
   }
 }
