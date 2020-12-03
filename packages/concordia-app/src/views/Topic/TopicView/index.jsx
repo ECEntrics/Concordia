@@ -29,6 +29,7 @@ const TopicView = (props) => {
   const drizzleInitialized = useSelector((state) => state.drizzleStatus.initialized);
   const drizzleInitializationFailed = useSelector((state) => state.drizzleStatus.failed);
   const userAddress = useSelector((state) => state.user.address);
+  const hasSignedUp = useSelector((state) => state.user.hasSignedUp);
   const getTopicResults = useSelector((state) => state.contracts[FORUM_CONTRACT].getTopic);
   const topics = useSelector((state) => state.orbitData.topics);
   const users = useSelector((state) => state.orbitData.users);
@@ -174,7 +175,7 @@ const TopicView = (props) => {
               </Step.Group>
           </Dimmer.Dimmable>
           <PostList postIds={postIds || []} loading={postIds === null} />
-          {topicSubject !== null && postIds !== null && (
+          {topicSubject !== null && postIds !== null && hasSignedUp && (
               <PostCreate
                 topicId={topicId}
                 postIndexInTopic={postIds.length + 1}
