@@ -7,6 +7,7 @@ docker/
 !docker/concordia-contracts/migrate.sh
 !docker/concordia-contracts/test-contracts.sh
 !docker/concordia-app/test-app.sh
+!docker/concordia-app/nginx.conf
 !docker/ganache/start-blockchain.sh
 
 packages/*/node_modules

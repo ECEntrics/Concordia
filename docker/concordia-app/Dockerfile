@@ -68,5 +68,5 @@ RUN apk add -U tzdata \
 
 WORKDIR "/var/www/concordia-app"
 
-COPY ./packages/concordia-app/nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./docker/concordia-app/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --chown=nginx:nginx --from=build /usr/src/concordia/packages/concordia-app/build .
