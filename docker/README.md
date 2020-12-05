@@ -212,3 +212,9 @@ the address `localhost:8545`.
 
 Targets in the Makefile make use of env files suffixed by `.docker` located in the directory `./env`. Using this
 environment variables, you can change various configuration options of the testing/production deploys.
+
+Targets suffixed with `host-chain` will try to use a blockchain and rendezvous server running in the host machine. They
+use the `--net=host` docker option and get the required environment variables from different env files,
+`./env/contracts.env` and `./env/concordia.env` (notice these env files don't include the `.docker`). These env files do
+not exist by default. The values set will largely depend on how you choose to run services in your system (which ports
+you use etc.), so be sure to create them before running any `host-chain` target. Luckily example files are provided.
