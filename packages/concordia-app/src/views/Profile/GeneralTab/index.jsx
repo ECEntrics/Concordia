@@ -141,7 +141,7 @@ const GeneralTab = (props) => {
           </Table.Body>
       </Table>
   ), [
-    authorAvatar, numberOfPosts, numberOfTopics, profileAddress, profileMeta, userInfoOrbitAddress,
+    authorAvatar, numberOfPosts, numberOfTopics, profileAddress, profileMeta, t, userInfoOrbitAddress,
     userPostsOrbitAddress, userRegistrationTimestamp, userTopicsOrbitAddress, username,
   ]);
 };

@@ -2,7 +2,7 @@ import React, {
   memo, useCallback, useEffect, useState,
 } from 'react';
 import {
-  Button, Feed, Form, Icon, Image, Input, TextArea,
+  Button, Feed, Form, Icon, Image, TextArea,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -23,11 +23,10 @@ const { orbit } = breeze;
 
 const PostCreate = (props) => {
   const {
-    topicId, postIndexInTopic, initialPostSubject, account,
+    topicId, initialPostSubject, account,
   } = props;
   const transactionStack = useSelector((state) => state.transactionStack);
   const transactions = useSelector((state) => state.transactions);
-  const [postSubject] = useState(initialPostSubject);
   const [postContent, setPostContent] = useState('');
   const [userProfilePictureUrl, setUserProfilePictureUrl] = useState();
   const [createPostCacheSendStackId, setCreatePostCacheSendStackId] = useState('');
@@ -107,18 +106,18 @@ const PostCreate = (props) => {
       }
     }
   }, [
-    createPostCacheSendStackId, initialPostSubject, postContent, postSubject, posting, storingPost, transactionStack,
+    createPostCacheSendStackId, initialPostSubject, postContent, posting, storingPost, transactionStack,
     transactions,
   ]);
 
   const savePost = useCallback(() => {
-    if (postSubject === '' || postContent === '') {
+    if (postContent === '') {
       return;
     }
 
     setPosting(true);
     setCreatePostCacheSendStackId(createPost.cacheSend(...[topicId], { from: account }));
-  }, [account, postContent, postSubject, topicId]);
+  }, [account, postContent, topicId]);
 
   return (
       <Feed>
@@ -159,7 +158,7 @@ const PostCreate = (props) => {
                             animated
                             type="button"
                             color="green"
-                            disabled={posting || postSubject === '' || postContent === ''}
+                            disabled={posting || postContent === ''}
                             onClick={savePost}
                           >
                               <Button.Content visible>
@@ -179,8 +178,6 @@ const PostCreate = (props) => {
 
 PostCreate.propTypes = {
   topicId: PropTypes.number.isRequired,
-  postIndexInTopic: PropTypes.number.isRequired,
-  initialPostSubject: PropTypes.string.isRequired,
 };
 
 export default memo(PostCreate);
