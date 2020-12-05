@@ -42,7 +42,7 @@ bellow.
 | --- | --- | --- |
 | ACCOUNTS_NUMBER | 10 | Set the number of accounts generated |
 | ACCOUNTS_ETHER | 10 | Set the amount of ETH assigned to each account |
-| MNEMONIC | myth like bonus scare over problem client lizard pioneer submit female collect | The mnemonic phrase sued as a seed for deterministic account generation |
+| MNEMONIC | NaN | The mnemonic phrase sued as a seed for deterministic account generation |
 | HOST | 0.0.0.0 | The hostname to listen on |
 | PORT | 8545 | The port to listen on |
 | NETWORK_ID | 5778 | The network id used to identify ganache |
