@@ -35,7 +35,7 @@ Furthermore, we provide an image that builds the contracts and handles their mig
 
 ### Ganache
 
-The Dockerfile is provided in the path `./docker/ganache`. The image makes use of the environment variables described
+The Dockerfile is provided in the path `./ganache`. The image makes use of the environment variables described
 bellow.
 
 | Environment variable | Default value | Usage |
@@ -63,7 +63,7 @@ found on the github page of the project [here](https://github.com/libp2p/js-libp
 
 This is a provision system that compiles and deploys the contracts to any Ethereum blockchain.
 
-A Dockerfile is provided in the path `./docker/concordia-contracts` that will build the contracts used by Concordia and
+A Dockerfile is provided in the path `./concordia-contracts` that will build the contracts used by Concordia and
 handle their deployment to any Ethereum network defined using env-vars upon container run. Dockerfile contains three
 useful stages, described in the table bellow.
 
@@ -90,7 +90,7 @@ the image.
 
 ### Application
 
-The Dockerfile provided in the path `./docker/concordia-application` builds the application for production and serves
+The Dockerfile provided in the path `./concordia-application` builds the application for production and serves
 the resulting build using an nginx server. Dockerfile contains two useful stages, described in the table bellow.
 
 | Stage name | Entrypoint | Usage |
@@ -148,7 +148,7 @@ make build-contracts-tests
 Run the tests:
 
 ```shell
-make run-contract-tests
+make run-contracts-tests
 ```
 
 The results should be printed in the terminal, but are also available in the directory `./reports/contracts`.
