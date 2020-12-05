@@ -2,7 +2,7 @@ import React, {
   memo, useCallback, useEffect, useState,
 } from 'react';
 import {
-  Button, Feed, Form, Icon, Image, Input, TextArea,
+  Button, Feed, Form, Icon, Image, TextArea,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
