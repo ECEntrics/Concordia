@@ -140,7 +140,9 @@ const PostListRow = (props) => {
                     : <Placeholder><Placeholder.Line length="medium" /></Placeholder>}
               </Feed.Summary>
               <Feed.Extra>
-                  {postContent}
+                  {postContent !== null
+                    ? postContent
+                    : <Placeholder><Placeholder.Line length="long" /></Placeholder>}
               </Feed.Extra>
           </Feed.Content>
       </Dimmer.Dimmable>
