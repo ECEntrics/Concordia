@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Container, Dimmer, Icon, Image, Placeholder, Step,
 } from 'semantic-ui-react';
-import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router';
+import TimeAgo from 'react-timeago';
 import { breeze, drizzle } from '../../../redux/store';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import './styles.css';
@@ -65,7 +65,7 @@ const TopicView = (props) => {
 
       setTopicAuthorAddress(getTopicResults[getTopicCallHash].value[0]);
       setTopicAuthor(getTopicResults[getTopicCallHash].value[1]);
-      setTimestamp(getTopicResults[getTopicCallHash].value[2]);
+      setTimestamp(getTopicResults[getTopicCallHash].value[2] * 1000);
       setPostIds(getTopicResults[getTopicCallHash].value[3].map((postId) => parseInt(postId, 10)));
 
       const topicFound = topics
@@ -163,7 +163,7 @@ const TopicView = (props) => {
                           </Step.Title>
                           <Step.Description>
                               {timestamp
-                                ? moment(timestamp * 1000).fromNow()
+                                ? <TimeAgo date={timestamp} />
                                 : (
                                     <Placeholder id="date-placeholder">
                                         <Placeholder.Line length="full" />
