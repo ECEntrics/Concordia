@@ -4,6 +4,13 @@ pragma solidity 0.7.5;
 import "./Forum.sol";
 
 contract Voting {
+    // Error messages for require()
+    string constant TOPIC_POLL_DIFFERENT_CREATOR = "Only topic's author can create a poll.";
+    string constant POLL_EXISTS = "Poll already exists.";
+    string constant POLL_DOES_NOT_EXIST = "Poll does not exist.";
+    string constant INVALID_OPTION = "Invalid option.";
+    string constant USER_HAS_NOT_VOTED = "User hasn't voted.";
+
     Forum public forum;
 
     constructor(Forum addr) {
@@ -14,18 +21,17 @@ contract Voting {
         uint topicID;
         uint numOptions;
         string dataHash;
-        mapping (address => uint) votes;
-        mapping (uint => address[]) voters;
+        mapping(address => uint) votes;
+        mapping(uint => address[]) voters;
         bool enableVoteChanges;
         uint timestamp;
     }
 
-    mapping (uint => Poll) polls;
+    mapping(uint => Poll) polls;
 
     event PollCreated(uint topicID);
     event UserVotedPoll(address userAddress, uint topicID, uint vote);
 
-    // Verifies that a poll exists
     function pollExists(uint topicID) public view returns (bool) {
         if (polls[topicID].timestamp != 0)
             return true;
@@ -33,10 +39,10 @@ contract Voting {
     }
 
     function createPoll(uint topicID, uint numOptions, string memory dataHash, bool enableVoteChanges) public returns (uint) {
-        require(forum.hasUserSignedUp(msg.sender));  // Only registered users can create polls
-        require(forum.topicExists(topicID)); // Only allow poll creation if topic exists
-        require (forum.getTopicAuthor(topicID) == msg.sender); // Only allow poll creation from the author of the topic
-        require(!pollExists(topicID)); // Only allow poll creation if it doesn't already exist
+        require(forum.hasUserSignedUp(msg.sender), forum.USER_HAS_NOT_SIGNED_UP());
+        require(forum.topicExists(topicID), forum.TOPIC_DOES_NOT_EXIST());
+        require (forum.getTopicAuthor(topicID) == msg.sender, TOPIC_POLL_DIFFERENT_CREATOR);
+        require(!pollExists(topicID), POLL_EXISTS);
 
         Poll storage poll = polls[topicID];
         poll.topicID = topicID;
@@ -50,46 +56,45 @@ contract Voting {
     }
 
     function getPollInfo(uint topicID) public view returns (uint, string memory, uint, uint) {
-        require(pollExists(topicID));
+        require(pollExists(topicID), POLL_DOES_NOT_EXIST);
 
         uint totalVotes = getTotalVotes(topicID);
 
         return (
-            polls[topicID].numOptions,
-            polls[topicID].dataHash,
-            polls[topicID].timestamp,
-            totalVotes
+        polls[topicID].numOptions,
+        polls[topicID].dataHash,
+        polls[topicID].timestamp,
+        totalVotes
         );
     }
 
     function isOptionValid(uint topicID, uint option) public view returns (bool) {
-        require(pollExists(topicID));
+        require(pollExists(topicID), POLL_DOES_NOT_EXIST);
         if (option <= polls[topicID].numOptions)    // Option 0 is valid as well (no option chosen)
             return true;
         return false;
     }
 
     function hasVoted(uint topicID, address voter) public view returns (bool) {
-        require(pollExists(topicID));
+        require(pollExists(topicID), POLL_DOES_NOT_EXIST);
         if (polls[topicID].votes[voter] != 0)
             return true;
         return false;
     }
 
     function getVote(uint topicID, address voter) public view returns (uint) {
-        require(hasVoted(topicID, voter));
+        require(hasVoted(topicID, voter), USER_HAS_NOT_VOTED);
         return polls[topicID].votes[voter];
     }
 
-    // Gets vote count for a specific option
     function getVoteCount(uint topicID, uint option) public view returns (uint) {
-        require(pollExists(topicID));
-        require(isOptionValid(topicID, option));
+        require(pollExists(topicID), POLL_DOES_NOT_EXIST);
+        require(isOptionValid(topicID, option), INVALID_OPTION);
         return (polls[topicID].voters[option].length);
     }
 
     function getTotalVotes(uint topicID) public view returns (uint) {
-        require(pollExists(topicID));
+        require(pollExists(topicID), POLL_DOES_NOT_EXIST);
 
         Poll storage poll = polls[topicID];
         uint totalVotes = 0;
@@ -102,13 +107,13 @@ contract Voting {
 
     // Gets voters for a specific option
     function getVoters(uint topicID, uint option) public view returns (address[] memory) {
-        require(pollExists(topicID));
+        require(pollExists(topicID), POLL_DOES_NOT_EXIST);
         return (polls[topicID].voters[option]);
     }
 
     function getVoterIndex(uint topicID, address voter) public view returns (uint) {
-        require(pollExists(topicID));
-        require(hasVoted(topicID, voter));
+        require(pollExists(topicID), POLL_DOES_NOT_EXIST);
+        require(hasVoted(topicID, voter), USER_HAS_NOT_VOTED);
         Poll storage poll = polls[topicID];
         uint votedOption = getVote(topicID, voter);
         address[] storage optionVoters = poll.voters[votedOption];
@@ -121,16 +126,16 @@ contract Voting {
     }
 
     function vote(uint topicID, uint option) public {
-        require(forum.hasUserSignedUp(msg.sender));
-        require(pollExists(topicID));
-        require(isOptionValid(topicID, option));
+        require(forum.hasUserSignedUp(msg.sender), forum.USER_HAS_NOT_SIGNED_UP());
+        require(pollExists(topicID), POLL_DOES_NOT_EXIST);
+        require(isOptionValid(topicID, option), INVALID_OPTION);
         Poll storage poll = polls[topicID];
         address voter = msg.sender;
         uint prevOption = poll.votes[voter];
         if(prevOption == option)
             return;
 
-        // Voter hadn't voted before
+        // Voter hasn't voted before
         if(prevOption == 0){
             poll.voters[option].push(voter);
             poll.votes[voter] = option;

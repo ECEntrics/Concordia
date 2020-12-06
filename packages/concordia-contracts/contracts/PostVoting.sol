@@ -10,31 +10,25 @@ contract PostVoting {
         forum = Forum(addr);
     }
 
-    enum Option { NONE, UP, DOWN }  // NONE -> 0, UP -> 1, DOWN -> 2
-
-    Option constant defaultOption = Option.NONE;
-
-    function getDefaultChoice() public pure returns (uint) {
-        return uint(defaultOption);
-    }
+    enum Option { DEFAULT, UP, DOWN }  // DEFAULT -> 0, UP -> 1, DOWN -> 2
 
     struct PostBallot {
-        mapping (address => Option) votes;
-        mapping (Option => address[]) voters;
+        mapping(address => Option) votes;
+        mapping(Option => address[]) voters;
     }
 
-    mapping (uint => PostBallot) postBallots;
+    mapping(uint => PostBallot) postBallots;
 
     event UserVotedPost(address userAddress, uint postID, Option option);
 
     function getVote(uint postID, address voter) public view returns (Option) {
-        require(forum.postExists(postID));
+        require(forum.postExists(postID), forum.POST_DOES_NOT_EXIST());
         return postBallots[postID].votes[voter];
     }
 
-    // Gets vote count for a specific option (Option.UP/ Option.DOWN)
+    // Gets vote count for a specific option (Option.UP/ Option.DOWN only!)
     function getVoteCount(uint postID, Option option) private view returns (uint) {
-        require(forum.postExists(postID));
+        require(forum.postExists(postID), forum.POST_DOES_NOT_EXIST());
         return (postBallots[postID].voters[option].length);
     }
 
@@ -48,7 +42,7 @@ contract PostVoting {
 
     // Gets voters for a specific option (Option.UP/ Option.DOWN)
     function getVoters(uint postID, Option option) private view returns (address[] memory) {
-        require(forum.postExists(postID));
+        require(forum.postExists(postID), forum.POST_DOES_NOT_EXIST());
         return (postBallots[postID].voters[option]);
     }
 
@@ -61,8 +55,8 @@ contract PostVoting {
     }
 
     function getVoterIndex(uint postID, address voter) private view returns (uint) {
-        require(forum.hasUserSignedUp(voter));
-        require(forum.postExists(postID));
+        require(forum.hasUserSignedUp(voter), forum.USER_HAS_NOT_SIGNED_UP());
+        require(forum.postExists(postID), forum.POST_DOES_NOT_EXIST());
 
         PostBallot storage postBallot = postBallots[postID];
         Option votedOption = getVote(postID, voter);
@@ -76,8 +70,8 @@ contract PostVoting {
     }
 
     function vote(uint postID, Option option) private {
-        require(forum.hasUserSignedUp(msg.sender));
-        require(forum.postExists(postID)); // Only allow voting if post exists
+        require(forum.hasUserSignedUp(msg.sender), forum.USER_HAS_NOT_SIGNED_UP());
+        require(forum.postExists(postID), forum.POST_DOES_NOT_EXIST());
 
         PostBallot storage postBallot = postBallots[postID];
         address voter = msg.sender;
@@ -87,7 +81,7 @@ contract PostVoting {
             return;
 
         // Remove previous vote if exists
-        if(prevOption != Option.NONE){
+        if(prevOption != Option.DEFAULT){
             uint voterIndex = getVoterIndex(postID, voter);
             // Swap with last voter address and delete vote
             postBallot.voters[prevOption][voterIndex] = postBallot.voters[prevOption][postBallot.voters[prevOption].length - 1];
@@ -95,7 +89,7 @@ contract PostVoting {
         }
 
         // Add new vote
-        if(option != Option.NONE)
+        if(option != Option.DEFAULT)
             postBallot.voters[option].push(voter);
         postBallot.votes[voter] = option;
         emit UserVotedPost(voter, postID, option);
@@ -110,6 +104,6 @@ contract PostVoting {
     }
 
     function unvote(uint postID) public{
-        vote(postID, Option.NONE);
+        vote(postID, Option.DEFAULT);
     }
 }

@@ -13,7 +13,7 @@ contract TestVoting {
     function beforeAll() public {
         forum = Forum(DeployedAddresses.Forum());
 
-        forum.signUp('testAccount');
+        forum.signUp("testAccount");
         (firstTopicId,) = forum.createTopic();
     }
 
@@ -28,7 +28,7 @@ contract TestVoting {
     function testCreatePoll() public {
         Voting voting = Voting(DeployedAddresses.Voting());
 
-        uint actual = voting.createPoll(firstTopicId, 3, 'asdf', false);
+        uint actual = voting.createPoll(firstTopicId, 3, "asdf", false);
 
         Assert.equal(actual, firstTopicId, "Topic Id should be 1");
     }
@@ -47,7 +47,7 @@ contract TestVoting {
         (uint actualNumberOfOptions, string memory actualDataHash, , uint actualNumberOfVotes) = voting.getPollInfo(firstTopicId);
 
         Assert.equal(actualNumberOfOptions, 3, "Number of votes should be 0");
-        Assert.equal(actualDataHash, 'asdf', "Number of votes should be 0");
+        Assert.equal(actualDataHash, "asdf", "Number of votes should be 0");
         Assert.equal(actualNumberOfVotes, 0, "Number of votes should be 0");
     }
 
@@ -76,7 +76,7 @@ contract TestVoting {
         Voting voting = Voting(DeployedAddresses.Voting());
 
         (uint topicId,) = forum.createTopic();
-        voting.createPoll(topicId, 3, 'asdf', false);
+        voting.createPoll(topicId, 3, "asdf", false);
 
         voting.vote(topicId, 1);
         uint actualVotesOption0 = voting.getVoteCount(topicId, 1);
@@ -95,7 +95,7 @@ contract TestVoting {
         Voting voting = Voting(DeployedAddresses.Voting());
 
         (uint topicId,) = forum.createTopic();
-        voting.createPoll(topicId, 3, 'asdf', true);
+        voting.createPoll(topicId, 3, "asdf", true);
 
         voting.vote(topicId, 1);
         uint actualVotesOption0 = voting.getVoteCount(topicId, 1);

@@ -4,8 +4,9 @@ const PostVoting = artifacts.require('PostVoting');
 
 // eslint-disable-next-line func-names
 module.exports = function (deployer) {
-  deployer.deploy(Forum).then(async (forum) => {
-    await deployer.deploy(Voting, forum.address);
-    await deployer.deploy(PostVoting, forum.address);
-  });
+  return deployer.deploy(Forum)
+    .then(async (forum) => Promise.all([
+      deployer.deploy(Voting, forum.address),
+      deployer.deploy(PostVoting, forum.address),
+    ]));
 };

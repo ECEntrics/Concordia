@@ -2,6 +2,11 @@
 pragma solidity 0.7.5;
 
 contract Forum {
+    // Error messages for require()
+    string public constant USER_HAS_NOT_SIGNED_UP = "User hasn't signed up yet.";
+    string public constant USERNAME_TAKEN = "Username is already taken.";
+    string public constant TOPIC_DOES_NOT_EXIST = "Topic doesn't exist.";
+    string public constant POST_DOES_NOT_EXIST = "Post doesn't exist.";
 
     //----------------------------------------USER----------------------------------------
     struct User {
@@ -12,25 +17,24 @@ contract Forum {
         bool signedUp;    // Helper variable for hasUserSignedUp()
     }
 
-    mapping (address => User) users;
-    mapping (string => address) userAddresses;
+    mapping(address => User) users;
+    mapping(string => address) userAddresses;
 
     event UserSignedUp(string username, address userAddress);
     event UsernameUpdated(string newName, string oldName,address userAddress);
 
     function signUp(string memory username) public returns (bool) {
-        require (!hasUserSignedUp(msg.sender), "User has already signed up.");
-        require(!isUserNameTaken(username), "Username is already taken.");
-        users[msg.sender] = User(username,
-            new uint[](0), new uint[](0), block.timestamp, true);
+        require (!hasUserSignedUp(msg.sender), USER_HAS_NOT_SIGNED_UP);
+        require(!isUserNameTaken(username), USERNAME_TAKEN);
+        users[msg.sender] = User(username, new uint[](0), new uint[](0), block.timestamp, true);
         userAddresses[username] = msg.sender;
         emit UserSignedUp(username, msg.sender);
         return true;
     }
 
     function updateUsername(string memory newUsername) public returns (bool) {
-        require (hasUserSignedUp(msg.sender), "User hasn't signed up yet.");
-        require(!isUserNameTaken(newUsername), "Username is already taken.");
+        require (hasUserSignedUp(msg.sender), USER_HAS_NOT_SIGNED_UP);
+        require(!isUserNameTaken(newUsername), USERNAME_TAKEN);
         string memory oldUsername = getUsername(msg.sender);
         delete userAddresses[users[msg.sender].username];
         users[msg.sender].username = newUsername;
@@ -40,7 +44,7 @@ contract Forum {
     }
 
     function getUsername(address userAddress) public view returns (string memory) {
-        require (hasUserSignedUp(userAddress), "User hasn't signed up yet.");
+        require (hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
         return users[userAddress].username;
     }
 
@@ -53,26 +57,25 @@ contract Forum {
     }
 
     function isUserNameTaken(string memory username) public view returns (bool) {
-        if (getUserAddress(username)!=address(0))
+        if (getUserAddress(username) != address(0))
             return true;
         return false;
     }
 
     function getUserTopics(address userAddress) public view returns (uint[] memory) {
-        require (hasUserSignedUp(userAddress), "User hasn't signed up yet.");
+        require (hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
         return users[userAddress].topicIDs;
     }
 
     function getUserPosts(address userAddress) public view returns (uint[] memory) {
-        require (hasUserSignedUp(userAddress), "User hasn't signed up yet.");
+        require (hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
         return users[userAddress].postIDs;
     }
 
     function getUserDateOfRegister(address userAddress) public view returns (uint) {
-        require (hasUserSignedUp(userAddress), "User hasn't signed up yet.");
+        require (hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
         return users[userAddress].timestamp;
     }
-
 
     //----------------------------------------POSTING----------------------------------------
     struct Topic {
@@ -89,17 +92,17 @@ contract Forum {
         uint topicID;
     }
 
-    uint numTopics;   // Total number of topics
-    uint numPosts;    // Total number of posts
+    uint public numTopics;   // Total number of topics
+    uint public numPosts;    // Total number of posts
 
-    mapping (uint => Topic) topics;
-    mapping (uint => Post) posts;
+    mapping(uint => Topic) topics;
+    mapping(uint => Post) posts;
 
     event TopicCreated(uint topicID, uint postID);
     event PostCreated(uint postID, uint topicID);
 
     function createTopic() public returns (uint, uint) {
-        require(hasUserSignedUp(msg.sender));  // Only registered users can create topics
+        require(hasUserSignedUp(msg.sender), USER_HAS_NOT_SIGNED_UP);
         //Creates topic
         uint topicID = numTopics++;
         topics[topicID] = Topic(topicID, msg.sender, block.timestamp, new uint[](0));
@@ -116,8 +119,8 @@ contract Forum {
     }
 
     function createPost(uint topicID) public returns (uint) {
-        require(hasUserSignedUp(msg.sender));  // Only registered users can create posts
-        require(topicExists(topicID)); // Only allow posting to a topic that exists
+        require(hasUserSignedUp(msg.sender), USER_HAS_NOT_SIGNED_UP);
+        require(topicExists(topicID), TOPIC_DOES_NOT_EXIST);
         uint postID = numPosts++;
         posts[postID] = Post(postID, msg.sender, block.timestamp, topicID);
         topics[topicID].postIDs.push(postID);
@@ -126,26 +129,16 @@ contract Forum {
         return postID;
     }
 
-    // Verify that topic exists
     function topicExists(uint topicID) public view returns (bool) {
-        return topicID<numTopics;
+        return topicID < numTopics;
     }
 
-    // Verify that post exists
     function postExists(uint postID) public view returns (bool) {
-        return postID<numPosts;
-    }
-
-    function getNumberOfTopics() public view returns (uint) {
-        return numTopics;
-    }
-
-    function getNumberOfPosts() public view returns (uint) {
-        return numPosts;
+        return postID < numPosts;
     }
 
     function getTopic(uint topicID) public view returns (address, string memory, uint, uint[] memory) {
-        require(topicExists(topicID));
+        require(topicExists(topicID), TOPIC_DOES_NOT_EXIST);
         return (
             topics[topicID].author,
             users[topics[topicID].author].username,
@@ -155,17 +148,17 @@ contract Forum {
     }
 
     function getTopicPosts(uint topicID) public view returns (uint[] memory) {
-        require(topicExists(topicID)); // Topic should exist
+        require(topicExists(topicID), TOPIC_DOES_NOT_EXIST);
         return topics[topicID].postIDs;
     }
 
     function getTopicAuthor(uint topicID) public view returns (address) {
-        require(topicExists(topicID)); // Topic should exist
+        require(topicExists(topicID), TOPIC_DOES_NOT_EXIST);
         return topics[topicID].author;
     }
 
     function getPost(uint postID) public view returns (address, string memory, uint, uint) {
-        require(postExists(postID));
+        require(postExists(postID), POST_DOES_NOT_EXIST);
         return (
             posts[postID].author,
             users[posts[postID].author].username,
