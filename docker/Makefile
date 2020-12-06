@@ -2,14 +2,17 @@ PACKAGES := $(abspath ${CURDIR}/../packages)
 REPORTS := $(abspath ${CURDIR}/reports)
 GANACHE_VOLUMES := $(abspath ${CURDIR}/ganache/volumes)
 
+run: compose-run build-contracts-migrate run-contracts-migrate build-app run-app
+	@echo "Concordia is up and running, head over to http://localhost:7777."
+
 # Targets for building/running/stopping the blockchain and rendezvous server (using the docker-compose file)
-build:
+compose-build:
 	@docker-compose -f ./docker-compose.yml -p concordia build
-run:
+compose-run:
 	@docker-compose -f ./docker-compose.yml -p concordia up -d
-stop:
+compose-stop:
 	@docker-compose -f ./docker-compose.yml -p concordia down
-stop-clean-data:
+compose-stop-clean-data:
 	@docker-compose -f ./docker-compose.yml -p concordia down -v
 
 # Ganache targets
