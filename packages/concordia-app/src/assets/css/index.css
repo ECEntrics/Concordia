@@ -10,3 +10,8 @@ body.app {
 .i18next-newlines {
     white-space: pre-line !important;
 }
+
+.text-secondary {
+    color: gray;
+    font-style: italic;
+}

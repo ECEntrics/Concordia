@@ -79,6 +79,17 @@ const GeneralTab = (props) => {
         />
     )), [profileMeta]);
 
+  const userLocation = useMemo(() => {
+    if (profileMeta === null) {
+      return (
+          <Placeholder><Placeholder.Line length="medium" /></Placeholder>
+      );
+    } if (profileMeta[USER_LOCATION] === undefined) {
+      return <span className="text-secondary">{t('profile.general.tab.location.row.not.set')}</span>;
+    }
+    return profileMeta[USER_LOCATION];
+  }, [profileMeta, t]);
+
   return useMemo(() => (
       <Table basic="very" singleLine>
           <Table.Body>
@@ -126,9 +137,7 @@ const GeneralTab = (props) => {
               <Table.Row>
                   <Table.Cell><strong>{t('profile.general.tab.location.row.title')}</strong></Table.Cell>
                   <Table.Cell>
-                      {profileMeta !== null && profileMeta[USER_LOCATION]
-                        ? profileMeta[USER_LOCATION]
-                        : <Placeholder><Placeholder.Line length="medium" /></Placeholder>}
+                      {userLocation}
                   </Table.Cell>
               </Table.Row>
               <Table.Row>

@@ -8,6 +8,7 @@
   "post.form.subject.field.placeholder": "Subject",
   "post.list.row.post.id": "#{{id}}",
   "profile.general.tab.address.row.title": "Account address:",
+  "profile.general.tab.location.row.not.set": "Not set",
   "profile.general.tab.location.row.title": "Location:",
   "profile.general.tab.number.of.posts.row.title": "Number of posts:",
   "profile.general.tab.number.of.topics.row.title": "Number of topics created:",
