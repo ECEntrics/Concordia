@@ -1,0 +1,22 @@
+node_modules
+.idea
+
+.git
+
+docker/
+!docker/concordia-contracts/migrate.sh
+!docker/concordia-contracts/test-contracts.sh
+!docker/concordia-app/test-app.sh
+!docker/concordia-app/nginx.conf
+!docker/ganache/start-blockchain.sh
+
+packages/*/node_modules
+packages/*/dist
+packages/*/coverage
+# TO-NEVER-DO: exclude the build folder of the contracts package, it's needed for building the application image.
+packages/concordia-app/build
+
+Jenkinsfile
+
+README.md
+packages/*/README.md

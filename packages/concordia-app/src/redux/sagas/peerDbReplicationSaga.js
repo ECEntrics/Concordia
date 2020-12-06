@@ -9,10 +9,10 @@ import {
 } from '@ezerous/breeze/src/orbit/orbitActions';
 import determineKVAddress from '../../utils/orbitUtils';
 import { FETCH_USER_DATABASE, UPDATE_ORBIT_DATA } from '../actions/peerDbReplicationActions';
-import { POSTS_DATABASE, TOPICS_DATABASE, USER_DATABASE } from '../../constants/OrbitDatabases';
-import userDatabaseKeys from '../../constants/UserDatabaseKeys';
-import { TOPIC_SUBJECT } from '../../constants/TopicsDatabaseKeys';
-import { POST_CONTENT } from '../../constants/PostsDatabaseKeys';
+import { POSTS_DATABASE, TOPICS_DATABASE, USER_DATABASE } from '../../constants/orbit/OrbitDatabases';
+import userDatabaseKeys from '../../constants/orbit/UserDatabaseKeys';
+import { TOPIC_SUBJECT } from '../../constants/orbit/TopicsDatabaseKeys';
+import { POST_CONTENT } from '../../constants/orbit/PostsDatabaseKeys';
 
 function* fetchUserDb({ orbit, userAddress, dbName }) {
   const peerDbAddress = yield call(determineKVAddress, {

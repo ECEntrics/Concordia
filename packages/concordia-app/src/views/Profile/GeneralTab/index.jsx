@@ -7,10 +7,10 @@ import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import determineKVAddress from '../../../utils/orbitUtils';
-import databases, { USER_DATABASE } from '../../../constants/OrbitDatabases';
+import databases, { USER_DATABASE } from '../../../constants/orbit/OrbitDatabases';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import { breeze } from '../../../redux/store';
-import { USER_LOCATION, USER_PROFILE_PICTURE } from '../../../constants/UserDatabaseKeys';
+import { USER_LOCATION, USER_PROFILE_PICTURE } from '../../../constants/orbit/UserDatabaseKeys';
 import './styles.css';
 
 const { orbit } = breeze;

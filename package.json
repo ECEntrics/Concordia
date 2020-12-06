@@ -1,8 +1,13 @@
 {
-  "name": "apella",
+  "name": "concordia",
   "private": true,
   "workspaces": {
-    "packages": ["packages/*"],
-    "nohoist": ["**/web3", "**/web3/**"]
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/web3",
+      "**/web3/**"
+    ]
   }
 }

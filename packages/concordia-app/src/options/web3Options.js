@@ -1,14 +1,29 @@
 import Web3 from 'web3';
+import {
+  WEB3_HOST_DEFAULT,
+  WEB3_PORT_DEFAULT,
+  WEB3_PORT_SOCKET_CONNECT_MAX_ATTEMPTS_DEFAULT,
+  WEB3_PORT_SOCKET_TIMEOUT_DEFAULT,
+} from '../constants/configuration/defaults';
 
-const { WEB3_URL, WEB3_PORT } = process.env;
+const { WEB3_HOST, WEB3_PORT, WEBSOCKET_TIMEOUT } = process.env;
 
-// We need fallback ws://127.0.0.1:8545 because drizzle has not the patched web3 we use here
-const web3 = (WEB3_URL && WEB3_PORT)
-  ? `ws://${WEB3_URL}:${WEB3_PORT}`
-  : new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvider('ws://127.0.0.1:8545'));
+const web3WebsocketOptions = {
+  keepAlive: true,
+  timeout: WEBSOCKET_TIMEOUT !== undefined ? WEBSOCKET_TIMEOUT : WEB3_PORT_SOCKET_TIMEOUT_DEFAULT,
+  reconnect: {
+    maxAttempts: WEB3_PORT_SOCKET_CONNECT_MAX_ATTEMPTS_DEFAULT,
+  },
+};
+
+const web3 = (WEB3_HOST !== undefined && WEB3_PORT !== undefined)
+  ? `ws://${WEB3_HOST}:${WEB3_PORT}`
+  : new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvider(
+    `ws://${WEB3_HOST_DEFAULT}:${WEB3_PORT_DEFAULT}`, web3WebsocketOptions,
+  ));
 
 const web3Options = {
-  web3,
+  customProvider: web3,
 };
 
 export default web3Options;

@@ -5,7 +5,7 @@ import CustomLoader from './CustomLoader';
 
 // CSS
 import '../../assets/css/loading-component.css';
-import { FORUM_CONTRACT } from '../../constants/ContractNames';
+import { FORUM_CONTRACT } from '../../constants/contracts/ContractNames';
 
 const InitializationLoader = ({ children }) => {
   const initializing = useSelector((state) => state.drizzleStatus.initializing);
