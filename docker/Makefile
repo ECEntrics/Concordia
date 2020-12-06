@@ -17,7 +17,7 @@ build-ganache:
 	@docker build ../ -f ./ganache/Dockerfile -t concordia-ganache
 run-ganache:
 	@docker network create --driver bridge concordia_ganache_network || true &&\
-	docker run -d -v ${GANACHE_VOLUMES}/ganache_db:/home/ganache_db -v ${GANACHE_VOLUMES}/ganache_keys:/home/ganache_keys -p 8545:8545 --env-file=./env/ganache.docker.env --name concordia-ganache --net=concordia_ganache_network concordia-ganache:latest
+	docker run -d -v ${GANACHE_VOLUMES}/ganache_keys:/home/ganache_keys -p 8545:8545 --env-file=./env/ganache.docker.env --name concordia-ganache --net=concordia_ganache_network concordia-ganache:latest
 run-ganache-test:
 	@docker network create --driver bridge concordia_ganache_test_network || true &&\
 	docker run --rm -d -p 8546:8546 --env-file=./env/ganache.test.docker.env --name concordia-ganache-test --net=concordia_ganache_test_network concordia-ganache:latest

@@ -15,7 +15,6 @@ services:
       - 8545:8545
     user: root
     volumes:
-      - ./ganache/volumes/ganache_db:/home/ganache_db
       - ./ganache/volumes/ganache_keys:/home/ganache_keys
     networks:
       ganache_network:
