@@ -1,0 +1,12 @@
+{
+  "name": "concordia-rendezvous",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Rendezvous server for Concordia",
+  "scripts": {
+    "rendezvous": "star-signal --port=9090 --host=127.0.0.1"
+  },
+  "devDependencies": {
+    "libp2p-webrtc-star": "~0.20.1"
+  }
+}

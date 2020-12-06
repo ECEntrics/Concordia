@@ -1,0 +1,22 @@
+{
+  "name": "concordia-contracts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Contracts used to power Concordia",
+  "main": "index.js",
+  "scripts": {
+    "compile": "yarn truffle compile",
+    "lint": "yarn _eslint && yarn _solhint",
+    "_eslint": "yarn eslint . --format table",
+    "_solhint": "yarn solhint --formatter table contracts/*.sol test/*.sol",
+    "test": "yarn truffle test",
+    "migrate": "yarn truffle migrate --network develop"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "~3.2.0",
+    "truffle": "~5.1.45"
+  },
+  "devDependencies": {
+    "solhint": "~3.2.0"
+  }
+}

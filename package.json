@@ -1,27 +1,8 @@
 {
-  "name": "apella-box",
-  "version": "0.1.0",
-  "description": "",
+  "name": "apella",
   "private": true,
-  "repository": {
-    "type": "git",
-    "url": "https://gitlab.com/Ezerous/Apella.git"
-  },
-  "main": "truffle-config.js",
-  "directories": {
-    "test": "test"
-  },
-  "dependencies": {
-    "openzeppelin-solidity": "^2.2.0"
-  },
-  "devDependencies": {
-    "eslint": "5.16.0",
-    "eslint-config-airbnb": "17.1.0",
-    "eslint-plugin-import": "2.17.2",
-    "eslint-plugin-jsx-a11y": "6.2.1",
-    "eslint-plugin-react": "7.13.0"
-  },
-  "scripts": {
-    "lint": "eslint app/src --format table"
+  "workspaces": {
+    "packages": ["packages/*"],
+    "nohoist": ["**/web3", "**/web3/**"]
   }
 }

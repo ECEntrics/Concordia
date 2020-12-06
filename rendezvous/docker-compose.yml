@@ -1,9 +1,0 @@
-version: '3.7'
-
-services:
-  rendezvous:
-    image: libp2p/websocket-star-rendezvous:release
-    container_name: rendezvous
-    restart: always
-    ports:
-      - "9090:9090"
