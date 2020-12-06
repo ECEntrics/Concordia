@@ -17,10 +17,10 @@ build-ganache:
 	@docker build ../ -f ./ganache/Dockerfile -t concordia-ganache
 run-ganache:
 	@docker network create --driver bridge concordia_ganache_network || true &&\
-	docker run -d -v ${GANACHE_VOLUMES}/ganache_db:/home/ganache_db -v ${GANACHE_VOLUMES}/ganache_keys:/home/ganache_keys -p 8545:8545 --env-file=./env/ganache.env --name concordia-ganache --net=concordia_ganache_network concordia-ganache:latest
+	docker run -d -v ${GANACHE_VOLUMES}/ganache_db:/home/ganache_db -v ${GANACHE_VOLUMES}/ganache_keys:/home/ganache_keys -p 8545:8545 --env-file=./env/ganache.docker.env --name concordia-ganache --net=concordia_ganache_network concordia-ganache:latest
 run-ganache-test:
 	@docker network create --driver bridge concordia_ganache_test_network || true &&\
-	docker run --rm -d -p 8546:8546 --env-file=./env/ganache.test.env --name concordia-ganache-test --net=concordia_ganache_test_network concordia-ganache:latest
+	docker run --rm -d -p 8546:8546 --env-file=./env/ganache.test.docker.env --name concordia-ganache-test --net=concordia_ganache_test_network concordia-ganache:latest
 
 # Rendezvous targets
 run-rendezvous:
@@ -53,7 +53,7 @@ build-app-tests:
 run-app-tests:
 	@docker run --rm -v ${REPORTS}/app/:/usr/test-reports/ --env-file=./env/concordia.docker.env concordia-app-tests:latest
 run-app:
-	@docker create --env-file=./env/concordia.docker.env -p 8473:80 --name concordia-app --net=concordia_ganache_network concordia-app:latest &&\
+	@docker create --env-file=./env/concordia.docker.env -p 7777:80 --name concordia-app --net=concordia_ganache_network concordia-app:latest &&\
 	docker network connect concordia_rendezvous_network concordia-app &&\
 	docker start concordia-app
 run-app-host-chain:
