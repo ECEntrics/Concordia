@@ -3,7 +3,6 @@ import {
   Icon, Image, Placeholder, Table,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import determineKVAddress from '../../../utils/orbitUtils';
@@ -135,7 +134,7 @@ const GeneralTab = (props) => {
               <Table.Row>
                   <Table.Cell><strong>{t('profile.general.tab.registration.date.row.title')}</strong></Table.Cell>
                   <Table.Cell>
-                      {moment(userRegistrationTimestamp * 1000).format('dddd, MMMM Do YYYY, h:mm:ss A')}
+                      {new Date(userRegistrationTimestamp * 1000).toLocaleString()}
                   </Table.Cell>
               </Table.Row>
           </Table.Body>
