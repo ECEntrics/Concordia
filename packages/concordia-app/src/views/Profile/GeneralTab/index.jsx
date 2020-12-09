@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  Icon, Image, Placeholder, Table,
+  Button, Icon, Image, Placeholder, Table,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,17 +11,21 @@ import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationAct
 import { breeze } from '../../../redux/store';
 import { USER_LOCATION, USER_PROFILE_PICTURE } from '../../../constants/orbit/UserDatabaseKeys';
 import './styles.css';
+import EditInformationModal from './EditInformationModal';
 
 const { orbit } = breeze;
 
 const GeneralTab = (props) => {
   const {
-    profileAddress, username, numberOfTopics, numberOfPosts, userRegistrationTimestamp,
+    profileAddress, username, numberOfTopics, numberOfPosts, userRegistrationTimestamp, isSelf,
   } = props;
   const [userInfoOrbitAddress, setUserInfoOrbitAddress] = useState(null);
   const [userTopicsOrbitAddress, setUserTopicsOrbitAddress] = useState(null);
   const [userPostsOrbitAddress, setUserPostsOrbitAddress] = useState(null);
-  const [profileMeta, setProfileMeta] = useState(null);
+  const [profileMetadataFetched, setProfileMetadataFetched] = useState(false);
+  const [userAvatarUrl, setUserAvatarUrl] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
+  const [editingProfileInformation, setEditingProfileInformation] = useState(false);
   const users = useSelector((state) => state.orbitData.users);
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -45,7 +49,9 @@ const GeneralTab = (props) => {
             .find((user) => user.id === userOrbitAddress);
 
           if (userFound) {
-            setProfileMeta(userFound);
+            setProfileMetadataFetched(true);
+            setUserAvatarUrl(userFound[USER_PROFILE_PICTURE]);
+            setUserLocation(userFound[USER_LOCATION]);
           } else {
             dispatch({
               type: FETCH_USER_DATABASE,
@@ -60,13 +66,13 @@ const GeneralTab = (props) => {
     }
   }, [dispatch, profileAddress, users]);
 
-  const authorAvatar = useMemo(() => (profileMeta !== null && profileMeta[USER_PROFILE_PICTURE]
+  const authorAvatar = useMemo(() => (profileMetadataFetched && userAvatarUrl !== null
     ? (
         <Image
           className="general-tab-profile-picture"
           centered
           size="tiny"
-          src={profileMeta[USER_PROFILE_PICTURE]}
+          src={userAvatarUrl}
         />
     )
     : (
@@ -75,83 +81,134 @@ const GeneralTab = (props) => {
           size="massive"
           inverted
           color="black"
-          verticalAlign="middle"
         />
-    )), [profileMeta]);
+    )), [profileMetadataFetched, userAvatarUrl]);
 
-  const userLocation = useMemo(() => {
-    if (profileMeta === null) {
+  const userLocationCell = useMemo(() => {
+    if (!profileMetadataFetched) {
       return (
           <Placeholder><Placeholder.Line length="medium" /></Placeholder>
       );
-    } if (profileMeta[USER_LOCATION] === undefined) {
+    }
+
+    if (!userLocation) {
       return <span className="text-secondary">{t('profile.general.tab.location.row.not.set')}</span>;
     }
-    return profileMeta[USER_LOCATION];
-  }, [profileMeta, t]);
+
+    return userLocation;
+  }, [profileMetadataFetched, t, userLocation]);
+
+  const handleEditInfoClick = () => {
+    setEditingProfileInformation(true);
+  };
+
+  const closeEditInformationModal = () => {
+    setEditingProfileInformation(false);
+  };
+
+  const editInformationModal = useMemo(() => profileMetadataFetched && (
+      <EditInformationModal
+        profileAddress={profileAddress}
+        initialUsername={username}
+        initialAuthorAvatar={userAvatarUrl}
+        initialUserLocation={userLocation}
+        open={editingProfileInformation}
+        onCancel={closeEditInformationModal}
+        onSubmit={closeEditInformationModal}
+      />
+  ), [editingProfileInformation, profileAddress, profileMetadataFetched, userAvatarUrl, userLocation, username]);
 
   return useMemo(() => (
-      <Table basic="very" singleLine>
-          <Table.Body>
-              <Table.Row textAlign="center">
-                  <Table.Cell colSpan="3">{authorAvatar}</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                  <Table.Cell><strong>{t('profile.general.tab.username.row.title')}</strong></Table.Cell>
-                  <Table.Cell>{username}</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                  <Table.Cell><strong>{t('profile.general.tab.address.row.title')}</strong></Table.Cell>
-                  <Table.Cell>{profileAddress}</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                  <Table.Cell><strong>{t('profile.general.tab.user.db.address.row.title')}</strong></Table.Cell>
-                  <Table.Cell>
-                      {userInfoOrbitAddress || (<Placeholder><Placeholder.Line /></Placeholder>)}
-                  </Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                  <Table.Cell><strong>{t('profile.general.tab.topics.db.address.row.title')}</strong></Table.Cell>
-                  <Table.Cell>
-                      {userTopicsOrbitAddress || (<Placeholder><Placeholder.Line /></Placeholder>)}
-                  </Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                  <Table.Cell><strong>{t('profile.general.tab.posts.db.address.row.title')}</strong></Table.Cell>
-                  <Table.Cell>
-                      {userPostsOrbitAddress || (<Placeholder><Placeholder.Line /></Placeholder>)}
-                  </Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                  <Table.Cell><strong>{t('profile.general.tab.number.of.topics.row.title')}</strong></Table.Cell>
-                  <Table.Cell>
-                      {numberOfTopics}
-                  </Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                  <Table.Cell><strong>{t('profile.general.tab.number.of.posts.row.title')}</strong></Table.Cell>
-                  <Table.Cell>
-                      {numberOfPosts}
-                  </Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                  <Table.Cell><strong>{t('profile.general.tab.location.row.title')}</strong></Table.Cell>
-                  <Table.Cell>
-                      {userLocation}
-                  </Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                  <Table.Cell><strong>{t('profile.general.tab.registration.date.row.title')}</strong></Table.Cell>
-                  <Table.Cell>
-                      {new Date(userRegistrationTimestamp * 1000).toLocaleString()}
-                  </Table.Cell>
-              </Table.Row>
-          </Table.Body>
-      </Table>
+      <>
+          <Table basic="very" singleLine>
+              <Table.Body>
+                  <Table.Row textAlign="center">
+                      <Table.Cell colSpan="3">{authorAvatar}</Table.Cell>
+                  </Table.Row>
+                  <Table.Row>
+                      <Table.Cell><strong>{t('profile.general.tab.username.row.title')}</strong></Table.Cell>
+                      <Table.Cell>{username}</Table.Cell>
+                  </Table.Row>
+                  <Table.Row>
+                      <Table.Cell><strong>{t('profile.general.tab.address.row.title')}</strong></Table.Cell>
+                      <Table.Cell>{profileAddress}</Table.Cell>
+                  </Table.Row>
+                  <Table.Row>
+                      <Table.Cell><strong>{t('profile.general.tab.user.db.address.row.title')}</strong></Table.Cell>
+                      <Table.Cell>
+                          {userInfoOrbitAddress || (<Placeholder><Placeholder.Line /></Placeholder>)}
+                      </Table.Cell>
+                  </Table.Row>
+                  <Table.Row>
+                      <Table.Cell><strong>{t('profile.general.tab.topics.db.address.row.title')}</strong></Table.Cell>
+                      <Table.Cell>
+                          {userTopicsOrbitAddress || (<Placeholder><Placeholder.Line /></Placeholder>)}
+                      </Table.Cell>
+                  </Table.Row>
+                  <Table.Row>
+                      <Table.Cell><strong>{t('profile.general.tab.posts.db.address.row.title')}</strong></Table.Cell>
+                      <Table.Cell>
+                          {userPostsOrbitAddress || (<Placeholder><Placeholder.Line /></Placeholder>)}
+                      </Table.Cell>
+                  </Table.Row>
+                  <Table.Row>
+                      <Table.Cell><strong>{t('profile.general.tab.number.of.topics.row.title')}</strong></Table.Cell>
+                      <Table.Cell>
+                          {numberOfTopics}
+                      </Table.Cell>
+                  </Table.Row>
+                  <Table.Row>
+                      <Table.Cell><strong>{t('profile.general.tab.number.of.posts.row.title')}</strong></Table.Cell>
+                      <Table.Cell>
+                          {numberOfPosts}
+                      </Table.Cell>
+                  </Table.Row>
+                  <Table.Row>
+                      <Table.Cell><strong>{t('profile.general.tab.location.row.title')}</strong></Table.Cell>
+                      <Table.Cell>
+                          {userLocationCell}
+                      </Table.Cell>
+                  </Table.Row>
+                  <Table.Row>
+                      <Table.Cell><strong>{t('profile.general.tab.registration.date.row.title')}</strong></Table.Cell>
+                      <Table.Cell>
+                          {new Date(userRegistrationTimestamp * 1000).toLocaleString()}
+                      </Table.Cell>
+                  </Table.Row>
+              </Table.Body>
+
+              {isSelf && (
+                  <Table.Footer fullWidth>
+                      <Table.Row>
+                          <Table.HeaderCell colSpan="2">
+                              <Button
+                                floated="right"
+                                icon
+                                labelPosition="left"
+                                primary
+                                disabled={!profileMetadataFetched}
+                                size="small"
+                                onClick={handleEditInfoClick}
+                              >
+                                  <Icon name="edit" />
+                                  {t('profile.general.tab.edit.info.button.title')}
+                              </Button>
+                          </Table.HeaderCell>
+                      </Table.Row>
+                  </Table.Footer>
+              )}
+          </Table>
+          {isSelf && editInformationModal}
+      </>
   ), [
-    authorAvatar, numberOfPosts, numberOfTopics, profileAddress, profileMeta, t, userInfoOrbitAddress,
-    userPostsOrbitAddress, userRegistrationTimestamp, userTopicsOrbitAddress, username,
+    authorAvatar, editInformationModal, isSelf, numberOfPosts, numberOfTopics, profileAddress, profileMetadataFetched,
+    t, userInfoOrbitAddress, userLocationCell, userPostsOrbitAddress, userRegistrationTimestamp, userTopicsOrbitAddress,
+    username,
   ]);
+};
+
+GeneralTab.defaultProps = {
+  isSelf: false,
 };
 
 GeneralTab.propTypes = {
@@ -160,6 +217,7 @@ GeneralTab.propTypes = {
   numberOfTopics: PropTypes.number.isRequired,
   numberOfPosts: PropTypes.number.isRequired,
   userRegistrationTimestamp: PropTypes.string.isRequired,
+  isSelf: PropTypes.bool,
 };
 
 export default GeneralTab;
