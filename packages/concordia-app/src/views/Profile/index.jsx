@@ -69,8 +69,11 @@ const Profile = () => {
           numberOfTopics={userTopicIds.length}
           numberOfPosts={userPostIds.length}
           userRegistrationTimestamp={userRegistrationTimestamp}
+          isSelf={profileAddress === self.address}
         />
-    )), [loading, profileAddress, userPostIds.length, userRegistrationTimestamp, userTopicIds.length, username]);
+    )), [
+    loading, profileAddress, self.address, userPostIds.length, userRegistrationTimestamp, userTopicIds.length, username,
+  ]);
 
   const topicsTab = useMemo(() => (userTopicIds.length > 0
     ? (<TopicList topicIds={userTopicIds} />)
