@@ -1,3 +1,4 @@
+import './utils/indexedDB/patchIndexedDB';
 import './utils/wdyr';
 import React, { Suspense } from 'react';
 import { render } from 'react-dom';

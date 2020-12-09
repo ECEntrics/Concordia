@@ -5,6 +5,7 @@ import { useHistory } from 'react-router';
 import { useSelector } from 'react-redux';
 import AppContext from '../../../components/AppContext';
 import appLogo from '../../../assets/images/app_logo.png';
+import purgeIndexedDBs from '../../../utils/indexedDB/indexedDBUtils';
 
 const MainLayoutMenu = () => {
   const hasSignedUp = useSelector((state) => state.user.hasSignedUp);
@@ -56,6 +57,16 @@ const MainLayoutMenu = () => {
                                 {t('topbar.button.register')}
                             </Menu.Item>
                         )}
+                      <Menu.Item
+                        link
+                        name="purge"
+                        key="purge"
+                        onClick={async () => {
+                          await purgeIndexedDBs();
+                        }}
+                      >
+                          Purge
+                      </Menu.Item>
                   </Menu.Menu>
               </Menu>
           )}
