@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Container, Progress } from 'semantic-ui-react';
 
 // Images
+import metamaskLogo from '../../../assets/images/metamask_logo.svg';
 import ethereumLogo from '../../../assets/images/ethereum_logo.svg';
 import ipfsLogo from '../../../assets/images/ipfs_logo.svg';
 import orbitdbLogo from '../../../assets/images/orbitdb_logo.svg';
@@ -20,7 +21,10 @@ const LoadingComponent = (props) => {
   let imageSrc; let imageAlt; let listItems; let indicating; let
     error;
 
-  if (imageType === 'ethereum') {
+  if (imageType === 'metamask') {
+    imageSrc = metamaskLogo;
+    imageAlt = 'metamask_logo';
+  } else if (imageType === 'ethereum') {
     imageSrc = ethereumLogo;
     imageAlt = 'ethereum_logo';
   } else if (imageType === 'ipfs') {

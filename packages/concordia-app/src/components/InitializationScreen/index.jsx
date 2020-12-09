@@ -25,9 +25,9 @@ const InitializationLoader = ({ children }) => {
         <CustomLoader
           title="Couldn't detect MetaMask!"
           message={['Please make sure to install ', <a href="https://metamask.io/">MetaMask</a>, ' first.']}
-          imageType="ethereum"
+          imageType="metamask"
           progress={10}
-          progressType="indicating"
+          progressType="error"
         />
     );
   }
