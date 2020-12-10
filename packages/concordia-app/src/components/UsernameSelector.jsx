@@ -38,7 +38,7 @@ const UsernameSelector = (props) => {
         });
       } else {
         onErrorChangeCallback({
-          usernameChecked: checkedUsername !== undefined,
+          usernameChecked: true,
           error: false,
           errorMessage: null,
         });
