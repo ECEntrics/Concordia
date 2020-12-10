@@ -1,16 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Menu } from 'semantic-ui-react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
 import { useSelector } from 'react-redux';
 import AppContext from '../../../components/AppContext';
 import appLogo from '../../../assets/images/app_logo.png';
-import purgeIndexedDBs from '../../../utils/indexedDB/indexedDBUtils';
+import ClearDatabasesModal from '../../../components/ClearDatabasesModal';
 
 const MainLayoutMenu = () => {
   const hasSignedUp = useSelector((state) => state.user.hasSignedUp);
+  const [isClearDatabasesOpen, setIsClearDatabasesOpen] = useState(false);
   const history = useHistory();
   const { t } = useTranslation();
+
+  const handleClearDatabasesClick = () => {
+    setIsClearDatabasesOpen(true);
+  };
+
+  const handleDatabasesCleared = () => {
+    setIsClearDatabasesOpen(false);
+    history.push('/home');
+    window.location.reload(false);
+  };
+
+  const handleCancelDatabasesClear = () => {
+    setIsClearDatabasesOpen(false);
+  };
 
   return (
       <AppContext.Consumer>
@@ -23,6 +38,14 @@ const MainLayoutMenu = () => {
                     onClick={() => { history.push('/'); }}
                   >
                       <img src={appLogo} alt="app_logo" />
+                  </Menu.Item>
+                  <Menu.Item
+                    link
+                    name="clear-databases"
+                    key="clear-databases"
+                    onClick={handleClearDatabasesClick}
+                  >
+                      {t('topbar.button.clear.databases')}
                   </Menu.Item>
                   <Menu.Menu position="right">
                       {hasSignedUp && history.location.pathname === '/home' && (
@@ -57,17 +80,13 @@ const MainLayoutMenu = () => {
                                 {t('topbar.button.register')}
                             </Menu.Item>
                         )}
-                      <Menu.Item
-                        link
-                        name="purge"
-                        key="purge"
-                        onClick={async () => {
-                          await purgeIndexedDBs();
-                        }}
-                      >
-                          Purge
-                      </Menu.Item>
                   </Menu.Menu>
+
+                  <ClearDatabasesModal
+                    open={isClearDatabasesOpen}
+                    onDatabasesCleared={handleDatabasesCleared}
+                    onCancel={handleCancelDatabasesClear}
+                  />
               </Menu>
           )}
       </AppContext.Consumer>
