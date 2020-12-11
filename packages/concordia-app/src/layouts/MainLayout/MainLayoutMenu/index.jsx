@@ -76,7 +76,6 @@ const MainLayoutMenu = () => {
                   <Dropdown key="overflow" item direction="left">
                       <Dropdown.Menu>
                           <Dropdown.Item
-                            link
                             name="clear-databases"
                             key="clear-databases"
                             onClick={handleClearDatabasesClick}
@@ -84,7 +83,6 @@ const MainLayoutMenu = () => {
                               {t('topbar.button.clear.databases')}
                           </Dropdown.Item>
                           <Dropdown.Item
-                            link
                             name="about"
                             key="about"
                             onClick={() => { history.push('/about'); }}
