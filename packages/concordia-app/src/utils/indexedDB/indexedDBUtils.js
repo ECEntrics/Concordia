@@ -11,6 +11,7 @@ const purgeIndexedDBs = async () => {
     databases.map((db) => new Promise(
       (resolve, reject) => {
         const request = indexedDB.deleteDatabase(db.name);
+        request.onblocked = resolve;
         request.onsuccess = resolve;
         request.onerror = reject;
       },
