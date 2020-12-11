@@ -10,6 +10,7 @@ const REACT_APP_RENDEZVOUS_PORT = process.env.REACT_APP_RENDEZVOUS_PORT || REACT
 
 const breezeOptions = {
   ipfs: {
+    repo: 'concordia',
     config: {
       Addresses: {
         Swarm: [
