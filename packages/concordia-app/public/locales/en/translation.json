@@ -62,6 +62,7 @@
   "register.form.sign.up.step.error.message.header": "Form contains errors",
   "register.form.sign.up.step.title": "Sign Up",
   "register.p.account.address": "Account address:",
+  "topbar.button.about": "About",
   "topbar.button.clear.databases": "Clear databases",
   "topbar.button.create.topic": "Create topic",
   "topbar.button.profile": "Profile",

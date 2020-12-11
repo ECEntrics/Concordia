@@ -83,6 +83,14 @@ const MainLayoutMenu = () => {
                           >
                               {t('topbar.button.clear.databases')}
                           </Dropdown.Item>
+                          <Dropdown.Item
+                            link
+                            name="about"
+                            key="about"
+                            onClick={() => { history.push('/about'); }}
+                          >
+                              {t('topbar.button.about')}
+                          </Dropdown.Item>
                       </Dropdown.Menu>
                   </Dropdown>
 
