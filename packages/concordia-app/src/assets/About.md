@@ -18,10 +18,12 @@ Concordia, much like other projects of this kind, provides an alternative to thi
 
 TODO
 
-## Who
+--- 
 
-TODO
+Developed by [apostolof][devs-apostolof-profile], [ezerous][devs-ezerous-profile]
 
 [concordia-repository]: https://gitlab.com/ecentrics/apella
 [concordia-docker-hub]: https://hub.docker.com/repository/docker/ecentrics/apella-app
 [concordia-license]: https://gitlab.com/ecentrics/apella/-/blob/master/LICENSE.md
+[devs-apostolof-profile]: https://gitlab.com/Apostolof
+[devs-ezerous-profile]: https://gitlab.com/Ezerous

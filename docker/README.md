@@ -36,7 +36,7 @@ Furthermore, we provide an image that builds the contracts and handles their mig
 ### Ganache
 
 The Dockerfile is provided in the path `./ganache`. The image makes use of the environment variables described
-bellow.
+below.
 
 | Environment variable | Default value | Usage |
 | --- | --- | --- |
@@ -66,7 +66,7 @@ This is a provision system that compiles and deploys the contracts to any Ethere
 
 A Dockerfile is provided in the path `./concordia-contracts` that will build the contracts used by Concordia and
 handle their deployment to any Ethereum network defined using env-vars upon container run. Dockerfile contains three
-useful stages, described in the table bellow.
+useful stages, described in the table below.
 
 | Stage name | Entrypoint | Usage |
 | --- | --- | --- |
@@ -74,7 +74,7 @@ useful stages, described in the table bellow.
 | test | Runs contract tests | Compiles contracts and runs tests using blockchain defined by env vars |
 | runtime | Migrates contracts | Compiles contracts and migrates to the blockchain defined by env vars. Does **not** run tests |
 
-The image makes use of the environment variables described bellow.
+The image makes use of the environment variables described below.
 
 | Environment variable | Default value | Usage |
 | --- | --- | --- |
@@ -92,7 +92,7 @@ the image.
 ### Application
 
 The Dockerfile provided in the path `./concordia-application` builds the application for production and serves
-the resulting build using an nginx server. Dockerfile contains two useful stages, described in the table bellow.
+the resulting build using an nginx server. Dockerfile contains two useful stages, described in the table below.
 
 | Stage name | Entrypoint | Usage |
 | --- | --- | --- |
@@ -100,7 +100,7 @@ the resulting build using an nginx server. Dockerfile contains two useful stages
 | runtime | Serves application | Builds for production and serves it through nginx |
 
 
-The image makes use of the environment variables described bellow.
+The image makes use of the environment variables described below.
 
 | Environment variable | Default value | Usage |
 | --- | --- | --- |
