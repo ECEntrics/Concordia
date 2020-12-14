@@ -35,7 +35,7 @@ const MainLayoutMenu = () => {
                     link
                     name="home"
                     key="home"
-                    onClick={() => { history.push('/'); }}
+                    onClick={() => history.push('/')}
                   >
                       <img src={appLogo} alt="app_logo" />
                   </Menu.Item>
@@ -45,7 +45,7 @@ const MainLayoutMenu = () => {
                             link
                             name="create-topic"
                             key="create-topic"
-                            onClick={() => { history.push('/topics/new'); }}
+                            onClick={() => history.push('/topics/new')}
                             position="right"
                           >
                               {t('topbar.button.create.topic')}
@@ -57,7 +57,7 @@ const MainLayoutMenu = () => {
                               link
                               name="profile"
                               key="profile"
-                              onClick={() => { history.push('/profile'); }}
+                              onClick={() => history.push('/profile')}
                             >
                                 {t('topbar.button.profile')}
                             </Menu.Item>
@@ -67,11 +67,19 @@ const MainLayoutMenu = () => {
                               link
                               name="register"
                               key="register"
-                              onClick={() => { history.push('/auth/register'); }}
+                              onClick={() => history.push('/auth/register')}
                             >
                                 {t('topbar.button.register')}
                             </Menu.Item>
                         )}
+                      <Menu.Item
+                        link
+                        name="about"
+                        key="about"
+                        onClick={() => history.push('/about')}
+                      >
+                          {t('topbar.button.about')}
+                      </Menu.Item>
                   </Menu.Menu>
                   <Dropdown key="overflow" item direction="left">
                       <Dropdown.Menu>
@@ -81,13 +89,6 @@ const MainLayoutMenu = () => {
                             onClick={handleClearDatabasesClick}
                           >
                               {t('topbar.button.clear.databases')}
-                          </Dropdown.Item>
-                          <Dropdown.Item
-                            name="about"
-                            key="about"
-                            onClick={() => { history.push('/about'); }}
-                          >
-                              {t('topbar.button.about')}
                           </Dropdown.Item>
                       </Dropdown.Menu>
                   </Dropdown>
