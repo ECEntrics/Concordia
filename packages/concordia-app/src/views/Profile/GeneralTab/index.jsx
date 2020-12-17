@@ -66,7 +66,7 @@ const GeneralTab = (props) => {
     }
   }, [dispatch, profileAddress, users]);
 
-  const authorAvatar = useMemo(() => (profileMetadataFetched && userAvatarUrl !== null
+  const authorAvatar = useMemo(() => (profileMetadataFetched && userAvatarUrl
     ? (
         <Image
           className="general-tab-profile-picture"
