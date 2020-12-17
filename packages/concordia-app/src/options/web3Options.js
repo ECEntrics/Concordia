@@ -17,7 +17,7 @@ const web3WebsocketOptions = {
 };
 
 const web3 = (WEB3_HOST !== undefined && WEB3_PORT !== undefined)
-  ? `ws://${WEB3_HOST}:${WEB3_PORT}`
+  ? new Web3.providers.WebsocketProvider(`ws://${WEB3_HOST}:${WEB3_PORT}`)
   : new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvider(
     `ws://${WEB3_HOST_DEFAULT}:${WEB3_PORT_DEFAULT}`, web3WebsocketOptions,
   ));
