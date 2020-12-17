@@ -31,7 +31,9 @@ module.exports = {
         'no-unused-vars': 'warn',
         'no-console': 'warn',
         'no-shadow': 'warn',
-        "no-multi-str": "warn"
+        'no-multi-str': 'warn',
+        'one-var': ["error", { "uninitialized": "always" }],
+        'one-var-declaration-per-line': ['error', 'initializations']
     },
     'settings': {
         'import/resolver': {
