@@ -28,7 +28,7 @@ run-ganache-test:
 # Rendezvous targets
 run-rendezvous:
 	@docker network create --driver bridge concordia_rendezvous_network || true &&\
-	docker run -d -p 9090:9090 --name concordia-rendezvous libp2p/js-libp2p-webrtc-star:version-0.20.1
+	docker run -d -p 9090:9090 --name concordia-rendezvous libp2p/js-libp2p-webrtc-star:version-0.20.5
 
 # Contracts targets
 build-contracts:
