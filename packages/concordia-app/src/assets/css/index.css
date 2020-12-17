@@ -1,4 +1,17 @@
-body {
-    margin: 10em;
-    padding: 0;
+body.app {
+    overflow: auto;
+    margin: 1em !important;
+}
+
+#root {
+    height: 100%;
+}
+
+.i18next-newlines {
+    white-space: pre-line !important;
+}
+
+.text-secondary {
+    color: gray;
+    font-style: italic;
 }

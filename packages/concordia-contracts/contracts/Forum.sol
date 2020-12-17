@@ -1,5 +1,6 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.7.1;
+pragma experimental ABIEncoderV2;
 
 contract Forum {
 
@@ -16,7 +17,7 @@ contract Forum {
     mapping (string => address) userAddresses;
 
     event UserSignedUp(string username, address userAddress);
-    event UsernameUpdated(string newName, string oldName,address userAddress);
+    event UsernameUpdated(string newName, string oldName, address userAddress);
 
     function signUp(string memory username) public returns (bool) {
         require (!hasUserSignedUp(msg.sender), "User has already signed up.");
@@ -73,6 +74,10 @@ contract Forum {
         return users[userAddress].timestamp;
     }
 
+    function getUser(address userAddress) public view returns (User memory) {
+        require(hasUserSignedUp(userAddress), "User hasn't signed up yet.");
+        return users[userAddress];
+    }
 
     //----------------------------------------POSTING----------------------------------------
     struct Topic {

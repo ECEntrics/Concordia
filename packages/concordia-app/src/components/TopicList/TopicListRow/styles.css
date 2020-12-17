@@ -1,0 +1,21 @@
+.topic-metadata {
+    font-size: 12px !important;
+    font-weight: initial;
+}
+
+.list-item {
+    display: flex !important;
+    text-align: start;
+}
+
+.profile-picture {
+    cursor: pointer;
+    max-width: 36px;
+    max-height: 36px;
+    margin: 0;
+    vertical-align: middle;
+}
+
+.list-content {
+    flex-grow: 1;
+}

@@ -10,13 +10,21 @@
     "_eslint": "yarn eslint . --format table",
     "_solhint": "yarn solhint --formatter table contracts/*.sol test/*.sol",
     "test": "yarn truffle test",
-    "migrate": "yarn truffle migrate --network develop"
+    "migrate": "yarn _migrate --network develop",
+    "migrate-reset": "yarn _migrate --network develop --reset",
+    "_migrate": "yarn truffle migrate"
   },
   "dependencies": {
     "@openzeppelin/contracts": "~3.2.0",
     "truffle": "~5.1.45"
   },
   "devDependencies": {
-    "solhint": "~3.2.0"
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "solhint": "~3.3.2"
   }
 }
