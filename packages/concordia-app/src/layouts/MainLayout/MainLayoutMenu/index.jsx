@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu } from 'semantic-ui-react';
+import { Dropdown, Menu } from 'semantic-ui-react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
 import { useSelector } from 'react-redux';
@@ -39,14 +39,6 @@ const MainLayoutMenu = () => {
                   >
                       <img src={appLogo} alt="app_logo" />
                   </Menu.Item>
-                  <Menu.Item
-                    link
-                    name="clear-databases"
-                    key="clear-databases"
-                    onClick={handleClearDatabasesClick}
-                  >
-                      {t('topbar.button.clear.databases')}
-                  </Menu.Item>
                   <Menu.Menu position="right">
                       {hasSignedUp && history.location.pathname === '/home' && (
                           <Menu.Item
@@ -81,6 +73,18 @@ const MainLayoutMenu = () => {
                             </Menu.Item>
                         )}
                   </Menu.Menu>
+                  <Dropdown key="overflow" item direction="left">
+                      <Dropdown.Menu>
+                          <Dropdown.Item
+                            link
+                            name="clear-databases"
+                            key="clear-databases"
+                            onClick={handleClearDatabasesClick}
+                          >
+                              {t('topbar.button.clear.databases')}
+                          </Dropdown.Item>
+                      </Dropdown.Menu>
+                  </Dropdown>
 
                   <ClearDatabasesModal
                     open={isClearDatabasesOpen}
