@@ -24,6 +24,12 @@ const About = () => {
 
   return (
       <Container id="about-container">
+          <div style={{ textAlign: 'center' }}>
+              {/* TODO: add logo */}
+              LOGO
+              <br />
+              {`v${process.env.REACT_APP_VERSION}`}
+          </div>
           <ReactMarkdown
             source={aboutMd}
             renderers={{
