@@ -1,7 +1,7 @@
 const particlesOptions = {
   particles: {
     number: {
-      value: 60,
+      value: 90,
       density: {
         enable: true,
         value_area: 1500,
@@ -9,11 +9,11 @@ const particlesOptions = {
     },
     line_linked: {
       enable: true,
-      opacity: 0.02,
+      opacity: 0.04,
     },
     move: {
-      direction: 'right',
-      speed: 0.05,
+      direction: 'none',
+      speed: 0.12,
     },
     size: {
       value: 1,
@@ -21,21 +21,8 @@ const particlesOptions = {
     opacity: {
       anim: {
         enable: true,
-        speed: 1,
+        speed: 1.3,
         opacity_min: 0.05,
-      },
-    },
-  },
-  interactivity: {
-    events: {
-      onclick: {
-        enable: true,
-        mode: 'push',
-      },
-    },
-    modes: {
-      push: {
-        particles_nb: 1,
       },
     },
   },

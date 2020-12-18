@@ -1,15 +1,31 @@
-import React from 'react';
-import { Menu } from 'semantic-ui-react';
+import React, { useState } from 'react';
+import { Dropdown, Menu } from 'semantic-ui-react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
 import { useSelector } from 'react-redux';
 import AppContext from '../../../components/AppContext';
 import appLogo from '../../../assets/images/app_logo.png';
+import ClearDatabasesModal from '../../../components/ClearDatabasesModal';
 
 const MainLayoutMenu = () => {
   const hasSignedUp = useSelector((state) => state.user.hasSignedUp);
+  const [isClearDatabasesOpen, setIsClearDatabasesOpen] = useState(false);
   const history = useHistory();
   const { t } = useTranslation();
+
+  const handleClearDatabasesClick = () => {
+    setIsClearDatabasesOpen(true);
+  };
+
+  const handleDatabasesCleared = () => {
+    setIsClearDatabasesOpen(false);
+    history.push('/home');
+    window.location.reload(false);
+  };
+
+  const handleCancelDatabasesClear = () => {
+    setIsClearDatabasesOpen(false);
+  };
 
   return (
       <AppContext.Consumer>
@@ -57,6 +73,24 @@ const MainLayoutMenu = () => {
                             </Menu.Item>
                         )}
                   </Menu.Menu>
+                  <Dropdown key="overflow" item direction="left">
+                      <Dropdown.Menu>
+                          <Dropdown.Item
+                            link
+                            name="clear-databases"
+                            key="clear-databases"
+                            onClick={handleClearDatabasesClick}
+                          >
+                              {t('topbar.button.clear.databases')}
+                          </Dropdown.Item>
+                      </Dropdown.Menu>
+                  </Dropdown>
+
+                  <ClearDatabasesModal
+                    open={isClearDatabasesOpen}
+                    onDatabasesCleared={handleDatabasesCleared}
+                    onCancel={handleCancelDatabasesClear}
+                  />
               </Menu>
           )}
       </AppContext.Consumer>

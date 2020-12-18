@@ -1,5 +1,6 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.7.5;
+pragma experimental ABIEncoderV2;
 
 contract Forum {
     // Error messages for require()
@@ -21,7 +22,7 @@ contract Forum {
     mapping(string => address) userAddresses;
 
     event UserSignedUp(string username, address userAddress);
-    event UsernameUpdated(string newName, string oldName,address userAddress);
+    event UsernameUpdated(string newName, string oldName, address userAddress);
 
     function signUp(string memory username) public returns (bool) {
         require (!hasUserSignedUp(msg.sender), USER_HAS_NOT_SIGNED_UP);
@@ -75,6 +76,11 @@ contract Forum {
     function getUserDateOfRegister(address userAddress) public view returns (uint) {
         require (hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
         return users[userAddress].timestamp;
+    }
+
+    function getUser(address userAddress) public view returns (User memory) {
+        require(hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
+        return users[userAddress];
     }
 
     //----------------------------------------POSTING----------------------------------------

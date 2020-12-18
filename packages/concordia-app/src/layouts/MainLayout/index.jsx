@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import MainLayoutMenu from './MainLayoutMenu';
+import './styles.css';
 
 const MainLayout = (props) => {
   const { children } = props;

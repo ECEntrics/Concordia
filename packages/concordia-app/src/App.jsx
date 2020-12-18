@@ -2,23 +2,23 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import LoadingContainer from './components/LoadingContainer';
+import InitializationScreen from './components/InitializationScreen';
 import Routes from './Routes';
 import './intl/index';
 import 'semantic-ui-css/semantic.min.css';
-import './assets/css/app.css';
 
 const App = ({ store }) => (
     <Provider store={store}>
-        <LoadingContainer>
+        <InitializationScreen>
             <Router>
                 <Routes />
             </Router>
-        </LoadingContainer>
+        </InitializationScreen>
     </Provider>
 );
 
 App.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
   store: PropTypes.object.isRequired,
 };
 

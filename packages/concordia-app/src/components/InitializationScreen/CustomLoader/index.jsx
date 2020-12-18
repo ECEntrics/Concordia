@@ -1,25 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { Container, Progress } from 'semantic-ui-react';
 
-// CSS
-import '../assets/css/loading-component.css';
-
 // Images
-import ethereumLogo from '../assets/images/ethereum_logo.svg';
-import ipfsLogo from '../assets/images/ipfs_logo.svg';
-import orbitdbLogo from '../assets/images/orbitdb_logo.svg';
-import appLogo from '../assets/images/app_logo.png';
+import metamaskLogo from '../../../assets/images/metamask_logo.svg';
+import ethereumLogo from '../../../assets/images/ethereum_logo.svg';
+import ipfsLogo from '../../../assets/images/ipfs_logo.svg';
+import orbitdbLogo from '../../../assets/images/orbitdb_logo.svg';
+import appLogo from '../../../assets/images/app_logo.png';
 
 const LoadingComponent = (props) => {
+  useEffect(() => function cleanup() {
+    document.body.classList.add('app');
+  }, []);
+
   const {
     imageType, messageList, progressType, title, message, progress,
   } = props;
   let imageSrc; let imageAlt; let listItems; let indicating; let
     error;
 
-  if (imageType === 'ethereum') {
+  if (imageType === 'metamask') {
+    imageSrc = metamaskLogo;
+    imageAlt = 'metamask_logo';
+  } else if (imageType === 'ethereum') {
     imageSrc = ethereumLogo;
     imageAlt = 'ethereum_logo';
   } else if (imageType === 'ipfs') {

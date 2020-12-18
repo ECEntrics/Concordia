@@ -1,7 +1,9 @@
 const path = require('path');
+const defaults = require('./constants/config/defaults');
 
-const { GANACHE_HOST } = process.env;
-const { GANACHE_PORT } = process.env;
+const {
+  CHAIN_HOST, CHAIN_PORT,
+} = process.env;
 
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
@@ -14,13 +16,18 @@ module.exports = {
   contracts_build_directory: path.join(__dirname, 'build/'),
   networks: {
     develop: {
-      host: GANACHE_HOST || '127.0.0.1',
-      port: GANACHE_PORT || '8545',
+      host: defaults.develop.chainHost,
+      port: defaults.develop.chainPort,
       network_id: '*',
     },
     test: {
-      host: GANACHE_HOST || '127.0.0.1',
-      port: GANACHE_PORT || '8546',
+      host: defaults.test.chainHost,
+      port: defaults.test.chainPort,
+      network_id: '*',
+    },
+    env: {
+      host: CHAIN_HOST,
+      port: CHAIN_PORT,
       network_id: '*',
     },
   },

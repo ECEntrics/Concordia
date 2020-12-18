@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useContext, useEffect, useState,
+  useCallback, useEffect, useState,
 } from 'react';
 import {
   Button, Container, Form, Icon, Input, TextArea,
@@ -7,34 +7,24 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
 import { useSelector } from 'react-redux';
-import AppContext from '../../../components/AppContext';
 import './styles.css';
+import { drizzle, breeze } from '../../../redux/store';
+import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../../constants/TransactionStatus';
+import { POSTS_DATABASE, TOPICS_DATABASE } from '../../../constants/orbit/OrbitDatabases';
+import { TOPIC_SUBJECT } from '../../../constants/orbit/TopicsDatabaseKeys';
+import { POST_CONTENT } from '../../../constants/orbit/PostsDatabaseKeys';
+import { FORUM_CONTRACT } from '../../../constants/contracts/ContractNames';
+import { TOPIC_CREATED_EVENT } from '../../../constants/contracts/events/ForumContractEvents';
+
+const { contracts: { [FORUM_CONTRACT]: { methods: { createTopic } } } } = drizzle;
+const { orbit: { stores } } = breeze;
 
 const TopicCreate = (props) => {
   const { account } = props;
-
-  const {
-    drizzle: {
-      contracts: {
-        Forum: {
-          methods: { createTopic },
-        },
-      },
-    },
-    breeze: {
-      orbit: {
-        stores,
-      },
-    },
-  } = useContext(AppContext.Context);
-
   const transactionStack = useSelector((state) => state.transactionStack);
   const transactions = useSelector((state) => state.transactions);
-
   const [subjectInput, setSubjectInput] = useState('');
-  const [messageInput, setMessageInput] = useState('');
-  const [topicSubjectInputEmptySubmit, setTopicSubjectInputEmptySubmit] = useState(false);
-  const [topicMessageInputEmptySubmit, setTopicMessageInputEmptySubmit] = useState(false);
+  const [contentInput, setContentInput] = useState('');
   const [createTopicCacheSendStackId, setCreateTopicCacheSendStackId] = useState('');
   const [posting, setPosting] = useState(false);
 
@@ -50,8 +40,8 @@ const TopicCreate = (props) => {
       case 'subjectInput':
         setSubjectInput(event.target.value);
         break;
-      case 'messageInput':
-        setMessageInput(event.target.value);
+      case 'contentInput':
+        setContentInput(event.target.value);
         break;
       default:
         break;
@@ -61,13 +51,13 @@ const TopicCreate = (props) => {
   useEffect(() => {
     if (posting && transactionStack && transactionStack[createTopicCacheSendStackId]
             && transactions[transactionStack[createTopicCacheSendStackId]]) {
-      if (transactions[transactionStack[createTopicCacheSendStackId]].status === 'error') {
+      if (transactions[transactionStack[createTopicCacheSendStackId]].status === TRANSACTION_ERROR) {
         setPosting(false);
-      } else if (transactions[transactionStack[createTopicCacheSendStackId]].status === 'success') {
+      } else if (transactions[transactionStack[createTopicCacheSendStackId]].status === TRANSACTION_SUCCESS) {
         const {
           receipt: {
             events: {
-              TopicCreated: {
+              [TOPIC_CREATED_EVENT]: {
                 returnValues: {
                   topicID: topicId,
                   postID: postId,
@@ -77,15 +67,14 @@ const TopicCreate = (props) => {
           },
         } = transactions[transactionStack[createTopicCacheSendStackId]];
 
-        const topicsDb = Object.values(stores).find((store) => store.dbname === 'topics');
-        const postsDb = Object.values(stores).find((store) => store.dbname === 'posts');
+        const topicsDb = Object.values(stores).find((store) => store.dbname === TOPICS_DATABASE);
+        const postsDb = Object.values(stores).find((store) => store.dbname === POSTS_DATABASE);
 
         topicsDb
-          .put(topicId, { subject: subjectInput }, { pin: true })
+          .put(topicId, { [TOPIC_SUBJECT]: subjectInput }, { pin: true })
           .then(() => postsDb
             .put(postId, {
-              subject: subjectInput,
-              content: messageInput,
+              [POST_CONTENT]: contentInput,
             }, { pin: true }))
           .then(() => {
             history.push(`/topics/${topicId}`);
@@ -95,24 +84,16 @@ const TopicCreate = (props) => {
           });
       }
     }
-  }, [
-    transactions, transactionStack, history, posting, createTopicCacheSendStackId, subjectInput, messageInput, stores,
-  ]);
+  }, [createTopicCacheSendStackId, history, contentInput, posting, subjectInput, transactionStack, transactions]);
 
   const validateAndPost = useCallback(() => {
-    if (subjectInput === '') {
-      setTopicSubjectInputEmptySubmit(true);
-      return;
-    }
-
-    if (messageInput === '') {
-      setTopicMessageInputEmptySubmit(true);
+    if (subjectInput === '' || contentInput === '') {
       return;
     }
 
     setPosting(true);
     setCreateTopicCacheSendStackId(createTopic.cacheSend(...[], { from: account }));
-  }, [account, createTopic, messageInput, subjectInput]);
+  }, [account, contentInput, subjectInput]);
 
   return (
       <Container>
@@ -126,23 +107,19 @@ const TopicCreate = (props) => {
                     placeholder={t('topic.create.form.subject.field.placeholder')}
                     name="subjectInput"
                     className="form-input"
-                    error={topicSubjectInputEmptySubmit}
                     value={subjectInput}
                     onChange={handleSubjectInputChange}
                   />
               </Form.Field>
               <Form.Field required>
                   <label htmlFor="form-topic-create-field-message">
-                      {t('topic.create.form.message.field.label')}
+                      {t('topic.create.form.content.field.label')}
                   </label>
                   <TextArea
                     id="form-topic-create-field-message"
-                    name="messageInput"
-                    className={topicMessageInputEmptySubmit
-                      ? 'form-textarea-required'
-                      : ''}
-                    value={messageInput}
-                    placeholder={t('topic.create.form.message.field.placeholder')}
+                    name="contentInput"
+                    value={contentInput}
+                    placeholder={t('topic.create.form.content.field.placeholder')}
                     rows={5}
                     autoheight="true"
                     onChange={handleSubjectInputChange}
@@ -154,7 +131,7 @@ const TopicCreate = (props) => {
                     key="form-topic-create-button-submit"
                     type="button"
                     color="green"
-                    disabled={posting}
+                    disabled={posting || subjectInput === '' || contentInput === ''}
                     onClick={validateAndPost}
                   >
                       <Button.Content visible>

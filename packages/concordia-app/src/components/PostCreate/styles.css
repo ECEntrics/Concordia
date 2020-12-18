@@ -1,0 +1,13 @@
+.post-profile-picture {
+    margin: 5px 0 0 0;
+}
+
+.post-summary-meta-index {
+    float: right;
+    font-size: 12px;
+    opacity: 0.4;
+}
+
+.like:hover .icon {
+    color: #fff !important;
+}

@@ -1,184 +1,121 @@
-import React, {
-  useCallback, useContext, useEffect, useMemo, useState,
-} from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
-  Button, Card, Form, Header, Input, Message,
+  Button, Card, Header, Icon, Step,
 } from 'semantic-ui-react';
-import throttle from 'lodash/throttle';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
-import AppContext from '../../components/AppContext';
 import './styles.css';
+import SignUpStep from './SignUpStep';
+import PersonalInformationStep from './PersonalInformationStep';
+import { REGISTER_STEP_PROFILE_INFORMATION, REGISTER_STEP_SIGNUP } from '../../constants/RegisterSteps';
 
-const Register = (props) => {
-  const { account } = props;
-
-  const {
-    drizzle: {
-      contracts: {
-        Forum: {
-          methods: { isUserNameTaken, signUp },
-        },
-      },
-    },
-  } = useContext(AppContext.Context);
-
+const Register = () => {
+  const [currentStep, setCurrentStep] = useState('signup');
   const user = useSelector((state) => state.user);
-  const isUserNameTakenResults = useSelector((state) => state.contracts.Forum.isUserNameTaken);
-  const transactionStack = useSelector((state) => state.transactionStack);
-  const transactions = useSelector((state) => state.transactions);
-
-  const [usernameInput, setUsernameInput] = useState('');
-  const [usernameIsChecked, setUsernameIsChecked] = useState(true);
-  const [usernameIsTaken, setUsernameIsTaken] = useState(true);
-  const [error, setError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [signingUp, setSigningUp] = useState(false);
-  const [registerCacheSendStackId, setRegisterCacheSendStackId] = useState('');
-
+  const [signingUp] = useState(!user.hasSignedUp);
   const history = useHistory();
   const { t } = useTranslation();
 
-  useEffect(() => {
-    if (usernameInput.length > 0) {
-      const checkedUsernames = Object
-        .values(isUserNameTakenResults)
-        .map((callCompleted) => ({
-          checkedUsername: callCompleted.args[0],
-          isTaken: callCompleted.value,
-        }));
-      const checkedUsername = checkedUsernames
-        .find((callCompleted) => callCompleted.checkedUsername === usernameInput);
+  const goToHomePage = useCallback(() => history.push('/'), [history]);
 
-      setUsernameIsChecked(checkedUsername !== undefined);
-
-      if (checkedUsername && checkedUsername.isTaken) {
-        setUsernameIsTaken(true);
-        setError(true);
-        setErrorMessage(t('register.form.error.username.taken.message', { username: usernameInput }));
-      } else {
-        setUsernameIsTaken(false);
-        setError(false);
-      }
+  const pushNextStep = useCallback(() => {
+    if (currentStep === REGISTER_STEP_SIGNUP) {
+      setCurrentStep(REGISTER_STEP_PROFILE_INFORMATION);
     }
-  }, [isUserNameTakenResults, t, usernameInput]);
 
-  useEffect(() => {
-    if (signingUp && transactionStack && transactionStack[registerCacheSendStackId]
-        && transactions[transactionStack[registerCacheSendStackId]]) {
-      if (transactions[transactionStack[registerCacheSendStackId]].status === 'error') {
-        setSigningUp(false);
-      } else if (transactions[transactionStack[registerCacheSendStackId]].status === 'success') {
-        history.push('/');
-        // TODO: display a welcome message?
-      }
+    if (currentStep === REGISTER_STEP_PROFILE_INFORMATION) {
+      goToHomePage();
     }
-  }, [registerCacheSendStackId, signingUp, transactions, transactionStack, history]);
+  }, [currentStep, goToHomePage]);
 
-  const checkUsernameTaken = useMemo(() => throttle(
-    (username) => {
-      isUserNameTaken.cacheCall(username);
-    }, 200,
-  ), [isUserNameTaken]);
-
-  const handleInputChange = useCallback((event, { value }) => {
-    setUsernameInput(value);
-
-    if (value.length > 0) {
-      checkUsernameTaken(value);
+  const activeStep = useMemo(() => {
+    if (currentStep === REGISTER_STEP_SIGNUP) {
+      return (
+          <SignUpStep pushNextStep={pushNextStep} />
+      );
     }
-  }, [checkUsernameTaken]);
 
-  const handleSubmit = useCallback(() => {
-    if (user.hasSignedUp) {
-      signUp.cacheSend(usernameInput);
-    } else {
-      setSigningUp(true);
-      setRegisterCacheSendStackId(signUp.cacheSend(...[usernameInput], { from: account }));
+    if (currentStep === REGISTER_STEP_PROFILE_INFORMATION) {
+      return (
+          <PersonalInformationStep pushNextStep={pushNextStep} />
+      );
     }
-  }, [account, signUp, user.hasSignedUp, usernameInput]);
 
-  const goToHomePage = React.useCallback(() => history.push('/'), [history]);
+    return null;
+  }, [currentStep, pushNextStep]);
 
   return (
       <div className="centered form-card-container">
           <Card fluid>
               <Card.Content>
-                  <Card.Header>Sign Up</Card.Header>
+                  {
+                  !user.hasSignedUp && (
+                      <Card.Header>
+                          <Step.Group>
+                              <Step
+                                key="register-form-step-signup"
+                                active={currentStep === REGISTER_STEP_SIGNUP}
+                              >
+                                  <Icon name="signup" />
+                                  <Step.Content>
+                                      <Step.Title>
+                                          {t('register.form.sign.up.step.title')}
+                                      </Step.Title>
+                                      <Step.Description>
+                                          {t('register.form.sign.up.step.description')}
+                                      </Step.Description>
+                                  </Step.Content>
+                              </Step>
+                              <Step
+                                key="register-form-step-profile-information"
+                                active={currentStep === REGISTER_STEP_PROFILE_INFORMATION}
+                              >
+                                  <Icon name="user circle" />
+                                  <Step.Content>
+                                      <Step.Title>
+                                          {t('register.form.profile.information.step.title')}
+                                      </Step.Title>
+                                      <Step.Description>
+                                          {t('register.form.profile.information.step.description')}
+                                      </Step.Description>
+                                  </Step.Content>
+                              </Step>
+                          </Step.Group>
+                      </Card.Header>
+                  )
+                }
                   <Card.Description>
                       <p>
                           <strong>{t('register.p.account.address')}</strong>
                             &nbsp;
                           {user.address}
                       </p>
-                      {user.hasSignedUp
-                        ? (
-                            <div>
-                                <Header as="h4" className="i18next-newlines">
-                                    {t('register.form.header.already.member.message')}
-                                </Header>
-                            </div>
-                        )
-                        : (
-                            <Form loading={signingUp}>
-                                <Form.Field required>
-                                    <label htmlFor="form-register-field-username">
-                                        {t('register.form.username.field.label')}
-                                    </label>
-                                    <Input
-                                      id="form-register-field-username"
-                                      placeholder={t('register.form.username.field.placeholder')}
-                                      name="usernameInput"
-                                      className="form-input"
-                                      value={usernameInput}
-                                      onChange={handleInputChange}
-                                    />
-                                </Form.Field>
-                            </Form>
-                        )}
                   </Card.Description>
               </Card.Content>
-              {error === true && (
-                  <Card.Content extra>
-                      <Message
-                        error
-                        header={t('register.form.error.message.header')}
-                        content={errorMessage}
-                      />
-                  </Card.Content>
-              )}
-              <Card.Content extra>
-                  {user.hasSignedUp
-                    ? (
-                        <Button
-                          color="black"
-                          floated="right"
-                          content={t('register.form.button.back')}
-                          onClick={goToHomePage}
-                        />
-                    )
-                    : (
-                        <>
+              {user.hasSignedUp && !signingUp
+                ? (
+                    <>
+                        <Card.Content>
+                            <Card.Description>
+                                <div>
+                                    <Header as="h4" className="i18next-newlines">
+                                        {t('register.form.header.already.member.message')}
+                                    </Header>
+                                </div>
+                            </Card.Description>
+                        </Card.Content>
+                        <Card.Content extra>
                             <Button
-                              color="green"
+                              color="black"
                               floated="right"
-                              content={t('register.form.button.submit')}
-                              onClick={handleSubmit}
-                              disabled={usernameIsTaken || signingUp}
-                              loading={!usernameIsChecked}
-                            />
-                            <Button
-                              color="violet"
-                              floated="right"
-                              basic
-                              content={t('register.form.button.guest')}
+                              content={t('register.form.button.back')}
                               onClick={goToHomePage}
-                              disabled={signingUp}
                             />
-                        </>
-                    )}
-              </Card.Content>
+                        </Card.Content>
+                    </>
+                )
+                : activeStep}
           </Card>
       </div>
   );

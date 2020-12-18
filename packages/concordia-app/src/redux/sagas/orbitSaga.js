@@ -10,7 +10,8 @@ import { EthereumContractIdentityProvider } from '@ezerous/eth-identity-provider
 
 function* initOrbitDatabases(action) {
   const { account, breeze } = action;
-  yield put(breezeActions.orbit.orbitInit(breeze, account + EthereumContractIdentityProvider.contractAddress)); // same as breeze.initOrbit(account);
+  // same as breeze.initOrbit(account);
+  yield put(breezeActions.orbit.orbitInit(breeze, account + EthereumContractIdentityProvider.contractAddress));
 }
 
 function* orbitSaga() {
