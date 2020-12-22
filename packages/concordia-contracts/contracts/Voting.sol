@@ -41,7 +41,7 @@ contract Voting {
     function createPoll(uint topicID, uint numOptions, string memory dataHash, bool enableVoteChanges) public returns (uint) {
         require(forum.hasUserSignedUp(msg.sender), forum.USER_HAS_NOT_SIGNED_UP());
         require(forum.topicExists(topicID), forum.TOPIC_DOES_NOT_EXIST());
-        require (forum.getTopicAuthor(topicID) == msg.sender, TOPIC_POLL_DIFFERENT_CREATOR);
+        require(forum.getTopicAuthor(topicID) == msg.sender, TOPIC_POLL_DIFFERENT_CREATOR);
         require(!pollExists(topicID), POLL_EXISTS);
 
         Poll storage poll = polls[topicID];
@@ -132,21 +132,21 @@ contract Voting {
         Poll storage poll = polls[topicID];
         address voter = msg.sender;
         uint prevOption = poll.votes[voter];
-        if(prevOption == option)
+        if (prevOption == option)
             return;
 
         // Voter hasn't voted before
-        if(prevOption == 0){
+        if (prevOption == 0) {
             poll.voters[option].push(voter);
             poll.votes[voter] = option;
             emit UserVotedPoll(voter, topicID, option);
         }
-        else if (poll.enableVoteChanges){
+        else if (poll.enableVoteChanges) {
             uint voterIndex = getVoterIndex(topicID, voter);
             // Swap with last voter address and delete vote
             poll.voters[prevOption][voterIndex] = poll.voters[prevOption][poll.voters[prevOption].length - 1];
             poll.voters[prevOption].pop();
-            if(option != 0)
+            if (option != 0)
                 poll.voters[option].push(voter);
             poll.votes[voter] = option;
             emit UserVotedPoll(voter, topicID, option);

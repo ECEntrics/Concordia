@@ -77,11 +77,11 @@ contract PostVoting {
         address voter = msg.sender;
         Option prevOption = postBallot.votes[voter];
 
-        if(prevOption == option)
+        if (prevOption == option)
             return;
 
         // Remove previous vote if exists
-        if(prevOption != Option.DEFAULT){
+        if (prevOption != Option.DEFAULT) {
             uint voterIndex = getVoterIndex(postID, voter);
             // Swap with last voter address and delete vote
             postBallot.voters[prevOption][voterIndex] = postBallot.voters[prevOption][postBallot.voters[prevOption].length - 1];
@@ -89,21 +89,21 @@ contract PostVoting {
         }
 
         // Add new vote
-        if(option != Option.DEFAULT)
+        if (option != Option.DEFAULT)
             postBallot.voters[option].push(voter);
         postBallot.votes[voter] = option;
         emit UserVotedPost(voter, postID, option);
     }
 
-    function upvote(uint postID) public{
+    function upvote(uint postID) public {
         vote(postID, Option.UP);
     }
 
-    function downvote(uint postID) public{
+    function downvote(uint postID) public {
         vote(postID, Option.DOWN);
     }
 
-    function unvote(uint postID) public{
+    function unvote(uint postID) public {
         vote(postID, Option.DEFAULT);
     }
 }

@@ -24,7 +24,7 @@ contract Forum {
     event UsernameUpdated(string newName, string oldName, address userAddress);
 
     function signUp(string memory username) public returns (bool) {
-        require (!hasUserSignedUp(msg.sender), USER_HAS_NOT_SIGNED_UP);
+        require(!hasUserSignedUp(msg.sender), USER_HAS_NOT_SIGNED_UP);
         require(!isUserNameTaken(username), USERNAME_TAKEN);
         users[msg.sender] = User(username, new uint[](0), new uint[](0), block.timestamp, true);
         userAddresses[username] = msg.sender;
@@ -33,7 +33,7 @@ contract Forum {
     }
 
     function updateUsername(string memory newUsername) public returns (bool) {
-        require (hasUserSignedUp(msg.sender), USER_HAS_NOT_SIGNED_UP);
+        require(hasUserSignedUp(msg.sender), USER_HAS_NOT_SIGNED_UP);
         require(!isUserNameTaken(newUsername), USERNAME_TAKEN);
         string memory oldUsername = getUsername(msg.sender);
         delete userAddresses[users[msg.sender].username];
@@ -44,7 +44,7 @@ contract Forum {
     }
 
     function getUsername(address userAddress) public view returns (string memory) {
-        require (hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
+        require(hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
         return users[userAddress].username;
     }
 
@@ -63,17 +63,17 @@ contract Forum {
     }
 
     function getUserTopics(address userAddress) public view returns (uint[] memory) {
-        require (hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
+        require(hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
         return users[userAddress].topicIDs;
     }
 
     function getUserPosts(address userAddress) public view returns (uint[] memory) {
-        require (hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
+        require(hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
         return users[userAddress].postIDs;
     }
 
     function getUserDateOfRegister(address userAddress) public view returns (uint) {
-        require (hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
+        require(hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
         return users[userAddress].timestamp;
     }
 
