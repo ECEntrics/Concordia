@@ -12,7 +12,9 @@
   "dependencies": {
     "@ezerous/eth-identity-provider": "~0.1.2",
     "esm": "~3.2.25",
+    "express": "^4.17.1",
     "ipfs": "~0.52.1",
+    "is-reachable": "^5.0.0",
     "level": "~6.0.1",
     "libp2p": "~0.30.0",
     "libp2p-bootstrap": "~0.12.1",
@@ -23,6 +25,7 @@
     "libp2p-noise": "~2.0.1",
     "libp2p-tcp": "~0.15.1",
     "libp2p-webrtc-star": "~0.20.2",
+    "lodash": "^4.17.20",
     "orbit-db": "~0.26.0",
     "orbit-db-identity-provider": "~0.3.1",
     "rimraf": "~3.0.2",

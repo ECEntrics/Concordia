@@ -1,20 +1,13 @@
-import IPFS from 'ipfs';
 import OrbitDB from 'orbit-db';
 import Identities from 'orbit-db-identity-provider';
 import { EthereumContractIdentityProvider } from '@ezerous/eth-identity-provider';
 import Web3 from 'web3';
-import ipfsOptions from '../options/ipfsOptions';
-import { displayIPFSStats } from './ipfsUtils';
 
-export async function createOrbitInstance(contractAddress){
+export async function createOrbitInstance(ipfs, contractAddress){
     Identities.addIdentityProvider(EthereumContractIdentityProvider);
 
     EthereumContractIdentityProvider.setWeb3(new Web3()); // We need a fully-featured new Web3 for signature verification
     EthereumContractIdentityProvider.setContractAddress(contractAddress);
-
-    const ipfs = await IPFS.create(ipfsOptions);
-
-    displayIPFSStats(ipfs);
 
     return await OrbitDB.createInstance(ipfs);
 }
@@ -52,5 +45,3 @@ async function determineKVAddress({ orbit, dbName, userAddress }) {
         orbit, dbName, type: 'keyvalue', identityId: userAddress + EthereumContractIdentityProvider.contractAddress,
     });
 }
-
-

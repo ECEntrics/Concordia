@@ -7,13 +7,14 @@ import Gossipsub from 'libp2p-gossipsub';
 import KadDHT from 'libp2p-kad-dht';
 import MPLEX from 'libp2p-mplex';
 import { NOISE } from 'libp2p-noise';
+import { swarmAddresses } from '../constants';
 
 // See also: https://github.com/libp2p/js-libp2p/blob/master/doc/CONFIGURATION.md
 export default (opts) => {
   return new Libp2p({
     peerId: opts.peerId,
     addresses: {
-      listen: ['/ip4/127.0.0.1/tcp/9090/wss/p2p-webrtc-star']
+      listen: swarmAddresses
     },
     connectionManager: {
       minPeers: 25,
