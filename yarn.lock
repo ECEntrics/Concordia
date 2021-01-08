@@ -10712,17 +10712,17 @@ libp2p-gossipsub@^0.6.1:
     time-cache "^0.3.0"
     uint8arrays "^1.1.0"
 
-libp2p-gossipsub@~0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/libp2p-gossipsub/-/libp2p-gossipsub-0.7.0.tgz#92964135163b5f29df6bf24b18fd76df37b5002e"
-  integrity sha512-uHohd/1SMBg36BNZSMYIwoAsOKFqt8FJh9dq7izHd4PKMyKDlRMdc1LYdqdMMj+MBcDctulMw4zGeGE8WTK62A==
+libp2p-gossipsub@~0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/libp2p-gossipsub/-/libp2p-gossipsub-0.8.0.tgz#b9c961560dc02afa079790f44882854a19a94abf"
+  integrity sha512-nR5XGN6E5n2ukPR9aa/rtegwluxiK+vT9j5Oulp+P1h6T9vEqDvFAEe9cqA3FiT7apI5gk44SE0aZFTMpxz6EA==
   dependencies:
     "@types/debug" "^4.1.5"
     debug "^4.1.1"
     denque "^1.4.1"
     err-code "^2.0.0"
     it-pipe "^1.0.1"
-    libp2p-interfaces "^0.7.2"
+    libp2p-interfaces "^0.8.0"
     peer-id "^0.14.0"
     protons "^2.0.0"
     time-cache "^0.3.0"
@@ -10821,7 +10821,7 @@ libp2p-interfaces@^0.6.0:
     streaming-iterables "^5.0.2"
     uint8arrays "^1.1.0"
 
-libp2p-interfaces@^0.7.1, libp2p-interfaces@^0.7.2:
+libp2p-interfaces@^0.7.1:
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/libp2p-interfaces/-/libp2p-interfaces-0.7.2.tgz#77281294b6bba72d0e9bf6c0e0b3471e37330cc3"
   integrity sha512-uI4vPiwdi9pKScLoAvwMqXiEjUtUACavtqZEvdm36T1PcmzsfDbGDKGCkGoDENQ/kztsggfb/9PoEAiNw3CQxQ==
@@ -10855,7 +10855,7 @@ libp2p-interfaces@^0.7.1, libp2p-interfaces@^0.7.2:
     streaming-iterables "^5.0.2"
     uint8arrays "^1.1.0"
 
-libp2p-interfaces@^0.8.1:
+libp2p-interfaces@^0.8.0, libp2p-interfaces@^0.8.1:
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/libp2p-interfaces/-/libp2p-interfaces-0.8.1.tgz#426c0d599f169aa7a599d7707e7b82cec1baba40"
   integrity sha512-46ttBnPMmg3/I8hPQE08uJtmI6CB2O/+xnOqYJ+yW8m1mqpMNJvQd/yTkoMyNXxJnGhAzC1Vn7IxVrisQhOmNA==

@@ -48,8 +48,9 @@ async function main () {
           result.data,
           result.topics.slice(1)
       )
-      console.log(`User signed up:`, eventObj[1]);
-      getPeerDatabases(orbit, userAddresses).then(peerDBs => openKVDBs(orbit, peerDBs));
+      const userAddress = eventObj[1];
+      console.log(`User signed up:`, userAddress);
+      getPeerDatabases(orbit, [userAddress]).then(peerDBs => openKVDBs(orbit, peerDBs));
     }
   });
 
