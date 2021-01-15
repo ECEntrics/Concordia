@@ -2,8 +2,9 @@ import React, {
   memo, useEffect, useState,
 } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Container } from 'semantic-ui-react';
+import { Container, Image } from 'semantic-ui-react';
 import AboutMd from '../../assets/About.md';
+import appLogo from '../../assets/images/app_logo_circle.svg';
 
 const targetBlank = () => ({ href, children }) => (
     <a href={href} target="_blank" rel="noopener noreferrer">
@@ -25,9 +26,7 @@ const About = () => {
   return (
       <Container id="about-container">
           <div style={{ textAlign: 'center' }}>
-              {/* TODO: add logo */}
-              LOGO
-              <br />
+              <Image src={appLogo} size="small" centered />
               {`v${process.env.REACT_APP_VERSION}`}
           </div>
           <ReactMarkdown
