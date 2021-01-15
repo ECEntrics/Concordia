@@ -15,3 +15,7 @@ body.app {
     color: gray;
     font-style: italic;
 }
+
+.ui.inverted.menu {
+    background: #0B2540;
+}

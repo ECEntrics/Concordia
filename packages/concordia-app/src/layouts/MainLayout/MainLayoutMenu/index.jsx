@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
 import { useSelector } from 'react-redux';
 import AppContext from '../../../components/AppContext';
-import appLogo from '../../../assets/images/app_logo.png';
+import appLogo from '../../../assets/images/app_logo.svg';
 import ClearDatabasesModal from '../../../components/ClearDatabasesModal';
 
 const MainLayoutMenu = () => {
@@ -30,7 +30,7 @@ const MainLayoutMenu = () => {
   return (
       <AppContext.Consumer>
           {() => (
-              <Menu color="black" inverted>
+              <Menu inverted>
                   <Menu.Item
                     link
                     name="home"
