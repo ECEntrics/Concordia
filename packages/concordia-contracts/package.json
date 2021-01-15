@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "~3.2.0",
-    "truffle": "~5.1.45"
+    "truffle": "~5.1.55"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
