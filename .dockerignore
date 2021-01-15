@@ -13,6 +13,7 @@ docker/
 packages/*/node_modules
 packages/*/dist
 packages/*/coverage
+packages/*/*.env*
 # TO-NEVER-DO: exclude the build folder of the contracts package, it's needed for building the application image.
 packages/concordia-app/build
 

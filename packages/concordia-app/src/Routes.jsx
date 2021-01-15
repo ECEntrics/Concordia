@@ -41,6 +41,11 @@ const routesConfig = [
       },
       {
         exact: true,
+        path: '/about',
+        component: lazy(() => import('./views/About')),
+      },
+      {
+        exact: true,
         path: '/topics/:id(\\bnew\\b|\\d+)',
         component: lazy(() => import('./views/Topic')),
       },
