@@ -8,7 +8,7 @@ import metamaskLogo from '../../../assets/images/metamask_logo.svg';
 import ethereumLogo from '../../../assets/images/ethereum_logo.svg';
 import ipfsLogo from '../../../assets/images/ipfs_logo.svg';
 import orbitdbLogo from '../../../assets/images/orbitdb_logo.svg';
-import appLogo from '../../../assets/images/app_logo.png';
+import appLogo from '../../../assets/images/app_logo.svg';
 
 const LoadingComponent = (props) => {
   useEffect(() => function cleanup() {
