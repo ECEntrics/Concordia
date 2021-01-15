@@ -24,7 +24,7 @@ const { orbit } = breeze;
 const TopicView = (props) => {
   const {
     topicId, topicAuthorAddress: initialTopicAuthorAddress, topicAuthor: initialTopicAuthor,
-    timestamp: initialTimestamp, postIds: initialPostIds,
+    timestamp: initialTimestamp, postIds: initialPostIds, focusOnPost,
   } = props;
   const drizzleInitialized = useSelector((state) => state.drizzleStatus.initialized);
   const drizzleInitializationFailed = useSelector((state) => state.drizzleStatus.failed);
@@ -174,7 +174,7 @@ const TopicView = (props) => {
                   </Step>
               </Step.Group>
           </Dimmer.Dimmable>
-          <PostList postIds={postIds || []} loading={postIds === null} />
+          <PostList postIds={postIds || []} loading={postIds === null} focusOnPost={focusOnPost} />
           {topicSubject !== null && postIds !== null && hasSignedUp && (
               <PostCreate
                 topicId={topicId}
@@ -192,6 +192,7 @@ TopicView.propTypes = {
   topicAuthor: PropTypes.string,
   timestamp: PropTypes.number,
   postIds: PropTypes.arrayOf(PropTypes.number),
+  focusOnPost: PropTypes.number,
 };
 
 export default TopicView;

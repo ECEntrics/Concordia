@@ -1,8 +1,8 @@
 import React, {
-  memo, useEffect, useMemo, useState,
+  memo, useEffect, useMemo, useState, useCallback,
 } from 'react';
 import {
-  Dimmer, Icon, Image, Feed, Placeholder,
+  Dimmer, Icon, Image, Feed, Placeholder, Ref,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -22,12 +22,13 @@ const { orbit } = breeze;
 
 const PostListRow = (props) => {
   const {
-    id: postId, postIndexInTopic, postCallHash, loading,
+    id: postId, postIndex, postCallHash, loading, focus,
   } = props;
   const getPostResults = useSelector((state) => state.contracts[FORUM_CONTRACT].getPost);
   const [postAuthorAddress, setPostAuthorAddress] = useState(null);
   const [postAuthor, setPostAuthor] = useState(null);
   const [timeAgo, setTimeAgo] = useState(null);
+  const [topicId, setTopicId] = useState(null);
   const [postContent, setPostContent] = useState(null);
   const [postAuthorMeta, setPostAuthorMeta] = useState(null);
   const userAddress = useSelector((state) => state.user.address);
@@ -41,6 +42,7 @@ const PostListRow = (props) => {
       setPostAuthorAddress(getPostResults[postCallHash].value[0]);
       setPostAuthor(getPostResults[postCallHash].value[1]);
       setTimeAgo(getPostResults[postCallHash].value[2] * 1000);
+      setTopicId(getPostResults[postCallHash].value[3]);
     }
   }, [getPostResults, loading, postCallHash]);
 
@@ -116,18 +118,31 @@ const PostListRow = (props) => {
     return authorAvatar;
   }, [authorAvatar, postAuthorAddress]);
 
+  const focusRef = useCallback((node) => {
+    if (focus && node !== null) {
+      node.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [focus]);
+
   return useMemo(() => (
-      <Dimmer.Dimmable as={Feed.Event} blurring dimmed={loading}>
-          <Feed.Label className="post-profile-picture">
-              {authorAvatarLink}
-          </Feed.Label>
+      <Dimmer.Dimmable
+        as={Feed.Event}
+        blurring
+        dimmed={loading}
+        id={`post-${postId}`}
+      >
+          <Ref innerRef={focusRef}>
+              <Feed.Label className="post-profile-picture">
+                  {authorAvatarLink}
+              </Feed.Label>
+          </Ref>
           <Feed.Content>
               <Feed.Summary>
-                  <div>
+                  <Link to={`/topics/${topicId}/#post-${postId}`}>
                       <span className="post-summary-meta-index">
-                          {t('post.list.row.post.id', { id: postIndexInTopic })}
+                          {t('post.list.row.post.id', { id: postIndex })}
                       </span>
-                  </div>
+                  </Link>
                   {postAuthor !== null && setPostAuthorAddress !== null && timeAgo !== null
                     ? (
                         <>
@@ -147,19 +162,22 @@ const PostListRow = (props) => {
           </Feed.Content>
       </Dimmer.Dimmable>
   ), [
-    authorAvatarLink, loading, postAuthor, postAuthorAddress, postContent, postIndexInTopic, t, timeAgo,
+    authorAvatarLink, focusRef, loading, postAuthor, postAuthorAddress, postContent, postId, postIndex, t, timeAgo,
+    topicId,
   ]);
 };
 
 PostListRow.defaultProps = {
   loading: false,
+  focus: false,
 };
 
 PostListRow.propTypes = {
   id: PropTypes.number.isRequired,
-  postIndexInTopic: PropTypes.number.isRequired,
+  postIndex: PropTypes.number.isRequired,
   postCallHash: PropTypes.string,
   loading: PropTypes.bool,
+  focus: PropTypes.bool,
 };
 
 export default memo(PostListRow);
