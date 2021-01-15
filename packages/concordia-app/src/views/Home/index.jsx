@@ -8,20 +8,20 @@ import './styles.css';
 import { drizzle } from '../../redux/store';
 import { FORUM_CONTRACT } from '../../constants/contracts/ContractNames';
 
-const { contracts: { [FORUM_CONTRACT]: { methods: { getNumberOfTopics } } } } = drizzle;
+const { contracts: { [FORUM_CONTRACT]: { methods: { numTopics } } } } = drizzle;
 
 const Home = () => {
   const [numberOfTopicsCallHash, setNumberOfTopicsCallHash] = useState('');
-  const getNumberOfTopicsResults = useSelector((state) => state.contracts[FORUM_CONTRACT].getNumberOfTopics);
+  const numTopicsResults = useSelector((state) => state.contracts[FORUM_CONTRACT].numTopics);
 
   useEffect(() => {
-    setNumberOfTopicsCallHash(getNumberOfTopics.cacheCall());
+    setNumberOfTopicsCallHash(numTopics.cacheCall());
   }, []);
 
-  const numberOfTopics = useMemo(() => (getNumberOfTopicsResults[numberOfTopicsCallHash] !== undefined
-    ? parseInt(getNumberOfTopicsResults[numberOfTopicsCallHash].value, 10)
+  const numberOfTopics = useMemo(() => (numTopicsResults[numberOfTopicsCallHash] !== undefined
+    ? parseInt(numTopicsResults[numberOfTopicsCallHash].value, 10)
     : null),
-  [getNumberOfTopicsResults, numberOfTopicsCallHash]);
+  [numTopicsResults, numberOfTopicsCallHash]);
 
   return useMemo(() => (
       <Container id="home-container" textAlign="center">
