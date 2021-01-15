@@ -12,5 +12,4 @@ try {
 
 module.exports = {
   contracts: [Forum, Voting, PostVoting],
-  forumContract: Forum,
 };

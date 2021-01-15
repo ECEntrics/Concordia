@@ -5,8 +5,9 @@ import {
 import { breezeActions } from '@ezerous/breeze';
 import { drizzleActions } from '@ezerous/drizzle';
 
-import { forumContract } from 'concordia-contracts';
+import { contracts } from 'concordia-contracts';
 import { EthereumContractIdentityProvider } from '@ezerous/eth-identity-provider';
+import { FORUM_CONTRACT } from '../../constants/contracts/ContractNames';
 
 function* initOrbitDatabases(action) {
   const { account, breeze } = action;
@@ -23,7 +24,9 @@ function* orbitSaga() {
 
   const { drizzle: { web3 } } = res[0];
   const networkId = yield call([web3.eth.net, web3.eth.net.getId]);
-  const contractAddress = forumContract.networks[networkId].address;
+  const contractAddress = contracts
+    .find((contract) => contract.contractName === FORUM_CONTRACT)
+    .networks[networkId].address;
 
   EthereumContractIdentityProvider.setContractAddress(contractAddress);
   EthereumContractIdentityProvider.setWeb3(web3);
