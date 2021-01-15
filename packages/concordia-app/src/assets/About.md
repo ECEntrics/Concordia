@@ -8,15 +8,20 @@ the [MIT][concordia-license] license.
 
 ## Why
 
-Values of privacy and freedom are diminishing in modern software. Even more so in social media software. Users are now
-called to decide between being the product of companies that sell their personal information for gain and being shut out
-of the modern, digital society.
+The value of privacy, freedom of speech and democracy are diminishing in modern software. Even more so in social media
+platforms. Users are called to select between being the product of companies that sell their personal information and
+being shut out of the modern, digital society.
 
 Concordia, much like other projects of this kind, provides an alternative to this predicament.
 
 ## How
 
-TODO
+Concordia uses decentralized technologies, namely the Ethereum blockchain and its smart contracts, as well as the
+distributed database OrbitDB that's based on the decentralized network IPFS. These technologies make Concordia
+impervious to censorship and guaranty the immutability of user information and anonymity while enabling user
+authentication that makes trusted, direct voting possible.
+
+You can read more about the technological stack in Concordia's [whitepaper][concordia-whitepaper].
 
 --- 
 
@@ -27,3 +32,4 @@ Developed by [apostolof][devs-apostolof-profile], [ezerous][devs-ezerous-profile
 [concordia-license]: https://gitlab.com/ecentrics/apella/-/blob/master/LICENSE.md
 [devs-apostolof-profile]: https://gitlab.com/Apostolof
 [devs-ezerous-profile]: https://gitlab.com/Ezerous
+[concordia-whitepaper]: https://whitepaper.concordia.ecentrics.net
