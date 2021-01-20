@@ -4,8 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
 import { useSelector } from 'react-redux';
 import AppContext from '../../../components/AppContext';
-import appLogo from '../../../assets/images/app_logo.svg';
 import ClearDatabasesModal from '../../../components/ClearDatabasesModal';
+import appLogo from '../../../assets/images/app_logo.svg';
+import './styles.css';
 
 const MainLayoutMenu = () => {
   const hasSignedUp = useSelector((state) => state.user.hasSignedUp);
@@ -32,6 +33,7 @@ const MainLayoutMenu = () => {
           {() => (
               <Menu inverted>
                   <Menu.Item
+                    id="home-button"
                     link
                     name="home"
                     key="home"

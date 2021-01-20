@@ -3,6 +3,10 @@ body.app {
     margin: 0;
 }
 
+div {
+    word-break: break-word;
+}
+
 #root {
     height: 100%;
 }
@@ -14,9 +18,4 @@ body.app {
 .text-secondary {
     color: gray;
     font-style: italic;
-}
-
-.ui.inverted.menu {
-    background: #0B2540;
-    border-radius: 0;
 }
