@@ -2,12 +2,11 @@ import React, {
   memo, useEffect, useMemo, useState,
 } from 'react';
 import {
-  Dimmer, Grid, Image, List, Placeholder,
+  Dimmer, Grid, Image, Item, List, Placeholder, Segment,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import TimeAgo from 'react-timeago';
-import { useHistory } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
@@ -34,7 +33,6 @@ const TopicListRow = (props) => {
   const topics = useSelector((state) => state.orbitData.topics);
   const users = useSelector((state) => state.orbitData.users);
   const dispatch = useDispatch();
-  const history = useHistory();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -98,7 +96,6 @@ const TopicListRow = (props) => {
     ? (
         <Image
           className="profile-picture"
-          avatar
           src={topicAuthorMeta[USER_PROFILE_PICTURE]}
         />
     )
@@ -124,57 +121,65 @@ const TopicListRow = (props) => {
     return authorAvatar;
   }, [authorAvatar, topicAuthorAddress]);
 
-  return useMemo(() => {
-    const handleTopicClick = () => {
-      history.push(`/topics/${topicId}`);
-    };
+  return useMemo(() => (
+      <Dimmer.Dimmable as={List.Item} blurring dimmed={loading} className="topic-row">
+          <Segment raised className="topic-row-segment" as="a">
+              <Grid doubling columns={2}>
+                  <Grid.Column width={1} className="topic-row-avatar">
+                      <Item>
+                          {authorAvatarLink}
+                      </Item>
+                  </Grid.Column>
+                  <Grid.Column width={15} className="topic-row-content">
+                      <Link to={`/topics/${topicId}`} onClick={stopClickPropagation}>
+                          <Grid verticalAlign="middle" columns={2}>
+                              <Grid.Row>
+                                  <Grid.Column floated="left" width={14} className="topic-row-subject">
+                                      {topicSubject !== null
+                                        ? topicSubject
+                                        : <Placeholder><Placeholder.Line length="very long" /></Placeholder>}
+                                  </Grid.Column>
+                                  <Grid.Column floated="right" width={2} textAlign="right">
+                                      <span className="topic-row-metadata">
+                                          {t('topic.list.row.topic.id', { id: topicId })}
+                                      </span>
+                                  </Grid.Column>
+                              </Grid.Row>
+                              <Grid.Row>
+                                  <Grid.Column floated="left" width={14}>
+                                      {topicAuthor !== null && timeAgo !== null
+                                        ? (
+                                            <div>
+                                                <TimeAgo date={timeAgo} />
+                                                      &nbsp;•&nbsp;
+                                                <Link to={`/users/${topicAuthorAddress}`} onClick={stopClickPropagation}>
+                                                    {topicAuthor}
+                                                </Link>
+                                            </div>
+                                        )
+                                        : <Placeholder><Placeholder.Line length="long" /></Placeholder>}
+                                  </Grid.Column>
+                                  <Grid.Column floated="right" width={2} textAlign="right">
+                                      {numberOfReplies !== null
+                                        ? (
+                                            <span className="topic-row-metadata">
+                                                {t('topic.list.row.number.of.replies', { numberOfReplies })}
+                                            </span>
+                                        )
+                                        : <Placeholder fluid><Placeholder.Line /></Placeholder>}
+                                  </Grid.Column>
+                              </Grid.Row>
+                          </Grid>
 
-    return (
-        <Dimmer.Dimmable as={List.Item} onClick={handleTopicClick} blurring dimmed={loading} className="list-item">
-            {authorAvatarLink}
-            <List.Content className="list-content">
-                <List.Header>
-                    <Grid>
-                        <Grid.Column floated="left" width={14}>
-                            {topicSubject !== null
-                              ? topicSubject
-                              : <Placeholder><Placeholder.Line length="very long" /></Placeholder>}
-                        </Grid.Column>
-                        <Grid.Column floated="right" width={2} textAlign="right">
-                            <span className="topic-metadata">
-                                {t('topic.list.row.topic.id', { id: topicId })}
-                            </span>
-                        </Grid.Column>
-                    </Grid>
-                </List.Header>
-                <List.Description>
-                    <Grid verticalAlign="middle">
-                        <Grid.Column floated="left" width={14}>
-                            {topicAuthor !== null && timeAgo !== null
-                              ? (
-                                  <div>
-                                      {t('topic.list.row.author', { author: topicAuthor })}
-                                      ,&nbsp;
-                                      <TimeAgo date={timeAgo} />
-                                  </div>
-                              )
-                              : <Placeholder><Placeholder.Line length="long" /></Placeholder>}
-                        </Grid.Column>
-                        <Grid.Column floated="right" width={2} textAlign="right">
-                            {numberOfReplies !== null
-                              ? (
-                                  <span className="topic-metadata">
-                                      {t('topic.list.row.number.of.replies', { numberOfReplies })}
-                                  </span>
-                              )
-                              : <Placeholder fluid><Placeholder.Line /></Placeholder>}
-                        </Grid.Column>
-                    </Grid>
-                </List.Description>
-            </List.Content>
-        </Dimmer.Dimmable>
-    );
-  }, [authorAvatarLink, history, loading, numberOfReplies, t, timeAgo, topicAuthor, topicId, topicSubject]);
+                      </Link>
+                  </Grid.Column>
+              </Grid>
+
+          </Segment>
+
+      </Dimmer.Dimmable>
+
+  ), [authorAvatarLink, loading, numberOfReplies, t, timeAgo, topicAuthor, topicAuthorAddress, topicId, topicSubject]);
 };
 
 TopicListRow.defaultProps = {

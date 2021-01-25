@@ -72,7 +72,6 @@
   "topic.create.form.post.button": "Post",
   "topic.create.form.subject.field.label": "Topic subject",
   "topic.create.form.subject.field.placeholder": "Subject",
-  "topic.list.row.author": "by {{author}}",
   "topic.list.row.number.of.replies": "{{numberOfReplies}} replies",
   "topic.list.row.topic.id": "#{{id}}",
   "username.selector.error.username.empty.message": "Username is required",
