@@ -130,6 +130,7 @@ const PostListRow = (props) => {
         blurring
         dimmed={loading}
         id={`post-${postId}`}
+        className="post-list-row"
       >
           <Ref innerRef={focusRef}>
               <Feed.Label className="post-profile-picture">
@@ -147,7 +148,7 @@ const PostListRow = (props) => {
                     ? (
                         <>
                             <Feed.User as={Link} to={`/users/${postAuthorAddress}`}>{postAuthor}</Feed.User>
-                            <Feed.Date className="post-summary-meta-date">
+                            <Feed.Date>
                                 <TimeAgo date={timeAgo} />
                             </Feed.Date>
                         </>

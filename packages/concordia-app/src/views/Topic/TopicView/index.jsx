@@ -126,26 +126,28 @@ const TopicView = (props) => {
                 blurring
                 dimmed={topicAuthorAddress === null && topicAuthor === null && timestamp === null}
               >
-                  <Header as="h2">
-                      {topicSubject || (
-                          <Placeholder id="subject-placeholder">
-                              <Placeholder.Line />
-                          </Placeholder>
-                      )}
-                  </Header>
+                  <div id="topic-header">
+                      <Header as="h2">
+                          {topicSubject || (
+                              <Placeholder id="subject-placeholder">
+                                  <Placeholder.Line />
+                              </Placeholder>
+                          )}
+                      </Header>
 
-                  <div id="topic-metadata">
-                      <Icon name="calendar alternate" fitted />
+                      <div id="topic-metadata">
+                          <Icon name="calendar alternate" fitted />
                     &nbsp;
-                      <TimeAgo date={timestamp} />
+                          <TimeAgo date={timestamp} />
                     &nbsp;&nbsp;
-                      <Icon name="user" fitted />
+                          <Icon name="user" fitted />
                     &nbsp;
-                      <Link to={`/users/${topicAuthorAddress}`} onClick={stopClickPropagation}>{ topicAuthor }</Link>
+                          <Link to={`/users/${topicAuthorAddress}`} onClick={stopClickPropagation}>{ topicAuthor }</Link>
                     &nbsp;&nbsp;
-                      <Icon name="reply" fitted />
+                          <Icon name="reply" fitted />
                     &nbsp;
-                      { numberOfReplies }
+                          { numberOfReplies }
+                      </div>
                   </div>
                   <Divider />
               </Dimmer.Dimmable>

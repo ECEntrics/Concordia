@@ -1,20 +1,38 @@
+.post-list-row {
+    padding: 1rem 0 !important;
+}
+
 .post-profile-picture {
     margin-top: 1rem;
+    margin-left: 0.75rem;
 }
 
 .post-profile-picture img {
     border-radius: 50%;
-    width: 2em !important;
-    height: 2em !important;
+    width: 3rem !important;
+    height: 3rem !important;
+    max-width: none !important;
     margin: 0 !important;
 }
 
 .post-content {
-    margin-left: 0.5rem !important;
+    margin-left: 1.3rem !important;
+}
+
+.post-content > div.summary {
+    font-size: 1rem !important;
+}
+.post-content .placeholder {
+    margin: 0.5rem 0 0;
+    font-size: 2rem !important;
+}
+
+.post-content .placeholder > .line{
+    height: auto;
 }
 
 .post-summary-meta-index {
     float: right;
-    font-size: 12px;
+    font-size: 0.75rem !important;
     opacity: 0.4;
 }
