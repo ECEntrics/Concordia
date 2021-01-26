@@ -7,8 +7,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
 import { useSelector } from 'react-redux';
-import './styles.css';
 import { drizzle, breeze } from '../../../redux/store';
+import './styles.css';
 import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../../constants/TransactionStatus';
 import { POSTS_DATABASE, TOPICS_DATABASE } from '../../../constants/orbit/OrbitDatabases';
 import { TOPIC_SUBJECT } from '../../../constants/orbit/TopicsDatabaseKeys';

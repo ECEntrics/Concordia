@@ -3,8 +3,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router';
-import { Button, List } from 'semantic-ui-react';
+import { List } from 'semantic-ui-react';
 import TopicListRow from './TopicListRow';
 import { drizzle } from '../../redux/store';
 import { FORUM_CONTRACT } from '../../constants/contracts/ContractNames';
@@ -17,8 +16,6 @@ const TopicList = (props) => {
   const [getTopicCallHashes, setGetTopicCallHashes] = useState([]);
   const drizzleInitialized = useSelector((state) => state.drizzleStatus.initialized);
   const drizzleInitializationFailed = useSelector((state) => state.drizzleStatus.failed);
-  const hasSignedUp = useSelector((state) => state.user.hasSignedUp);
-  const history = useHistory();
 
   useEffect(() => {
     if (drizzleInitialized && !drizzleInitializationFailed) {
@@ -55,21 +52,9 @@ const TopicList = (props) => {
     }), [getTopicCallHashes, topicIds]);
 
   return (
-      <div>
-          {hasSignedUp && history.location.pathname === '/home' && (
-              <Button
-                content="New Topic"
-                icon="plus"
-                labelPosition="left"
-                positive
-                id="new-topic-button"
-                onClick={() => history.push('/topics/new')}
-              />
-          )}
-          <List id="topic-list" size="big">
-              {topics}
-          </List>
-      </div>
+      <List id="topic-list" size="big">
+          {topics}
+      </List>
   );
 };
 

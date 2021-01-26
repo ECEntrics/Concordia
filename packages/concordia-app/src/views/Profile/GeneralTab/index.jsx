@@ -172,7 +172,7 @@ const GeneralTab = (props) => {
                   <Table.Row>
                       <Table.Cell><strong>{t('profile.general.tab.registration.date.row.title')}</strong></Table.Cell>
                       <Table.Cell>
-                          {new Date(userRegistrationTimestamp * 1000).toLocaleString()}
+                          {new Date(userRegistrationTimestamp * 1000).toLocaleString('el-gr', { hour12: false })}
                       </Table.Cell>
                   </Table.Row>
               </Table.Body>

@@ -7,7 +7,6 @@ import {
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router';
 
-import TimeAgo from 'react-timeago';
 import { breeze, drizzle } from '../../../redux/store';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import './styles.css';
@@ -138,7 +137,7 @@ const TopicView = (props) => {
                       <div id="topic-metadata">
                           <Icon name="calendar alternate" fitted />
                     &nbsp;
-                          <TimeAgo date={timestamp} />
+                          {new Date(timestamp).toLocaleString('el-gr', { hour12: false })}
                     &nbsp;&nbsp;
                           <Icon name="user" fitted />
                     &nbsp;

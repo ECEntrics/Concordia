@@ -1,6 +1,7 @@
 .general-tab-profile-picture {
-    max-width: 112px;
-    max-height: 112px;
-    margin: 0;
+    border-radius: 50%;
+    width: 12rem !important;
+    height: 12rem !important;
+    margin: 2rem;
     vertical-align: middle;
 }
