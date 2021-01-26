@@ -1,6 +1,7 @@
 body.app {
     overflow: auto;
     margin: 0;
+    background: #E6E6E6;
 }
 
 div {

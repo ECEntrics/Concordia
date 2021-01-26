@@ -136,7 +136,7 @@ const PostListRow = (props) => {
                   {authorAvatarLink}
               </Feed.Label>
           </Ref>
-          <Feed.Content>
+          <Feed.Content className="post-content">
               <Feed.Summary>
                   <Link to={`/topics/${topicId}/#post-${postId}`}>
                       <span className="post-summary-meta-index">

@@ -58,12 +58,12 @@ const TopicList = (props) => {
       <div>
           {hasSignedUp && history.location.pathname === '/home' && (
               <Button
-                  content="New Topic"
-                  icon="plus"
-                  labelPosition="left"
-                  positive
-                  id="new-topic-button"
-                  onClick={() => history.push('/topics/new')}
+                content="New Topic"
+                icon="plus"
+                labelPosition="left"
+                positive
+                id="new-topic-button"
+                onClick={() => history.push('/topics/new')}
               />
           )}
           <List id="topic-list" size="big">

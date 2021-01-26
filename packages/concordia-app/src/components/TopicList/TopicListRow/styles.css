@@ -1,6 +1,7 @@
 .topic-row {
     display: flex !important;
     text-align: start;
+    cursor: pointer;
 }
 
 .topic-row-segment {
@@ -8,18 +9,26 @@
 }
 
 .topic-row-segment:hover {
-   background-color: rgba(0, 0, 0, 0.03);
+   background-color: #F7F7F7;
 }
 
 .topic-row-segment div {
     color: black;
 }
 
+.topic-row-segment .placeholder{
+    font-size: 0.9rem;
+}
+
+.topic-row-segment .placeholder>.line {
+    background-color:transparent;
+}
+
 .topic-row-avatar {
     margin: auto;
     padding-left: 0.75em !important;
     padding-right: 0 !important;
-    font-size: 2em;
+    font-size: 2rem;
 }
 
 .topic-row-avatar i {
@@ -28,17 +37,16 @@
 }
 
 .topic-row-content {
-    padding-left: 2em !important;
+    padding-left: 2rem !important;
 }
 
 .topic-row-subject {
-    font-size: 1.25em;
+    font-size: 1.4rem;
     font-weight: bold;
 }
 
 .topic-row-metadata {
-    font-size: 12px !important;
-    font-weight: initial;
+    font-size: 0.9em !important;
 }
 
 .profile-picture {
@@ -46,4 +54,9 @@
     max-width: none !important;
     width: 2em;
     height: 2em;
+}
+
+.replies-placeholder{
+    float:right;
+    width: 6rem;
 }
