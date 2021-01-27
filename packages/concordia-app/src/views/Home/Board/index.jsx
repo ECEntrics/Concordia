@@ -16,60 +16,47 @@ const Board = (props) => {
   const history = useHistory();
   const { t } = useTranslation();
 
-  const boardContents = useMemo(() => {
-    if (numberOfTopics > 0) {
-      return (
-          <>
-              {hasSignedUp
-                ? (
-                    <Button
-                      content="New Topic"
-                      icon="plus"
-                      labelPosition="left"
-                      positive
-                      id="new-topic-button"
-                      onClick={() => history.push('/topics/new')}
-                    />
-                )
-                : null}
-              <TopicList topicIds={_.rangeRight(0, numberOfTopics)} />
-          </>
-      );
-    } if (!hasSignedUp) {
-      return (
-          <div id="no-topic-message" className="vertical-center-in-parent">
-              <Header textAlign="center" as="h2">
-                  {t('board.header.no.topics.message')}
-              </Header>
-              <Header textAlign="center" as="h3">
-                  {t('board.sub.header.no.topics.guest')}
-              </Header>
-          </div>
-      );
-    }
+  const boardContents = useMemo(() => (
+      <>
+          {hasSignedUp
+            ? (
+                <Button
+                  content="New Topic"
+                  icon="plus"
+                  labelPosition="left"
+                  positive
+                  id="new-topic-button"
+                  onClick={() => history.push('/topics/new')}
+                />
+            )
+            : null}
+          {/* eslint-disable-next-line no-nested-ternary */}
+          {numberOfTopics > 0
+            ? (<TopicList topicIds={_.rangeRight(0, numberOfTopics)} />)
+            : (!hasSignedUp
+              ? (
+                  <div id="no-topic-message" className="vertical-center-in-parent">
+                      <Header textAlign="center" as="h2">
+                          {t('board.header.no.topics.message')}
+                      </Header>
+                      <Header textAlign="center" as="h3">
+                          {t('board.sub.header.no.topics.guest')}
+                      </Header>
+                  </div>
+              )
+              : (
+                  <div id="no-topic-message" className="vertical-center-in-parent">
+                      <Header textAlign="center" as="h2">
+                          {t('board.header.no.topics.message')}
+                      </Header>
+                      <Header textAlign="center" as="h3">
+                          {t('board.sub.header.no.topics.user')}
+                      </Header>
+                  </div>
+              ))}
 
-    return (
-        <>
-            <Button
-              content="New Topic"
-              icon="plus"
-              labelPosition="left"
-              positive
-              id="new-topic-button"
-              onClick={() => history.push('/topics/new')}
-            />
-            <div id="no-topic-message" className="vertical-center-in-parent">
-                <Header textAlign="center" as="h2">
-                    {t('board.header.no.topics.message')}
-                </Header>
-                <Header textAlign="center" as="h3">
-                    {t('board.sub.header.no.topics.user')}
-                </Header>
-            </div>
-        </>
-
-    );
-  }, [numberOfTopics, hasSignedUp, t, history]);
+      </>
+  ), [numberOfTopics, hasSignedUp, t, history]);
 
   return (boardContents);
 };

@@ -138,11 +138,11 @@ const TopicView = (props) => {
                           <Icon name="calendar alternate" fitted />
                     &nbsp;
                           {new Date(timestamp).toLocaleString('el-gr', { hour12: false })}
-                    &nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;
                           <Icon name="user" fitted />
                     &nbsp;
                           <Link to={`/users/${topicAuthorAddress}`} onClick={stopClickPropagation}>{ topicAuthor }</Link>
-                    &nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;
                           <Icon name="reply" fitted />
                     &nbsp;
                           { numberOfReplies }

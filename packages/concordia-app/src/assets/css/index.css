@@ -1,3 +1,9 @@
+:root {
+    --primary-color: #0B2540;
+    --secondary-color: #EA6954;
+    --secondary-color-highlighted: #DB5844;
+}
+
 body.app {
     overflow: auto;
     margin: 0;

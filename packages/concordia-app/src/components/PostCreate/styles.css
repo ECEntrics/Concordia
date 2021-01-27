@@ -10,9 +10,14 @@
 
 #post-button {
     float: right;
-    margin-top: 1rem;
+    margin: 1rem 0;
 }
 
 #post-button button {
     margin: 0;
+    background-color: var(--secondary-color);
+}
+
+#post-button button:hover {
+    background-color: var(--secondary-color-highlighted);
 }
