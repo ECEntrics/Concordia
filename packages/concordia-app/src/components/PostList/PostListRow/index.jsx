@@ -17,6 +17,7 @@ import determineKVAddress from '../../../utils/orbitUtils';
 import { USER_PROFILE_PICTURE } from '../../../constants/orbit/UserDatabaseKeys';
 import { POST_CONTENT } from '../../../constants/orbit/PostsDatabaseKeys';
 import { FORUM_CONTRACT } from '../../../constants/contracts/ContractNames';
+import ProfileImage from '../../ProfileImage';
 
 const { orbit } = breeze;
 
@@ -90,34 +91,6 @@ const PostListRow = (props) => {
     }
   }, [postAuthorAddress, users]);
 
-  const authorAvatar = useMemo(() => (postAuthorMeta !== null && postAuthorMeta[USER_PROFILE_PICTURE]
-    ? (
-        <Image
-          avatar
-          src={postAuthorMeta[USER_PROFILE_PICTURE]}
-        />
-    )
-    : (
-        <Icon
-          name="user circle"
-          size="big"
-          inverted
-          color="black"
-        />
-    )), [postAuthorMeta]);
-
-  const authorAvatarLink = useMemo(() => {
-    if (postAuthorAddress) {
-      return (
-          <Link to={`/users/${postAuthorAddress}`}>
-              {authorAvatar}
-          </Link>
-      );
-    }
-
-    return authorAvatar;
-  }, [authorAvatar, postAuthorAddress]);
-
   const focusRef = useCallback((node) => {
     if (focus && node !== null) {
       node.scrollIntoView({ behavior: 'smooth' });
@@ -134,7 +107,13 @@ const PostListRow = (props) => {
       >
           <Ref innerRef={focusRef}>
               <Feed.Label className="post-profile-picture">
-                  {authorAvatarLink}
+                  <ProfileImage
+                    topicAuthorAddress={postAuthorAddress}
+                    topicAuthor={postAuthor}
+                    topicAuthorMeta={postAuthorMeta}
+                    size="42"
+                    link
+                  />
               </Feed.Label>
           </Ref>
           <Feed.Content className="post-content">
@@ -162,8 +141,7 @@ const PostListRow = (props) => {
               </Feed.Extra>
           </Feed.Content>
       </Dimmer.Dimmable>
-  ), [
-    authorAvatarLink, focusRef, loading, postAuthor, postAuthorAddress, postContent, postId, postIndex, t, timeAgo,
+  ), [focusRef, loading, postAuthor, postAuthorAddress, postAuthorMeta, postContent, postId, postIndex, t, timeAgo,
     topicId,
   ]);
 };

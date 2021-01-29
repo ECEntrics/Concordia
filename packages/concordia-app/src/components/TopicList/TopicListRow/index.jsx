@@ -2,7 +2,7 @@ import React, {
   memo, useEffect, useMemo, useState,
 } from 'react';
 import {
-  Dimmer, Grid, Icon, Image, Item, List, Placeholder, Segment,
+  Dimmer, Grid, Icon, Item, List, Placeholder, Segment,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -10,12 +10,12 @@ import TimeAgo from 'react-timeago';
 import { useHistory } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import ProfileImage from '../../ProfileImage';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import { breeze } from '../../../redux/store';
 import './styles.css';
 import { TOPICS_DATABASE, USER_DATABASE } from '../../../constants/orbit/OrbitDatabases';
 import determineKVAddress from '../../../utils/orbitUtils';
-import { USER_PROFILE_PICTURE } from '../../../constants/orbit/UserDatabaseKeys';
 import { TOPIC_SUBJECT } from '../../../constants/orbit/TopicsDatabaseKeys';
 import { FORUM_CONTRACT } from '../../../constants/contracts/ContractNames';
 
@@ -94,35 +94,6 @@ const TopicListRow = (props) => {
     event.stopPropagation();
   };
 
-  const authorAvatar = useMemo(() => (topicAuthorMeta !== null && topicAuthorMeta[USER_PROFILE_PICTURE]
-    ? (
-        <Image
-          className="profile-picture"
-          src={topicAuthorMeta[USER_PROFILE_PICTURE]}
-        />
-    )
-    : (
-        <List.Icon
-          name="user circle"
-          size="big"
-          inverted
-          color="black"
-          verticalAlign="middle"
-        />
-    )), [topicAuthorMeta]);
-
-  const authorAvatarLink = useMemo(() => {
-    if (topicAuthorAddress) {
-      return (
-          <Link to={`/users/${topicAuthorAddress}`} onClick={stopClickPropagation}>
-              {authorAvatar}
-          </Link>
-      );
-    }
-
-    return authorAvatar;
-  }, [authorAvatar, topicAuthorAddress]);
-
   return useMemo(() => {
     const handleTopicClick = () => {
       history.push(`/topics/${topicId}`);
@@ -133,7 +104,13 @@ const TopicListRow = (props) => {
                 <Grid columns={2}>
                     <Grid.Column width={1} className="topic-row-avatar">
                         <Item>
-                            {authorAvatarLink}
+                            <ProfileImage
+                              topicAuthorAddress={topicAuthorAddress}
+                              topicAuthor={topicAuthor}
+                              topicAuthorMeta={topicAuthorMeta}
+                              size="65"
+                              link
+                            />
                         </Item>
                     </Grid.Column>
                     <Grid.Column width={15} className="topic-row-content">
@@ -173,7 +150,11 @@ const TopicListRow = (props) => {
                                               { numberOfReplies }
                                           </span>
                                       )
-                                      : <Placeholder fluid className="replies-placeholder"><Placeholder.Line /></Placeholder>}
+                                      : (
+                                          <Placeholder fluid className="replies-placeholder">
+                                              <Placeholder.Line />
+                                          </Placeholder>
+                                      )}
                                 </Grid.Column>
                             </Grid.Row>
                         </Grid>
@@ -183,9 +164,8 @@ const TopicListRow = (props) => {
             </Segment>
 
         </Dimmer.Dimmable>
-
     );
-  }, [authorAvatarLink, history, loading, numberOfReplies, t, timeAgo, topicAuthor, topicAuthorAddress, topicId, topicSubject]);
+  }, [history, loading, numberOfReplies, t, timeAgo, topicAuthor, topicAuthorAddress, topicAuthorMeta, topicId, topicSubject]);
 };
 
 TopicListRow.defaultProps = {

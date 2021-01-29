@@ -26,14 +26,14 @@
 
 .topic-row-avatar {
     margin: auto;
-    padding-left: 0.75em !important;
+    padding-left: 1rem !important;
     padding-right: 0 !important;
     font-size: 2rem;
+    color: red;
 }
 
-.topic-row-avatar i {
-    text-align: left !important;
-    margin:0;
+.topic-row-avatar span{
+    color: white;
 }
 
 .topic-row-content {
@@ -47,13 +47,6 @@
 
 .topic-row-metadata {
     font-size: 0.9em !important;
-}
-
-.profile-picture {
-    border-radius: 50%;
-    max-width: none !important;
-    width: 2em;
-    height: 2em;
 }
 
 .replies-placeholder{
