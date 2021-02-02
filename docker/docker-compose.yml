@@ -5,10 +5,10 @@ services:
     build:
       context: ../
       dockerfile: ./docker/ganache/Dockerfile
-    image: concordia-ganache
+    image: ecentrics/concordia-ganache
     container_name: concordia-ganache
     env_file:
-      - env/ganache.docker.env
+      - env/ganache.env
     expose:
       - 8545
     ports:

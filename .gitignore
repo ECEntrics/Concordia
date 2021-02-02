@@ -24,10 +24,6 @@ docker/volumes
 docker/ganache/volumes
 docker/reports
 
-# Env var files
-docker/env/concordia.env
-docker/env/contracts.env
-
 # Misc
 .env.local
 .env.development.local
