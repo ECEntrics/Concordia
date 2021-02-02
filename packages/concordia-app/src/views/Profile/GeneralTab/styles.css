@@ -4,9 +4,4 @@
 
 #edit-info-button {
     margin: 1rem;
-    background-color: var(--secondary-color);
-}
-
-#edit-info-button:hover {
-    background-color: var(--secondary-color-highlighted);
 }

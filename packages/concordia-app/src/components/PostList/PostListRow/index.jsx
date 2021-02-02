@@ -2,7 +2,7 @@ import React, {
   memo, useEffect, useMemo, useState, useCallback,
 } from 'react';
 import {
-  Dimmer, Icon, Image, Feed, Placeholder, Ref,
+  Dimmer, Feed, Placeholder, Ref,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +14,6 @@ import { breeze } from '../../../redux/store';
 import './styles.css';
 import { POSTS_DATABASE, USER_DATABASE } from '../../../constants/orbit/OrbitDatabases';
 import determineKVAddress from '../../../utils/orbitUtils';
-import { USER_PROFILE_PICTURE } from '../../../constants/orbit/UserDatabaseKeys';
 import { POST_CONTENT } from '../../../constants/orbit/PostsDatabaseKeys';
 import { FORUM_CONTRACT } from '../../../constants/contracts/ContractNames';
 import ProfileImage from '../../ProfileImage';

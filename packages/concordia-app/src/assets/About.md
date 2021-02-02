@@ -23,13 +23,13 @@ authentication that makes trusted, direct voting possible.
 
 You can read more about the technological stack in Concordia's [whitepaper][concordia-whitepaper].
 
---- 
+---
 
 Developed by [apostolof][devs-apostolof-profile], [ezerous][devs-ezerous-profile]
 
-[concordia-repository]: https://gitlab.com/ecentrics/apella
-[concordia-docker-hub]: https://hub.docker.com/repository/docker/ecentrics/apella-app
-[concordia-license]: https://gitlab.com/ecentrics/apella/-/blob/master/LICENSE.md
+[concordia-repository]: https://gitlab.com/ecentrics/concordia
+[concordia-docker-hub]: https://hub.docker.com/repository/docker/ecentrics/concordia-app
+[concordia-license]: https://gitlab.com/ecentrics/concordia/-/blob/master/LICENSE.md
 [devs-apostolof-profile]: https://gitlab.com/Apostolof
 [devs-ezerous-profile]: https://gitlab.com/Ezerous
 [concordia-whitepaper]: https://whitepaper.concordia.ecentrics.net

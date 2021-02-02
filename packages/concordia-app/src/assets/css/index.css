@@ -1,5 +1,6 @@
 :root {
     --primary-color: #0B2540;
+    --primary-color-highlighted: #061A30;
     --secondary-color: #EA6954;
     --secondary-color-highlighted: #DB5844;
 }
@@ -25,4 +26,13 @@ div {
 .text-secondary {
     color: gray;
     font-style: italic;
+}
+
+.main-button{
+    color: white !important;
+    background-color: var(--secondary-color) !important;
+}
+
+.main-button:hover {
+    background-color: var(--secondary-color-highlighted) !important;
 }

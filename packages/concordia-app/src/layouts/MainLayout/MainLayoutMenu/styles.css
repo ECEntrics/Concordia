@@ -5,5 +5,5 @@
 .ui.inverted.menu {
     background: var(--primary-color) !important;
     border-radius: 0;
-    margin-bottom: 2em;
+    margin-bottom: 4rem;
 }

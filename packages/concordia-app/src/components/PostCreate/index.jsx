@@ -131,12 +131,12 @@ const PostCreate = (props) => {
                           />
                       </Form>
                   </Feed.Summary>
-                  <Feed.Meta id="post-button">
+                  <Feed.Meta id="post-button-div">
                       <Feed.Like>
-                          <Form.Button
+                          <Button
                             animated
                             type="button"
-                            color="green"
+                            className="main-button"
                             disabled={posting || postContent === ''}
                             onClick={savePost}
                           >
@@ -146,7 +146,7 @@ const PostCreate = (props) => {
                               <Button.Content hidden>
                                   <Icon name="send" />
                               </Button.Content>
-                          </Form.Button>
+                          </Button>
                       </Feed.Like>
                   </Feed.Meta>
               </Feed.Content>

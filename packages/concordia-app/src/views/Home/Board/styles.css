@@ -6,9 +6,4 @@
 #new-topic-button{
     float:right;
     margin-bottom: 2em;
-    background-color: var(--secondary-color);
-}
-
-#new-topic-button:hover {
-    background-color: var(--secondary-color-highlighted);
 }

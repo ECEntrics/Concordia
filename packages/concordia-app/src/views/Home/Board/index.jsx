@@ -21,11 +21,12 @@ const Board = (props) => {
           {hasSignedUp
             ? (
                 <Button
+                  id="new-topic-button"
+                  className="main-button"
                   content="New Topic"
                   icon="plus"
                   labelPosition="left"
                   positive
-                  id="new-topic-button"
                   onClick={() => history.push('/topics/new')}
                 />
             )

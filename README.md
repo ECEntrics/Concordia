@@ -4,28 +4,28 @@
 ## Setup
 
 ```shell script
-cd apella
+cd concordia
 yarn
 ```
 
 ## Compile contracts
 
 ```shell script
-cd packages/apella-contracts
+cd packages/concordia-contracts
 yarn compile
 ```
 
 ## Run app
 
 ```shell script
-cd packages/apella-app
+cd packages/concordia-app
 yarn start
 ```
 
 ## Build app
 
 ```shell script
-cd packages/apella-app
+cd packages/concordia-app
 yarn build
 ```
 

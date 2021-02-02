@@ -12,6 +12,7 @@ import TopicList from '../../components/TopicList';
 import PostList from '../../components/PostList';
 import GeneralTab from './GeneralTab';
 import { GENERAL_TAB, POSTS_TAB, TOPICS_TAB } from '../../constants/ProfileTabs';
+import './styles.css';
 
 const { contracts: { [FORUM_CONTRACT]: { methods: { getUser } } } } = drizzle;
 
@@ -105,7 +106,7 @@ const Profile = () => {
   }, [generalTab, loading, postsTab, t, topicsTab]);
 
   return useMemo(() => (
-      <Container id="home-container" textAlign="center">
+      <Container id="profile-container" textAlign="center">
           <Tab panes={panes} />
       </Container>
   ), [panes]);
