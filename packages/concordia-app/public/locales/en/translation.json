@@ -69,7 +69,7 @@
   "topbar.button.register": "Sign Up",
   "topic.create.form.content.field.label": "First post content",
   "topic.create.form.content.field.placeholder": "Message",
-  "topic.create.form.post.button": "Post",
+  "topic.create.form.post.button": "Create Topic",
   "topic.create.form.subject.field.label": "Topic subject",
   "topic.create.form.subject.field.placeholder": "Subject",
   "topic.list.row.topic.id": "#{{id}}",

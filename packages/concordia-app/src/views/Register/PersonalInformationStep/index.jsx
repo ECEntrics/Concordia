@@ -150,16 +150,15 @@ const PersonalInformationStep = (props) => {
           )}
           <Card.Content extra>
               <Button
-                color="green"
+                className="primary-button"
                 floated="right"
                 content={t('register.form.personal.information.step.button.submit')}
                 onClick={handleSubmit}
                 disabled={!profilePictureUrlValid}
               />
               <Button
-                color="violet"
+                className="skip-button"
                 floated="right"
-                basic
                 content={t('register.form.personal.information.step.button.skip')}
                 onClick={goToHomePage}
               />

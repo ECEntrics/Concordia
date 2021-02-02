@@ -173,7 +173,7 @@ const GeneralTab = (props) => {
                           <Table.HeaderCell colSpan="2">
                               <Button
                                 id="edit-info-button"
-                                className="main-button"
+                                className="primary-button"
                                 floated="right"
                                 icon
                                 labelPosition="left"

@@ -2,7 +2,7 @@ import React, {
   useCallback, useEffect, useState,
 } from 'react';
 import {
-    Button, Container, Form, Header, Icon, Input, TextArea,
+  Button, Container, Form, Header, Icon, Input, TextArea,
 } from 'semantic-ui-react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
@@ -97,7 +97,7 @@ const TopicCreate = (props) => {
 
   return (
       <Container>
-          <Header id="new-topic-header">New Topic</Header>
+          <Header id="new-topic-header" as="h2">New Topic</Header>
           <Form loading={posting}>
               <Form.Field required>
                   <label htmlFor="form-topic-create-field-subject">
@@ -126,23 +126,23 @@ const TopicCreate = (props) => {
                     onChange={handleSubjectInputChange}
                   />
               </Form.Field>
-              <Form.Group>
-                  <Form.Button
-                    animated
-                    key="form-topic-create-button-submit"
-                    type="button"
-                    color="green"
-                    disabled={posting || subjectInput === '' || contentInput === ''}
-                    onClick={validateAndPost}
-                  >
-                      <Button.Content visible>
-                          {t('topic.create.form.post.button')}
-                      </Button.Content>
-                      <Button.Content hidden>
-                          <Icon name="send" />
-                      </Button.Content>
-                  </Form.Button>
-              </Form.Group>
+              <Button
+                id="create-topic-button"
+                animated
+                key="form-topic-create-button-submit"
+                type="button"
+                className="primary-button"
+                disabled={posting || subjectInput === '' || contentInput === ''}
+                onClick={validateAndPost}
+              >
+                  <Button.Content visible>
+                      {t('topic.create.form.post.button')}
+                  </Button.Content>
+                  <Button.Content hidden>
+                      <Icon name="send" />
+                  </Button.Content>
+              </Button>
+
           </Form>
       </Container>
   );

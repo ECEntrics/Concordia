@@ -12,7 +12,6 @@ import { USER_DATABASE } from '../../../../constants/orbit/OrbitDatabases';
 import { breeze, drizzle } from '../../../../redux/store';
 import UsernameSelector from '../../../../components/UsernameSelector';
 import { FORUM_CONTRACT } from '../../../../constants/contracts/ContractNames';
-import './styles.css';
 
 const { orbit: { stores } } = breeze;
 const { contracts: { [FORUM_CONTRACT]: { methods: { updateUsername } } } } = drizzle;
@@ -198,11 +197,11 @@ const EditInformationModal = (props) => {
               </Modal.Description>
           </Modal.Content>
           <Modal.Actions>
-              <Button id="cancel-button" onClick={onCancel}>
+              <Button className="secondary-button" onClick={onCancel}>
                   {t('edit.information.modal.form.cancel.button')}
               </Button>
               <Button
-                className="main-button"
+                className="primary-button"
                 content={t('edit.information.modal.form.submit.button')}
                 labelPosition="right"
                 icon="checkmark"

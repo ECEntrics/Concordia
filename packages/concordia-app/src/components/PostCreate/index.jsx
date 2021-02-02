@@ -136,7 +136,7 @@ const PostCreate = (props) => {
                           <Button
                             animated
                             type="button"
-                            className="main-button"
+                            className="primary-button"
                             disabled={posting || postContent === ''}
                             onClick={savePost}
                           >

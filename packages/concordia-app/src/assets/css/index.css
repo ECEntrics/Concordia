@@ -1,11 +1,13 @@
 :root {
-    --primary-color: #0B2540;
-    --primary-color-highlighted: #061A30;
-    --secondary-color: #EA6954;
-    --secondary-color-highlighted: #DB5844;
+    --primary-color: #EA6954;
+    --primary-color-highlighted: #DB5844;
+    --secondary-color: #0B2540;
+    --secondary-color-highlighted: #061A30;
 }
 
 body.app {
+    height: auto;
+    padding-bottom: 4rem;
     overflow: auto;
     margin: 0;
     background: #E6E6E6;
@@ -28,11 +30,31 @@ div {
     font-style: italic;
 }
 
-.main-button{
+.primary-button{
+    color: white !important;
+    background-color: var(--primary-color) !important;
+}
+
+.primary-button:hover {
+    background-color: var(--primary-color-highlighted) !important;
+}
+
+.secondary-button{
     color: white !important;
     background-color: var(--secondary-color) !important;
 }
 
-.main-button:hover {
+.secondary-button:hover {
     background-color: var(--secondary-color-highlighted) !important;
+}
+
+.skip-button {
+    color: var(--secondary-color) !important;
+    background-color: white !important;
+    box-shadow: 0 0 0 1px var(--secondary-color) inset !important;
+}
+
+.skip-button:hover {
+    color: var(--secondary-color-highlighted) !important;
+    box-shadow: 0 0 0 1px var(--secondary-color-highlighted) inset !important;
 }

@@ -1,8 +1,0 @@
-#cancel-button {
-    color: white;
-    background-color: var(--primary-color);
-}
-
-#cancel-button:hover {
-    background-color: var(--primary-color-highlighted);
-}

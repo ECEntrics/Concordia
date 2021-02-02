@@ -22,7 +22,7 @@ const Board = (props) => {
             ? (
                 <Button
                   id="new-topic-button"
-                  className="main-button"
+                  className="primary-button"
                   content="New Topic"
                   icon="plus"
                   labelPosition="left"

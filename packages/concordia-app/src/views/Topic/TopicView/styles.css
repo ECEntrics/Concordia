@@ -1,5 +1,5 @@
 #topic-container {
-    height: 100%;
+    height: auto !important;
 }
 
 #topic-header {
