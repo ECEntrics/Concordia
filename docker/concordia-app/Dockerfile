@@ -22,21 +22,23 @@ RUN yarn install --frozen-lockfile
 COPY ./packages/concordia-contracts ./packages/concordia-contracts
 COPY ./packages/concordia-app ./packages/concordia-app
 
+# Fix timezome
+ARG TZ
+ENV TZ=${TZ}
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 # --------------------------------------------------
 # Stage 2 (Test)
 # --------------------------------------------------
 FROM base as test
-
-# Fix timezome (needed for timestamps on report files)
-ARG TZ
-ENV TZ=${TZ}
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 WORKDIR /opt/concordia-app
 
 COPY ./docker/concordia-app/test-app.sh .
 
 WORKDIR /usr/src/concordia/packages/concordia-app
+
+RUN chmod +x /opt/concordia-app/test-app.sh
 
 ENTRYPOINT ["/opt/concordia-app/test-app.sh"]
 
@@ -50,9 +52,18 @@ WORKDIR /usr/src/concordia/packages/concordia-app
 RUN yarn build
 
 # --------------------------------------------------
-# Stage 4 (Runtime)
+# Stage 4 (Staging runtime)
 # --------------------------------------------------
-FROM nginx:1.17-alpine as runtime
+FROM base as staging
+
+WORKDIR /usr/src/concordia/packages/concordia-app
+
+ENTRYPOINT ["yarn", "start"]
+
+# --------------------------------------------------
+# Stage 4 (Production runtime)
+# --------------------------------------------------
+FROM nginx:1.17-alpine as production
 LABEL maintainers.1="Apostolos Fanakis <apostolof@auth.gr>"
 LABEL maintainers.2="Panagiotis Nikolaidis <ezerous@gmail.com"
 LABEL gr.thmmy.ecentrics.concordia-image.name="app"
