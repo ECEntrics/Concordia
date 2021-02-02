@@ -48,6 +48,8 @@ COPY ./docker/concordia-contracts/test-contracts.sh .
 
 WORKDIR /usr/src/concordia/packages/concordia-contracts
 
+RUN ["chmod", "+x", "/opt/concordia-contracts/test-contracts.sh"]
+
 ENTRYPOINT ["/opt/concordia-contracts/test-contracts.sh"]
 
 # --------------------------------------------------
