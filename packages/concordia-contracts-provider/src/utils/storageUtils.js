@@ -1,10 +1,17 @@
 import path from 'path';
 import constants from '../constants';
 
-const getStorageLocation = (hash) => {
+export const getStorageLocation = (hash) => {
   const UPLOADS_DIRECTORY = process.env.UPLOAD_CONTRACTS_DIRECTORY || constants.uploadsDirectory;
 
-  return path.join(UPLOADS_DIRECTORY, hash);
+  if (hash) {
+    return path.join(UPLOADS_DIRECTORY, hash);
+  }
+
+  return UPLOADS_DIRECTORY;
 };
 
-export default getStorageLocation;
+export const getTagsDirectory = () => {
+  const uploadsPath = getStorageLocation();
+  return path.join(uploadsPath, '/tags');
+};

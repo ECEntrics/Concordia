@@ -8,14 +8,15 @@ const uploadContractsToProviderUnirest = (versionHash, tag) => {
   const CONTRACTS_PROVIDER_PORT = process.env.CONTRACTS_PROVIDER_PORT || defaults.contractsProviderPort;
 
   const uploadPath = `http://${CONTRACTS_PROVIDER_HOST}:${CONTRACTS_PROVIDER_PORT}/contracts/${versionHash}`;
-  const req = unirest('POST', uploadPath);
+  const request = unirest('POST', uploadPath)
+    .field('tag', tag);
 
   contracts
-    .forEach((contract) => req
+    .forEach((contract) => request
       .attach('contracts', path.join(__dirname, '../', 'build/', `${contract.contractName}.json`)));
 
   console.log(`Uploading to ${uploadPath}`);
-  req.end((res) => {
+  request.end((res) => {
     if (res.error) {
       throw new Error(`Failed to upload contracts to provider: ${res.error}`);
     }

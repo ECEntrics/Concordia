@@ -1,7 +1,7 @@
 import * as util from 'util';
 import * as fs from 'fs';
 import multer from 'multer';
-import getStorageLocation from '../utils/storageUtils';
+import { getStorageLocation } from '../utils/storageUtils';
 
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
