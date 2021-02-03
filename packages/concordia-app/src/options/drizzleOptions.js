@@ -2,7 +2,7 @@
 import { contracts } from 'concordia-contracts';
 import web3Options from './web3Options';
 import appEvents from '../constants/contracts/events';
-import { downloadContractArtifactsSync } from '../utils/drizzleUtils';
+import downloadContractArtifactsSync from '../utils/drizzleUtils';
 
 const drizzleOptions = {
   web3: web3Options,
@@ -11,14 +11,10 @@ const drizzleOptions = {
   reloadWindowOnAccountChange: true, // We need it to reinitialize breeze and create new Orbit databases
 };
 
-const CONTRACTS_SUPPLIER_URL = process.env.REACT_APP_CONTRACTS_SUPPLIER;
-
-if (!CONTRACTS_SUPPLIER_URL) {
-  drizzleOptions.contracts = contracts;
+if (process.env.REACT_APP_USE_EXTERNAL_CONTRACTS_SUPPLIER) {
+  drizzleOptions.contracts = downloadContractArtifactsSync();
 } else {
-  const remoteContracts = downloadContractArtifactsSync();
-  console.log(remoteContracts);
-  drizzleOptions.contracts = remoteContracts;
+  drizzleOptions.contracts = contracts;
 }
 
 export default drizzleOptions;

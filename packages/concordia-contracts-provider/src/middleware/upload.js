@@ -1,17 +1,15 @@
 import * as util from 'util';
-import * as path from 'path';
 import * as fs from 'fs';
 import multer from 'multer';
-import { UPLOADED_CONTRACTS_DIR } from '../constants';
+import getStorageLocation from '../utils/storageUtils';
 
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
     const { params: { hash } } = req;
-    const contractsPath = path.join(`${__dirname}/../../${UPLOADED_CONTRACTS_DIR}/${hash}`);
+    const contractsPath = getStorageLocation(hash);
 
     fs.mkdirSync(contractsPath, { recursive: true });
     callback(null, contractsPath);
-    // callback(null, UPLOADED_CONTRACTS_DIR);
   },
   filename: (req, file, callback) => {
     const match = ['application/json'];

@@ -1,10 +1,11 @@
 import * as fs from 'fs';
 import path from 'path';
-import { UPLOADED_CONTRACTS_DIR } from '../constants';
+import getStorageLocation from '../utils/storageUtils';
 
 const downloadContracts = async (req, res) => {
   const { params: { hash } } = req;
-  const directoryPath = path.join(`${__dirname}/../../${UPLOADED_CONTRACTS_DIR}/${hash}`);
+  const directoryPath = getStorageLocation(hash);
+
   const contracts = [];
 
   fs.readdirSync(directoryPath).forEach((contractFilename) => {

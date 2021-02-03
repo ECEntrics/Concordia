@@ -1,3 +1,11 @@
-export const API_HOST = '127.0.0.1';
-export const API_PORT = '8400';
-export const UPLOADED_CONTRACTS_DIR = './contracts-uploads/';
+import path from 'path';
+
+const PROVIDER_PORT = '8400';
+const UPLOAD_CONTRACTS_DIRECTORY = path.join(__dirname, '..', 'contracts-uploads');
+const CORS_ALLOWED_ORIGINS = ['localhost:7000', '127.0.0.1:7000'];
+
+export default {
+  port: PROVIDER_PORT,
+  uploadsDirectory: UPLOAD_CONTRACTS_DIRECTORY,
+  corsAllowedOrigins: CORS_ALLOWED_ORIGINS,
+};
