@@ -1,7 +1,18 @@
 import path from 'path';
-import { promises as fs } from 'fs';
-import upload from '../middleware/upload';
-import { getTagsDirectory } from '../utils/storageUtils';
+import { constants, promises as fs } from 'fs';
+import uploadFilesUsingMiddleware from '../middleware/upload';
+import { getStorageLocation, getTagsDirectory } from '../utils/storageUtils';
+
+const provisionContractsDirectory = (req) => {
+  const { params: { hash } } = req;
+  const contractsPath = getStorageLocation(hash);
+
+  return fs
+    .access(contractsPath, constants.W_OK)
+    .then(() => fs.rmdir(contractsPath, { recursive: true }))
+    .catch(() => Promise.resolve())
+    .then(() => fs.mkdir(contractsPath, { recursive: true }));
+};
 
 const addOrTransferTag = (tag, hash) => {
   const tagsDirectory = getTagsDirectory();
@@ -12,21 +23,22 @@ const addOrTransferTag = (tag, hash) => {
     .then(() => fs.writeFile(tagFilePath, hash, 'utf-8'));
 };
 
-const uploadContracts = async (req, res) => upload(req, res)
-  .then(() => {
-    if (req.files.length <= 0) {
-      return Promise.reject(new Error('You must select at least 1 file.'));
-    }
+const uploadContracts = async (req, res) => provisionContractsDirectory(req)
+  .then(() => uploadFilesUsingMiddleware(req, res)
+    .then(() => {
+      if (req.files.length <= 0) {
+        return Promise.reject(new Error('You must select at least 1 file.'));
+      }
 
-    const { body: { tag } } = req;
-    const { params: { hash } } = req;
+      const { body: { tag } } = req;
+      const { params: { hash } } = req;
 
-    if (tag) {
-      return addOrTransferTag(tag, hash)
-        .then(() => res.send('Files have been uploaded and tagged.'));
-    }
+      if (tag) {
+        return addOrTransferTag(tag, hash)
+          .then(() => res.send('Files have been uploaded and tagged.'));
+      }
 
-    return res.send('Files have been uploaded.');
-  });
+      return res.send('Files have been uploaded.');
+    }));
 
 export default uploadContracts;

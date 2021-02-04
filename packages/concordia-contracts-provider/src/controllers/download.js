@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs';
+import { promises as fs, constants } from 'fs';
 import path from 'path';
 import { getStorageLocation, getTagsDirectory } from '../utils/storageUtils';
 
@@ -14,13 +14,13 @@ const downloadContracts = async (req, res) => {
   const { params: { hash: identifier } } = req;
   const hashBasedDirectoryPath = getStorageLocation(identifier);
 
-  return fs.access(hashBasedDirectoryPath)
+  return fs.access(hashBasedDirectoryPath, constants.R_OK)
     .then(() => readContractFilesToArray(hashBasedDirectoryPath))
     .catch(() => {
       const tagsDirectory = getTagsDirectory();
 
       return fs
-        .access(tagsDirectory)
+        .access(tagsDirectory, constants.R_OK)
         .then(() => {
           const tagFilePath = path.join(tagsDirectory, identifier);
 

@@ -1,5 +1,4 @@
 import * as util from 'util';
-import * as fs from 'fs';
 import multer from 'multer';
 import { getStorageLocation } from '../utils/storageUtils';
 
@@ -8,7 +7,6 @@ const storage = multer.diskStorage({
     const { params: { hash } } = req;
     const contractsPath = getStorageLocation(hash);
 
-    fs.mkdirSync(contractsPath, { recursive: true });
     callback(null, contractsPath);
   },
   filename: (req, file, callback) => {
