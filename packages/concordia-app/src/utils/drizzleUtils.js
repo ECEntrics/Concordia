@@ -1,6 +1,9 @@
 import {
+  REACT_APP_CONCORDIA_HOST_DEFAULT,
+  REACT_APP_CONCORDIA_PORT_DEFAULT,
   REACT_APP_CONTRACTS_SUPPLIER_HOST_DEFAULT,
-  REACT_APP_CONTRACTS_SUPPLIER_PORT_DEFAULT, REACT_APP_CONTRACTS_VERSION_HASH_DEFAULT,
+  REACT_APP_CONTRACTS_SUPPLIER_PORT_DEFAULT,
+  REACT_APP_CONTRACTS_VERSION_HASH_DEFAULT,
 } from '../constants/configuration/defaults';
 import CONTRACTS from '../constants/contracts/ContractNames';
 
@@ -11,13 +14,15 @@ function getContractsDownloadRequest() {
       || REACT_APP_CONTRACTS_SUPPLIER_PORT_DEFAULT;
   const CONTRACTS_VERSION_HASH = process.env.REACT_APP_CONTRACTS_VERSION_HASH
       || REACT_APP_CONTRACTS_VERSION_HASH_DEFAULT;
+  const HOST = process.env.REACT_APP_CONCORDIA_HOST || REACT_APP_CONCORDIA_HOST_DEFAULT;
+  const PORT = process.env.REACT_APP_CONCORDIA_PORT || REACT_APP_CONCORDIA_PORT_DEFAULT;
 
   const xhrRequest = new XMLHttpRequest();
 
   xhrRequest.open('GET',
     `http://${CONTRACTS_SUPPLIER_HOST}:${CONTRACTS_SUPPLIER_PORT}/contracts/${CONTRACTS_VERSION_HASH}`,
     false);
-  xhrRequest.setRequestHeader('Access-Control-Allow-Origin', 'http://localhost:7000');
+  xhrRequest.setRequestHeader('Access-Control-Allow-Origin', `${HOST}:${PORT}`);
   xhrRequest.setRequestHeader('Access-Control-Allow-Credentials', 'true');
 
   return xhrRequest;
@@ -31,7 +36,7 @@ function validateRemoteContracts(remoteContracts) {
 
   const contractsPresentStatus = CONTRACTS.map((contract) => ({
     contract,
-    present: remoteContracts.contains((remoteContract) => remoteContract.contractName === contract),
+    present: remoteContracts.includes((remoteContract) => remoteContract.contractName === contract),
   }));
 
   if (contractsPresentStatus.reduce((accumulator, contract) => accumulator && contract.present, true)) {
