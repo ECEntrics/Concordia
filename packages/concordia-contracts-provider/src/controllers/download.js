@@ -1,31 +1,38 @@
-import * as fs from 'fs';
+import { promises as fs } from 'fs';
 import path from 'path';
 import { getStorageLocation, getTagsDirectory } from '../utils/storageUtils';
 
+const readContractFilesToArray = (contractsDirectoryPath) => fs
+  .readdir(contractsDirectoryPath)
+  .then((contractFilenames) => contractFilenames
+    .map((contractFilename) => fs
+      .readFile(path.join(`${contractsDirectoryPath}/${contractFilename}`), 'utf-8')
+      .then((rawContractData) => JSON.parse(rawContractData))))
+  .then((contractObjectPromises) => Promise.all([...contractObjectPromises]));
+
 const downloadContracts = async (req, res) => {
-  const { params: { hash: hashOrTag } } = req;
-  let directoryPath = getStorageLocation(hashOrTag);
+  const { params: { hash: identifier } } = req;
+  const hashBasedDirectoryPath = getStorageLocation(identifier);
 
-  if (!fs.existsSync(directoryPath)) {
-    const tagsDirectory = getTagsDirectory();
+  return fs.access(hashBasedDirectoryPath)
+    .then(() => readContractFilesToArray(hashBasedDirectoryPath))
+    .catch(() => {
+      const tagsDirectory = getTagsDirectory();
 
-    if (fs.existsSync(tagsDirectory)) {
-      const tagFilePath = path.join(tagsDirectory, hashOrTag);
-      const tagReference = fs.readFileSync(tagFilePath, 'utf-8');
+      return fs
+        .access(tagsDirectory)
+        .then(() => {
+          const tagFilePath = path.join(tagsDirectory, identifier);
 
-      directoryPath = getStorageLocation(tagReference);
-    }
-  }
+          return fs.readFile(tagFilePath, 'utf-8')
+            .then((tagReference) => {
+              const tagBasedDirectoryPath = getStorageLocation(tagReference);
 
-  const contracts = [];
-
-  fs.readdirSync(directoryPath).forEach((contractFilename) => {
-    const rawContractData = fs.readFileSync(path.join(`${directoryPath}/${contractFilename}`), 'utf-8');
-    const contractJson = JSON.parse(rawContractData);
-    contracts.push(contractJson);
-  });
-
-  res.send(contracts);
+              return readContractFilesToArray(tagBasedDirectoryPath);
+            });
+        });
+    }).then((contracts) => res.send(contracts))
+    .catch(() => Promise.reject(new Error(`No contracts version or tag found for ${identifier}.`)));
 };
 
 export default downloadContracts;

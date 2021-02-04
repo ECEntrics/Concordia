@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 
     if (match.indexOf(file.mimetype) === -1) {
       const message = `<strong>${file.originalname}</strong> is invalid. Only JSON files are accepted.`;
-      return callback(message, null);
+      callback(message, null);
     }
 
     const filename = `${file.originalname}`;
