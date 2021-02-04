@@ -2,6 +2,7 @@
 PACKAGES := $(abspath ${CURDIR}/../packages)
 REPORTS := $(abspath ${CURDIR}/reports)
 GANACHE_VOLUMES := $(abspath ${CURDIR}/ganache/volumes)
+CONTRACTS_PROVIDER_VOLUMES := $(abspath ${CURDIR}/concordia-contracts-provider/volumes)
 DOCKER_BUILDKIT = 1
 
 run: compose-run build-contracts-migrate run-contracts-migrate build-app run-app
@@ -71,6 +72,14 @@ run-app-staging:
 	docker start concordia-app-staging
 run-app-host-chain:
 	@docker run -d --env-file=./env/concordia.env --name concordia-app --net=host ecentrics/concordia-app:latest
+
+# Contracts provider targets
+build-contracts-provider:
+	@docker build ../ -f ./concordia-contracts-provider/Dockerfile -t ecentrics/concordia-contracts-provider --build-arg TZ=Europe/Athens
+run-contracts-provider-staging:
+	@docker run -d -v ${CONTRACTS_PROVIDER_VOLUMES}/contracts:/data/contracts --env-file=./env/contracts-provider.env -e NODE_ENV=production -p 8400:8400 --name concordia-contracts-provider ecentrics/concordia-contracts-provider:latest
+run-contracts-provider:
+	@docker run -d -v ${CONTRACTS_PROVIDER_VOLUMES}/contracts:/data/contracts --env-file=./env/contracts-provider.env -p 8400:8400 --name concordia-contracts-provider ecentrics/concordia-contracts-provider:latest
 
 # Other
 clean-images:
