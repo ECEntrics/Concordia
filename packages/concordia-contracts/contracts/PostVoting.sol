@@ -70,11 +70,13 @@ contract PostVoting {
     }
 
     function vote(uint postID, Option option) private {
-        require(forum.hasUserSignedUp(msg.sender), forum.USER_HAS_NOT_SIGNED_UP());
+        address voter = msg.sender;
+        require(forum.hasUserSignedUp(voter), forum.USER_HAS_NOT_SIGNED_UP());
         require(forum.postExists(postID), forum.POST_DOES_NOT_EXIST());
+        address postAuthor = forum.getPostAuthor(postID);
+        require(voter != postAuthor, "Post's author cannot vote for it.");
 
         PostBallot storage postBallot = postBallots[postID];
-        address voter = msg.sender;
         Option prevOption = postBallot.votes[voter];
 
         if (prevOption == option)
