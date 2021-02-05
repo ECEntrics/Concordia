@@ -1,5 +1,5 @@
 .post-list-row {
-    padding: 1rem 0.1rem 1rem 0.6rem !important;
+    padding: 1.2rem 0.1rem 1.2rem 0.6rem !important;
 }
 
 .post-profile-picture {
@@ -14,6 +14,10 @@
     font-size: 1rem !important;
 }
 
+.post-content > div.extra {
+    padding-right: 1rem !important;
+}
+
 .post-content .placeholder {
     margin: 0.5rem 0 0;
     font-size: 2rem !important;
@@ -25,6 +29,21 @@
 
 .post-summary-meta-index {
     float: right;
+    width: 3rem;
+    text-align: right;
     font-size: 0.75rem !important;
     opacity: 0.4;
+}
+
+.post-voting {
+    float: left;
+    margin-top: 1.2rem;
+}
+
+.post-voting > button{
+    margin: 0 !important;
+}
+
+.post-voting > span{
+    vertical-align: middle;
 }

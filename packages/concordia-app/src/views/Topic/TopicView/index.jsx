@@ -119,7 +119,7 @@ const TopicView = (props) => {
   };
 
   return (
-      <Container id="topic-container" textAlign="center">
+      <Container id="topic-container">
           <Segment>
               <Dimmer.Dimmable
                 blurring

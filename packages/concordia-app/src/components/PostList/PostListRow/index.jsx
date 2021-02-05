@@ -2,7 +2,8 @@ import React, {
   memo, useEffect, useMemo, useState, useCallback,
 } from 'react';
 import {
-  Dimmer, Feed, Placeholder, Ref,
+    Button,
+    Dimmer, Feed, Placeholder, Ref,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -138,6 +139,11 @@ const PostListRow = (props) => {
                     ? postContent
                     : <Placeholder><Placeholder.Line length="long" /></Placeholder>}
               </Feed.Extra>
+              <div className="post-voting">
+                  <Button size="mini" compact negative icon="arrow down"/>
+                  <span>&nbsp;&nbsp;0&nbsp;&nbsp;</span>
+                  <Button size="mini" compact positive icon="arrow up"/>
+              </div>
           </Feed.Content>
       </Dimmer.Dimmable>
   ), [focusRef, loading, postAuthor, postAuthorAddress, postAuthorMeta, postContent, postId, postIndex, t, timeAgo,
