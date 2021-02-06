@@ -34,16 +34,3 @@
     font-size: 0.75rem !important;
     opacity: 0.4;
 }
-
-.post-voting {
-    float: left;
-    margin-top: 1.2rem;
-}
-
-.post-voting > button{
-    margin: 0 !important;
-}
-
-.post-voting > span{
-    vertical-align: middle;
-}
