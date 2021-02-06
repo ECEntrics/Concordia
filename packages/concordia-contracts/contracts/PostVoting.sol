@@ -40,12 +40,6 @@ contract PostVoting {
         return (getVoteCount(postID, Option.DOWN));
     }
 
-    function getTotalVoteCount(uint postID) public view returns (int) {
-        int upvoteCount = int(getUpvoteCount(postID));
-        int downvoteCount = int(getDownvoteCount(postID));
-        return upvoteCount - downvoteCount;
-    }
-
     // Gets voters for a specific option (Option.UP/ Option.DOWN)
     function getVoters(uint postID, Option option) private view returns (address[] memory) {
         require(forum.postExists(postID), forum.POST_DOES_NOT_EXIST());

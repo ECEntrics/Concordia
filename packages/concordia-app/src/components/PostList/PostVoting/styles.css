@@ -3,10 +3,18 @@
     margin-top: 1.2rem;
 }
 
-.post-voting > button{
+.post-voting > button {
     margin: 0 !important;
 }
 
 .post-voting > span{
     vertical-align: middle;
+}
+
+.upvote-count {
+    color: #21ba45;
+}
+
+.downvote-count {
+    color: #db2828;
 }
