@@ -2,46 +2,45 @@ import OrbitDB from 'orbit-db';
 import Identities from 'orbit-db-identity-provider';
 import { EthereumContractIdentityProvider } from '@ezerous/eth-identity-provider';
 import Web3 from 'web3';
-
-export async function createOrbitInstance(ipfs, contractAddress){
-    Identities.addIdentityProvider(EthereumContractIdentityProvider);
-
-    EthereumContractIdentityProvider.setWeb3(new Web3()); // We need a fully-featured new Web3 for signature verification
-    EthereumContractIdentityProvider.setContractAddress(contractAddress);
-
-    return await OrbitDB.createInstance(ipfs);
-}
-
-export async function getPeerDatabases(orbit, userAddresses) {
-    const peerDBs = [];
-    for (const userAddress of userAddresses) {
-        peerDBs.push(await determineKVAddress({ orbit, dbName:'user', userAddress }));
-        peerDBs.push(await determineKVAddress({ orbit, dbName:'posts', userAddress }));
-        peerDBs.push(await determineKVAddress({ orbit, dbName:'topics', userAddress }));
-    }
-    return peerDBs;
-}
-
-export async function openKVDBs(orbit, databases) {
-    for (const db of databases){
-        const store = await orbit.keyvalue(db);
-        store.events.on('replicated', (address) => console.log(`Replicated ${address}`));
-        console.log(`Opened ${db}`);
-    }
-}
+import { ORBIT_DIRECTORY_DEFAULT } from '../constants';
 
 // TODO: share code below with frontend (?)
-async function determineDBAddress({
-    orbit, dbName, type, identityId,
-}) {
-    const ipfsMultihash = (await orbit.determineAddress(dbName, type, {
-        accessController: { write: [identityId] },
-    })).root;
+const determineDBAddress = async ({
+  orbit, dbName, type, identityId,
+}) => orbit.determineAddress(dbName, type, { accessController: { write: [identityId] } })
+  .then((orbitAddress) => {
+    const ipfsMultihash = orbitAddress.root;
     return `/orbitdb/${ipfsMultihash}/${dbName}`;
-}
+  });
 
-async function determineKVAddress({ orbit, dbName, userAddress }) {
-    return determineDBAddress({
-        orbit, dbName, type: 'keyvalue', identityId: userAddress + EthereumContractIdentityProvider.contractAddress,
+const determineKVAddress = async ({ orbit, dbName, userAddress }) => determineDBAddress({
+  orbit, dbName, type: 'keyvalue', identityId: userAddress + EthereumContractIdentityProvider.contractAddress,
+});
+
+export const createOrbitInstance = async (ipfs, contractAddress) => {
+  Identities.addIdentityProvider(EthereumContractIdentityProvider);
+
+  EthereumContractIdentityProvider.setWeb3(new Web3()); // We need a fully-featured new Web3 for signature verification
+  EthereumContractIdentityProvider.setContractAddress(contractAddress);
+
+  const ORBIT_DIRECTORY = process.env.ORBIT_DIRECTORY || ORBIT_DIRECTORY_DEFAULT;
+
+  return OrbitDB.createInstance(ipfs, { directory: ORBIT_DIRECTORY });
+};
+
+export const getPeerDatabases = async (orbit, userAddresses) => Promise.all(userAddresses
+  .flatMap((userAddress) => [
+    determineKVAddress({ orbit, dbName: 'user', userAddress }),
+    determineKVAddress({ orbit, dbName: 'posts', userAddress }),
+    determineKVAddress({ orbit, dbName: 'topics', userAddress }),
+  ]));
+
+export const openKVDBs = async (orbit, databases) => {
+  databases
+    .forEach((database) => {
+      orbit
+        .keyvalue(database)
+        .then((store) => store.events.on('replicated', (address) => console.log(`Replicated ${address}`)));
+      console.log(`Opened ${database}`);
     });
-}
+};
