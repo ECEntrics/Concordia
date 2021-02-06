@@ -1,6 +1,10 @@
 body.app {
     overflow: auto;
-    margin: 1em !important;
+    margin: 0;
+}
+
+div {
+    word-break: break-word;
 }
 
 #root {

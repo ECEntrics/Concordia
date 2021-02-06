@@ -4,8 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
 import { useSelector } from 'react-redux';
 import AppContext from '../../../components/AppContext';
-import appLogo from '../../../assets/images/app_logo.png';
 import ClearDatabasesModal from '../../../components/ClearDatabasesModal';
+import appLogo from '../../../assets/images/app_logo.svg';
+import './styles.css';
 
 const MainLayoutMenu = () => {
   const hasSignedUp = useSelector((state) => state.user.hasSignedUp);
@@ -30,12 +31,13 @@ const MainLayoutMenu = () => {
   return (
       <AppContext.Consumer>
           {() => (
-              <Menu color="black" inverted>
+              <Menu inverted>
                   <Menu.Item
+                    id="home-button"
                     link
                     name="home"
                     key="home"
-                    onClick={() => { history.push('/'); }}
+                    onClick={() => history.push('/')}
                   >
                       <img src={appLogo} alt="app_logo" />
                   </Menu.Item>
@@ -45,7 +47,7 @@ const MainLayoutMenu = () => {
                             link
                             name="create-topic"
                             key="create-topic"
-                            onClick={() => { history.push('/topics/new'); }}
+                            onClick={() => history.push('/topics/new')}
                             position="right"
                           >
                               {t('topbar.button.create.topic')}
@@ -57,7 +59,7 @@ const MainLayoutMenu = () => {
                               link
                               name="profile"
                               key="profile"
-                              onClick={() => { history.push('/profile'); }}
+                              onClick={() => history.push('/profile')}
                             >
                                 {t('topbar.button.profile')}
                             </Menu.Item>
@@ -67,16 +69,23 @@ const MainLayoutMenu = () => {
                               link
                               name="register"
                               key="register"
-                              onClick={() => { history.push('/auth/register'); }}
+                              onClick={() => history.push('/auth/register')}
                             >
                                 {t('topbar.button.register')}
                             </Menu.Item>
                         )}
+                      <Menu.Item
+                        link
+                        name="about"
+                        key="about"
+                        onClick={() => history.push('/about')}
+                      >
+                          {t('topbar.button.about')}
+                      </Menu.Item>
                   </Menu.Menu>
                   <Dropdown key="overflow" item direction="left">
                       <Dropdown.Menu>
                           <Dropdown.Item
-                            link
                             name="clear-databases"
                             key="clear-databases"
                             onClick={handleClearDatabasesClick}

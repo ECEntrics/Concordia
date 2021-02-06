@@ -46,7 +46,7 @@ const Register = () => {
   }, [currentStep, pushNextStep]);
 
   return (
-      <div className="centered form-card-container">
+      <div className="register-centered form-card-container">
           <Card fluid>
               <Card.Content>
                   {

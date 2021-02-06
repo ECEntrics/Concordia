@@ -21,7 +21,7 @@ const particlesOptions = {
     opacity: {
       anim: {
         enable: true,
-        speed: 1.3,
+        speed: 0.6,
         opacity_min: 0.05,
       },
     },

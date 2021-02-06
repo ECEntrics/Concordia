@@ -10,13 +10,15 @@
     "_eslint": "yarn eslint . --format table",
     "_solhint": "yarn solhint --formatter table contracts/*.sol test/*.sol",
     "test": "yarn truffle test",
-    "migrate": "yarn _migrate --network develop",
-    "migrate-reset": "yarn _migrate --network develop --reset",
-    "_migrate": "yarn truffle migrate"
+    "migrate": "yarn _migrate --network develop && yarn upload",
+    "migrate-reset": "yarn _migrate --network develop --reset && yarn upload",
+    "_migrate": "yarn truffle migrate",
+    "upload": "node ./utils/contractsProviderUtils.js ${npm_package_version}-dev latest"
   },
   "dependencies": {
     "@openzeppelin/contracts": "~3.3.0",
-    "truffle": "~5.1.58"
+    "truffle": "~5.1.58",
+    "unirest": "^0.6.0"
   },
   "devDependencies": {
     "eslint": "^6.8.0",

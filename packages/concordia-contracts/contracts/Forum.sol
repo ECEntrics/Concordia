@@ -177,4 +177,9 @@ contract Forum {
             posts[postID].topicID
         );
     }
+
+    function getPostAuthor(uint postID) public view returns (address) {
+        require(postExists(postID), POST_DOES_NOT_EXIST);
+        return posts[postID].author;
+    }
 }

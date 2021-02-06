@@ -11,7 +11,7 @@ import { FORUM_CONTRACT } from '../../constants/contracts/ContractNames';
 const { contracts: { [FORUM_CONTRACT]: { methods: { getPost: { cacheCall: getPostChainData } } } } } = drizzle;
 
 const PostList = (props) => {
-  const { postIds, loading } = props;
+  const { postIds, loading, focusOnPost } = props;
   const [getPostCallHashes, setGetPostCallHashes] = useState([]);
   const drizzleInitialized = useSelector((state) => state.drizzleStatus.initialized);
   const drizzleInitializationFailed = useSelector((state) => state.drizzleStatus.failed);
@@ -47,14 +47,15 @@ const PostList = (props) => {
         return (
             <PostListRow
               id={postId}
-              postIndexInTopic={index + 1}
+              postIndex={index + 1}
               key={postId}
               postCallHash={postHash && postHash.hash}
               loading={postHash === undefined}
+              focus={postId === focusOnPost}
             />
         );
       });
-  }, [getPostCallHashes, loading, postIds]);
+  }, [focusOnPost, getPostCallHashes, loading, postIds]);
 
   return (
       <Dimmer.Dimmable as={Feed} blurring dimmed={loading} id="post-list" size="large">
@@ -67,6 +68,7 @@ const PostList = (props) => {
 PostList.propTypes = {
   postIds: PropTypes.arrayOf(PropTypes.number).isRequired,
   loading: PropTypes.bool,
+  focusOnPost: PropTypes.number,
 };
 
 export default PostList;
