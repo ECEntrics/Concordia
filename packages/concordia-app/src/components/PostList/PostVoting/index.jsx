@@ -59,7 +59,8 @@ const PostVoting = (props) => {
   useEffect(() => {
     const shouldGetOwnVoteFromChain = ownVote === null;
 
-    if (drizzleInitialized && !drizzleInitializationFailed && shouldGetOwnVoteFromChain && postId !== null && userAccount !== null) {
+    if (drizzleInitialized && !drizzleInitializationFailed && shouldGetOwnVoteFromChain
+        && postId !== null && userAccount !== null) {
       setGetVoteCallHash(getVoteChainData(postId, userAccount));
     }
   }, [drizzleInitializationFailed, drizzleInitialized, ownVote, postId, totalVoteCount, userAccount]);
@@ -87,11 +88,13 @@ const PostVoting = (props) => {
   }, [createVoteCacheSendStackId, transactionStack, transactions, voting]);
 
   const vote = useCallback((choice) => {
+    if (voting) return;
+
     setVoting(true);
     if ((ownVote === CHOICE_DEFAULT || ownVote === CHOICE_DOWN) && choice === CHOICE_UP) setVoteCacheSendStackId(upvote.cacheSend(...[postId], { from: userAccount }));
     else if ((ownVote === CHOICE_DEFAULT || ownVote === CHOICE_UP) && choice === CHOICE_DOWN) setVoteCacheSendStackId(downvote.cacheSend(...[postId], { from: userAccount }));
     else if ((ownVote === CHOICE_UP && choice === CHOICE_UP) || (ownVote === CHOICE_DOWN && choice === CHOICE_DOWN)) setVoteCacheSendStackId(unvote.cacheSend(...[postId], { from: userAccount }));
-  }, [ownVote, postId, userAccount]);
+  }, [ownVote, postId, userAccount, voting]);
 
   const disableVoting = userAccount === null || !hasSignedUp || postAuthorAddress === null || userAccount === postAuthorAddress;
   return useMemo(() => (
@@ -119,10 +122,6 @@ const PostVoting = (props) => {
           />
       </div>
   ), [disableVoting, ownVote, totalVoteCount, vote]);
-};
-
-PostVoting.defaultProps = {
-  loading: false,
 };
 
 PostVoting.propTypes = {
