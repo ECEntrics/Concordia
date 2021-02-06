@@ -58,3 +58,12 @@ div {
     color: var(--secondary-color-highlighted) !important;
     box-shadow: 0 0 0 1px var(--secondary-color-highlighted) inset !important;
 }
+
+.unselectable {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}

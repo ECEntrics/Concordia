@@ -3,12 +3,11 @@ import React, {
 } from 'react';
 import { Button } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
-
-import './styles.css';
 import { useSelector } from 'react-redux';
 import { POST_VOTING_CONTRACT } from '../../../constants/contracts/ContractNames';
 import { drizzle } from '../../../redux/store';
 import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../../constants/TransactionStatus';
+import './styles.css';
 
 const CHOICE_DEFAULT = '0';
 const CHOICE_UP = '1';
@@ -63,7 +62,7 @@ const PostVoting = (props) => {
         && postId !== null && userAccount !== null) {
       setGetVoteCallHash(getVoteChainData(postId, userAccount));
     }
-  }, [drizzleInitializationFailed, drizzleInitialized, ownVote, postId, totalVoteCount, userAccount]);
+  }, [drizzleInitializationFailed, drizzleInitialized, ownVote, postId, userAccount]);
 
   useEffect(() => {
     if (getVoteCallHash && getVoteResults && getVoteResults[getVoteCallHash]) {
@@ -107,7 +106,7 @@ const PostVoting = (props) => {
             disabled={disableVoting}
             onClick={() => vote(CHOICE_DOWN)}
           />
-          <span>
+          <span className="unselectable">
               &nbsp;&nbsp;
               {totalVoteCount || 0}
               &nbsp;&nbsp;
