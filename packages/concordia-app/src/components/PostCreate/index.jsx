@@ -7,15 +7,15 @@ import {
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
+import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
+import { POSTS_DATABASE, USER_DATABASE } from 'concordia-shared/src/constants/orbit/OrbitDatabases';
+import { POST_CREATED_EVENT } from 'concordia-shared/src/constants/contracts/events/ForumContractEvents';
 import determineKVAddress from '../../utils/orbitUtils';
-import { POSTS_DATABASE, USER_DATABASE } from '../../constants/orbit/OrbitDatabases';
 import { FETCH_USER_DATABASE } from '../../redux/actions/peerDbReplicationActions';
 import { breeze, drizzle } from '../../redux/store';
 import './styles.css';
 import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../constants/TransactionStatus';
 import { POST_CONTENT } from '../../constants/orbit/PostsDatabaseKeys';
-import { FORUM_CONTRACT } from '../../constants/contracts/ContractNames';
-import { POST_CREATED_EVENT } from '../../constants/contracts/events/ForumContractEvents';
 
 const { contracts: { [FORUM_CONTRACT]: { methods: { createPost } } } } = drizzle;
 const { orbit } = breeze;

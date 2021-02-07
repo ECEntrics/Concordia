@@ -5,8 +5,8 @@ import {
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { USER_DATABASE, databases } from 'concordia-shared/src/constants/orbit/OrbitDatabases';
 import determineKVAddress from '../../../utils/orbitUtils';
-import databases, { USER_DATABASE } from '../../../constants/orbit/OrbitDatabases';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import { breeze } from '../../../redux/store';
 import { USER_LOCATION, USER_PROFILE_PICTURE } from '../../../constants/orbit/UserDatabaseKeys';

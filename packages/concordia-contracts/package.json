@@ -16,8 +16,9 @@
     "upload": "node ./utils/contractsProviderUtils.js ${npm_package_version}-dev latest"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "~3.2.0",
-    "truffle": "~5.1.55",
+    "@openzeppelin/contracts": "~3.3.0",
+    "concordia-shared": "~0.1.0",
+    "truffle": "~5.1.58",
     "unirest": "^0.6.0"
   },
   "devDependencies": {

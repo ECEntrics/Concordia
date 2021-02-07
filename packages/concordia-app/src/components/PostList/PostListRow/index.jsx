@@ -7,13 +7,13 @@ import { useTranslation } from 'react-i18next';
 import TimeAgo from 'react-timeago';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
+import { POSTS_DATABASE, USER_DATABASE } from 'concordia-shared/src/constants/orbit/OrbitDatabases';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import { breeze } from '../../../redux/store';
 import './styles.css';
-import { POSTS_DATABASE, USER_DATABASE } from '../../../constants/orbit/OrbitDatabases';
 import determineKVAddress from '../../../utils/orbitUtils';
 import { POST_CONTENT } from '../../../constants/orbit/PostsDatabaseKeys';
-import { FORUM_CONTRACT } from '../../../constants/contracts/ContractNames';
 import ProfileImage from '../../ProfileImage';
 import PostVoting from '../PostVoting';
 

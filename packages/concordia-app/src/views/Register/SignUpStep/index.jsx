@@ -6,9 +6,9 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import PropTypes from 'prop-types';
+import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import { drizzle } from '../../../redux/store';
 import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../../constants/TransactionStatus';
-import { FORUM_CONTRACT } from '../../../constants/contracts/ContractNames';
 import UsernameSelector from '../../../components/UsernameSelector';
 
 const { contracts: { [FORUM_CONTRACT]: { methods: { signUp } } } } = drizzle;

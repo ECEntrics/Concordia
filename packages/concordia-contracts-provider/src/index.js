@@ -1,9 +1,9 @@
 import express from 'express';
 import cors from 'cors';
+import { contractsProviderPort } from 'concordia-shared/src/environment/interpolated/contractsProvider';
 import initRoutes from './routes/web';
 import constants from './constants';
 
-const PROVIDER_PORT = process.env.CONTRACTS_PROVIDER_PORT || constants.port;
 const ALLOWED_ORIGINS = process.env.CORS_ALLOWED_ORIGINS
   ? process.env.CORS_ALLOWED_ORIGINS.split(';')
   : constants.corsAllowedOrigins;
@@ -20,6 +20,6 @@ app.use(cors(corsOptions));
 
 initRoutes(app);
 
-app.listen(PROVIDER_PORT, () => {
-  console.log(`Contracts provider listening at http://127.0.0.1:${PROVIDER_PORT}`);
+app.listen(contractsProviderPort, () => {
+  console.log(`Contracts provider listening at http://127.0.0.1:${contractsProviderPort}`);
 });
