@@ -4,6 +4,7 @@ REPORTS := $(abspath ${CURDIR}/reports)
 GANACHE_VOLUMES := $(abspath ${CURDIR}/ganache/volumes)
 CONTRACTS_PROVIDER_VOLUMES := $(abspath ${CURDIR}/concordia-contracts-provider/volumes)
 DOCKER_BUILDKIT = 1
+PINNER_VOLUMES := $(abspath ${CURDIR}/pinner/volumes)
 
 run: compose-run build-contracts-migrate run-contracts-migrate build-app run-app
 	@echo "Concordia is up and running, head over to http://localhost:7777."
@@ -80,6 +81,18 @@ run-contracts-provider-staging:
 	@docker run -d -v ${CONTRACTS_PROVIDER_VOLUMES}/contracts:/data/contracts --env-file=./env/contracts-provider.env -e NODE_ENV=production -p 8400:8400 --name concordia-contracts-provider ecentrics/concordia-contracts-provider:latest
 run-contracts-provider:
 	@docker run -d -v ${CONTRACTS_PROVIDER_VOLUMES}/contracts:/data/contracts --env-file=./env/contracts-provider.env -p 8400:8400 --name concordia-contracts-provider ecentrics/concordia-contracts-provider:latest
+
+# Contracts provider targets
+build-pinner:
+	@docker build ../ -f ./concordia-pinner/Dockerfile -t ecentrics/concordia-pinner --build-arg TZ=Europe/Athens
+run-pinner-staging:
+	@docker run -d -v ${PINNER_VOLUMES}/orbitdb:/data/orbitdb --env-file=./env/pinner.env -e NODE_ENV=production -p 4444:4444 --name concordia-pinner ecentrics/concordia-pinner:latest
+run-pinner:
+	@docker run -d -v ${PINNER_VOLUMES}/orbitdb:/data/orbitdb --env-file=./env/pinner.env -p 4444:4444 --name concordia-pinner ecentrics/concordia-pinner:latest
+run-pinner-staging-host:
+	@docker run -d -v ${PINNER_VOLUMES}/orbitdb:/data/orbitdb --env-file=./env/pinner.env -e NODE_ENV=production --net=host --name concordia-pinner ecentrics/concordia-pinner:latest
+run-pinner-host:
+	@docker run -d -v ${PINNER_VOLUMES}/orbitdb:/data/orbitdb --env-file=./env/pinner.env --net=host --name concordia-pinner ecentrics/concordia-pinner:latest
 
 # Other
 clean-images:
