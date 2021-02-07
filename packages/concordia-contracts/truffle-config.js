@@ -1,9 +1,6 @@
 const path = require('path');
-const defaults = require('./constants/config/defaults');
-
-const {
-  CHAIN_HOST, CHAIN_PORT,
-} = process.env;
+const web3EnvInterpolated = require('concordia-shared/src/environment/interpolated/web3');
+const configurationDefaults = require('concordia-shared/src/constants/configuration/defaults');
 
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
@@ -16,18 +13,18 @@ module.exports = {
   contracts_build_directory: path.join(__dirname, 'build/'),
   networks: {
     develop: {
-      host: defaults.develop.chainHost,
-      port: defaults.develop.chainPort,
+      host: configurationDefaults.web3.develop.chainHost,
+      port: configurationDefaults.web3.develop.chainPort,
       network_id: '*',
     },
     test: {
-      host: defaults.test.chainHost,
-      port: defaults.test.chainPort,
+      host: configurationDefaults.web3.test.chainHost,
+      port: configurationDefaults.web3.test.chainPort,
       network_id: '*',
     },
     env: {
-      host: CHAIN_HOST,
-      port: CHAIN_PORT,
+      host: web3EnvInterpolated.web3Host,
+      port: web3EnvInterpolated.web3Port,
       network_id: '*',
     },
   },

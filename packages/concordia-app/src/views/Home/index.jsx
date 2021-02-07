@@ -3,10 +3,10 @@ import React, {
 } from 'react';
 import { Container } from 'semantic-ui-react';
 import { useSelector } from 'react-redux';
+import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import Board from './Board';
 import './styles.css';
 import { drizzle } from '../../redux/store';
-import { FORUM_CONTRACT } from '../../constants/contracts/ContractNames';
 
 const { contracts: { [FORUM_CONTRACT]: { methods: { numTopics } } } } = drizzle;
 

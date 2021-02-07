@@ -7,7 +7,7 @@ import { drizzleActions } from '@ezerous/drizzle';
 
 import { contracts } from 'concordia-contracts';
 import { EthereumContractIdentityProvider } from '@ezerous/eth-identity-provider';
-import { FORUM_CONTRACT } from '../../constants/contracts/ContractNames';
+import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 
 function* initOrbitDatabases(action) {
   const { account, breeze } = action;
