@@ -8,13 +8,13 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
 import { useSelector } from 'react-redux';
 import './styles.css';
+import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
+import { TOPIC_CREATED_EVENT } from 'concordia-shared/src/constants/contracts/events/ForumContractEvents';
+import { POSTS_DATABASE, TOPICS_DATABASE } from 'concordia-shared/src/constants/orbit/OrbitDatabases';
 import { drizzle, breeze } from '../../../redux/store';
 import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../../constants/TransactionStatus';
-import { POSTS_DATABASE, TOPICS_DATABASE } from '../../../constants/orbit/OrbitDatabases';
 import { TOPIC_SUBJECT } from '../../../constants/orbit/TopicsDatabaseKeys';
 import { POST_CONTENT } from '../../../constants/orbit/PostsDatabaseKeys';
-import { FORUM_CONTRACT } from '../../../constants/contracts/ContractNames';
-import { TOPIC_CREATED_EVENT } from '../../../constants/contracts/events/ForumContractEvents';
 
 const { contracts: { [FORUM_CONTRACT]: { methods: { createTopic } } } } = drizzle;
 const { orbit: { stores } } = breeze;

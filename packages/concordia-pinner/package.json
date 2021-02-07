@@ -6,13 +6,14 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node -r esm src/index.js",
-    "clean": "rimraf ipfs orbitdb"
+    "clean": "rimraf ipfs orbitdb",
+    "lint": "eslint --ext js,jsx . --format table"
   },
   "license": "MIT",
   "dependencies": {
     "@ezerous/eth-identity-provider": "~0.1.2",
-    "concordia-app": "~0.1.0",
     "concordia-contracts": "~0.1.0",
+    "concordia-shared": "~0.1.0",
     "esm": "~3.2.25",
     "express": "^4.17.1",
     "ipfs": "~0.52.1",

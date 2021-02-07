@@ -1,7 +1,9 @@
 import express from 'express';
 import _ from 'lodash';
 import isReachable from 'is-reachable';
-import { API_PORT, RENDEZVOUS_URL, WEB3_PROVIDER_URL } from './constants';
+import { pinnerApiPort } from 'concordia-shared/src/environment/interpolated/pinner';
+import getWeb3ProviderUrl from 'concordia-shared/src/utils/web3';
+import getRendezvousUrl from 'concordia-shared/src/utils/rendezvous';
 
 const POLLING_INTERVAL = 1000;
 
@@ -10,8 +12,8 @@ const responseBody = {
     id: '', localAddresses: [], peers: [], totalPeers: 0, repoStats: {},
   },
   orbit: { identity: {}, databases: [] },
-  web3: { url: WEB3_PROVIDER_URL, reachable: false },
-  rendezvous: { url: RENDEZVOUS_URL, reachable: false },
+  web3: { url: getWeb3ProviderUrl(), reachable: false },
+  rendezvous: { url: getRendezvousUrl(), reachable: false },
   timestamp: 0,
 };
 
@@ -26,8 +28,8 @@ async function getStats(orbit) {
     const uniquePeers = _.uniqBy(peers, 'peer');
     const orbitIdentity = orbit.identity;
     const databases = Object.keys(orbit.stores);
-    const isWeb3Reachable = await isReachable(WEB3_PROVIDER_URL);
-    const isRendezvousReachable = await isReachable(RENDEZVOUS_URL);
+    const isWeb3Reachable = await isReachable(getWeb3ProviderUrl());
+    const isRendezvousReachable = await isReachable(getRendezvousUrl());
     const timestamp = +new Date();
 
     responseBody.ipfs.id = id;
@@ -51,8 +53,8 @@ const startAPI = (orbit) => {
     res.send(responseBody);
   });
 
-  app.listen(API_PORT, () => {
-    console.log(`Pinner API at http://localhost:${API_PORT}!`);
+  app.listen(pinnerApiPort, () => {
+    console.log(`Pinner API at http://localhost:${pinnerApiPort}!`);
   });
 
   setInterval(getStats, POLLING_INTERVAL, orbit);
