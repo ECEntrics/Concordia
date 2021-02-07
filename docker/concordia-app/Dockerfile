@@ -12,14 +12,16 @@ WORKDIR /usr/src/concordia
 COPY ./package.json .
 COPY ./yarn.lock .
 
-# Copy package.json files from contracts and app, then install base modules
+# Copy package.json files from contracts, shared and app, then install modules
 COPY ./packages/concordia-contracts/package.json ./packages/concordia-contracts/package.json
+COPY ./packages/concordia-shared/package.json ./packages/concordia-shared/package.json
 COPY ./packages/concordia-app/package.json ./packages/concordia-app/
 
 RUN yarn install --frozen-lockfile
 
 # Gets the rest of the source code
 COPY ./packages/concordia-contracts ./packages/concordia-contracts
+COPY ./packages/concordia-shared ./packages/concordia-shared
 COPY ./packages/concordia-app ./packages/concordia-app
 
 # Fix timezome
@@ -38,7 +40,7 @@ COPY ./docker/concordia-app/test-app.sh .
 
 WORKDIR /usr/src/concordia/packages/concordia-app
 
-RUN chmod +x /opt/concordia-app/test-app.sh
+RUN ["chmod", "+x", "/opt/concordia-app/test-app.sh"]
 
 ENTRYPOINT ["/opt/concordia-app/test-app.sh"]
 

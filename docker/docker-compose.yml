@@ -17,18 +17,17 @@ services:
     volumes:
       - ./ganache/volumes/ganache_keys:/home/ganache_keys
     networks:
-      ganache_network:
+      concordia_network:
     restart: always
 
   rendezvous:
     image: libp2p/js-libp2p-webrtc-star:version-0.20.5
     container_name: concordia-rendezvous
     networks:
-      rendezvous_network:
+      concordia_network:
     ports:
       - 9090:9090
     restart: always
 
 networks:
-  ganache_network:
-  rendezvous_network:
+  concordia_network:

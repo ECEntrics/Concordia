@@ -17,7 +17,7 @@ WORKDIR /usr/src/concordia
 COPY ./package.json .
 COPY ./yarn.lock .
 
-# Copy the pinner, contracts and shared package.json files, then install modules
+# Copy package.json files from contracts, shared and pinner, then install modules
 COPY ./packages/concordia-pinner/package.json ./packages/concordia-pinner/
 COPY ./packages/concordia-contracts/package.json ./packages/concordia-contracts/
 COPY ./packages/concordia-shared/package.json ./packages/concordia-shared/

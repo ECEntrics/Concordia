@@ -21,12 +21,14 @@ WORKDIR /usr/src/concordia
 COPY ./package.json .
 COPY ./yarn.lock .
 
-# Copy the contracts provider package.json, then install modules
+# Copy package.json files from shared and contracts provider, then install modules
+COPY ./packages/concordia-shared/package.json ./packages/concordia-shared/
 COPY ./packages/concordia-contracts-provider/package.json ./packages/concordia-contracts-provider/
 
 RUN yarn install --frozen-lockfile --network-timeout 100000
 
 # Gets the rest of the source code
+COPY ./packages/concordia-shared ./packages/concordia-shared
 COPY ./packages/concordia-contracts-provider ./packages/concordia-contracts-provider
 
 WORKDIR /usr/src/concordia/packages/concordia-contracts-provider
