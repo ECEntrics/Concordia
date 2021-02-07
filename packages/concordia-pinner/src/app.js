@@ -3,7 +3,7 @@ import _ from 'lodash';
 import isReachable from 'is-reachable';
 import { pinnerApiPort } from 'concordia-shared/src/environment/interpolated/pinner';
 import getWeb3ProviderUrl from 'concordia-shared/src/utils/web3';
-import getRendezvousUrl from 'concordia-shared/src/utils/rendezvous';
+import { getResolvedRendezvousUrl } from './utils/ipfsUtils';
 
 const POLLING_INTERVAL = 1000;
 
@@ -13,11 +13,17 @@ const responseBody = {
   },
   orbit: { identity: {}, databases: [] },
   web3: { url: getWeb3ProviderUrl(), reachable: false },
-  rendezvous: { url: getRendezvousUrl(), reachable: false },
+  rendezvous: { url: '', reachable: false },
   timestamp: 0,
 };
 
-async function getStats(orbit) {
+getResolvedRendezvousUrl().then(({ address }) => {
+  responseBody.rendezvous.url = address;
+});
+
+const getStats = async (orbit) => {
+  const { address: resolvedRendezvousUrl } = await getResolvedRendezvousUrl();
+
   try {
     // eslint-disable-next-line no-underscore-dangle
     const ipfs = orbit._ipfs;
@@ -29,7 +35,7 @@ async function getStats(orbit) {
     const orbitIdentity = orbit.identity;
     const databases = Object.keys(orbit.stores);
     const isWeb3Reachable = await isReachable(getWeb3ProviderUrl());
-    const isRendezvousReachable = await isReachable(getRendezvousUrl());
+    const isRendezvousReachable = await isReachable(resolvedRendezvousUrl.address);
     const timestamp = +new Date();
 
     responseBody.ipfs.id = id;
@@ -45,7 +51,7 @@ async function getStats(orbit) {
   } catch (err) {
     console.error('Error while getting stats:', err);
   }
-}
+};
 
 const startAPI = (orbit) => {
   const app = express();
