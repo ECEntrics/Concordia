@@ -18,7 +18,8 @@ contract Forum {
     }
 
     mapping(address => User) users;
-    mapping(string => address) userAddresses;
+    mapping(string => address) usernameAddresses;
+    address[] userAddresses;
 
     event UserSignedUp(string username, address userAddress);
     event UsernameUpdated(string newName, string oldName, address userAddress);
@@ -27,7 +28,8 @@ contract Forum {
         require(!hasUserSignedUp(msg.sender), USER_HAS_NOT_SIGNED_UP);
         require(!isUserNameTaken(username), USERNAME_TAKEN);
         users[msg.sender] = User(username, new uint[](0), new uint[](0), block.timestamp, true);
-        userAddresses[username] = msg.sender;
+        usernameAddresses[username] = msg.sender;
+        userAddresses.push(msg.sender);
         emit UserSignedUp(username, msg.sender);
         return true;
     }
@@ -36,9 +38,9 @@ contract Forum {
         require(hasUserSignedUp(msg.sender), USER_HAS_NOT_SIGNED_UP);
         require(!isUserNameTaken(newUsername), USERNAME_TAKEN);
         string memory oldUsername = getUsername(msg.sender);
-        delete userAddresses[users[msg.sender].username];
+        delete usernameAddresses[users[msg.sender].username];
         users[msg.sender].username = newUsername;
-        userAddresses[newUsername] = msg.sender;
+        usernameAddresses[newUsername] = msg.sender;
         emit UsernameUpdated(newUsername, oldUsername, msg.sender);
         return true;
     }
@@ -49,7 +51,7 @@ contract Forum {
     }
 
     function getUserAddress(string memory username) public view returns (address) {
-        return userAddresses[username];
+        return usernameAddresses[username];
     }
 
     function hasUserSignedUp(address userAddress) public view returns (bool) {
@@ -80,6 +82,10 @@ contract Forum {
     function getUser(address userAddress) public view returns (User memory) {
         require(hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
         return users[userAddress];
+    }
+
+    function getUserAddresses() public view returns (address[] memory) {
+        return userAddresses;
     }
 
     //----------------------------------------POSTING----------------------------------------
