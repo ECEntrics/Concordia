@@ -1,7 +1,9 @@
 import React, {
   memo, useEffect, useMemo, useState, useCallback,
 } from 'react';
-import { Dimmer, Feed, Placeholder, Ref } from 'semantic-ui-react';
+import {
+  Dimmer, Feed, Placeholder, Ref,
+} from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import TimeAgo from 'react-timeago';

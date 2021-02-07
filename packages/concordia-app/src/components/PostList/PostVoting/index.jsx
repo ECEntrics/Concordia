@@ -3,12 +3,11 @@ import React, {
 } from 'react';
 import { Button, Popup } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
-
-import './styles.css';
 import { useSelector } from 'react-redux';
-import { POST_VOTING_CONTRACT } from '../../../constants/contracts/ContractNames';
+import { POST_VOTING_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import { drizzle } from '../../../redux/store';
 import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../../constants/TransactionStatus';
+import './styles.css';
 
 const CHOICE_DEFAULT = '0';
 const CHOICE_UP = '1';
@@ -66,7 +65,7 @@ const PostVoting = (props) => {
     const shouldGetOwnVoteFromChain = ownVote === null;
 
     if (drizzleInitialized && !drizzleInitializationFailed && shouldGetOwnVoteFromChain
-        && postId !== null && userAccount !== null) {
+            && postId !== null && userAccount !== null) {
       setGetVoteCallHash(getVoteChainData(postId, userAccount));
     }
   }, [drizzleInitializationFailed, drizzleInitialized, ownVote, postId, userAccount]);
@@ -92,8 +91,9 @@ const PostVoting = (props) => {
   // Voting
   useEffect(() => {
     if (voting && transactionStack && transactionStack[createVoteCacheSendStackId]
-        && transactions[transactionStack[createVoteCacheSendStackId]]) {
-      if (transactions[transactionStack[createVoteCacheSendStackId]].status === TRANSACTION_SUCCESS || transactions[transactionStack[createVoteCacheSendStackId]].status === TRANSACTION_ERROR) {
+            && transactions[transactionStack[createVoteCacheSendStackId]]) {
+      if (transactions[transactionStack[createVoteCacheSendStackId]].status === TRANSACTION_SUCCESS
+          || transactions[transactionStack[createVoteCacheSendStackId]].status === TRANSACTION_ERROR) {
         setVoting(false);
       }
     }
@@ -125,7 +125,7 @@ const PostVoting = (props) => {
                 <span className="unselectable">
               &nbsp;&nbsp;
                     {totalVoteCount || 0}
-                  &nbsp;&nbsp;
+                        &nbsp;&nbsp;
                 </span>
             )}
             disabled={(upvoteCount === null && downvoteCount === null) || (upvoteCount === '0' && downvoteCount === '0')}
@@ -135,7 +135,7 @@ const PostVoting = (props) => {
                   <span className="upvote-count">
                       +
                       {upvoteCount}
-                      &nbsp;&nbsp;
+                        &nbsp;&nbsp;
                   </span>
               ) : null}
 
