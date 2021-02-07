@@ -36,3 +36,5 @@ docker/env/contracts.env
 
 # Lerna
 *.lerna_backup
+
+yarn-clean.sh

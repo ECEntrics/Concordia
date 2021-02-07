@@ -6,12 +6,12 @@ import {
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
+import { USER_DATABASE } from 'concordia-shared/src/constants/orbit/OrbitDatabases';
 import checkUrlValid from '../../../../utils/urlUtils';
 import { USER_LOCATION, USER_PROFILE_PICTURE } from '../../../../constants/orbit/UserDatabaseKeys';
-import { USER_DATABASE } from '../../../../constants/orbit/OrbitDatabases';
 import { breeze, drizzle } from '../../../../redux/store';
 import UsernameSelector from '../../../../components/UsernameSelector';
-import { FORUM_CONTRACT } from '../../../../constants/contracts/ContractNames';
 
 const { orbit: { stores } } = breeze;
 const { contracts: { [FORUM_CONTRACT]: { methods: { updateUsername } } } } = drizzle;

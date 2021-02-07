@@ -1,6 +1,6 @@
-export const USER_DATABASE = 'user';
-export const TOPICS_DATABASE = 'topics';
-export const POSTS_DATABASE = 'posts';
+const USER_DATABASE = 'user';
+const TOPICS_DATABASE = 'topics';
+const POSTS_DATABASE = 'posts';
 
 const databases = [
   {
@@ -17,4 +17,9 @@ const databases = [
   },
 ];
 
-export default databases;
+module.exports = Object.freeze({
+  USER_DATABASE,
+  TOPICS_DATABASE,
+  POSTS_DATABASE,
+  databases,
+});

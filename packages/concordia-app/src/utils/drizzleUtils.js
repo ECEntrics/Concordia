@@ -1,26 +1,22 @@
+import { CONTRACTS } from 'concordia-shared/src/constants/contracts/ContractNames';
 import {
-  REACT_APP_CONCORDIA_HOST_DEFAULT,
-  REACT_APP_CONCORDIA_PORT_DEFAULT,
-  REACT_APP_CONTRACTS_SUPPLIER_HOST_DEFAULT,
-  REACT_APP_CONTRACTS_SUPPLIER_PORT_DEFAULT,
-  REACT_APP_CONTRACTS_VERSION_HASH_DEFAULT,
+  contractsProviderHost,
+  contractsProviderPort,
+  contractsVersionHash,
+} from 'concordia-shared/src/environment/interpolated/contractsProvider';
+import {
+  CONCORDIA_HOST_DEFAULT,
+  CONCORDIA_PORT_DEFAULT,
 } from '../constants/configuration/defaults';
-import CONTRACTS from '../constants/contracts/ContractNames';
 
 function getContractsDownloadRequest() {
-  const CONTRACTS_SUPPLIER_HOST = process.env.REACT_APP_CONTRACTS_SUPPLIER_HOST
-      || REACT_APP_CONTRACTS_SUPPLIER_HOST_DEFAULT;
-  const CONTRACTS_SUPPLIER_PORT = process.env.REACT_APP_CONTRACTS_SUPPLIER_PORT
-      || REACT_APP_CONTRACTS_SUPPLIER_PORT_DEFAULT;
-  const CONTRACTS_VERSION_HASH = process.env.REACT_APP_CONTRACTS_VERSION_HASH
-      || REACT_APP_CONTRACTS_VERSION_HASH_DEFAULT;
-  const HOST = process.env.REACT_APP_CONCORDIA_HOST || REACT_APP_CONCORDIA_HOST_DEFAULT;
-  const PORT = process.env.REACT_APP_CONCORDIA_PORT || REACT_APP_CONCORDIA_PORT_DEFAULT;
+  const HOST = process.env.REACT_APP_CONCORDIA_HOST || CONCORDIA_HOST_DEFAULT;
+  const PORT = process.env.REACT_APP_CONCORDIA_PORT || CONCORDIA_PORT_DEFAULT;
 
   const xhrRequest = new XMLHttpRequest();
 
   xhrRequest.open('GET',
-    `http://${CONTRACTS_SUPPLIER_HOST}:${CONTRACTS_SUPPLIER_PORT}/contracts/${CONTRACTS_VERSION_HASH}`,
+    `http://${contractsProviderHost}:${contractsProviderPort}/contracts/${contractsVersionHash}`,
     false);
   xhrRequest.setRequestHeader('Access-Control-Allow-Origin', `${HOST}:${PORT}`);
   xhrRequest.setRequestHeader('Access-Control-Allow-Credentials', 'true');
@@ -40,7 +36,7 @@ function validateRemoteContracts(remoteContracts) {
   }));
 
   if (contractsPresentStatus.reduce((accumulator, contract) => accumulator && contract.present, true)) {
-    throw new Error(`Contracts missing from artifacts. Supplier didn't bring ${contractsPresentStatus
+    throw new Error(`Contracts missing from artifacts. Provider didn't bring ${contractsPresentStatus
       .filter((contractPresentStatus) => contractPresentStatus.present === false)
       .map((contractPresentStatus) => contractPresentStatus.contract)
       .join(', ')}.`);

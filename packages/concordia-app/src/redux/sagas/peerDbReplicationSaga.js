@@ -7,9 +7,9 @@ import {
   ORBIT_DB_REPLICATED,
   ORBIT_DB_WRITE,
 } from '@ezerous/breeze/src/orbit/orbitActions';
+import { POSTS_DATABASE, TOPICS_DATABASE, USER_DATABASE } from 'concordia-shared/src/constants/orbit/OrbitDatabases';
 import determineKVAddress from '../../utils/orbitUtils';
 import { FETCH_USER_DATABASE, UPDATE_ORBIT_DATA } from '../actions/peerDbReplicationActions';
-import { POSTS_DATABASE, TOPICS_DATABASE, USER_DATABASE } from '../../constants/orbit/OrbitDatabases';
 import userDatabaseKeys from '../../constants/orbit/UserDatabaseKeys';
 import { TOPIC_SUBJECT } from '../../constants/orbit/TopicsDatabaseKeys';
 import { POST_CONTENT } from '../../constants/orbit/PostsDatabaseKeys';

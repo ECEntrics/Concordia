@@ -2,10 +2,10 @@ import Web3 from 'web3';
 import Contract from 'web3-eth-contract';
 import IPFS from 'ipfs';
 import { contracts } from 'concordia-contracts';
-import { FORUM_CONTRACT } from 'concordia-app/src/constants/contracts/ContractNames';
+import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
+import getWeb3ProviderUrl from 'concordia-shared/src/utils/web3';
 import { createOrbitInstance, getPeerDatabases, openKVDBs } from './utils/orbitUtils';
 import ipfsOptions from './options/ipfsOptions';
-import { WEB3_PROVIDER_URL } from './constants';
 import startAPI from './app';
 
 process.on('unhandledRejection', (error) => {
@@ -26,7 +26,7 @@ const getDeployedContract = async (web3) => {
   return web3.eth.net.getId()
     .then((networkId) => forumContract.networks[networkId].address)
     .then((contractAddress) => {
-      Contract.setProvider(WEB3_PROVIDER_URL);
+      Contract.setProvider(getWeb3ProviderUrl());
       const contract = new Contract(forumContract.abi, contractAddress);
 
       return { contract, contractAddress };
@@ -54,7 +54,7 @@ const handleWeb3LogEvent = (web3, eventJsonInterface, orbit) => (error, result) 
 
 const main = async () => {
   console.log('Initializing...');
-  const web3 = new Web3(new Web3.providers.WebsocketProvider(WEB3_PROVIDER_URL));
+  const web3 = new Web3(new Web3.providers.WebsocketProvider(getWeb3ProviderUrl()));
 
   getDeployedContract(web3)
     .then(({ contract, contractAddress }) => IPFS.create(ipfsOptions)

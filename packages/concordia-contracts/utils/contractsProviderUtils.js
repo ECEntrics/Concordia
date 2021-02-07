@@ -1,13 +1,11 @@
 const path = require('path');
 const unirest = require('unirest');
+const { contractsProviderHost } = require('concordia-shared/src/environment/interpolated/contractsProvider');
+const { contractsProviderPort } = require('concordia-shared/src/environment/interpolated/contractsProvider');
 const { contracts } = require('../index');
-const defaults = require('../constants/config/defaults');
 
 const uploadContractsToProviderUnirest = (versionHash, tag) => {
-  const CONTRACTS_PROVIDER_HOST = process.env.CONTRACTS_PROVIDER_HOST || defaults.contractsProviderHost;
-  const CONTRACTS_PROVIDER_PORT = process.env.CONTRACTS_PROVIDER_PORT || defaults.contractsProviderPort;
-
-  const uploadPath = `http://${CONTRACTS_PROVIDER_HOST}:${CONTRACTS_PROVIDER_PORT}/contracts/${versionHash}`;
+  const uploadPath = `http://${contractsProviderHost}:${contractsProviderPort}/contracts/${versionHash}`;
   const request = unirest('POST', uploadPath)
     .field('tag', tag);
 
