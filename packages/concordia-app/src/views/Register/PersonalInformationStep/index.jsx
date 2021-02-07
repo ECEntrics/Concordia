@@ -7,10 +7,10 @@ import {
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
+import { USER_DATABASE } from 'concordia-shared/src/constants/orbit/OrbitDatabases';
 import checkUrlValid from '../../../utils/urlUtils';
 import { breeze } from '../../../redux/store';
 import './styles.css';
-import { USER_DATABASE } from '../../../constants/orbit/OrbitDatabases';
 import { USER_LOCATION, USER_PROFILE_PICTURE } from '../../../constants/orbit/UserDatabaseKeys';
 
 const { orbit: { stores } } = breeze;

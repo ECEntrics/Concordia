@@ -33,3 +33,5 @@ docker/reports
 
 # Lerna
 *.lerna_backup
+
+yarn-clean.sh

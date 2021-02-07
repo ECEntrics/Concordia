@@ -1,11 +1,11 @@
 import React, { Children } from 'react';
 import { breezeConstants } from '@ezerous/breeze';
 import { useSelector } from 'react-redux';
+import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import CustomLoader from './CustomLoader';
 
 // CSS
 import '../../assets/css/loading-component.css';
-import { FORUM_CONTRACT } from '../../constants/contracts/ContractNames';
 
 const InitializationLoader = ({ children }) => {
   const initializing = useSelector((state) => state.drizzleStatus.initializing);

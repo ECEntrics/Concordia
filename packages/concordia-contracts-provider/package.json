@@ -5,10 +5,12 @@
   "private": true,
   "main": "src/index.js",
   "scripts": {
-    "start": "node -r esm src/index.js"
+    "start": "node -r esm src/index.js",
+    "lint": "eslint --ext js,jsx . --format table"
   },
   "license": "MIT",
   "dependencies": {
+    "concordia-shared": "~0.1.0",
     "cors": "^2.8.5",
     "esm": "~3.2.25",
     "express": "^4.17.1",

@@ -4,9 +4,9 @@ import React, {
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { List } from 'semantic-ui-react';
+import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import TopicListRow from './TopicListRow';
 import { drizzle } from '../../redux/store';
-import { FORUM_CONTRACT } from '../../constants/contracts/ContractNames';
 
 const { contracts: { [FORUM_CONTRACT]: { methods: { getTopic: { cacheCall: getTopicChainData } } } } } = drizzle;
 

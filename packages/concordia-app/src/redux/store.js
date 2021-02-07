@@ -4,11 +4,12 @@ import {
 } from '@ezerous/drizzle';
 import { Breeze, breezeReducers } from '@ezerous/breeze';
 import createSagaMiddleware from 'redux-saga';
+import getBreezeConfiguration from 'concordia-shared/src/configuration/breezeConfiguration';
+import { EthereumContractIdentityProvider } from '@ezerous/eth-identity-provider';
 import userReducer from './reducers/userReducer';
 import rootSaga from './sagas/rootSaga';
 import drizzleOptions from '../options/drizzleOptions';
 import peerDbReplicationReducer from './reducers/peerDbReplicationReducer';
-import breezeOptions from '../options/breezeOptions';
 
 const initialState = {
   contracts: generateContractsInitialState(drizzleOptions),
@@ -27,8 +28,12 @@ const store = configureStore({
   preloadedState: initialState,
 });
 
+const breezeConfiguration = getBreezeConfiguration(EthereumContractIdentityProvider,
+  process.env.REACT_APP_RENDEZVOUS_HOST,
+  process.env.REACT_APP_RENDEZVOUS_PORT);
+
 export const drizzle = new Drizzle(drizzleOptions, store);
-export const breeze = new Breeze(breezeOptions, store);
+export const breeze = new Breeze(breezeConfiguration, store);
 
 sagaMiddleware.run(rootSaga);
 export default store;
