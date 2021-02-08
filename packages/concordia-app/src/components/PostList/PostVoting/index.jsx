@@ -18,6 +18,7 @@ const {
     [POST_VOTING_CONTRACT]: {
       methods: {
         getVote: { cacheCall: getVoteChainData },
+        getTotalVoteCount: { cacheCall: getTotalVoteCountChainData },
         getUpvoteCount: { cacheCall: getUpvoteCountChainData },
         getDownvoteCount: { cacheCall: getDownvoteCountChainData },
         upvote, downvote, unvote,
@@ -34,15 +35,18 @@ const PostVoting = (props) => {
   const userAccount = useSelector((state) => state.accounts[0]);
 
   // Current votes
-  const getVoteResult = useSelector((state) => state.contracts[POST_VOTING_CONTRACT].getVote);
-  const getUpvoteCountResult = useSelector((state) => state.contracts[POST_VOTING_CONTRACT].getUpvoteCount);
-  const getDownvoteCountResult = useSelector((state) => state.contracts[POST_VOTING_CONTRACT].getDownvoteCount);
+  const [getVoteCallHash, setGetVoteCallHash] = useState(null);
+  const [getTotalVoteCountCallHash, setGetTotalVoteCountCallHash] = useState(null);
+  const [getUpvoteCountCallHash, setGetUpvoteCountCallHash] = useState(null);
+  const [getDownvoteCountCallHash, setGetDownvoteCountCallHash] = useState(null);
 
-  const [getVoteCallHash, setGetVoteCallHash] = useState([]);
-  const [getUpvoteCountCallHash, setGetUpvoteCountCallHash] = useState([]);
-  const [getDownvoteCountCallHash, setGetDownvoteCountCallHash] = useState([]);
+  const getVoteResult = useSelector((state) => state.contracts[POST_VOTING_CONTRACT].getVote[getVoteCallHash]);
+  const getTotalVoteCountResult = useSelector((state) => state.contracts[POST_VOTING_CONTRACT].getTotalVoteCount[getTotalVoteCountCallHash]);
+  const getUpvoteCountResult = useSelector((state) => state.contracts[POST_VOTING_CONTRACT].getUpvoteCount[getUpvoteCountCallHash]);
+  const getDownvoteCountResult = useSelector((state) => state.contracts[POST_VOTING_CONTRACT].getDownvoteCount[getDownvoteCountCallHash]);
 
   const [ownVote, setOwnVote] = useState(null);
+  const [totalVoteCount, setTotalVoteCount] = useState(null);
   const [upvoteCount, setUpvoteCount] = useState(null);
   const [downvoteCount, setDownvoteCount] = useState(null);
 
@@ -55,38 +59,45 @@ const PostVoting = (props) => {
   // Current votes
   useEffect(() => {
     if (drizzleInitialized && !drizzleInitializationFailed && postId !== null) {
-      if (upvoteCount === null) setGetUpvoteCountCallHash(getUpvoteCountChainData(postId));
-
-      if (downvoteCount === null) setGetDownvoteCountCallHash(getDownvoteCountChainData(postId));
+      if (getTotalVoteCountCallHash === null) setGetTotalVoteCountCallHash(getTotalVoteCountChainData(postId));
+      if (getUpvoteCountCallHash === null) setGetUpvoteCountCallHash(getUpvoteCountChainData(postId));
+      if (getDownvoteCountCallHash === null) setGetDownvoteCountCallHash(getDownvoteCountChainData(postId));
     }
-  }, [downvoteCount, drizzleInitializationFailed, drizzleInitialized, postId, upvoteCount, userAccount]);
+  }, [drizzleInitializationFailed, drizzleInitialized, getDownvoteCountCallHash,
+    getTotalVoteCountCallHash, getUpvoteCountCallHash, postId]);
 
   useEffect(() => {
     const shouldGetOwnVoteFromChain = ownVote === null;
 
     if (drizzleInitialized && !drizzleInitializationFailed && shouldGetOwnVoteFromChain
-            && postId !== null && userAccount !== null) {
+            && postId !== null && userAccount !== null && getVoteCallHash === null) {
       setGetVoteCallHash(getVoteChainData(postId, userAccount));
     }
-  }, [drizzleInitializationFailed, drizzleInitialized, ownVote, postId, userAccount]);
+  }, [drizzleInitializationFailed, drizzleInitialized, getVoteCallHash, ownVote, postId, userAccount]);
 
   useEffect(() => {
-    if (getVoteCallHash && getVoteResult && getVoteResult[getVoteCallHash]) {
-      setOwnVote(getVoteResult[getVoteCallHash].value);
+    if (getVoteResult) {
+      setOwnVote(getVoteResult.value);
     }
-  }, [getVoteCallHash, getVoteResult]);
+  }, [getVoteResult]);
 
   useEffect(() => {
-    if (getUpvoteCountCallHash && getUpvoteCountResult && getUpvoteCountResult[getUpvoteCountCallHash]) {
-      setUpvoteCount(getUpvoteCountResult[getUpvoteCountCallHash].value);
+    if (getTotalVoteCountResult) {
+      setTotalVoteCount(getTotalVoteCountResult.value);
     }
-  }, [getUpvoteCountCallHash, getUpvoteCountResult]);
+  }, [getTotalVoteCountResult]);
 
   useEffect(() => {
-    if (getDownvoteCountCallHash && getDownvoteCountResult && getDownvoteCountResult[getDownvoteCountCallHash]) {
-      setDownvoteCount(getDownvoteCountResult[getDownvoteCountCallHash].value);
+    if (getUpvoteCountResult) {
+      setUpvoteCount(getUpvoteCountResult.value);
     }
-  }, [getDownvoteCountCallHash, getDownvoteCountResult]);
+  }, [getUpvoteCountResult]);
+
+  useEffect(() => {
+    if (getDownvoteCountResult) {
+      setDownvoteCount(getDownvoteCountResult.value);
+    }
+  }, [getDownvoteCountResult]);
 
   // Voting
   useEffect(() => {
@@ -109,7 +120,6 @@ const PostVoting = (props) => {
   }, [ownVote, postId, userAccount, voting]);
 
   const disableVoting = userAccount === null || !hasSignedUp || postAuthorAddress === null || userAccount === postAuthorAddress;
-  const totalVoteCount = (upvoteCount !== null && downvoteCount !== null) ? upvoteCount - downvoteCount : null;
   return useMemo(() => (
       <div className="post-voting">
           <Button
