@@ -15,7 +15,7 @@ services:
       - 8545:8545
     user: root
     volumes:
-      - ./ganache/volumes/ganache_keys:/home/ganache_keys
+      - ./ganache/volumes/ganache_keys:/mnt/concordia/ganache_keys
     networks:
       concordia_network:
     restart: always

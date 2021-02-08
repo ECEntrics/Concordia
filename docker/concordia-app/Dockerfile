@@ -1,7 +1,7 @@
 # --------------------------------------------------
 # Stage 1 (Init application build base)
 # --------------------------------------------------
-FROM node:14-buster as base
+FROM node:14-alpine@sha256:51e341881c2b77e52778921c685e711a186a71b8c6f62ff2edfc6b6950225a2f as base
 LABEL maintainers.1="Apostolos Fanakis <apostolof@auth.gr>"
 LABEL maintainers.2="Panagiotis Nikolaidis <ezerous@gmail.com>"
 LABEL gr.thmmy.ecentrics.concordia-image.name="app"
@@ -16,6 +16,9 @@ COPY ./yarn.lock .
 COPY ./packages/concordia-contracts/package.json ./packages/concordia-contracts/package.json
 COPY ./packages/concordia-shared/package.json ./packages/concordia-shared/package.json
 COPY ./packages/concordia-app/package.json ./packages/concordia-app/
+
+# Install required packages
+RUN apk update && apk --no-cache add g++ make python
 
 RUN yarn install --frozen-lockfile
 
@@ -65,7 +68,7 @@ ENTRYPOINT ["yarn", "start"]
 # --------------------------------------------------
 # Stage 4 (Production runtime)
 # --------------------------------------------------
-FROM nginx:1.17-alpine as production
+FROM nginx:1.17-alpine@sha256:01747306a7247dbe928db991eab42e4002118bf636dd85b4ffea05dd907e5b66 as production
 LABEL maintainers.1="Apostolos Fanakis <apostolof@auth.gr>"
 LABEL maintainers.2="Panagiotis Nikolaidis <ezerous@gmail.com"
 LABEL gr.thmmy.ecentrics.concordia-image.name="app"
