@@ -7,6 +7,7 @@ import getWeb3ProviderUrl from 'concordia-shared/src/utils/web3';
 import { createOrbitInstance, getPeerDatabases, openKVDBs } from './utils/orbitUtils';
 import ipfsOptions from './options/ipfsOptions';
 import startAPI from './app';
+import downloadContractArtifacts from './utils/drizzleUtils';
 
 process.on('unhandledRejection', (error) => {
   // This happens when attempting to initialize without any available Swarm addresses (e.g. Rendezvous)
@@ -21,16 +22,26 @@ process.on('unhandledRejection', (error) => {
 });
 
 const getDeployedContract = async (web3) => {
-  const forumContract = contracts.find((contract) => contract.contractName === FORUM_CONTRACT);
+  let forumContractPromise;
 
-  return web3.eth.net.getId()
-    .then((networkId) => forumContract.networks[networkId].address)
-    .then((contractAddress) => {
-      Contract.setProvider(getWeb3ProviderUrl());
-      const contract = new Contract(forumContract.abi, contractAddress);
+  if (process.env.USE_EXTERNAL_CONTRACTS_PROVIDER) {
+    console.log('Downloading contracts.');
+    forumContractPromise = downloadContractArtifacts()
+      .then((remoteContracts) => remoteContracts
+        .find((remoteContract) => remoteContract.contractName === FORUM_CONTRACT));
+  } else {
+    forumContractPromise = Promise.resolve(contracts.find((contract) => contract.contractName === FORUM_CONTRACT));
+  }
 
-      return { contract, contractAddress };
-    });
+  return forumContractPromise
+    .then((forumContract) => web3.eth.net.getId()
+      .then((networkId) => forumContract.networks[networkId].address)
+      .then((contractAddress) => {
+        Contract.setProvider(getWeb3ProviderUrl());
+        const contract = new Contract(forumContract.abi, contractAddress);
+
+        return { contract, contractAddress };
+      }));
 };
 
 // Open & replicate databases of existing users

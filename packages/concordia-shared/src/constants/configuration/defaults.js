@@ -4,6 +4,7 @@ const CONTRACTS_PROVIDER_PORT_DEFAULT = '8400';
 const CONTRACTS_VERSION_HASH_DEFAULT = 'latest';
 
 // Pinner
+const PINNER_API_HOST_DEFAULT = '127.0.0.1';
 const PINNER_API_PORT_DEFAULT = 4444;
 
 // Rendezvous
@@ -25,6 +26,7 @@ module.exports = Object.freeze({
     hash: CONTRACTS_VERSION_HASH_DEFAULT,
   },
   pinner: {
+    host: PINNER_API_HOST_DEFAULT,
     port: PINNER_API_PORT_DEFAULT,
   },
   rendezvous: {

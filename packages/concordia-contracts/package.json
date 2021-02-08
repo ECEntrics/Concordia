@@ -10,8 +10,10 @@
     "_eslint": "yarn eslint . --format table",
     "_solhint": "yarn solhint --formatter table contracts/*.sol test/*.sol",
     "test": "yarn truffle test",
-    "migrate": "yarn _migrate --network develop && yarn upload",
-    "migrate-reset": "yarn _migrate --network develop --reset && yarn upload",
+    "migrate": "yarn _migrate --network develop",
+    "migrate-reset": "yarn _migrate --network develop --reset",
+    "migrate-upload": "yarn _migrate --network develop && yarn upload",
+    "migrate-reset-upload": "yarn _migrate --network develop --reset && yarn upload",
     "_migrate": "yarn truffle migrate",
     "upload": "node ./utils/contractsProviderUtils.js ${npm_package_version}-dev latest"
   },
