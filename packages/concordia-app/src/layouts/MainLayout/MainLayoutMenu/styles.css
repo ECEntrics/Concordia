@@ -3,7 +3,7 @@
 }
 
 .ui.inverted.menu {
-    background: #0B2540 !important;
+    background: var(--secondary-color) !important;
     border-radius: 0;
-    margin-bottom: 5em;
+    margin-bottom: 4rem;
 }
