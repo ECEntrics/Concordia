@@ -1,0 +1,9 @@
+#no-topic-message {
+    padding-top: 7rem;
+    clear: both;
+}
+
+#new-topic-button{
+    float:right;
+    margin-bottom: 2em;
+}

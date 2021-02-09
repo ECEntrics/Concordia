@@ -2,7 +2,7 @@ import React, {
   memo, useCallback, useEffect, useState,
 } from 'react';
 import {
-  Button, Feed, Form, Icon, Image, TextArea,
+  Button, Feed, Form, Icon, TextArea,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,6 @@ import { POSTS_DATABASE, USER_DATABASE } from 'concordia-shared/src/constants/or
 import { POST_CREATED_EVENT } from 'concordia-shared/src/constants/contracts/events/ForumContractEvents';
 import determineKVAddress from '../../utils/orbitUtils';
 import { FETCH_USER_DATABASE } from '../../redux/actions/peerDbReplicationActions';
-import { USER_PROFILE_PICTURE } from '../../constants/orbit/UserDatabaseKeys';
 import { breeze, drizzle } from '../../redux/store';
 import './styles.css';
 import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../constants/TransactionStatus';
@@ -28,7 +27,6 @@ const PostCreate = (props) => {
   const transactionStack = useSelector((state) => state.transactionStack);
   const transactions = useSelector((state) => state.transactions);
   const [postContent, setPostContent] = useState('');
-  const [userProfilePictureUrl, setUserProfilePictureUrl] = useState();
   const [createPostCacheSendStackId, setCreatePostCacheSendStackId] = useState('');
   const [posting, setPosting] = useState(false);
   const [storingPost, setStoringPost] = useState(false);
@@ -44,9 +42,7 @@ const PostCreate = (props) => {
           const userFound = users
             .find((user) => user.id === userOrbitAddress);
 
-          if (userFound) {
-            setUserProfilePictureUrl(userFound[USER_PROFILE_PICTURE]);
-          } else {
+          if (!userFound) {
             dispatch({
               type: FETCH_USER_DATABASE,
               orbit,
@@ -122,23 +118,6 @@ const PostCreate = (props) => {
   return (
       <Feed>
           <Feed.Event>
-              <Feed.Label className="post-profile-picture">
-                  {userProfilePictureUrl
-                    ? (
-                        <Image
-                          avatar
-                          src={userProfilePictureUrl}
-                        />
-                    )
-                    : (
-                        <Icon
-                          name="user circle"
-                          size="big"
-                          inverted
-                          color="black"
-                        />
-                    )}
-              </Feed.Label>
               <Feed.Content>
                   <Feed.Summary>
                       <Form>
@@ -152,12 +131,12 @@ const PostCreate = (props) => {
                           />
                       </Form>
                   </Feed.Summary>
-                  <Feed.Meta>
+                  <Feed.Meta id="post-button-div">
                       <Feed.Like>
-                          <Form.Button
+                          <Button
                             animated
                             type="button"
-                            color="green"
+                            className="primary-button"
                             disabled={posting || postContent === ''}
                             onClick={savePost}
                           >
@@ -167,7 +146,7 @@ const PostCreate = (props) => {
                               <Button.Content hidden>
                                   <Icon name="send" />
                               </Button.Content>
-                          </Form.Button>
+                          </Button>
                       </Feed.Like>
                   </Feed.Meta>
               </Feed.Content>

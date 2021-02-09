@@ -7,6 +7,7 @@ import { List } from 'semantic-ui-react';
 import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import TopicListRow from './TopicListRow';
 import { drizzle } from '../../redux/store';
+import './styles.css';
 
 const { contracts: { [FORUM_CONTRACT]: { methods: { getTopic: { cacheCall: getTopicChainData } } } } } = drizzle;
 
@@ -51,7 +52,7 @@ const TopicList = (props) => {
     }), [getTopicCallHashes, topicIds]);
 
   return (
-      <List selection divided id="topic-list" size="big">
+      <List id="topic-list" size="big">
           {topics}
       </List>
   );

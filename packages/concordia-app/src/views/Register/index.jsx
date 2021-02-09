@@ -5,10 +5,10 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
-import './styles.css';
 import SignUpStep from './SignUpStep';
 import PersonalInformationStep from './PersonalInformationStep';
 import { REGISTER_STEP_PROFILE_INFORMATION, REGISTER_STEP_SIGNUP } from '../../constants/RegisterSteps';
+import './styles.css';
 
 const Register = () => {
   const [currentStep, setCurrentStep] = useState('signup');
@@ -107,7 +107,7 @@ const Register = () => {
                         </Card.Content>
                         <Card.Content extra>
                             <Button
-                              color="black"
+                              className="secondary-button"
                               floated="right"
                               content={t('register.form.button.back')}
                               onClick={goToHomePage}

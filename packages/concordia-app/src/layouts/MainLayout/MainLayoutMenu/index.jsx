@@ -42,17 +42,6 @@ const MainLayoutMenu = () => {
                       <img src={appLogo} alt="app_logo" />
                   </Menu.Item>
                   <Menu.Menu position="right">
-                      {hasSignedUp && history.location.pathname === '/home' && (
-                          <Menu.Item
-                            link
-                            name="create-topic"
-                            key="create-topic"
-                            onClick={() => history.push('/topics/new')}
-                            position="right"
-                          >
-                              {t('topbar.button.create.topic')}
-                          </Menu.Item>
-                      )}
                       {hasSignedUp
                         ? (
                             <Menu.Item

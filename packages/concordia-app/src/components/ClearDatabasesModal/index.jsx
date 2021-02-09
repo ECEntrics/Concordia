@@ -126,10 +126,10 @@ const ClearDatabasesModal = (props) => {
 
           {!isClearing && (
               <Modal.Actions>
-                  <Button color="black" basic onClick={onCancelTry} disabled={isClearing}>
+                  <Button className="secondary-button" onClick={onCancelTry} disabled={isClearing}>
                       {t('clear.databases.modal.cancel.button')}
                   </Button>
-                  <Button onClick={handleSubmit} negative disabled={!userConfirmed}>
+                  <Button onClick={handleSubmit} className="primary-button" disabled={!userConfirmed}>
                       {t('clear.databases.modal.clear.button')}
                   </Button>
               </Modal.Actions>

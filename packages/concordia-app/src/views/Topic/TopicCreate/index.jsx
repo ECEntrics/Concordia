@@ -2,12 +2,11 @@ import React, {
   useCallback, useEffect, useState,
 } from 'react';
 import {
-  Button, Container, Form, Icon, Input, TextArea,
+  Button, Container, Form, Header, Icon, Input, TextArea,
 } from 'semantic-ui-react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
 import { useSelector } from 'react-redux';
-import './styles.css';
 import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import { TOPIC_CREATED_EVENT } from 'concordia-shared/src/constants/contracts/events/ForumContractEvents';
 import { POSTS_DATABASE, TOPICS_DATABASE } from 'concordia-shared/src/constants/orbit/OrbitDatabases';
@@ -15,6 +14,7 @@ import { drizzle, breeze } from '../../../redux/store';
 import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../../constants/TransactionStatus';
 import { TOPIC_SUBJECT } from '../../../constants/orbit/TopicsDatabaseKeys';
 import { POST_CONTENT } from '../../../constants/orbit/PostsDatabaseKeys';
+import './styles.css';
 
 const { contracts: { [FORUM_CONTRACT]: { methods: { createTopic } } } } = drizzle;
 const { orbit: { stores } } = breeze;
@@ -97,6 +97,7 @@ const TopicCreate = (props) => {
 
   return (
       <Container>
+          <Header id="new-topic-header" as="h2">New Topic</Header>
           <Form loading={posting}>
               <Form.Field required>
                   <label htmlFor="form-topic-create-field-subject">
@@ -125,23 +126,23 @@ const TopicCreate = (props) => {
                     onChange={handleSubjectInputChange}
                   />
               </Form.Field>
-              <Form.Group>
-                  <Form.Button
-                    animated
-                    key="form-topic-create-button-submit"
-                    type="button"
-                    color="green"
-                    disabled={posting || subjectInput === '' || contentInput === ''}
-                    onClick={validateAndPost}
-                  >
-                      <Button.Content visible>
-                          {t('topic.create.form.post.button')}
-                      </Button.Content>
-                      <Button.Content hidden>
-                          <Icon name="send" />
-                      </Button.Content>
-                  </Form.Button>
-              </Form.Group>
+              <Button
+                id="create-topic-button"
+                animated
+                key="form-topic-create-button-submit"
+                type="button"
+                className="primary-button"
+                disabled={posting || subjectInput === '' || contentInput === ''}
+                onClick={validateAndPost}
+              >
+                  <Button.Content visible>
+                      {t('topic.create.form.post.button')}
+                  </Button.Content>
+                  <Button.Content hidden>
+                      <Icon name="send" />
+                  </Button.Content>
+              </Button>
+
           </Form>
       </Container>
   );

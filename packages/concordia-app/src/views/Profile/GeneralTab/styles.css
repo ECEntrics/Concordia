@@ -1,6 +1,7 @@
-.general-tab-profile-picture {
-    max-width: 112px;
-    max-height: 112px;
-    margin: 0;
-    vertical-align: middle;
+.profile-image{
+    padding: 3rem !important;
+}
+
+#edit-info-button {
+    margin: 1rem;
 }

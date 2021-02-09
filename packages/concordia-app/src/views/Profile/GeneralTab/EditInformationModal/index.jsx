@@ -197,10 +197,11 @@ const EditInformationModal = (props) => {
               </Modal.Description>
           </Modal.Content>
           <Modal.Actions>
-              <Button color="black" onClick={onCancel}>
+              <Button className="secondary-button" onClick={onCancel}>
                   {t('edit.information.modal.form.cancel.button')}
               </Button>
               <Button
+                className="primary-button"
                 content={t('edit.information.modal.form.submit.button')}
                 labelPosition="right"
                 icon="checkmark"

@@ -1,6 +1,16 @@
+#new-topic-header {
+    padding: 2rem;
+    text-align: center;
+}
+
 .form-textarea-required {
     color: rgb(159, 58, 56) !important;
     outline-color: rgb(159, 58, 56) !important;
     border-color: rgb(224, 180, 180) !important;
     background-color: rgb(255, 246, 246) !important;
+}
+
+#create-topic-button {
+    float: right;
+    margin: 1rem 0 4rem 0;
 }
