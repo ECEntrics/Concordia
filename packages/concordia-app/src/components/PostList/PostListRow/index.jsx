@@ -2,7 +2,7 @@ import React, {
   memo, useEffect, useMemo, useState, useCallback,
 } from 'react';
 import {
-  Dimmer, Icon, Image, Feed, Placeholder, Ref,
+  Dimmer, Feed, Placeholder, Ref,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -15,8 +15,9 @@ import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationAct
 import { breeze } from '../../../redux/store';
 import './styles.css';
 import determineKVAddress from '../../../utils/orbitUtils';
-import { USER_PROFILE_PICTURE } from '../../../constants/orbit/UserDatabaseKeys';
 import { POST_CONTENT } from '../../../constants/orbit/PostsDatabaseKeys';
+import ProfileImage from '../../ProfileImage';
+import PostVoting from '../PostVoting';
 
 const { orbit } = breeze;
 
@@ -90,34 +91,6 @@ const PostListRow = (props) => {
     }
   }, [postAuthorAddress, users]);
 
-  const authorAvatar = useMemo(() => (postAuthorMeta !== null && postAuthorMeta[USER_PROFILE_PICTURE]
-    ? (
-        <Image
-          avatar
-          src={postAuthorMeta[USER_PROFILE_PICTURE]}
-        />
-    )
-    : (
-        <Icon
-          name="user circle"
-          size="big"
-          inverted
-          color="black"
-        />
-    )), [postAuthorMeta]);
-
-  const authorAvatarLink = useMemo(() => {
-    if (postAuthorAddress) {
-      return (
-          <Link to={`/users/${postAuthorAddress}`}>
-              {authorAvatar}
-          </Link>
-      );
-    }
-
-    return authorAvatar;
-  }, [authorAvatar, postAuthorAddress]);
-
   const focusRef = useCallback((node) => {
     if (focus && node !== null) {
       node.scrollIntoView({ behavior: 'smooth' });
@@ -130,13 +103,20 @@ const PostListRow = (props) => {
         blurring
         dimmed={loading}
         id={`post-${postId}`}
+        className="post-list-row"
       >
           <Ref innerRef={focusRef}>
               <Feed.Label className="post-profile-picture">
-                  {authorAvatarLink}
+                  <ProfileImage
+                    topicAuthorAddress={postAuthorAddress}
+                    topicAuthor={postAuthor}
+                    topicAuthorMeta={postAuthorMeta}
+                    size="42"
+                    link
+                  />
               </Feed.Label>
           </Ref>
-          <Feed.Content>
+          <Feed.Content className="post-content">
               <Feed.Summary>
                   <Link to={`/topics/${topicId}/#post-${postId}`}>
                       <span className="post-summary-meta-index">
@@ -147,7 +127,7 @@ const PostListRow = (props) => {
                     ? (
                         <>
                             <Feed.User as={Link} to={`/users/${postAuthorAddress}`}>{postAuthor}</Feed.User>
-                            <Feed.Date className="post-summary-meta-date">
+                            <Feed.Date>
                                 <TimeAgo date={timeAgo} />
                             </Feed.Date>
                         </>
@@ -159,10 +139,10 @@ const PostListRow = (props) => {
                     ? postContent
                     : <Placeholder><Placeholder.Line length="long" /></Placeholder>}
               </Feed.Extra>
+              <PostVoting postId={postId} postAuthorAddress={postAuthorAddress} />
           </Feed.Content>
       </Dimmer.Dimmable>
-  ), [
-    authorAvatarLink, focusRef, loading, postAuthor, postAuthorAddress, postContent, postId, postIndex, t, timeAgo,
+  ), [focusRef, loading, postAuthor, postAuthorAddress, postAuthorMeta, postContent, postId, postIndex, t, timeAgo,
     topicId,
   ]);
 };

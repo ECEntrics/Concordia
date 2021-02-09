@@ -94,7 +94,7 @@ const SignUpStep = (props) => {
           )}
           <Card.Content extra>
               <Button
-                color="green"
+                className="primary-button"
                 floated="right"
                 content={t('register.form.sign.up.step.button.submit')}
                 onClick={handleSubmit}
@@ -102,9 +102,8 @@ const SignUpStep = (props) => {
                 loading={!usernameIsChecked}
               />
               <Button
-                color="violet"
+                className="skip-button"
                 floated="right"
-                basic
                 content={t('register.form.sign.up.step.button.guest')}
                 onClick={goToHomePage}
                 disabled={signingUp}

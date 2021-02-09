@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  Button, Icon, Image, Placeholder, Table,
+  Button, Icon, Placeholder, Table,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,8 +10,9 @@ import determineKVAddress from '../../../utils/orbitUtils';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import { breeze } from '../../../redux/store';
 import { USER_LOCATION, USER_PROFILE_PICTURE } from '../../../constants/orbit/UserDatabaseKeys';
-import './styles.css';
 import EditInformationModal from './EditInformationModal';
+import ProfileImage from '../../../components/ProfileImage';
+import './styles.css';
 
 const { orbit } = breeze;
 
@@ -66,24 +67,6 @@ const GeneralTab = (props) => {
     }
   }, [dispatch, profileAddress, users]);
 
-  const authorAvatar = useMemo(() => (profileMetadataFetched && userAvatarUrl
-    ? (
-        <Image
-          className="general-tab-profile-picture"
-          centered
-          size="tiny"
-          src={userAvatarUrl}
-        />
-    )
-    : (
-        <Icon
-          name="user circle"
-          size="massive"
-          inverted
-          color="black"
-        />
-    )), [profileMetadataFetched, userAvatarUrl]);
-
   const userLocationCell = useMemo(() => {
     if (!profileMetadataFetched) {
       return (
@@ -123,7 +106,14 @@ const GeneralTab = (props) => {
           <Table basic="very" singleLine>
               <Table.Body>
                   <Table.Row textAlign="center">
-                      <Table.Cell colSpan="3">{authorAvatar}</Table.Cell>
+                      <Table.Cell colSpan="3" className="profile-image">
+                          <ProfileImage
+                            topicAuthorAddress={profileAddress}
+                            topicAuthor={username}
+                            avatarUrl={userAvatarUrl}
+                            size="160"
+                          />
+                      </Table.Cell>
                   </Table.Row>
                   <Table.Row>
                       <Table.Cell><strong>{t('profile.general.tab.username.row.title')}</strong></Table.Cell>
@@ -172,7 +162,7 @@ const GeneralTab = (props) => {
                   <Table.Row>
                       <Table.Cell><strong>{t('profile.general.tab.registration.date.row.title')}</strong></Table.Cell>
                       <Table.Cell>
-                          {new Date(userRegistrationTimestamp * 1000).toLocaleString()}
+                          {new Date(userRegistrationTimestamp * 1000).toLocaleString('el-gr', { hour12: false })}
                       </Table.Cell>
                   </Table.Row>
               </Table.Body>
@@ -182,6 +172,8 @@ const GeneralTab = (props) => {
                       <Table.Row>
                           <Table.HeaderCell colSpan="2">
                               <Button
+                                id="edit-info-button"
+                                className="primary-button"
                                 floated="right"
                                 icon
                                 labelPosition="left"
@@ -200,11 +192,7 @@ const GeneralTab = (props) => {
           </Table>
           {isSelf && editInformationModal}
       </>
-  ), [
-    authorAvatar, editInformationModal, isSelf, numberOfPosts, numberOfTopics, profileAddress, profileMetadataFetched,
-    t, userInfoOrbitAddress, userLocationCell, userPostsOrbitAddress, userRegistrationTimestamp, userTopicsOrbitAddress,
-    username,
-  ]);
+  ), [editInformationModal, isSelf, numberOfPosts, numberOfTopics, profileAddress, profileMetadataFetched, t, userAvatarUrl, userInfoOrbitAddress, userLocationCell, userPostsOrbitAddress, userRegistrationTimestamp, userTopicsOrbitAddress, username]);
 };
 
 GeneralTab.defaultProps = {

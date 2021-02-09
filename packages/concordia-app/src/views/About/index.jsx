@@ -6,6 +6,8 @@ import { Container, Image } from 'semantic-ui-react';
 import AboutMd from '../../assets/About.md';
 import appLogo from '../../assets/images/app_logo_circle.svg';
 
+import './styles.css';
+
 const targetBlank = () => ({ href, children }) => (
     <a href={href} target="_blank" rel="noopener noreferrer">
         {children}
@@ -26,7 +28,7 @@ const About = () => {
   return (
       <Container id="about-container">
           <div style={{ textAlign: 'center' }}>
-              <Image src={appLogo} size="small" centered />
+              <Image id="app-logo" src={appLogo} size="small" centered />
               {`v${process.env.REACT_APP_VERSION}`}
           </div>
           <ReactMarkdown

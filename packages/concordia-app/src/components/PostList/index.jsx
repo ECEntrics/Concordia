@@ -3,7 +3,9 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { Dimmer, Feed, Loader } from 'semantic-ui-react';
+import {
+  Dimmer, Feed, Loader,
+} from 'semantic-ui-react';
 import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import PostListRow from './PostListRow';
 import { drizzle } from '../../redux/store';
