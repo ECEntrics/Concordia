@@ -1499,10 +1499,10 @@
     "@ethersproject/properties" "^5.0.7"
     "@ethersproject/strings" "^5.0.8"
 
-"@ezerous/breeze@~0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@ezerous/breeze/-/breeze-0.5.0.tgz#472c9d1a28edac9d38ea56f3501c846f1e191a7e"
-  integrity sha512-HK7jncn/sxxCT/wbocHtFGcGkceWMHZSOyKnRYZ6ukbpKPicaerIYbg8G6t2jBTLrFwvkxLHVe2bAWkmQEf9VQ==
+"@ezerous/breeze@~0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@ezerous/breeze/-/breeze-0.6.0.tgz#95c602da137c098f8f6984b4ba85ad99d495ec55"
+  integrity sha512-8M7hg2nYvWjJcL4h3dNHglTyzx/9GbnS2HZ+3deFV1+WUdO0wIjWgssQi383ys/xygjNlNSo1nQAkUwy9cKM1g==
   dependencies:
     deepmerge "~4.2.2"
     ipfs "~0.54.2"
