@@ -4,9 +4,6 @@ import { useSelector } from 'react-redux';
 import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import CustomLoader from './CustomLoader';
 
-// CSS
-import '../../assets/css/loading-component.css';
-
 const InitializationLoader = ({ children }) => {
   const initializing = useSelector((state) => state.drizzleStatus.initializing);
   const failed = useSelector((state) => state.drizzleStatus.failed);

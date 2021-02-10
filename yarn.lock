@@ -1511,17 +1511,6 @@
     orbit-db-identity-provider "~0.3.1"
     redux-saga "~1.1.3"
 
-"@ezerous/drizzle@~0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@ezerous/drizzle/-/drizzle-0.4.2.tgz#2e575d0709cc29c77b984d96562b8749d8f477c9"
-  integrity sha512-oTJ77+yGdgg2KPIeIvRczFnPrBg8aXdNisHfM0ztjd7T/Ui8+Nw1HNhMVaw2xTuR53pio3SD8FBU1JrEUKOABQ==
-  dependencies:
-    deepmerge "~4.2.2"
-    is-plain-object "~5.0.0"
-    redux "~4.0.5"
-    redux-saga "~1.1.3"
-    web3 "~1.3.4"
-
 "@ezerous/eth-identity-provider@~0.1.2":
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/@ezerous/eth-identity-provider/-/eth-identity-provider-0.1.2.tgz#c1489a8d3ef5aec93ee53e7d96363a67409b3ada"
@@ -2757,7 +2746,7 @@
     "@webassemblyjs/wast-parser" "1.8.5"
     "@xtuc/long" "4.2.2"
 
-"@welldone-software/why-did-you-render@^6.0.0-rc.1":
+"@welldone-software/why-did-you-render@~6.0.5":
   version "6.0.5"
   resolved "https://registry.yarnpkg.com/@welldone-software/why-did-you-render/-/why-did-you-render-6.0.5.tgz#a8df3509ed612770bb21b5fa0ad61634acc61f38"
   integrity sha512-8fWib+bKoAmnJHZPU8/qpEXKG8piB3oaoKj78fXNAdYd3x8ryde1pC7D5tKff5Mart2iOJUvYNxxcYlbtT9tow==
@@ -15484,7 +15473,7 @@ redux-thunk@^2.3.0:
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
   integrity sha512-km6dclyFnmcvxhAcrQV2AkZmPQjzPDjgVlQtR0EQjxZPyJ0BnMf3in1ryuR8A2qU0HldVRfxYXbFSKlI3N7Slw==
 
-redux@^4.0.0, redux@^4.0.4, redux@~4.0.5:
+redux@^4.0.0, redux@^4.0.4:
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/redux/-/redux-4.0.5.tgz#4db5de5816e17891de8a80c424232d06f051d93f"
   integrity sha512-VSz1uMAH24DM6MF72vcojpYPtrTUu3ByVWfPL1nPfVRb5mZVTve5GnNCUV53QM/BZ66xfWrm0CTWoM+Xlz8V1w==
@@ -18356,7 +18345,7 @@ web3-utils@1.3.4:
     underscore "1.9.1"
     utf8 "3.0.0"
 
-web3@~1.3.0, web3@~1.3.3, web3@~1.3.4:
+web3@~1.3.0, web3@~1.3.3:
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/web3/-/web3-1.3.4.tgz#31e014873360aa5840eb17f9f171190c967cffb7"
   integrity sha512-D6cMb2EtTMLHgdGbkTPGl/Qi7DAfczR+Lp7iFX3bcu/bsD9V8fZW69hA8v5cRPNGzXUwVQebk3bS17WKR4cD2w==

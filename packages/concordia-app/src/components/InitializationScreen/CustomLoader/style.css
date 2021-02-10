@@ -1,27 +1,24 @@
-body {
-    overflow: hidden;
-}
-
-.loading-screen {
-    margin-top: 12em;
+#loading-screen {
+    padding-top: 12em;
     text-align: center;
     font-size: large;
+    height: 100%;
 }
 
-.loading-screen ul {
+#loading-screen ul {
     list-style-position: inside;
 }
 
-.loading-img {
+#loading-img {
     margin-bottom: 3em;
     height: 12em;
 }
 
-.ui.container {
+#loading-screen-container {
     height: 26em;
 }
 
-.ui.progress {
+#loading-screen-progress {
     width: 40vw;
     margin-left: auto !important;
     margin-right: auto !important;
