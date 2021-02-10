@@ -24,8 +24,8 @@
     ]
   },
   "dependencies": {
-    "@ezerous/breeze": "~0.4.0",
-    "@ezerous/drizzle": "~0.4.1",
+    "@ezerous/breeze": "~0.5.0",
+    "@ezerous/drizzle": "~0.4.2",
     "@ezerous/eth-identity-provider": "~0.1.2",
     "@reduxjs/toolkit": "~1.4.0",
     "@welldone-software/why-did-you-render": "^6.0.0-rc.1",

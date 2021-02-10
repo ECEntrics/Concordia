@@ -87,7 +87,7 @@ const PostCreate = (props) => {
         postsDb
           .put(contractPostId, {
             [POST_CONTENT]: postContent,
-          }, { pin: true })
+          })
           .then(() => {
             setPostContent('');
             setPosting(false);
