@@ -5,6 +5,7 @@
 
 #new-topic-button{
     float:right;
+    margin-top: 1px;
     margin-bottom: 2em;
     margin-right: 0;
 }

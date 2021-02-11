@@ -1,0 +1,12 @@
+.stat-key {
+    width: 13%
+}
+
+.stat-value {
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.stat-value:hover {
+    color: grey;
+}

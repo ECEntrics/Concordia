@@ -26,7 +26,7 @@
 
 .topic-row-avatar {
     margin: auto;
-    padding-left: 1rem !important;
+    padding-left: 1.4rem !important;
     padding-right: 0 !important;
     font-size: 2rem;
     color: red;
@@ -37,7 +37,7 @@
 }
 
 .topic-row-content {
-    padding-left: 2rem !important;
+    padding-left: 3rem !important;
 }
 
 .topic-row-subject {
