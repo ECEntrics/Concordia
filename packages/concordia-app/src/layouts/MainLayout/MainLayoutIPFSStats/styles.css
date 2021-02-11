@@ -1,9 +1,10 @@
 .stat-key {
-    width: 13%
+    background: rgba(0,0,0,.1);
+    font-weight: 700;
 }
 
 .stat-value {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     cursor: pointer;
 }
 

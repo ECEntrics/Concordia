@@ -24,7 +24,7 @@
     ]
   },
   "dependencies": {
-    "@ezerous/breeze": "~0.6.0",
+    "@ezerous/breeze": "~0.7.0",
     "@ezerous/drizzle": "~0.4.2",
     "@ezerous/eth-identity-provider": "~0.1.2",
     "@reduxjs/toolkit": "~1.4.0",
