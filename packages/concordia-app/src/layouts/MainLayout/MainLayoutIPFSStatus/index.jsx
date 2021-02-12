@@ -8,13 +8,13 @@ import {
 import ipfsLogo from '../../../assets/images/ipfs_logo.svg';
 import './styles.css';
 
-const MainLayoutIPFSStats = () => {
+const MainLayoutIPFSStatus = () => {
   const ipfsId = useSelector((state) => state.ipfs.id);
   const peerIds = useSelector((state) => state.ipfs.peers);
   const bootstrapPeerIds = useSelector((state) => state.ipfs.bootstrapPeers);
   const peers = useMemo(() => peerIds
     .map((peerId) => (
-        <Table.Row className="stat-value">
+        <Table.Row className="status-value">
             <Table.Cell>
                 <CopyToClipboard text={peerId}>
                     <span>{peerId}</span>
@@ -26,7 +26,7 @@ const MainLayoutIPFSStats = () => {
 
   const bootstrapPeers = useMemo(() => bootstrapPeerIds
     .map((bootstrapPeerId) => (
-        <Table.Row className="stat-value">
+        <Table.Row className="status-value">
             <Table.Cell>
                 <CopyToClipboard text={bootstrapPeerId}>
                     <span>{bootstrapPeerId}</span>
@@ -39,17 +39,17 @@ const MainLayoutIPFSStats = () => {
   return (
       <Segment padded>
           <Header textAlign="center">
-              <Image src={ipfsLogo} size="tiny" />
-              IPFS Stats
+              <Image src={ipfsLogo} size="small" />
+              IPFS Status
           </Header>
-          <Table compact textAlign="center" columns={1}>
+          <Table className="status-table" compact textAlign="center" columns={1}>
               <Table.Body>
                   <Table.Row>
-                      <Table.Cell className="stat-key">Peer ID</Table.Cell>
+                      <Table.Cell className="status-key">Peer ID</Table.Cell>
                   </Table.Row>
                   <Table.Row>
                       <Table.Cell
-                        className="stat-value"
+                        className="status-value"
                       >
                           <CopyToClipboard text={ipfsId}>
                               <span>{ipfsId}</span>
@@ -57,7 +57,7 @@ const MainLayoutIPFSStats = () => {
                       </Table.Cell>
                   </Table.Row>
                   <Table.Row>
-                      <Table.Cell className="stat-key">Peers</Table.Cell>
+                      <Table.Cell className="status-key">Peers</Table.Cell>
                   </Table.Row>
                   {peers.length === 0
                     ? (
@@ -67,7 +67,7 @@ const MainLayoutIPFSStats = () => {
                     ) : null}
                   {peers}
                   <Table.Row>
-                      <Table.Cell className="stat-key">Bootstrap Peers</Table.Cell>
+                      <Table.Cell className="status-key">Bootstrap Peers</Table.Cell>
                   </Table.Row>
                   {bootstrapPeers.length === 0
                     ? (
@@ -82,4 +82,4 @@ const MainLayoutIPFSStats = () => {
   );
 };
 
-export default MainLayoutIPFSStats;
+export default MainLayoutIPFSStatus;

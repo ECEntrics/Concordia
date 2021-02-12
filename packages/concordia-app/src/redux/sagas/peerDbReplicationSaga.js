@@ -104,9 +104,7 @@ function* updateReduxState({ database }) {
 function* peerDbReplicationSaga() {
   yield takeEvery(FETCH_USER_DATABASE, fetchUserDb);
 
-  yield takeEvery(ORBIT_DB_REPLICATED, updateReduxState);
-  yield takeEvery(ORBIT_DB_READY, updateReduxState);
-  yield takeEvery(ORBIT_DB_WRITE, updateReduxState);
+  yield takeEvery([ORBIT_DB_READY, ORBIT_DB_REPLICATED, ORBIT_DB_WRITE], updateReduxState);
 }
 
 export default peerDbReplicationSaga;

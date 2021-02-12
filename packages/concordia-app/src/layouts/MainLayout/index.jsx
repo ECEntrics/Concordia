@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Grid } from 'semantic-ui-react';
 import MainLayoutMenu from './MainLayoutMenu';
-import MainLayoutIPFSStats from './MainLayoutIPFSStats';
+import MainLayoutIPFSStatus from './MainLayoutIPFSStatus';
 import './styles.css';
 
 const MainLayout = (props) => {
@@ -17,7 +17,7 @@ const MainLayout = (props) => {
                   {children}
               </Grid.Column>
               <Grid.Column width={4}>
-                  <MainLayoutIPFSStats />
+                  <MainLayoutIPFSStatus />
               </Grid.Column>
           </Grid>
 

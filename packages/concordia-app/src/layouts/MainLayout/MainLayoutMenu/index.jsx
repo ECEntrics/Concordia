@@ -31,7 +31,7 @@ const MainLayoutMenu = () => {
   return (
       <AppContext.Consumer>
           {() => (
-              <Menu inverted>
+              <Menu inverted id="main-layout-menu">
                   <Menu.Item
                     id="home-button"
                     link
