@@ -82,7 +82,16 @@ RUN apk add -U tzdata \
     && apk del tzdata \
     && rm -rf /var/cache/apk/*
 
-WORKDIR "/var/www/concordia-app"
+COPY ./docker/concordia-app/create-environment.sh /opt/concordia/create-environment.sh
+COPY ./docker/concordia-app/run.sh /opt/concordia/run.sh
+
+RUN ["chmod", "+x", "/opt/concordia/create-environment.sh"]
+RUN ["chmod", "+x", "/opt/concordia/run.sh"]
 
 COPY ./docker/concordia-app/nginx.conf /etc/nginx/conf.d/default.conf
+
+WORKDIR "/var/www/concordia-app"
+
 COPY --chown=nginx:nginx --from=build /usr/src/concordia/packages/concordia-app/build .
+
+CMD ["/opt/concordia/run.sh"]
