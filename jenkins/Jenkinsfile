@@ -27,18 +27,38 @@ def pinnerImage
 def freshGanacheStagingRunning
 def freshGanacheProductionRunning
 
+def successResultGif = "https://media.giphy.com/media/o75ajIFH0QnQC3nCeD/giphy.gif"
+def failResultGif = "https://media.giphy.com/media/ljtfkyTD3PIUZaKWRi/giphy.gif"
+def abortResultGif = "https://media.giphy.com/media/IzXmRTmKd0if6/giphy.gif"
+
 pipeline {
   agent any
 
   post {
     failure {
       updateGitlabCommitStatus name: 'build', state: 'failed'
+
+      discordSend footer: "Visit Jenkins for more information", result: currentBuild.currentResult, link: env.BUILD_URL, description: """Jenkins Pipeline Build
+      Last commit included is [${GIT_COMMIT[0..7]}](https://gitlab.com/ecentrics/concordia/-/commit/$GIT_COMMIT)
+      Build status: ${currentBuild.currentResult}
+      """, image: failResultGif, thumbnail: "$CONCORDIA_LOGO_URL", title: JOB_NAME, webhookURL: "${DISCORD_WEBHOOK_URL}"
     }
     success {
       updateGitlabCommitStatus name: 'build', state: 'success'
+
+      discordSend footer: "Visit Jenkins for more information", result: currentBuild.currentResult, link: env.BUILD_URL, description: """Jenkins Pipeline Build
+      Last commit included is [${GIT_COMMIT[0..7]}](https://gitlab.com/ecentrics/concordia/-/commit/$GIT_COMMIT)
+      Build status: ${currentBuild.currentResult}
+      """, image: successResultGif, thumbnail: "$CONCORDIA_LOGO_URL", title: JOB_NAME, webhookURL: "${DISCORD_WEBHOOK_URL}"
+    }
+    aborted {
+      discordSend footer: "Visit Jenkins for more information", result: currentBuild.currentResult, link: env.BUILD_URL, description: """Jenkins Pipeline Build
+      Last commit included is [${GIT_COMMIT[0..7]}](https://gitlab.com/ecentrics/concordia/-/commit/$GIT_COMMIT)
+      Build status: ${currentBuild.currentResult}
+      """, image: abortResultGif, thumbnail: "$CONCORDIA_LOGO_URL", title: JOB_NAME, webhookURL: "${DISCORD_WEBHOOK_URL}"
     }
     always {
-      archiveArtifacts artifacts: "reports/${BUILD_NUMBER}/**/* , build/**/*, ganache/*", fingerprint: true
+      archiveArtifacts artifacts: "reports/${BUILD_NUMBER}/**/* , build/**/*, ganache/*", fingerprint: true, allowEmptyArchive: true
       sleep 2
       sh 'docker images | grep -E "ecentrics/concordia.+tests" | tr -s \' \' | cut -d \' \' -f 3 | xargs --no-run-if-empty docker rmi -f || true'
       sh 'docker images | grep -E "ecentrics/concordia.+staging" | tr -s \' \' | cut -d \' \' -f 3 | xargs --no-run-if-empty docker rmi -f || true'
@@ -55,6 +75,8 @@ pipeline {
   }
   environment {
     DOCKER_BUILDKIT='1'
+    DISCORD_WEBHOOK_URL="https://discord.com/api/webhooks/810180975580938290/HYYeK8Nqwt0h8Arx3qPpF-szjgLkPDTqbVVKLkzcmqY7ourTpKJCAc6IuCXHd_cxowuK"
+    CONCORDIA_LOGO_URL="https://i.postimg.cc/MGvgy9Lp/app-logo-circle.png"
   }
 
   stages {
@@ -90,9 +112,7 @@ pipeline {
           steps {
             script {
               try {
-                echo "${BRANCH_NAME}-${BUILD_NUMBER}"
                 def ganacheTestPort = sh(script: "bash ./jenkins/hash_build_properties.sh ${BRANCH_NAME} ${BUILD_NUMBER} | xargs bash ./jenkins/map_to_thousand.sh", returnStdout: true).trim()
-                echo "$ganacheTestPort"
 
                 def ganacheTestImage = docker.build(
                   "ecentrics/concordia-ganache",
