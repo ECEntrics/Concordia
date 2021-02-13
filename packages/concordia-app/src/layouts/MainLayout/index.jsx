@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Grid } from 'semantic-ui-react';
 import MainLayoutMenu from './MainLayoutMenu';
+import MainLayoutIPFSStatus from './MainLayoutIPFSStatus';
 import './styles.css';
 
 const MainLayout = (props) => {
@@ -9,7 +11,16 @@ const MainLayout = (props) => {
   return (
       <div id="main-layout">
           <MainLayoutMenu />
-          {children}
+          <Grid id="main-layout-grid">
+              <Grid.Column width={4} />
+              <Grid.Column width={8}>
+                  {children}
+              </Grid.Column>
+              <Grid.Column width={4}>
+                  <MainLayoutIPFSStatus />
+              </Grid.Column>
+          </Grid>
+
       </div>
   );
 };

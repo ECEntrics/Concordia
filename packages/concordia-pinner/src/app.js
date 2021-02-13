@@ -25,7 +25,6 @@ const getStats = async (orbit) => {
   const { address: resolvedRendezvousUrl } = await getResolvedRendezvousUrl();
 
   try {
-    // eslint-disable-next-line no-underscore-dangle
     const ipfs = orbit._ipfs;
     const { id } = await ipfs.id();
     const peers = await ipfs.swarm.peers();

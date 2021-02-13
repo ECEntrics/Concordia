@@ -2,7 +2,7 @@ import React, {
   memo, useEffect, useState,
 } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Container, Image } from 'semantic-ui-react';
+import { Container, Image, Segment } from 'semantic-ui-react';
 import AboutMd from '../../assets/About.md';
 import appLogo from '../../assets/images/app_logo_circle.svg';
 
@@ -26,18 +26,20 @@ const About = () => {
   }, []);
 
   return (
-      <Container id="about-container">
-          <div style={{ textAlign: 'center' }}>
-              <Image id="app-logo" src={appLogo} size="small" centered />
-              {`v${process.env.REACT_APP_VERSION}`}
-          </div>
-          <ReactMarkdown
-            source={aboutMd}
-            renderers={{
-              link: targetBlank(),
-              linkReference: targetBlank(),
-            }}
-          />
+      <Container>
+          <Segment id="about-segment">
+              <div style={{ textAlign: 'center' }}>
+                  <Image id="about-app-logo" src={appLogo} size="small" centered />
+                  {`v${process.env.REACT_APP_VERSION}`}
+              </div>
+              <ReactMarkdown
+                source={aboutMd}
+                renderers={{
+                  link: targetBlank(),
+                  linkReference: targetBlank(),
+                }}
+              />
+          </Segment>
       </Container>
   );
 };

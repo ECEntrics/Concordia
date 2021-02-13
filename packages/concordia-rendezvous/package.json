@@ -7,6 +7,6 @@
     "start": "star-signal --port=9090 --host=127.0.0.1"
   },
   "dependencies": {
-    "libp2p-webrtc-star": "~0.20.5"
+    "libp2p-webrtc-star": "~0.21.1"
   }
 }

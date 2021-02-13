@@ -23,7 +23,7 @@ const ClearDatabasesModal = (props) => {
   useEffect(() => {
     if (user.hasSignedUp && confirmationInput === user.username) {
       setUserConfirmed(true);
-    } else if (!user.hasSignedUp && confirmationInput === 'concordia') {
+    } else if (!user.hasSignedUp && confirmationInput === 'Concordia') {
       setUserConfirmed(true);
     } else {
       setUserConfirmed(false);
@@ -63,7 +63,7 @@ const ClearDatabasesModal = (props) => {
       return (
           <>
               <p>
-                  {t('clear.databases.modal.description.pre')}
+                  {t('clear.databases.modal.description.pre.user', { username: user.username })}
               </p>
               <p>
                   {t('clear.databases.modal.description.body.user')}
@@ -88,7 +88,7 @@ const ClearDatabasesModal = (props) => {
     return (
         <>
             <p>
-                {t('clear.databases.modal.description.pre')}
+                {t('clear.databases.modal.description.pre.guest')}
             </p>
             <Form>
                 <Form.Field>
@@ -105,7 +105,7 @@ const ClearDatabasesModal = (props) => {
             </Form>
         </>
     );
-  }, [confirmationInput, isClearing, t, user.hasSignedUp]);
+  }, [confirmationInput, isClearing, t, user.hasSignedUp, user.username]);
 
   return useMemo(() => (
       <Modal

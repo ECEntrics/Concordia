@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Container, Progress } from 'semantic-ui-react';
@@ -10,11 +10,9 @@ import ipfsLogo from '../../../assets/images/ipfs_logo.svg';
 import orbitdbLogo from '../../../assets/images/orbitdb_logo.svg';
 import appLogo from '../../../assets/images/app_logo_circle.svg';
 
-const LoadingComponent = (props) => {
-  useEffect(() => function cleanup() {
-    document.body.classList.add('app');
-  }, []);
+import './style.css';
 
+const LoadingComponent = (props) => {
   const {
     imageType, messageList, progressType, title, message, progress,
   } = props;
@@ -48,14 +46,20 @@ const LoadingComponent = (props) => {
   const list = messageList ? <ul>{listItems}</ul> : '';
 
   return (
-      <main className="loading-screen">
-          <Container>
-              <img src={imageSrc} alt={imageAlt} className="loading-img" />
+      <main id="loading-screen">
+          <Container id="loading-screen-container">
+              <img src={imageSrc} alt={imageAlt} id="loading-img" />
               <p><strong>{title}</strong></p>
               <p>{message}</p>
               {list}
           </Container>
-          <Progress percent={progress} size="small" indicating={indicating} error={error} />
+          <Progress
+            id="loading-screen-progress"
+            percent={progress}
+            size="small"
+            indicating={indicating}
+            error={error}
+          />
       </main>
   );
 };

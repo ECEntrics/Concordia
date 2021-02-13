@@ -85,6 +85,14 @@ const main = async () => {
             topics: [eventJsonInterface.signature],
           }, handleWeb3LogEvent(web3, eventJsonInterface, orbit));
 
+          orbit._ipfs.libp2p.connectionManager.on(
+            'peer:connect',
+            (peerInfo) => console.log('Peer connected: ', peerInfo.remotePeer.toB58String()),
+          );
+          orbit._ipfs.libp2p.connectionManager.on(
+            'peer:disconnect',
+            (peerInfo) => console.log('Peer disconnected: ', peerInfo.remotePeer.toB58String()),
+          );
           startAPI(orbit);
         })));
 };

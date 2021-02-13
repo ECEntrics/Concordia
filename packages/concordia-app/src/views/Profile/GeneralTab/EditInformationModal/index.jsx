@@ -112,7 +112,7 @@ const EditInformationModal = (props) => {
       .map((keyValueToStore) => {
         if (keyValueToStore.value !== '') {
           return userDb
-            .put(keyValueToStore.key, keyValueToStore.value, { pin: true });
+            .put(keyValueToStore.key, keyValueToStore.value);
         }
 
         return userDb.del(keyValueToStore.key);

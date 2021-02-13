@@ -90,7 +90,7 @@ const PersonalInformationStep = (props) => {
       keyValuesToStore
         .reduce((acc, keyValueToStore) => acc
           .then(() => userDb
-            .put(keyValueToStore.key, keyValueToStore.value, { pin: true })),
+            .put(keyValueToStore.key, keyValueToStore.value)),
         Promise.resolve())
         .then(() => pushNextStep())
         .catch((reason) => {

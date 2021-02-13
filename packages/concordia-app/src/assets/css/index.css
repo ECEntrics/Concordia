@@ -5,12 +5,10 @@
     --secondary-color-highlighted: #061A30;
 }
 
-body.app {
-    height: auto;
-    padding-bottom: 4rem;
+body {
     overflow: auto;
     margin: 0;
-    background: #E6E6E6;
+    background: white;
 }
 
 div {

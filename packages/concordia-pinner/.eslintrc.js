@@ -44,6 +44,7 @@ module.exports = {
     'no-console': 'off',
     'no-shadow': 'warn',
     'no-multi-str': 'warn',
+    'no-underscore-dangle': 0,
     'jsx-a11y/label-has-associated-control': [2, {
       labelAttributes: ['label'],
       controlComponents: ['Input'],
