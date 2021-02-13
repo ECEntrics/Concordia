@@ -7,10 +7,9 @@ import Gossipsub from 'libp2p-gossipsub';
 import KadDHT from 'libp2p-kad-dht';
 import MPLEX from 'libp2p-mplex';
 import { NOISE } from 'libp2p-noise';
-import { swarmAddresses } from '../constants';
 
 // See also: https://github.com/libp2p/js-libp2p/blob/master/doc/CONFIGURATION.md
-export default (opts) => new Libp2p({
+const getLibp2pBundle = (swarmAddresses) => (opts) => new Libp2p({
   peerId: opts.peerId,
   addresses: {
     listen: swarmAddresses,
@@ -88,3 +87,5 @@ export default (opts) => new Libp2p({
     maxOldPeersRetention: 50,
   },
 });
+
+export default getLibp2pBundle;

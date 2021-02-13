@@ -12,7 +12,9 @@ const drizzleOptions = {
   reloadWindowOnAccountChange: true, // We need it to reinitialize breeze and create new Orbit databases
 };
 
-if (process.env.REACT_APP_USE_EXTERNAL_CONTRACTS_PROVIDER) {
+if (process.env.REACT_APP_USE_EXTERNAL_CONTRACTS_PROVIDER
+    || (window.runtimeEnv && window.runtimeEnv.REACT_APP_USE_EXTERNAL_CONTRACTS_PROVIDER)) {
+  console.log('Downloading contracts from external provider');
   drizzleOptions.contracts = downloadContractArtifactsSync();
 } else {
   drizzleOptions.contracts = contracts;

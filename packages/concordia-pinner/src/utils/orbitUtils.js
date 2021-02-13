@@ -2,7 +2,7 @@ import OrbitDB from 'orbit-db';
 import Identities from 'orbit-db-identity-provider';
 import { EthereumContractIdentityProvider } from '@ezerous/eth-identity-provider';
 import Web3 from 'web3';
-import { ORBIT_DIRECTORY_DEFAULT } from '../constants';
+import ORBIT_DIRECTORY_DEFAULT from '../constants';
 
 // TODO: share code below with frontend (?)
 const determineDBAddress = async ({

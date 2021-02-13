@@ -22,11 +22,9 @@ yarn-error.log*
 # Docker volumes
 docker/volumes
 docker/ganache/volumes
+docker/concordia-contracts-provider/volumes
+docker/concordia-pinner/volumes
 docker/reports
-
-# Env var files
-docker/env/concordia.env
-docker/env/contracts.env
 
 # Misc
 .env.local

@@ -1,6 +1,5 @@
 import path from 'path';
-import getBreezeConfiguration from 'concordia-shared/src/configuration/breezeConfiguration';
 
-export const swarmAddresses = getBreezeConfiguration().ipfs.config.Addresses.Swarm;
+const ORBIT_DIRECTORY_DEFAULT = path.join(__dirname, '..', 'orbitdb');
 
-export const ORBIT_DIRECTORY_DEFAULT = path.join(__dirname, '..', 'orbitdb');
+export default ORBIT_DIRECTORY_DEFAULT;

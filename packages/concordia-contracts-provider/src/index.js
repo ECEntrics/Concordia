@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import { contractsProviderPort } from 'concordia-shared/src/environment/interpolated/contractsProvider';
 import initRoutes from './routes/web';
 import constants from './constants';
@@ -17,6 +18,7 @@ const corsOptions = {
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
+app.use(helmet());
 
 initRoutes(app);
 

@@ -10,8 +10,12 @@ import {
 } from '../constants/configuration/defaults';
 
 function getContractsDownloadRequest() {
-  const HOST = process.env.REACT_APP_CONCORDIA_HOST || CONCORDIA_HOST_DEFAULT;
-  const PORT = process.env.REACT_APP_CONCORDIA_PORT || CONCORDIA_PORT_DEFAULT;
+  const HOST = process.env.REACT_APP_CONCORDIA_HOST
+      || (window.runtimeEnv && window.runtimeEnv.REACT_APP_CONCORDIA_HOST)
+      || CONCORDIA_HOST_DEFAULT;
+  const PORT = process.env.REACT_APP_CONCORDIA_PORT
+      || (window.runtimeEnv && window.runtimeEnv.REACT_APP_CONCORDIA_PORT)
+      || CONCORDIA_PORT_DEFAULT;
 
   const xhrRequest = new XMLHttpRequest();
 

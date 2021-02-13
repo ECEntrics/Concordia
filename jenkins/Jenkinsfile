@@ -1,0 +1,759 @@
+#!groovy
+
+def cleanSlateEnabled
+
+// Package change state
+def appPackageChanged
+def contractsPackageChanged
+def contractsProviderPackageChanged
+def pinnerPackageChanged
+def sharedPackageChanged
+
+// Package versions
+def appPackageVersion
+def contractsPackageVersion
+def contractsProviderPackageVersion
+def pinnerPackageVersion
+def sharedPackageVersion
+
+// Docker images
+def appImage
+def appTestsImage
+def contractsImage
+def contractsTestsImage
+def contractsProviderImage
+def pinnerImage
+
+def freshGanacheStagingRunning
+def freshGanacheProductionRunning
+
+def successResultGif = "https://media.giphy.com/media/o75ajIFH0QnQC3nCeD/giphy.gif"
+def failResultGif = "https://media.giphy.com/media/ljtfkyTD3PIUZaKWRi/giphy.gif"
+def abortResultGif = "https://media.giphy.com/media/IzXmRTmKd0if6/giphy.gif"
+
+pipeline {
+  agent any
+
+  post {
+    failure {
+      updateGitlabCommitStatus name: 'build', state: 'failed'
+
+      discordSend footer: "Visit Jenkins for more information", result: currentBuild.currentResult, link: env.BUILD_URL, description: """Jenkins Pipeline Build
+      Last commit included is [${GIT_COMMIT[0..7]}](https://gitlab.com/ecentrics/concordia/-/commit/$GIT_COMMIT)
+      Build status: ${currentBuild.currentResult}
+      """, image: failResultGif, thumbnail: "$CONCORDIA_LOGO_URL", title: JOB_NAME, webhookURL: "${DISCORD_WEBHOOK_URL}"
+    }
+    success {
+      updateGitlabCommitStatus name: 'build', state: 'success'
+
+      discordSend footer: "Visit Jenkins for more information", result: currentBuild.currentResult, link: env.BUILD_URL, description: """Jenkins Pipeline Build
+      Last commit included is [${GIT_COMMIT[0..7]}](https://gitlab.com/ecentrics/concordia/-/commit/$GIT_COMMIT)
+      Build status: ${currentBuild.currentResult}
+      """, image: successResultGif, thumbnail: "$CONCORDIA_LOGO_URL", title: JOB_NAME, webhookURL: "${DISCORD_WEBHOOK_URL}"
+    }
+    aborted {
+      discordSend footer: "Visit Jenkins for more information", result: currentBuild.currentResult, link: env.BUILD_URL, description: """Jenkins Pipeline Build
+      Last commit included is [${GIT_COMMIT[0..7]}](https://gitlab.com/ecentrics/concordia/-/commit/$GIT_COMMIT)
+      Build status: ${currentBuild.currentResult}
+      """, image: abortResultGif, thumbnail: "$CONCORDIA_LOGO_URL", title: JOB_NAME, webhookURL: "${DISCORD_WEBHOOK_URL}"
+    }
+    always {
+      archiveArtifacts artifacts: "reports/${BUILD_NUMBER}/**/* , build/**/*, ganache/*", fingerprint: true, allowEmptyArchive: true
+      sleep 2
+      sh 'docker images | grep -E "ecentrics/concordia.+tests" | tr -s \' \' | cut -d \' \' -f 3 | xargs --no-run-if-empty docker rmi -f || true'
+      sh 'docker images | grep -E "ecentrics/concordia.+staging" | tr -s \' \' | cut -d \' \' -f 3 | xargs --no-run-if-empty docker rmi -f || true'
+      sh 'docker system prune -f'
+      sh 'rm -rf reports'
+      sh 'rm -rf build'
+    }
+  }
+  options {
+    gitLabConnection('apella')
+  }
+  triggers {
+    gitlab(triggerOnPush: true, triggerOnMergeRequest: true, branchFilterType: 'All')
+  }
+  environment {
+    DOCKER_BUILDKIT='1'
+    DISCORD_WEBHOOK_URL="https://discord.com/api/webhooks/810180975580938290/HYYeK8Nqwt0h8Arx3qPpF-szjgLkPDTqbVVKLkzcmqY7ourTpKJCAc6IuCXHd_cxowuK"
+    CONCORDIA_LOGO_URL="https://i.postimg.cc/MGvgy9Lp/app-logo-circle.png"
+  }
+
+  stages {
+    stage ('VERSION') {
+      steps {
+        script {
+          cleanSlateEnabled = sh (script: "git log -1 |  grep -qE 'ci: force'", returnStatus: true)
+
+          appPackageChanged = sh(script: 'bash ./jenkins/check_package_changed.sh app "$GIT_COMMIT" "$GIT_PREVIOUS_COMMIT"', returnStdout: true).trim()
+          contractsPackageChanged = sh(script: 'bash ./jenkins/check_package_changed.sh contracts "$GIT_COMMIT" "$GIT_PREVIOUS_COMMIT"', returnStdout: true).trim()
+          contractsProviderPackageChanged = sh(script: 'bash ./jenkins/check_package_changed.sh concordia-contracts-provider "$GIT_COMMIT" "$GIT_PREVIOUS_COMMIT"', returnStdout: true).trim()
+          pinnerPackageChanged = sh(script: 'bash ./jenkins/check_package_changed.sh pinner "$GIT_COMMIT" "$GIT_PREVIOUS_COMMIT"', returnStdout: true).trim()
+          sharedPackageChanged = sh(script: 'bash ./jenkins/check_package_changed.sh shared "$GIT_COMMIT" "$GIT_PREVIOUS_COMMIT"', returnStdout: true).trim()
+
+          appPackageVersion = sh(script: 'grep "\\"version\\":" ./packages/concordia-app/package.json | head -1 | awk -F: \'{ print $2 }\' | sed \'s/[",]//g\' | tr -d \'[[:space:]]\'', returnStdout: true).trim()
+          contractsPackageVersion = sh(script: 'grep "\\"version\\":" ./packages/concordia-contracts/package.json | head -1 | awk -F: \'{ print $2 }\' | sed \'s/[",]//g\' | tr -d \'[[:space:]]\'', returnStdout: true).trim()
+          contractsProviderPackageVersion = sh(script: 'grep "\\"version\\":" ./packages/concordia-contracts-provider/package.json | head -1 | awk -F: \'{ print $2 }\' | sed \'s/[",]//g\' | tr -d \'[[:space:]]\'', returnStdout: true).trim()
+          pinnerPackageVersion = sh(script: 'grep "\\"version\\":" ./packages/concordia-pinner/package.json | head -1 | awk -F: \'{ print $2 }\' | sed \'s/[",]//g\' | tr -d \'[[:space:]]\'', returnStdout: true).trim()
+          sharedPackageVersion = sh(script: 'grep "\\"version\\":" ./packages/concordia-shared/package.json | head -1 | awk -F: \'{ print $2 }\' | sed \'s/[",]//g\' | tr -d \'[[:space:]]\'', returnStdout: true).trim()
+
+          echo "Package: app, Version: ${appPackageVersion}, Changed: ${appPackageChanged}"
+          echo "Package: contracts, Version: ${contractsPackageVersion}, Changed: ${contractsPackageChanged}"
+          echo "Package: contracts-provider, Version: ${contractsProviderPackageVersion}, Changed: ${contractsProviderPackageChanged}"
+          echo "Package: pinner, Version: ${pinnerPackageVersion}, Changed: ${pinnerPackageChanged}"
+          echo "Package: shared, Version: ${sharedPackageVersion}, Changed: ${sharedPackageChanged}"
+        }
+      }
+    }
+
+    stage('TEST') {
+      parallel {
+        stage('TEST CONTRACTS') {
+          steps {
+            script {
+              try {
+                def ganacheTestPort = sh(script: "bash ./jenkins/hash_build_properties.sh ${BRANCH_NAME} ${BUILD_NUMBER} | xargs bash ./jenkins/map_to_thousand.sh", returnStdout: true).trim()
+
+                def ganacheTestImage = docker.build(
+                  "ecentrics/concordia-ganache",
+                  "-f docker/ganache/Dockerfile \
+                  ./"
+                )
+
+                sh 'docker network create --driver bridge concordia_ganache_test_network || true'
+
+                ganacheTestImage.withRun("""-d -p 6${ganacheTestPort}:8546 \
+                --env-file=./jenkins/env/ganache.test.jenkins.env \
+                --name concordia-ganache-test-6${ganacheTestPort} \
+                --net=concordia_ganache_test_network""") { concordiaGanacheTest ->
+
+                  contractsTestsImage = docker.build(
+                    "ecentrics/concordia-contracts-tests:v${contractsPackageVersion}-b${BUILD_NUMBER}-tests",
+                    "-f docker/concordia-contracts/Dockerfile \
+                    ./ \
+                    --target test \
+                    --build-arg TZ=Europe/Athens"
+                  )
+
+                  contractsTestsImage.run("""--rm \
+                  -v ecentrics_janus_common:/mnt/concordia/test-reports/ \
+                  --env-file=./jenkins/env/contracts.test.jenkins.env \
+                  -e WEB3_HOST=concordia-ganache-test-6${ganacheTestPort} \
+                  -e WEB3_PORT=6${ganacheTestPort} \
+                  --net=concordia_ganache_test_network""")
+
+                  sh 'mkdir -p ./reports/${BUILD_NUMBER}/contracts'
+                  sh 'find /mnt/janus/common/ -name "concordia-contracts-*" -exec cp \'{}\' ./reports/${BUILD_NUMBER}/contracts/ \\;'
+                }
+              } catch (e) {
+                error('Some tests failed!')
+                error('Aborting the build.')
+                throw e
+              }
+            }
+          }
+        }
+
+        stage('TEST APP') {
+          steps {
+            script {
+              appTestsImage = docker.build(
+                "ecentrics/concordia-app:v${appPackageVersion}-b${BUILD_NUMBER}-tests",
+                "-f docker/concordia-app/Dockerfile \
+                ./ \
+                --target test \
+                --build-arg TZ=Europe/Athens"
+              )
+
+              try {
+                appTestsImage.run('--rm \
+                -v ecentrics_janus_common:/mnt/concordia/test-reports/')
+
+                sh 'mkdir -p ./reports/${BUILD_NUMBER}/app'
+                sh 'find /mnt/janus/common/ -name "concordia-app-*" -exec cp \'{}\' ./reports/${BUILD_NUMBER}/app/ \\;'
+              } catch (e) {
+                error('Some tests failed!')
+                error('Aborting the build.')
+                throw e
+              }
+            }
+          }
+        }
+      }
+    }
+
+    stage('BUILD FOR PRODUCTION') {
+      when {
+        branch 'master'
+      }
+      parallel {
+        stage('BUILD CONTRACTS') {
+          when {
+            expression {
+              return "${contractsPackageChanged}" == '0' || "${sharedPackageChanged}" == '0';
+            }
+          }
+          steps {
+            script {
+              contractsImage = docker.build(
+                "ecentrics/concordia-contracts-migrate:v${contractsPackageVersion}",
+                "-f docker/concordia-contracts/Dockerfile \
+                ./ \
+                --build-arg TZ=Europe/Athens"
+              )
+
+              contractsImage.run('--rm \
+              -v ecentrics_janus_common:/mnt/concordia/build \
+              --entrypoint=sh',
+              "-c 'mkdir -p /mnt/concordia/build/contract-artifacts && cp /usr/src/concordia/packages/concordia-contracts/build/* /mnt/concordia/build/contract-artifacts'")
+
+              sh 'mkdir -p ./build/${BUILD_NUMBER}/contracts'
+              sh 'cp /mnt/janus/common/contract-artifacts/* ./build/${BUILD_NUMBER}/contracts'
+            }
+          }
+        }
+
+        stage('BUILD APP') {
+          when {
+            expression {
+              return "${appPackageChanged}" == '0' || "${sharedPackageChanged}" == '0';
+            }
+          }
+          steps {
+            script {
+              appImage = docker.build(
+                "ecentrics/concordia-app:v${appPackageVersion}",
+                "-f docker/concordia-app/Dockerfile \
+                ./ \
+                --build-arg TZ=Europe/Athens"
+              )
+            }
+          }
+        }
+
+        stage('BUILD CONTRACTS PROVIDER') {
+          when {
+            expression {
+              return "${contractsProviderPackageChanged}" == '0' || "${sharedPackageChanged}" == '0';
+            }
+          }
+          steps {
+            script {
+              contractsProviderImage = docker.build(
+                "ecentrics/concordia-contracts-provider:v${contractsProviderPackageVersion}",
+                "-f docker/concordia-contracts-provider/Dockerfile \
+                ./ \
+                --build-arg TZ=Europe/Athens"
+              )
+            }
+          }
+        }
+
+        stage('BUILD PINNER') {
+          when {
+            expression {
+              return "${pinnerPackageChanged}" == '0' || "${sharedPackageChanged}" == '0';
+            }
+          }
+          steps {
+            script {
+              pinnerImage = docker.build(
+                "ecentrics/concordia-pinner:v${pinnerPackageVersion}",
+                "-f docker/concordia-pinner/Dockerfile \
+                ./ \
+                --build-arg TZ=Europe/Athens"
+              )
+            }
+          }
+        }
+      }
+    }
+
+    stage('BUILD FOR STAGING') {
+      when {
+        branch 'develop'
+      }
+      parallel {
+        stage('BUILD CONTRACTS') {
+          when {
+            expression {
+              return "${contractsPackageChanged}" == '0' || "${sharedPackageChanged}" == '0';
+            }
+          }
+          steps {
+            script {
+              contractsImage = docker.build(
+                "ecentrics/concordia-contracts-migrate:v${contractsPackageVersion}-staging-b${BUILD_NUMBER}",
+                "-f docker/concordia-contracts/Dockerfile \
+                ./ \
+                --build-arg TZ=Europe/Athens"
+              )
+
+              // Get contract artifacts
+              contractsImage.run('--rm \
+              -v ecentrics_janus_common:/mnt/concordia/build \
+              --entrypoint=sh',
+              "-c 'mkdir -p /mnt/concordia/build/contract-artifacts && cp /usr/src/concordia/packages/concordia-contracts/build/* /mnt/concordia/build/contract-artifacts'")
+
+              sh 'mkdir -p ./build/${BUILD_NUMBER}/contracts'
+              sh 'cp /mnt/janus/common/contract-artifacts/* ./build/${BUILD_NUMBER}/contracts'
+            }
+          }
+        }
+
+        stage('BUILD APP') {
+          when {
+            expression {
+              return "${appPackageChanged}" == '0' || "${sharedPackageChanged}" == '0';
+            }
+          }
+          steps {
+            script {
+              appImage = docker.build(
+                "ecentrics/concordia-app:v${appPackageVersion}-staging-b${BUILD_NUMBER}",
+                "-f docker/concordia-app/Dockerfile \
+                ./ \
+                --target staging \
+                --build-arg TZ=Europe/Athens"
+              )
+            }
+          }
+        }
+
+        stage('BUILD CONTRACTS PROVIDER') {
+          when {
+            expression {
+              return "${contractsProviderPackageChanged}" == '0' || "${sharedPackageChanged}" == '0';
+            }
+          }
+          steps {
+            script {
+              contractsProviderImage = docker.build(
+                "ecentrics/concordia-contracts-provider:v${contractsProviderPackageVersion}-staging-b${BUILD_NUMBER}",
+                "-f docker/concordia-contracts-provider/Dockerfile \
+                ./ \
+                --build-arg TZ=Europe/Athens"
+              )
+            }
+          }
+        }
+
+        stage('BUILD PINNER') {
+          when {
+            expression {
+              return "${pinnerPackageChanged}" == '0' || "${sharedPackageChanged}" == '0';
+            }
+          }
+          steps {
+            script {
+              pinnerImage = docker.build(
+                "ecentrics/concordia-pinner:v${pinnerPackageVersion}-staging-b${BUILD_NUMBER}",
+                "-f docker/concordia-pinner/Dockerfile \
+                ./ \
+                --build-arg TZ=Europe/Athens"
+              )
+            }
+          }
+        }
+      }
+    }
+
+    stage('PUBLISH') {
+      when {
+        branch 'master'
+      }
+      parallel {
+        stage('PUBLISH CONTRACTS') {
+          when {
+            expression {
+              return "${contractsPackageChanged}" == '0' || "${sharedPackageChanged}" == '0';
+            }
+          }
+          steps {
+            script {
+              docker.withRegistry('https://registry.hub.docker.com/', 'docker-hub-concordia') {
+                contractsImage.push()
+                contractsImage.push('latest')
+              }
+            }
+          }
+        }
+
+        stage('PUBLISH APP') {
+          when {
+            expression {
+              return "${appPackageChanged}" == '0' || "${sharedPackageChanged}" == '0';
+            }
+          }
+          steps {
+            script {
+              docker.withRegistry('https://registry.hub.docker.com/', 'docker-hub-concordia') {
+                appImage.push()
+                appImage.push('latest')
+              }
+            }
+          }
+        }
+
+        stage('PUBLISH CONTRACTS PROVIDER') {
+          when {
+            expression {
+              return "${contractsProviderPackageChanged}" == '0' || "${sharedPackageChanged}" == '0';
+            }
+          }
+          steps {
+            script {
+              docker.withRegistry('https://registry.hub.docker.com/', 'docker-hub-concordia') {
+                contractsProviderImage.push()
+                contractsProviderImage.push('latest')
+              }
+            }
+          }
+        }
+
+        stage('PUBLISH PINNER') {
+          when {
+            expression {
+              return "${pinnerPackageChanged}" == '0' || "${sharedPackageChanged}" == '0';
+            }
+          }
+          steps {
+            script {
+              docker.withRegistry('https://registry.hub.docker.com/', 'docker-hub-concordia') {
+                pinnerImage.push()
+                pinnerImage.push('latest')
+              }
+            }
+          }
+        }
+      }
+    }
+
+    stage('DEPLOY STAGING') {
+      when {
+        branch 'develop'
+      }
+      stages {
+        stage('STAGING DEPLOY PREPARATION') {
+          steps {
+            script {
+              sh 'docker network create --driver bridge ecentrics_concordia_staging_network || true'
+
+              def rendezvousServerRunning = sh (script: 'docker ps -f name=concordia-rendezvous | \
+                grep -qE concordia-rendezvous', returnStatus: true)
+
+              if ("$rendezvousServerRunning" == '1') {
+                sh 'docker run \
+                  -d \
+                  -p 9090:9090 \
+                  --name concordia-rendezvous \
+                  --net=ecentrics_concordia_staging_network \
+                  libp2p/js-libp2p-webrtc-star:version-0.20.5'
+              } else {
+                sh 'docker network connect ecentrics_concordia_staging_network concordia-rendezvous || true'
+              }
+            }
+          }
+        }
+
+        stage('DEPLOY CONTRACTS PROVIDER') {
+          when {
+            expression {
+              def contractsProviderStagingRunning = sh (script: 'docker ps -f name=concordia-contracts-provider-staging | \
+                grep -qE concordia-contracts-provider-staging', returnStatus: true)
+              return "${contractsProviderPackageChanged}" == '0' || "$cleanSlateEnabled" == '0' || "$contractsProviderStagingRunning" == '1' || "${sharedPackageChanged}" == '0';
+            }
+          }
+          steps {
+            script {
+              sh 'docker stop concordia-contracts-provider-staging || true \
+                && docker rm concordia-contracts-provider-staging || true'
+
+              sh 'if [ "$cleanSlateEnabled" -eq "0" ]; then \
+                     docker volume rm concordia-contracts-provider-staging || true; \
+                  fi'
+
+              sh (script: """docker run \
+                -d \
+                -v concordia-contracts-provider-staging:/mnt/concordia/contracts \
+                --env-file=./jenkins/env/contracts.provider.staging.env \
+                -p 8450:8450 \
+                --name concordia-contracts-provider-staging \
+                --net=ecentrics_concordia_staging_network \
+                ecentrics/concordia-contracts-provider:v${contractsProviderPackageVersion}-staging-b${BUILD_NUMBER}""")
+            }
+          }
+        }
+
+        stage('RECREATE GANACHE') {
+          when {
+            expression {
+              def ganacheStagingRunning = sh (script: 'docker ps -f name=concordia-ganache-staging | \
+                grep -qE concordia-ganache-staging', returnStatus: true)
+              return "$cleanSlateEnabled" == '0' || "$ganacheStagingRunning" == '1';
+            }
+          }
+          steps {
+            script {
+                sh 'docker stop concordia-ganache-staging || true \
+                  && docker rm concordia-ganache-staging || true'
+
+                sh 'docker volume rm concordia-ganache-staging || true'
+
+                sh (script: 'docker run \
+                  -d \
+                  -v concordia-ganache-staging:/mnt/concordia/ganache_keys \
+                  -p 8555:8555 \
+                  --env-file=./jenkins/env/ganache.staging.jenkins.env \
+                  --name concordia-ganache-staging \
+                  --net=ecentrics_concordia_staging_network \
+                  ecentrics/concordia-ganache:latest')
+
+                // Ganache image might take a while to come alive
+                sleep 10
+
+                sh 'mkdir -p ./ganache/ && docker cp concordia-ganache-staging:/mnt/concordia/ganache_keys/keys.json ./ganache/'
+                freshGanacheStagingRunning = true
+            }
+          }
+        }
+
+        stage('DEPLOY CONTRACTS') {
+          when {
+            expression {
+              return "${contractsPackageChanged}" == '0' || "$cleanSlateEnabled" == '0' || "$freshGanacheStagingRunning" || "${sharedPackageChanged}" == '0';
+            }
+          }
+          steps {
+            script {
+                sh """docker run \
+                  --rm \
+                  --env-file=./jenkins/env/contracts.staging.jenkins.env \
+                  -e CONTRACTS_VERSION_HASH=${contractsPackageVersion}-dev \
+                  --net=ecentrics_concordia_staging_network \
+                  ecentrics/concordia-contracts-migrate:v${contractsPackageVersion}-staging-b${BUILD_NUMBER}"""
+            }
+          }
+        }
+
+        stage('DEPLOY PINNER') {
+          when {
+            expression {
+              def pinnerStagingRunning = sh (script: 'docker ps -f name=concordia-pinner-staging | \
+                grep -qE concordia-pinner-staging', returnStatus: true)
+              return "${pinnerPackageChanged}" == '0' || "$cleanSlateEnabled" == '0' || "${contractsPackageChanged}" == '0' || "${sharedPackageChanged}" == '0';
+            }
+          }
+          steps {
+            script {
+              sh 'docker stop concordia-pinner-staging || true \
+                && docker rm concordia-pinner-staging || true'
+
+              sh 'if [ "$cleanSlateEnabled" -eq "0" ]; then \
+                     docker volume rm concordia-pinner-staging || true; \
+                  fi'
+
+              sh """docker run \
+                -d \
+                -v concordia-pinner-staging:/mnt/concordia/orbitdb \
+                -p 5555:5555 \
+                --env-file=./jenkins/env/pinner.staging.jenkins.env \
+                --name concordia-pinner-staging \
+                --net=ecentrics_concordia_staging_network \
+                ecentrics/concordia-pinner:v${pinnerPackageVersion}-staging-b${BUILD_NUMBER}"""
+            }
+          }
+        }
+
+        stage('DEPLOY APP') {
+          when {
+            expression {
+              def pinnerStagingRunning = sh (script: 'docker ps -f name=concordia-app-staging | \
+                grep -qE concordia-app-staging', returnStatus: true)
+              return "${appPackageChanged}" == '0' || "$cleanSlateEnabled" == '0' || "${sharedPackageChanged}" == '0';
+            }
+          }
+
+          steps {
+            script {
+              sh 'docker stop concordia-app-staging || true \
+                && docker rm concordia-app-staging || true'
+
+              sh """docker run \
+                -itd \
+                -p 7000:3000 \
+                --env-file=./jenkins/env/concordia.staging.jenkins.env \
+                --name concordia-app-staging \
+                ecentrics/concordia-app:v${appPackageVersion}-staging-b${BUILD_NUMBER}"""
+            }
+          }
+        }
+      }
+    }
+
+    stage('DEPLOY PRODUCTION') {
+      when {
+        branch 'master'
+      }
+      stages {
+        stage('PRODUCTION DEPLOY PREPARATION') {
+          steps {
+            script {
+              sh 'docker network create --driver bridge ecentrics_concordia_production_network || true'
+
+              def rendezvousServerRunning = sh (script: 'docker ps -f name=concordia-rendezvous | \
+                grep -qE concordia-rendezvous', returnStatus: true)
+
+              if ("$rendezvousServerRunning" == '1') {
+                sh 'docker run \
+                  -d \
+                  -p 9090:9090 \
+                  --name concordia-rendezvous \
+                  --net=ecentrics_concordia_production_network \
+                  libp2p/js-libp2p-webrtc-star:version-0.20.5'
+              } else {
+                sh 'docker network connect ecentrics_concordia_production_network concordia-rendezvous || true'
+              }
+            }
+          }
+        }
+
+        stage('DEPLOY CONTRACTS PROVIDER') {
+          when {
+            expression {
+              def contractsProviderProductionRunning = sh (script: 'docker ps -f name=concordia-contracts-provider-production | \
+                grep -qE concordia-contracts-provider-production', returnStatus: true)
+              return "${contractsProviderPackageChanged}" == '0' || "$cleanSlateEnabled" == '0' || "$contractsProviderProductionRunning" == '1' || "${sharedPackageChanged}" == '0';
+            }
+          }
+          steps {
+            script {
+              sh 'docker stop concordia-contracts-provider-production || true \
+                && docker rm concordia-contracts-provider-production || true'
+
+              sh 'if [ "$cleanSlateEnabled" -eq "0" ]; then \
+                     docker volume rm concordia-contracts-provider-production || true; \
+                  fi'
+
+              sh (script: """docker run \
+                -d \
+                -v concordia-contracts-provider-production:/mnt/concordia/contracts \
+                --env-file=./jenkins/env/contracts.provider.production.env \
+                -e NODE_ENV=production \
+                -p 8400:8400 \
+                --name concordia-contracts-provider-production \
+                --net=ecentrics_concordia_production_network \
+                ecentrics/concordia-contracts-provider:v${contractsProviderPackageVersion}""")
+            }
+          }
+        }
+
+        stage('RECREATE GANACHE') {
+          when {
+            expression {
+              def ganacheProductionRunning = sh (script: 'docker ps -f name=concordia-ganache-production | \
+                grep -qE concordia-ganache-production', returnStatus: true)
+              return "$cleanSlateEnabled" == '0' || "$ganacheProductionRunning" == '1';
+            }
+          }
+          steps {
+            script {
+                sh 'docker stop concordia-ganache-production || true \
+                  && docker rm concordia-ganache-production || true'
+
+                sh 'docker volume rm concordia-ganache-production || true'
+
+                sh (script: 'docker run \
+                  -d \
+                  -v concordia-ganache-production:/mnt/concordia/ganache_keys \
+                  -p 8545:8545 \
+                  --env-file=./jenkins/env/ganache.production.jenkins.env \
+                  --name concordia-ganache-production \
+                  --net=ecentrics_concordia_production_network \
+                  ecentrics/concordia-ganache:latest')
+
+                // Ganache image might take a while to come alive
+                sleep 10
+
+                sh 'mkdir -p ./ganache/ && docker cp concordia-ganache-production:/mnt/concordia/ganache_keys/keys.json ./ganache/'
+                freshGanacheProductionRunning = true
+            }
+          }
+        }
+
+        stage('DEPLOY CONTRACTS') {
+          when {
+            expression {
+              return "${contractsPackageChanged}" == '0' || "$cleanSlateEnabled" == '0' || "$freshGanacheProductionRunning" || "${sharedPackageChanged}" == '0';
+            }
+          }
+          steps {
+            script {
+                sh """docker run \
+                  --rm \
+                  --env-file=./jenkins/env/contracts.production.jenkins.env \
+                  -e CONTRACTS_VERSION_HASH=${contractsPackageVersion} \
+                  --net=ecentrics_concordia_production_network \
+                  ecentrics/concordia-contracts-migrate:v${contractsPackageVersion}"""
+            }
+          }
+        }
+
+        stage('DEPLOY PINNER') {
+          when {
+            expression {
+              def pinnerProductionRunning = sh (script: 'docker ps -f name=concordia-pinner-production | \
+                grep -qE concordia-pinner-production', returnStatus: true)
+              return "${pinnerPackageChanged}" == '0' || "$cleanSlateEnabled" == '0' || "${pinnerProductionRunning}" == '1' || "${contractsPackageChanged}" == '0' || "${sharedPackageChanged}" == '0';
+            }
+          }
+          steps {
+            script {
+              sh 'docker stop concordia-pinner-production || true \
+                && docker rm concordia-pinner-production || true'
+
+              sh 'if [ "$cleanSlateEnabled" -eq "0" ]; then \
+                     docker volume rm concordia-pinner-production || true; \
+                  fi'
+
+              sh """docker run \
+                -d \
+                -v concordia-pinner-production:/mnt/concordia/orbitdb \
+                -p 4444:4444 \
+                -e NODE_ENV=production \
+                --env-file=./jenkins/env/pinner.production.jenkins.env \
+                --name concordia-pinner-production \
+                --net=ecentrics_concordia_production_network \
+                ecentrics/concordia-pinner:v${pinnerPackageVersion}"""
+            }
+          }
+        }
+
+        stage('DEPLOY APP') {
+          when {
+            expression {
+              def appProductionRunning = sh (script: 'docker ps -f name=concordia-app-production | \
+                grep -qE concordia-app-production', returnStatus: true)
+              return "${appPackageChanged}" == '0' || "$cleanSlateEnabled" == '0' ||"${appProductionRunning}" == '1' || "${sharedPackageChanged}" == '0';
+            }
+          }
+
+          steps {
+            script {
+              sh 'docker stop concordia-app-production || true \
+                && docker rm concordia-app-production || true'
+
+              sh """docker run \
+                -d \
+                -p 7777:80 \
+                --env-file=./jenkins/env/concordia.production.jenkins.env \
+                --name concordia-app-production \
+                ecentrics/concordia-app:v${appPackageVersion}"""
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
