@@ -585,6 +585,7 @@ pipeline {
                 -p 7000:3000 \
                 --env-file=./jenkins/env/concordia.staging.jenkins.env \
                 --name concordia-app-staging \
+                --net=ecentrics_concordia_staging_network \
                 ecentrics/concordia-app:v${appPackageVersion}-staging-b${BUILD_NUMBER}"""
             }
           }
@@ -750,6 +751,7 @@ pipeline {
                 -p 7777:80 \
                 --env-file=./jenkins/env/concordia.production.jenkins.env \
                 --name concordia-app-production \
+                --net=ecentrics_concordia_production_network \
                 ecentrics/concordia-app:v${appPackageVersion}"""
             }
           }
