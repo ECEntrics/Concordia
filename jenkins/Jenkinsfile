@@ -445,6 +445,7 @@ pipeline {
               if ("$rendezvousServerRunning" == '1') {
                 sh 'docker run \
                   -d \
+                  --env-file=./jenkins/env/rendezvous.jenkins.env \
                   -p 9090:9090 \
                   --name concordia-rendezvous \
                   --net=ecentrics_concordia_staging_network \
@@ -607,6 +608,7 @@ pipeline {
               if ("$rendezvousServerRunning" == '1') {
                 sh 'docker run \
                   -d \
+                  --env-file=./jenkins/env/rendezvous.jenkins.env \
                   -p 9090:9090 \
                   --name concordia-rendezvous \
                   --net=ecentrics_concordia_production_network \
