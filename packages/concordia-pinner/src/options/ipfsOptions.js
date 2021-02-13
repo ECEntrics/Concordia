@@ -1,22 +1,25 @@
-import libp2pBundle from './libp2pBundle';
-import { swarmAddresses } from '../constants';
+import getLibp2pBundle from './libp2pBundle';
+import { getSwarmAddresses } from '../utils/ipfsUtils';
 
-export default {
-  repo: 'ipfs',
-  config: {
-    Profile: 'server',
-    Addresses: {
-      Swarm: swarmAddresses,
+const getIpfsOptions = async () => getSwarmAddresses()
+  .then((swarmAddresses) => ({
+    repo: 'ipfs',
+    config: {
+      Profile: 'server',
+      Addresses: {
+        Swarm: swarmAddresses,
+      },
     },
-  },
-  libp2p: libp2pBundle,
-  EXPERIMENTAL: {
-    pubsub: true,
-  },
-  preload: {
-    enabled: false,
-  },
-  init: {
-    emptyRepo: true,
-  },
-};
+    libp2p: getLibp2pBundle(swarmAddresses),
+    EXPERIMENTAL: {
+      pubsub: true,
+    },
+    preload: {
+      enabled: false,
+    },
+    init: {
+      emptyRepo: true,
+    },
+  }));
+
+export default getIpfsOptions;

@@ -1,7 +1,7 @@
 # --------------------------------------------------
 # Stage 1 (Init contracts build base)
 # --------------------------------------------------
-FROM node:14-alpine as base
+FROM node:14-alpine@sha256:51e341881c2b77e52778921c685e711a186a71b8c6f62ff2edfc6b6950225a2f as base
 LABEL maintainers.1="Apostolos Fanakis <apostolof@auth.gr>"
 LABEL maintainers.2="Panagiotis Nikolaidis <ezerous@gmail.com>"
 LABEL gr.thmmy.ecentrics.concordia-image.name="contracts"
@@ -21,12 +21,14 @@ WORKDIR /usr/src/concordia
 COPY ./package.json .
 COPY ./yarn.lock .
 
-# Copy the contracts package.json, then install modules
+# Copy package.json files from shared and contracts, then install modules
+COPY ./packages/concordia-shared/package.json ./packages/concordia-shared/
 COPY ./packages/concordia-contracts/package.json ./packages/concordia-contracts/
 
 RUN yarn install --frozen-lockfile --network-timeout 100000
 
 # Gets the rest of the source code
+COPY ./packages/concordia-shared ./packages/concordia-shared
 COPY ./packages/concordia-contracts ./packages/concordia-contracts
 
 # --------------------------------------------------
@@ -47,6 +49,8 @@ WORKDIR /opt/concordia-contracts
 COPY ./docker/concordia-contracts/test-contracts.sh .
 
 WORKDIR /usr/src/concordia/packages/concordia-contracts
+
+RUN ["chmod", "+x", "/opt/concordia-contracts/test-contracts.sh"]
 
 ENTRYPOINT ["/opt/concordia-contracts/test-contracts.sh"]
 

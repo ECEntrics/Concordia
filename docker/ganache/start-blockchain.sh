@@ -14,8 +14,8 @@ if [ -z "${MNEMONIC}" ]; then
     --host "$HOST" \
     --port "$PORT" \
     --networkId "$ID" \
-    --account_keys_path "/home/ganache_keys/keys.json" \
-    --db "/home/ganache_db/" \
+    --account_keys_path "/mnt/concordia/ganache_keys/keys.json" \
+    --db "/mnt/concordia/ganache_db/" \
     --allowUnlimitedContractSize \
     --noVMErrorsOnRPCResponse \
     --verbose
@@ -28,8 +28,8 @@ else
     --host "$HOST" \
     --port "$PORT" \
     --networkId "$ID" \
-    --account_keys_path "/home/ganache_keys/keys.json" \
-    --db "/home/ganache_db/" \
+    --account_keys_path "/mnt/concordia/ganache_keys/keys.json" \
+    --db "/mnt/concordia/ganache_db/" \
     --allowUnlimitedContractSize \
     --noVMErrorsOnRPCResponse \
     --deterministic \

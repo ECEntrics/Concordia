@@ -15,7 +15,8 @@
     "migrate-upload": "yarn _migrate --network develop && yarn upload",
     "migrate-reset-upload": "yarn _migrate --network develop --reset && yarn upload",
     "_migrate": "yarn truffle migrate",
-    "upload": "node ./utils/contractsProviderUtils.js ${npm_package_version}-dev latest"
+    "upload": "yarn _upload ${npm_package_version}-dev latest",
+    "_upload": "node ./utils/contractsProviderUtils.js"
   },
   "dependencies": {
     "@openzeppelin/contracts": "~3.3.0",

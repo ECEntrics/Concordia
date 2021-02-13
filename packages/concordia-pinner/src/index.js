@@ -5,9 +5,9 @@ import { contracts } from 'concordia-contracts';
 import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import getWeb3ProviderUrl from 'concordia-shared/src/utils/web3';
 import { createOrbitInstance, getPeerDatabases, openKVDBs } from './utils/orbitUtils';
-import ipfsOptions from './options/ipfsOptions';
 import startAPI from './app';
 import downloadContractArtifacts from './utils/drizzleUtils';
+import getIpfsOptions from './options/ipfsOptions';
 
 process.on('unhandledRejection', (error) => {
   // This happens when attempting to initialize without any available Swarm addresses (e.g. Rendezvous)
@@ -68,7 +68,8 @@ const main = async () => {
   const web3 = new Web3(new Web3.providers.WebsocketProvider(getWeb3ProviderUrl()));
 
   getDeployedContract(web3)
-    .then(({ contract, contractAddress }) => IPFS.create(ipfsOptions)
+    .then(({ contract, contractAddress }) => getIpfsOptions()
+      .then((ipfsOptions) => IPFS.create(ipfsOptions))
       .then((ipfs) => createOrbitInstance(ipfs, contractAddress))
       .then((orbit) => openExistingUsersDatabases(contract, orbit)
         .then(() => {

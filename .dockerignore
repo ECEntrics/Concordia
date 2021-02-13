@@ -8,6 +8,8 @@ docker/
 !docker/concordia-contracts/test-contracts.sh
 !docker/concordia-app/test-app.sh
 !docker/concordia-app/nginx.conf
+!docker/concordia-app/create-environment.sh
+!docker/concordia-app/run.sh
 !docker/ganache/start-blockchain.sh
 
 packages/*/node_modules

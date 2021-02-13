@@ -28,9 +28,7 @@ const store = configureStore({
   preloadedState: initialState,
 });
 
-const breezeConfiguration = getBreezeConfiguration(EthereumContractIdentityProvider,
-  process.env.REACT_APP_RENDEZVOUS_HOST,
-  process.env.REACT_APP_RENDEZVOUS_PORT);
+const breezeConfiguration = getBreezeConfiguration(EthereumContractIdentityProvider);
 
 export const drizzle = new Drizzle(drizzleOptions, store);
 export const breeze = new Breeze(breezeConfiguration, store);
