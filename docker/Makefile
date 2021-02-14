@@ -11,6 +11,9 @@ run: compose-run build-contracts-provider run-contracts-provider build-contracts
 run-staging: compose-run build-contracts-provider run-contracts-provider-staging build-contracts-migrate run-contracts-migrate build-pinner run-pinner-staging build-app-staging run-app-staging
 	@echo "Concordia is up and running, head over to http://localhost:7000."
 
+prepare-network:
+	@docker network create --driver bridge concordia_concordia_network || true
+
 # Targets for building/running/stopping the blockchain and rendezvous server (using the docker-compose file)
 compose-build:
 	@docker-compose -f ./docker-compose.yml -p concordia build
@@ -31,8 +34,7 @@ run-ganache-test:
 
 # Rendezvous targets
 run-rendezvous:
-	@docker network create --driver bridge concordia_concordia_network || true &&\
-	docker run -d -p 9090:9090 --name concordia-rendezvous --net=concordia_concordia_network libp2p/js-libp2p-webrtc-star:version-0.20.5
+	@docker run -d -p 9090:9090 --name concordia-rendezvous --net=concordia_concordia_network libp2p/js-libp2p-webrtc-star:version-0.20.5
 
 # Contracts targets
 build-contracts:
@@ -42,9 +44,9 @@ build-contracts-migrate:
 build-contracts-tests:
 	@docker build ../ -f ./concordia-contracts/Dockerfile --target test -t ecentrics/concordia-contracts-tests --build-arg TZ=Europe/Athens
 run-contracts-tests:
-	@docker run --rm -v ${REPORTS}/contracts/:/mnt/concordia/test-reports/ --env-file=./env/contracts.env --net=concordia_concordia_network ecentrics/concordia-contracts-tests:latest
+	@docker run --rm -v ${REPORTS}/contracts/:/mnt/concordia/test-reports/ --env-file=./env/contracts-test.env --net=concordia_concordia_network ecentrics/concordia-contracts-tests:latest
 run-contracts-tests-host-chain:
-	@docker run --rm -v ${REPORTS}/contracts/:/mnt/concordia/test-reports/ --env-file=./env/contracts.env --net=host ecentrics/concordia-contracts-tests:latest
+	@docker run --rm -v ${REPORTS}/contracts/:/mnt/concordia/test-reports/ --env-file=./env/contracts-test.env --net=host ecentrics/concordia-contracts-tests:latest
 run-contracts-migrate:
 	@docker run --rm -v ${PACKAGES}/concordia-contracts/build/:/usr/src/concordia/packages/concordia-contracts/build/ --env-file=./env/contracts.env --net=concordia_concordia_network ecentrics/concordia-contracts-migrate:latest
 run-contracts-migrate-host-chain:

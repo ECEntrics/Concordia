@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 let Forum, Voting, PostVoting;
 
 /* eslint-disable global-require */

@@ -1,6 +1,6 @@
 FROM trufflesuite/ganache-cli:v6.12.2@sha256:c062707f17f355872d703cde3de6a12fc45a027ed42857c72514171a5f466ab7
 
-RUN mkdir /home/ganache_db /home/ganache_keys
+RUN mkdir -p /mnt/concordia/ganache_db /mnt/concordia/ganache_keys
 
 WORKDIR /opt/concordia-ganache
 
