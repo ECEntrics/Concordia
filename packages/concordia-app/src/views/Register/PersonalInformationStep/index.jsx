@@ -94,7 +94,7 @@ const PersonalInformationStep = (props) => {
         Promise.resolve())
         .then(() => pushNextStep())
         .catch((reason) => {
-          console.log(reason);
+          console.error(reason);
         });
     }
   }, [error, locationInput, profilePictureInput, pushNextStep]);
