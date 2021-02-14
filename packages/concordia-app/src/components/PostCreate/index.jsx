@@ -95,7 +95,7 @@ const PostCreate = (props) => {
             setCreatePostCacheSendStackId('');
           })
           .catch((reason) => {
-            console.log(reason);
+            console.error(reason);
           });
 
         setStoringPost(true);

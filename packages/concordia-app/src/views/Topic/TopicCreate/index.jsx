@@ -80,7 +80,7 @@ const TopicCreate = (props) => {
             history.push(`/topics/${topicId}`);
           })
           .catch((reason) => {
-            console.log(reason);
+            console.error(reason);
           });
       }
     }

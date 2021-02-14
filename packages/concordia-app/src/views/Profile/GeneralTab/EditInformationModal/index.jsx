@@ -124,7 +124,7 @@ const EditInformationModal = (props) => {
         // TODO: display a message
       })
       .catch((reason) => {
-        console.log(reason);
+        console.error(reason);
       });
 
     if (usernameInput !== initialUsername) {

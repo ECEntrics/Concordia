@@ -8,16 +8,17 @@ import { createOrbitInstance, getPeerDatabases, openKVDBs } from './utils/orbitU
 import startAPI from './app';
 import downloadContractArtifacts from './utils/drizzleUtils';
 import getIpfsOptions from './options/ipfsOptions';
+import { logger } from './utils/logger';
 
 process.on('unhandledRejection', (error) => {
   // This happens when attempting to initialize without any available Swarm addresses (e.g. Rendezvous)
   if (error.code === 'ERR_NO_VALID_ADDRESSES') {
-    console.error('unhandledRejection', error.message);
+    logger.error(`unhandledRejection: ${error.message}`);
     process.exit(1);
   }
 
   // Don't swallow other errors
-  console.error(error);
+  logger.error(error);
   throw error;
 });
 
@@ -25,7 +26,6 @@ const getDeployedContract = async (web3) => {
   let forumContractPromise;
 
   if (process.env.USE_EXTERNAL_CONTRACTS_PROVIDER) {
-    console.log('Downloading contracts.');
     forumContractPromise = downloadContractArtifacts()
       .then((remoteContracts) => remoteContracts
         .find((remoteContract) => remoteContract.contractName === FORUM_CONTRACT));
@@ -57,14 +57,15 @@ const handleWeb3LogEvent = (web3, eventJsonInterface, orbit) => (error, result) 
       result.topics.slice(1),
     );
     const userAddress = eventObj[1];
-    console.log('User signed up:', userAddress);
+
+    logger.info(`User signed up: ${userAddress}`);
     getPeerDatabases(orbit, [userAddress])
       .then((peerDBs) => openKVDBs(orbit, peerDBs));
   }
 };
 
 const main = async () => {
-  console.log('Initializing...');
+  logger.info('Initializing IPFS and orbitDb.');
   const web3 = new Web3(new Web3.providers.WebsocketProvider(getWeb3ProviderUrl()));
 
   getDeployedContract(web3)
@@ -87,11 +88,11 @@ const main = async () => {
 
           orbit._ipfs.libp2p.connectionManager.on(
             'peer:connect',
-            (peerInfo) => console.log('Peer connected: ', peerInfo.remotePeer.toB58String()),
+            (peerInfo) => logger.info(`Peer connected: ${peerInfo.remotePeer.toB58String()}`),
           );
           orbit._ipfs.libp2p.connectionManager.on(
             'peer:disconnect',
-            (peerInfo) => console.log('Peer disconnected: ', peerInfo.remotePeer.toB58String()),
+            (peerInfo) => logger.info(`Peer disconnected: ${peerInfo.remotePeer.toB58String()}`),
           );
           startAPI(orbit);
         })));

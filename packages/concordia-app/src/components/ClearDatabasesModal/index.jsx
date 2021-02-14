@@ -36,7 +36,7 @@ const ClearDatabasesModal = (props) => {
     purgeIndexedDBs()
       .then(() => {
         onDatabasesCleared();
-      }).catch((reason) => console.log(reason));
+      }).catch((reason) => console.error(reason));
   }, [onDatabasesCleared]);
 
   const onCancelTry = useCallback(() => {

@@ -41,10 +41,10 @@ module.exports = {
         'react-hooks/exhaustive-deps': 'error',
         'max-len': ['warn', {'code': 120, 'tabWidth': 4}],
         'no-unused-vars': 'warn',
-        'no-console': 'warn',
+        'no-console': ['warn', {allow: ['warn', 'error']}],
         'no-shadow': 'warn',
         "no-multi-str": "warn",
-        "jsx-a11y/label-has-associated-control": [ 2, {
+        "jsx-a11y/label-has-associated-control": [2, {
             "labelAttributes": ["label"],
             "controlComponents": ["Input"],
             "depth": 3,

@@ -2,7 +2,8 @@ import OrbitDB from 'orbit-db';
 import Identities from 'orbit-db-identity-provider';
 import { EthereumContractIdentityProvider } from '@ezerous/eth-identity-provider';
 import Web3 from 'web3';
-import ORBIT_DIRECTORY_DEFAULT from '../constants';
+import { ORBIT_DIRECTORY_DEFAULT } from '../constants';
+import { logger } from './logger';
 
 // TODO: share code below with frontend (?)
 const determineDBAddress = async ({
@@ -40,7 +41,7 @@ export const openKVDBs = async (orbit, databases) => {
     .forEach((database) => {
       orbit
         .keyvalue(database)
-        .then((store) => store.events.on('replicated', (address) => console.log(`Replicated ${address}`)));
-      console.log(`Opened ${database}`);
+        .then((store) => store.events.on('replicated', (address) => logger.info(`Replicated ${address}`)));
+      logger.info(`Opened ${database}`);
     });
 };

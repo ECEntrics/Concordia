@@ -1,5 +1,4 @@
 import path from 'path';
 
-const ORBIT_DIRECTORY_DEFAULT = path.join(__dirname, '..', 'orbitdb');
-
-export default ORBIT_DIRECTORY_DEFAULT;
+export const ORBIT_DIRECTORY_DEFAULT = path.join(__dirname, '..', 'orbitdb');
+export const LOGS_PATH = path.join(__dirname, '..', 'logs');
