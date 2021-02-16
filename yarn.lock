@@ -1542,10 +1542,10 @@
     orbit-db-identity-provider "~0.3.1"
     redux-saga "~1.1.3"
 
-"@ezerous/drizzle@~0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@ezerous/drizzle/-/drizzle-0.4.2.tgz#2e575d0709cc29c77b984d96562b8749d8f477c9"
-  integrity sha512-oTJ77+yGdgg2KPIeIvRczFnPrBg8aXdNisHfM0ztjd7T/Ui8+Nw1HNhMVaw2xTuR53pio3SD8FBU1JrEUKOABQ==
+"@ezerous/drizzle@~0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@ezerous/drizzle/-/drizzle-0.4.3.tgz#ee28dfe2cf7d8773087e190281ba5f6629cd1b48"
+  integrity sha512-PqjqcQfYfy6YyLT7gtVo43jEJXDxxot1chIUFqJ5belcfFWBsa6pzPhJP52DXfyOQsTkx4Q0QF5l6N/p0asrdg==
   dependencies:
     deepmerge "~4.2.2"
     is-plain-object "~5.0.0"
@@ -17183,9 +17183,6 @@ snake-case@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/snake-case/-/snake-case-3.0.4.tgz#4f2bbd568e9935abdfd593f34c691dadb49c452c"
   integrity sha512-LAOh4z89bGQvl9pFfNF8V146i7o7/CqFPbqzYgP+yYzDIDeS9HaNFtXABamRW+AQzEVODcvE79ljJ+8a9YSdMg==
-  dependencies:
-    dot-case "^3.0.4"
-    tslib "^2.0.3"
 
 snapdragon-node@^2.0.1:
   version "2.1.1"
