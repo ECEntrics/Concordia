@@ -23,7 +23,7 @@ const ClearDatabasesModal = (props) => {
   useEffect(() => {
     if (user.hasSignedUp && confirmationInput === user.username) {
       setUserConfirmed(true);
-    } else if (!user.hasSignedUp && confirmationInput === 'Concordia') {
+    } else if (!user.hasSignedUp && confirmationInput.toLowerCase() === 'concordia') {
       setUserConfirmed(true);
     } else {
       setUserConfirmed(false);
