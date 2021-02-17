@@ -61,7 +61,7 @@ pipeline {
       archiveArtifacts artifacts: "reports/${BUILD_NUMBER}/**/* , build/**/*, ganache/*", fingerprint: true, allowEmptyArchive: true
       sleep 2
       sh 'docker images | grep -E "ecentrics/concordia.+tests" | tr -s \' \' | cut -d \' \' -f 3 | xargs --no-run-if-empty docker rmi -f || true'
-      sh 'docker images | grep -E "ecentrics/concordia.+staging" | tr -s \' \' | cut -d \' \' -f 3 | xargs --no-run-if-empty docker rmi -f || true'
+//       sh 'docker images | grep -E "ecentrics/concordia.+staging" | tr -s \' \' | cut -d \' \' -f 3 | xargs --no-run-if-empty docker rmi -f || true'
       sh 'docker system prune -f'
       sh 'rm -rf reports'
       sh 'rm -rf build'
