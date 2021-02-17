@@ -25,6 +25,7 @@ export const createOrbitInstance = async (ipfs, contractAddress) => {
   EthereumContractIdentityProvider.setContractAddress(contractAddress);
 
   const ORBIT_DIRECTORY = process.env.ORBIT_DIRECTORY || ORBIT_DIRECTORY_DEFAULT;
+  logger.info(`Setting up OrbitDB in directory: ${ORBIT_DIRECTORY}`);
 
   return OrbitDB.createInstance(ipfs, { directory: ORBIT_DIRECTORY });
 };

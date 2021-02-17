@@ -1,14 +1,14 @@
 // Contracts provider
-const CONTRACTS_PROVIDER_HOST_DEFAULT = '127.0.0.1';
+const CONTRACTS_PROVIDER_HOST_DEFAULT = 'http://127.0.0.1';
 const CONTRACTS_PROVIDER_PORT_DEFAULT = '8400';
 const CONTRACTS_VERSION_HASH_DEFAULT = 'latest';
 
 // Pinner
-const PINNER_API_HOST_DEFAULT = '127.0.0.1';
+const PINNER_API_HOST_DEFAULT = 'http://127.0.0.1';
 const PINNER_API_PORT_DEFAULT = 4444;
 
 // Rendezvous
-const RENDEZVOUS_HOST_DEFAULT = '127.0.0.1';
+const RENDEZVOUS_HOST_DEFAULT = '/ip4/127.0.0.1';
 const RENDEZVOUS_PORT_DEFAULT = '9090';
 
 // Web3 (probably ganache)
