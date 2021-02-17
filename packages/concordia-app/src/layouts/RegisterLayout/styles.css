@@ -3,6 +3,5 @@
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: -1;
-    background: rgba(0, 0, 0, 0) linear-gradient(45deg, rgb(37, 45, 63) 0%, rgb(11,37,64) 100%) repeat scroll 0 0;
+    background: var(--secondary-color);
 }
