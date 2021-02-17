@@ -12,7 +12,7 @@ function getContractsDownloadRequest() {
   const HOST = pinnerApiHost;
   const PORT = pinnerApiPort;
 
-  const contractsProviderAddress = `http://${contractsProviderHost}:${contractsProviderPort}/contracts/`
+  const contractsProviderAddress = `${contractsProviderHost}:${contractsProviderPort}/contracts/`
       + `${contractsVersionHash}`;
   const selfAddress = `${HOST}:${PORT}`;
 

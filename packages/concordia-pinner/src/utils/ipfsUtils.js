@@ -9,4 +9,6 @@ export const getResolvedRendezvousUrl = async () => dnsLookup(rendezvousHost, { 
   .catch((error) => logger.error(new Error(`DNS lookup of ${rendezvousHost} failed.\n${error}`)));
 
 export const getSwarmAddresses = async () => getResolvedRendezvousUrl()
-  .then((resolvedRendezvousUrl) => [`/ip4/${resolvedRendezvousUrl.address}/tcp/${rendezvousPort}/wss/p2p-webrtc-star`]);
+  .then((resolvedRendezvousUrl) => [
+    `${resolvedRendezvousUrl.address}/tcp/${rendezvousPort}/wss/p2p-webrtc-star`,
+  ]);
