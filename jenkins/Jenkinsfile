@@ -442,7 +442,7 @@ pipeline {
               def rendezvousServerRunning = sh (script: 'docker ps -f name=concordia-rendezvous | \
                 grep -qE concordia-rendezvous', returnStatus: true)
 
-              if ("$rendezvousServerRunning" == '1') {
+              if ("$rendezvousServerRunning" == '1' || "$cleanSlateEnabled" == '0') {
                 sh 'docker run \
                   -d \
                   --env-file=./jenkins/env/rendezvous.jenkins.env \
@@ -606,7 +606,7 @@ pipeline {
               def rendezvousServerRunning = sh (script: 'docker ps -f name=concordia-rendezvous | \
                 grep -qE concordia-rendezvous', returnStatus: true)
 
-              if ("$rendezvousServerRunning" == '1') {
+              if ("$rendezvousServerRunning" == '1' || "$cleanSlateEnabled" == '0') {
                 sh 'docker run \
                   -d \
                   --env-file=./jenkins/env/rendezvous.jenkins.env \
