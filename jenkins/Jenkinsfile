@@ -449,7 +449,7 @@ pipeline {
                   -p 9090:9090 \
                   --name concordia-rendezvous \
                   --net=ecentrics_concordia_staging_network \
-                  libp2p/js-libp2p-webrtc-star:version-0.20.5'
+                  libp2p/js-libp2p-webrtc-star:version-0.21.1'
               } else {
                 sh 'docker network connect ecentrics_concordia_staging_network concordia-rendezvous || true'
               }
@@ -476,7 +476,7 @@ pipeline {
 
               sh (script: """docker run \
                 -d \
-                -v concordia-contracts-provider-staging:/mnt/concordia/contracts \
+                -v concordia-contracts-provider-staging:/mnt/concordia \
                 --env-file=./jenkins/env/contracts.provider.staging.env \
                 -p 8450:8450 \
                 --name concordia-contracts-provider-staging \
@@ -503,7 +503,7 @@ pipeline {
 
                 sh (script: 'docker run \
                   -d \
-                  -v concordia-ganache-staging:/mnt/concordia/ganache_keys \
+                  -v concordia-ganache-staging:/mnt/concordia \
                   -p 8555:8555 \
                   --env-file=./jenkins/env/ganache.staging.jenkins.env \
                   --name concordia-ganache-staging \
@@ -556,7 +556,7 @@ pipeline {
 
               sh """docker run \
                 -d \
-                -v concordia-pinner-staging:/mnt/concordia/orbitdb \
+                -v concordia-pinner-staging:/mnt/concordia/ \
                 -p 5555:5555 \
                 --env-file=./jenkins/env/pinner.staging.jenkins.env \
                 --name concordia-pinner-staging \
@@ -613,7 +613,7 @@ pipeline {
                   -p 9090:9090 \
                   --name concordia-rendezvous \
                   --net=ecentrics_concordia_production_network \
-                  libp2p/js-libp2p-webrtc-star:version-0.20.5'
+                  libp2p/js-libp2p-webrtc-star:version-0.21.1'
               } else {
                 sh 'docker network connect ecentrics_concordia_production_network concordia-rendezvous || true'
               }
@@ -640,7 +640,7 @@ pipeline {
 
               sh (script: """docker run \
                 -d \
-                -v concordia-contracts-provider-production:/mnt/concordia/contracts \
+                -v concordia-contracts-provider-production:/mnt/concordia \
                 --env-file=./jenkins/env/contracts.provider.production.env \
                 -e NODE_ENV=production \
                 -p 8400:8400 \
@@ -668,7 +668,7 @@ pipeline {
 
                 sh (script: 'docker run \
                   -d \
-                  -v concordia-ganache-production:/mnt/concordia/ganache_keys \
+                  -v concordia-ganache-production:/mnt/concordia \
                   -p 8545:8545 \
                   --env-file=./jenkins/env/ganache.production.jenkins.env \
                   --name concordia-ganache-production \
@@ -721,7 +721,7 @@ pipeline {
 
               sh """docker run \
                 -d \
-                -v concordia-pinner-production:/mnt/concordia/orbitdb \
+                -v concordia-pinner-production:/mnt/concordia \
                 -p 4444:4444 \
                 -e NODE_ENV=production \
                 --env-file=./jenkins/env/pinner.production.jenkins.env \
