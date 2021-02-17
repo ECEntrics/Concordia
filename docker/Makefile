@@ -74,21 +74,21 @@ run-app-host-chain:
 build-contracts-provider:
 	@docker build ../ -f ./concordia-contracts-provider/Dockerfile -t ecentrics/concordia-contracts-provider --build-arg TZ=Europe/Athens
 run-contracts-provider-staging:
-	@docker run -d -v ${CONTRACTS_PROVIDER_VOLUMES}/contracts:/mnt/concordia/contracts -v ${CONTRACTS_PROVIDER_VOLUMES}/contracts:/mnt/concordia/logs --env-file=./env/contracts-provider.env -p 8400:8400 --name concordia-contracts-provider --net=concordia_concordia_network ecentrics/concordia-contracts-provider:latest
+	@docker run -d -v ${CONTRACTS_PROVIDER_VOLUMES}:/mnt/concordia --env-file=./env/contracts-provider.env -p 8400:8400 --name concordia-contracts-provider --net=concordia_concordia_network ecentrics/concordia-contracts-provider:latest
 run-contracts-provider:
-	@docker run -d -v ${CONTRACTS_PROVIDER_VOLUMES}/contracts:/mnt/concordia/contracts -v ${CONTRACTS_PROVIDER_VOLUMES}/contracts:/mnt/concordia/logs --env-file=./env/contracts-provider.env -e NODE_ENV=production -p 8400:8400 --name concordia-contracts-provider --net=concordia_concordia_network ecentrics/concordia-contracts-provider:latest
+	@docker run -d -v ${CONTRACTS_PROVIDER_VOLUMES}:/mnt/concordia --env-file=./env/contracts-provider.env -e NODE_ENV=production -p 8400:8400 --name concordia-contracts-provider --net=concordia_concordia_network ecentrics/concordia-contracts-provider:latest
 
 # Pinner targets
 build-pinner:
 	@docker build ../ -f ./concordia-pinner/Dockerfile -t ecentrics/concordia-pinner --build-arg TZ=Europe/Athens
 run-pinner-staging:
-	@docker run -d -v ${PINNER_VOLUMES}/orbitdb:/mnt/concordia/orbitdb -v ${PINNER_VOLUMES}:/mnt/concordia/logs --env-file=./env/pinner.env -p 4444:4444 --name concordia-pinner --net=concordia_concordia_network ecentrics/concordia-pinner:latest
+	@docker run -d -v ${PINNER_VOLUMES}:/mnt/concordia --env-file=./env/pinner.env -p 4444:4444 --name concordia-pinner --net=concordia_concordia_network ecentrics/concordia-pinner:latest
 run-pinner:
-	@docker run -d -v ${PINNER_VOLUMES}/orbitdb:/mnt/concordia/orbitdb -v ${PINNER_VOLUMES}:/mnt/concordia/logs --env-file=./env/pinner.env -e NODE_ENV=production -p 4444:4444 --name concordia-pinner --net=concordia_concordia_network ecentrics/concordia-pinner:latest
+	@docker run -d -v ${PINNER_VOLUMES}:/mnt/concordia --env-file=./env/pinner.env -e NODE_ENV=production -p 4444:4444 --name concordia-pinner --net=concordia_concordia_network ecentrics/concordia-pinner:latest
 run-pinner-staging-host:
-	@docker run -d -v ${PINNER_VOLUMES}/orbitdb:/mnt/concordia/orbitdb -v ${PINNER_VOLUMES}:/mnt/concordia/logs --env-file=./env/pinner.env --net=host --name concordia-pinner ecentrics/concordia-pinner:latest
+	@docker run -d -v ${PINNER_VOLUMES}:/mnt/concordia --env-file=./env/pinner.env --net=host --name concordia-pinner ecentrics/concordia-pinner:latest
 run-pinner-host:
-	@docker run -d -v ${PINNER_VOLUMES}/orbitdb:/mnt/concordia/orbitdb -v ${PINNER_VOLUMES}:/mnt/concordia/logs --env-file=./env/pinner.env -e NODE_ENV=production --net=host --name concordia-pinner ecentrics/concordia-pinner:latest
+	@docker run -d -v ${PINNER_VOLUMES}:/mnt/concordia --env-file=./env/pinner.env -e NODE_ENV=production --net=host --name concordia-pinner ecentrics/concordia-pinner:latest
 
 # Other
 clean-images:
