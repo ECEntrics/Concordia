@@ -34,7 +34,7 @@ run-ganache-test:
 
 # Rendezvous targets
 run-rendezvous:
-	@docker run -d -p 9090:9090 --name concordia-rendezvous --net=concordia_concordia_network libp2p/js-libp2p-webrtc-star:version-0.20.5
+	@docker run -d -p 9090:9090 --name concordia-rendezvous --net=concordia_concordia_network libp2p/js-libp2p-webrtc-star:version-0.21.1
 
 # Contracts targets
 build-contracts:

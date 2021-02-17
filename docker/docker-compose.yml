@@ -21,7 +21,7 @@ services:
     restart: always
 
   rendezvous:
-    image: libp2p/js-libp2p-webrtc-star:version-0.20.5
+    image: libp2p/js-libp2p-webrtc-star:version-0.21.1
     container_name: concordia-rendezvous
     networks:
       concordia_network:
