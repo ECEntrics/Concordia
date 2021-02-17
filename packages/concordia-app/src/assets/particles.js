@@ -1,7 +1,7 @@
 const particlesOptions = {
   particles: {
     number: {
-      value: 90,
+      value: 120,
       density: {
         enable: true,
         value_area: 1500,
@@ -9,14 +9,14 @@ const particlesOptions = {
     },
     line_linked: {
       enable: true,
-      opacity: 0.04,
+      opacity: 0.06,
     },
     move: {
       direction: 'none',
       speed: 0.12,
     },
     size: {
-      value: 1.5,
+      value: 1.6,
     },
     opacity: {
       anim: {

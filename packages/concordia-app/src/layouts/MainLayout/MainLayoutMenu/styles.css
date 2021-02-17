@@ -7,4 +7,7 @@
     border-radius: 0;
     margin-top: 0;
     margin-bottom: 4rem;
+    z-index: 1;
+    position: relative;
+    border-bottom: solid rgba(255, 255, 255,0.2) 1px;
 }
