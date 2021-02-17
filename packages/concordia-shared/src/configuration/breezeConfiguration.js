@@ -9,7 +9,7 @@ const getBreezeConfiguration = (identityProvider) => ({
         Swarm: [
           // Use local signaling server (see also rendezvous script in package.json)
           // For more information: https://github.com/libp2p/js-libp2p-webrtc-star
-          `/ip4/${rendezvousHost}/tcp/${rendezvousPort}/wss/p2p-webrtc-star`,
+          `${rendezvousHost}/tcp/${rendezvousPort}/wss/p2p-webrtc-star`,
 
           // Use the following public servers if needed
           // '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star',

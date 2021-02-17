@@ -20,7 +20,7 @@ function getContractsDownloadRequest() {
   const xhrRequest = new XMLHttpRequest();
 
   xhrRequest.open('GET',
-    `http://${contractsProviderHost}:${contractsProviderPort}/contracts/${contractsVersionHash}`,
+    `${contractsProviderHost}:${contractsProviderPort}/contracts/${contractsVersionHash}`,
     false);
   xhrRequest.setRequestHeader('Access-Control-Allow-Origin', `${HOST}:${PORT}`);
   xhrRequest.setRequestHeader('Access-Control-Allow-Credentials', 'true');

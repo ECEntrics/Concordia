@@ -5,7 +5,7 @@ const { contractsProviderPort } = require('concordia-shared/src/environment/inte
 const { contracts } = require('../index');
 
 const uploadContractsToProviderUnirest = (versionHash, tag) => {
-  const uploadPath = `http://${contractsProviderHost}:${contractsProviderPort}/contracts/${versionHash}`;
+  const uploadPath = `${contractsProviderHost}:${contractsProviderPort}/contracts/${versionHash}`;
   const request = unirest('POST', uploadPath)
     .field('tag', tag);
 
