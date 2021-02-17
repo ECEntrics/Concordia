@@ -443,6 +443,9 @@ pipeline {
                 grep -qE concordia-rendezvous', returnStatus: true)
 
               if ("$rendezvousServerRunning" == '1' || "$cleanSlateEnabled" == '0') {
+                sh 'docker stop concordia-rendezvous || true \
+                  && docker rm concordia-rendezvous || true'
+
                 sh 'docker run \
                   -d \
                   --env-file=./jenkins/env/rendezvous.jenkins.env \
@@ -607,6 +610,9 @@ pipeline {
                 grep -qE concordia-rendezvous', returnStatus: true)
 
               if ("$rendezvousServerRunning" == '1' || "$cleanSlateEnabled" == '0') {
+                sh 'docker stop concordia-rendezvous || true \
+                  && docker rm concordia-rendezvous || true'
+
                 sh 'docker run \
                   -d \
                   --env-file=./jenkins/env/rendezvous.jenkins.env \
