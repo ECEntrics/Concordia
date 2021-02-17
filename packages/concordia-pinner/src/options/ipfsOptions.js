@@ -7,8 +7,7 @@ const getIpfsOptions = async () => getSwarmAddresses()
   .then((swarmAddresses) => {
     logger.info(`Swarm addresses used: ${swarmAddresses.join(', ')}`);
     return swarmAddresses;
-  })
-  .then((swarmAddresses) => {
+  }).then((swarmAddresses) => {
     const IPFS_DIRECTORY = process.env.IPFS_DIRECTORY || IPFS_DIRECTORY_DEFAULT;
     logger.info(`Setting up IPFS in repo: ${IPFS_DIRECTORY}`);
 
