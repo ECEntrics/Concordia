@@ -1,6 +1,10 @@
 #no-topic-message {
-    padding-top: 7rem;
+    padding-top: 22rem;
     clear: both;
+}
+
+#no-topic-message > .header {
+    color: white;
 }
 
 #new-topic-button{

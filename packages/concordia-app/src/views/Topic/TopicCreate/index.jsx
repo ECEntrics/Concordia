@@ -100,7 +100,7 @@ const TopicCreate = (props) => {
           <Header id="new-topic-header" as="h2">New Topic</Header>
           <Form loading={posting}>
               <Form.Field required>
-                  <label htmlFor="form-topic-create-field-subject">
+                  <label className="form-topic-create-header" htmlFor="form-topic-create-field-subject">
                       {t('topic.create.form.subject.field.label')}
                   </label>
                   <Input
@@ -113,7 +113,7 @@ const TopicCreate = (props) => {
                   />
               </Form.Field>
               <Form.Field required>
-                  <label htmlFor="form-topic-create-field-message">
+                  <label className="form-topic-create-header" htmlFor="form-topic-create-field-message">
                       {t('topic.create.form.content.field.label')}
                   </label>
                   <TextArea

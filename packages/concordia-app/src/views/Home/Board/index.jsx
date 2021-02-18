@@ -36,7 +36,7 @@ const Board = (props) => {
             ? (<TopicList topicIds={_.rangeRight(0, numberOfTopics)} />)
             : (!hasSignedUp
               ? (
-                  <div id="no-topic-message" className="vertical-center-in-parent">
+                  <div id="no-topic-message" className="vertical-center-in-parent unselectable">
                       <Header textAlign="center" as="h2">
                           {t('board.header.no.topics.message')}
                       </Header>
@@ -46,7 +46,7 @@ const Board = (props) => {
                   </div>
               )
               : (
-                  <div id="no-topic-message" className="vertical-center-in-parent">
+                  <div id="no-topic-message" className="vertical-center-in-parent unselectable">
                       <Header textAlign="center" as="h2">
                           {t('board.header.no.topics.message')}
                       </Header>

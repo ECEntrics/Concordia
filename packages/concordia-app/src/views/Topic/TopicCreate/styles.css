@@ -1,6 +1,11 @@
 #new-topic-header {
     padding: 2rem;
     text-align: center;
+    color: white;
+}
+
+.form-topic-create-header{
+    color: white !important;
 }
 
 .form-textarea-required {
