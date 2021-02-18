@@ -1,3 +1,7 @@
 #profile-container {
     height: auto !important;
 }
+
+#profile-container .ui.tabular.menu > [class="item"] {
+    color: white;
+}

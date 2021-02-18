@@ -160,9 +160,7 @@ const TopicListRow = (props) => {
                         </Grid>
                     </Grid.Column>
                 </Grid>
-
             </Segment>
-
         </Dimmer.Dimmable>
     );
   }, [history, loading, numberOfReplies, t, timeAgo, topicAuthor, topicAuthorAddress, topicAuthorMeta, topicId, topicSubject]);

@@ -11,3 +11,11 @@
     position: relative;
     border-bottom: solid rgba(255, 255, 255,0.2) 1px;
 }
+
+#main-layout-menu .link.item {
+    border-radius: 0;
+}
+
+#main-layout-menu .link.item::before {
+    background: rgba(255, 255, 255,0.2);
+}
