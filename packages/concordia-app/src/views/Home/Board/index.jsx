@@ -2,12 +2,9 @@ import React, { useMemo } from 'react';
 import { Button, Header } from 'semantic-ui-react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
-import _ from 'lodash';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-
-import TopicList from '../../../components/TopicList';
-
+import PaginatedTopicList from '../../../components/Pagination/PaginatedTopicList';
 import './styles.css';
 
 const Board = (props) => {
@@ -33,7 +30,8 @@ const Board = (props) => {
             : null}
           {/* eslint-disable-next-line no-nested-ternary */}
           {numberOfTopics > 0
-            ? (<TopicList topicIds={_.rangeRight(0, numberOfTopics)} />)
+          // eslint-disable-next-line react/jsx-no-undef
+            ? (<PaginatedTopicList />)
             : (!hasSignedUp
               ? (
                   <div id="no-topic-message" className="vertical-center-in-parent unselectable">

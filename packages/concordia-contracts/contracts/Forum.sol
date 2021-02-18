@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.0;
+pragma solidity 0.8.1;
 
 contract Forum {
     // Error messages for require()
@@ -17,6 +17,8 @@ contract Forum {
         bool signedUp;    // Helper variable for hasUserSignedUp()
     }
 
+    uint public numUsers;   // Total number of users
+
     mapping(address => User) users;
     mapping(string => address) usernameAddresses;
     address[] userAddresses;
@@ -30,6 +32,7 @@ contract Forum {
         users[msg.sender] = User(username, new uint[](0), new uint[](0), block.timestamp, true);
         usernameAddresses[username] = msg.sender;
         userAddresses.push(msg.sender);
+        numUsers++;
         emit UserSignedUp(username, msg.sender);
         return true;
     }

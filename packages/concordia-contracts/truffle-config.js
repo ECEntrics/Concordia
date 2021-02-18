@@ -7,7 +7,7 @@ module.exports = {
   // to customize your Truffle configuration!
   compilers: {
     solc: {
-      version: '0.8.0',
+      version: '0.8.1',
     },
   },
   contracts_build_directory: path.join(__dirname, 'build/'),

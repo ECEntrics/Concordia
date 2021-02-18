@@ -19,23 +19,15 @@ const TopicList = (props) => {
 
   useEffect(() => {
     if (drizzleInitialized && !drizzleInitializationFailed) {
-      const newTopicsFound = topicIds
-        .filter((topicId) => !getTopicCallHashes
-          .map((getTopicCallHash) => getTopicCallHash.id)
-          .includes(topicId));
-
-      if (newTopicsFound.length > 0) {
-        setGetTopicCallHashes([
-          ...getTopicCallHashes,
-          ...newTopicsFound
-            .map((topicId) => ({
-              id: topicId,
-              hash: getTopicChainData(topicId),
-            })),
-        ]);
-      }
+      setGetTopicCallHashes(
+        topicIds
+          .map((topicId) => ({
+            id: topicId,
+            hash: getTopicChainData(topicId),
+          })),
+      );
     }
-  }, [drizzleInitializationFailed, drizzleInitialized, getTopicCallHashes, topicIds]);
+  }, [drizzleInitializationFailed, drizzleInitialized, topicIds]);
 
   const topics = useMemo(() => topicIds
     .map((topicId) => {
