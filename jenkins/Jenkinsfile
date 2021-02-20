@@ -24,8 +24,8 @@ def contractsTestsImage
 def contractsProviderImage
 def pinnerImage
 
-def freshGanacheStagingRunning
-def freshGanacheProductionRunning
+def freshGanacheStagingRunning = false
+def freshGanacheProductionRunning = false
 
 def successResultGif = "https://media.giphy.com/media/o75ajIFH0QnQC3nCeD/giphy.gif"
 def failResultGif = "https://media.giphy.com/media/ljtfkyTD3PIUZaKWRi/giphy.gif"
@@ -199,6 +199,7 @@ pipeline {
                 "ecentrics/concordia-contracts-migrate:v${contractsPackageVersion}",
                 "-f docker/concordia-contracts/Dockerfile \
                 ./ \
+                -t ecentrics/concordia-contracts-migrate:latest \
                 --build-arg TZ=Europe/Athens"
               )
 
@@ -225,6 +226,7 @@ pipeline {
                 "ecentrics/concordia-app:v${appPackageVersion}",
                 "-f docker/concordia-app/Dockerfile \
                 ./ \
+                -t ecentrics/concordia-app:latest \
                 --build-arg TZ=Europe/Athens"
               )
             }
@@ -243,6 +245,7 @@ pipeline {
                 "ecentrics/concordia-contracts-provider:v${contractsProviderPackageVersion}",
                 "-f docker/concordia-contracts-provider/Dockerfile \
                 ./ \
+                -t ecentrics/concordia-contracts-provider:latest \
                 --build-arg TZ=Europe/Athens"
               )
             }
@@ -261,6 +264,7 @@ pipeline {
                 "ecentrics/concordia-pinner:v${pinnerPackageVersion}",
                 "-f docker/concordia-pinner/Dockerfile \
                 ./ \
+                -t ecentrics/concordia-pinner:latest \
                 --build-arg TZ=Europe/Athens"
               )
             }
@@ -286,6 +290,7 @@ pipeline {
                 "ecentrics/concordia-contracts-migrate:v${contractsPackageVersion}-staging-b${BUILD_NUMBER}",
                 "-f docker/concordia-contracts/Dockerfile \
                 ./ \
+                -t ecentrics/concordia-contracts-migrate:staging-latest \
                 --build-arg TZ=Europe/Athens"
               )
 
@@ -313,6 +318,7 @@ pipeline {
                 "ecentrics/concordia-app:v${appPackageVersion}-staging-b${BUILD_NUMBER}",
                 "-f docker/concordia-app/Dockerfile \
                 ./ \
+                -t ecentrics/concordia-app:staging-latest \
                 --target staging \
                 --build-arg TZ=Europe/Athens"
               )
@@ -332,6 +338,7 @@ pipeline {
                 "ecentrics/concordia-contracts-provider:v${contractsProviderPackageVersion}-staging-b${BUILD_NUMBER}",
                 "-f docker/concordia-contracts-provider/Dockerfile \
                 ./ \
+                -t ecentrics/concordia-contracts-provider:staging-latest \
                 --build-arg TZ=Europe/Athens"
               )
             }
@@ -350,6 +357,7 @@ pipeline {
                 "ecentrics/concordia-pinner:v${pinnerPackageVersion}-staging-b${BUILD_NUMBER}",
                 "-f docker/concordia-pinner/Dockerfile \
                 ./ \
+                -t ecentrics/concordia-pinner:staging-latest \
                 --build-arg TZ=Europe/Athens"
               )
             }
@@ -484,7 +492,7 @@ pipeline {
                 -p 8450:8450 \
                 --name concordia-contracts-provider-staging \
                 --net=ecentrics_concordia_staging_network \
-                ecentrics/concordia-contracts-provider:v${contractsProviderPackageVersion}-staging-b${BUILD_NUMBER}""")
+                ecentrics/concordia-contracts-provider:staging-latest""")
             }
           }
         }
@@ -535,7 +543,7 @@ pipeline {
                   --env-file=./jenkins/env/contracts.staging.jenkins.env \
                   -e CONTRACTS_VERSION_HASH=${contractsPackageVersion}-dev \
                   --net=ecentrics_concordia_staging_network \
-                  ecentrics/concordia-contracts-migrate:v${contractsPackageVersion}-staging-b${BUILD_NUMBER}"""
+                  ecentrics/concordia-contracts-migrate:staging-latest"""
             }
           }
         }
@@ -564,7 +572,7 @@ pipeline {
                 --env-file=./jenkins/env/pinner.staging.jenkins.env \
                 --name concordia-pinner-staging \
                 --net=ecentrics_concordia_staging_network \
-                ecentrics/concordia-pinner:v${pinnerPackageVersion}-staging-b${BUILD_NUMBER}"""
+                ecentrics/concordia-pinner:staging-latest"""
             }
           }
         }
@@ -589,7 +597,7 @@ pipeline {
                 --env-file=./jenkins/env/concordia.staging.jenkins.env \
                 --name concordia-app-staging \
                 --net=ecentrics_concordia_staging_network \
-                ecentrics/concordia-app:v${appPackageVersion}-staging-b${BUILD_NUMBER}"""
+                ecentrics/concordia-app:staging-latest"""
             }
           }
         }
@@ -652,7 +660,7 @@ pipeline {
                 -p 8400:8400 \
                 --name concordia-contracts-provider-production \
                 --net=ecentrics_concordia_production_network \
-                ecentrics/concordia-contracts-provider:v${contractsProviderPackageVersion}""")
+                ecentrics/concordia-contracts-provider:latest""")
             }
           }
         }
@@ -703,7 +711,7 @@ pipeline {
                   --env-file=./jenkins/env/contracts.production.jenkins.env \
                   -e CONTRACTS_VERSION_HASH=${contractsPackageVersion} \
                   --net=ecentrics_concordia_production_network \
-                  ecentrics/concordia-contracts-migrate:v${contractsPackageVersion}"""
+                  ecentrics/concordia-contracts-migrate:latest"""
             }
           }
         }
@@ -733,7 +741,7 @@ pipeline {
                 --env-file=./jenkins/env/pinner.production.jenkins.env \
                 --name concordia-pinner-production \
                 --net=ecentrics_concordia_production_network \
-                ecentrics/concordia-pinner:v${pinnerPackageVersion}"""
+                ecentrics/concordia-pinner:latest"""
             }
           }
         }
@@ -758,7 +766,7 @@ pipeline {
                 --env-file=./jenkins/env/concordia.production.jenkins.env \
                 --name concordia-app-production \
                 --net=ecentrics_concordia_production_network \
-                ecentrics/concordia-app:v${appPackageVersion}"""
+                ecentrics/concordia-app:latest"""
             }
           }
         }
