@@ -3,35 +3,16 @@
 
 ## Setup
 
-```shell script
-cd concordia
-yarn
-```
+You can find detailed instructions on how to get started with each service in the respective package directories. The
+overall setup pipeline **for development** is this though:
 
-## Compile contracts
-
-```shell script
-cd packages/concordia-contracts
-yarn compile
-```
-
-## Run app
-
-```shell script
-cd packages/concordia-app
-yarn start
-```
-
-## Build app
-
-```shell script
-cd packages/concordia-app
-yarn build
-```
+- start rendezvous server and ganache
+- migrate contracts
+- start application
 
 ## Using Docker images
 
-This project provides docker images for a number of services required to setup Concordia, as well as for Concordia
+This project provides docker images for a number of services required to set up Concordia, as well as for Concordia
 itself.
 
 Check out the README.md in the `./docker` directory
