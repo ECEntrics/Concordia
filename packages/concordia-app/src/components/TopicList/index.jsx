@@ -6,13 +6,14 @@ import { useSelector } from 'react-redux';
 import { List } from 'semantic-ui-react';
 import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import TopicListRow from './TopicListRow';
+import PaginationComponent from '../PaginationComponent';
 import { drizzle } from '../../redux/store';
 import './styles.css';
 
 const { contracts: { [FORUM_CONTRACT]: { methods: { getTopic: { cacheCall: getTopicChainData } } } } } = drizzle;
 
 const TopicList = (props) => {
-  const { topicIds } = props;
+  const { topicIds, numberOfItems, onPageChange } = props;
   const [getTopicCallHashes, setGetTopicCallHashes] = useState([]);
   const drizzleInitialized = useSelector((state) => state.drizzleStatus.initialized);
   const drizzleInitializationFailed = useSelector((state) => state.drizzleStatus.failed);
@@ -44,14 +45,19 @@ const TopicList = (props) => {
     }), [getTopicCallHashes, topicIds]);
 
   return (
-      <List id="topic-list" size="big">
-          {topics}
-      </List>
+      <div>
+          <List id="topic-list" size="big">
+              {topics}
+          </List>
+          <PaginationComponent onPageChange={onPageChange} numberOfItems={numberOfItems} />
+      </div>
   );
 };
 
 TopicList.propTypes = {
   topicIds: PropTypes.arrayOf(PropTypes.number).isRequired,
+  numberOfItems: PropTypes.number.isRequired,
+  onPageChange: PropTypes.func,
 };
 
 export default TopicList;

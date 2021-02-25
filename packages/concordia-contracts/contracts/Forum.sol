@@ -7,6 +7,7 @@ contract Forum {
     string public constant USERNAME_TAKEN = "Username is already taken.";
     string public constant TOPIC_DOES_NOT_EXIST = "Topic doesn't exist.";
     string public constant POST_DOES_NOT_EXIST = "Post doesn't exist.";
+    string public constant INVALID_RANGE = "Invalid range.";
 
     //----------------------------------------USER----------------------------------------
     struct User {
@@ -67,12 +68,38 @@ contract Forum {
         return false;
     }
 
-    function getUserTopics(address userAddress) public view returns (uint[] memory) {
+    function getUserTopics(address userAddress, uint startIndex, uint endIndex) public view returns (uint[] memory) {
+        require(hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
+        require(startIndex <= endIndex && users[userAddress].topicIDs.length > endIndex, INVALID_RANGE);
+        uint length = endIndex - startIndex + 1;
+        uint[] memory userTopics = new uint[](length);
+        uint counter = 0;
+        for (uint i = startIndex; i <= endIndex; i++) {
+            userTopics[counter] = users[userAddress].topicIDs[i];
+            counter++;
+        }
+        return userTopics;
+    }
+
+    function getUserPosts(address userAddress, uint startIndex, uint endIndex) public view returns (uint[] memory) {
+        require(hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
+        require(startIndex <= endIndex && users[userAddress].postIDs.length > endIndex, INVALID_RANGE);
+        uint length = endIndex - startIndex + 1;
+        uint[] memory userPosts = new uint[](length);
+        uint counter = 0;
+        for (uint i = startIndex; i <= endIndex; i++) {
+            userPosts[counter] = users[userAddress].postIDs[i];
+            counter++;
+        }
+        return userPosts;
+    }
+
+    function getAllUserTopics(address userAddress) public view returns (uint[] memory) {
         require(hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
         return users[userAddress].topicIDs;
     }
 
-    function getUserPosts(address userAddress) public view returns (uint[] memory) {
+    function getAllUserPosts(address userAddress) public view returns (uint[] memory) {
         require(hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
         return users[userAddress].postIDs;
     }

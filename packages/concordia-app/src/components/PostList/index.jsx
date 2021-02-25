@@ -20,23 +20,14 @@ const PostList = (props) => {
 
   useEffect(() => {
     if (drizzleInitialized && !drizzleInitializationFailed && !loading) {
-      const newPostsFound = postIds
-        .filter((postId) => !getPostCallHashes
-          .map((getPostCallHash) => getPostCallHash.id)
-          .includes(postId));
-
-      if (newPostsFound.length > 0) {
-        setGetPostCallHashes([
-          ...getPostCallHashes,
-          ...newPostsFound
-            .map((postId) => ({
-              id: postId,
-              hash: getPostChainData(postId),
-            })),
-        ]);
-      }
+      setGetPostCallHashes(
+        postIds.map((postId) => ({
+          id: postId,
+          hash: getPostChainData(postId),
+        })),
+      );
     }
-  }, [drizzleInitializationFailed, drizzleInitialized, getPostCallHashes, loading, postIds]);
+  }, [drizzleInitializationFailed, drizzleInitialized, loading, postIds]);
 
   const posts = useMemo(() => {
     if (loading) {
