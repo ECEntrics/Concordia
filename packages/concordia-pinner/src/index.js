@@ -10,11 +10,17 @@ import downloadContractArtifacts from './utils/drizzleUtils';
 import getIpfsOptions from './options/ipfsOptions';
 import { logger } from './utils/logger';
 
-process.on('unhandledRejection', (error) => {
+let ipfsSingleton;
+
+process.on('unhandledRejection', async (error) => {
   // This happens when attempting to initialize without any available Swarm addresses (e.g. Rendezvous)
   if (error.code === 'ERR_NO_VALID_ADDRESSES') {
     logger.error(`unhandledRejection: ${error.message}`);
     process.exit(1);
+  }
+
+  if (ipfsSingleton) {
+      await ipfsSingleton.stop();
   }
 
   // Don't swallow other errors
@@ -71,6 +77,10 @@ const main = async () => {
   getDeployedContract(web3)
     .then(({ contract, contractAddress }) => getIpfsOptions()
       .then((ipfsOptions) => IPFS.create(ipfsOptions))
+        .then((ipfs) => {
+            ipfsSingleton = ipfs;
+            return ipfs;
+        })
       .then((ipfs) => createOrbitInstance(ipfs, contractAddress))
       .then((orbit) => openExistingUsersDatabases(contract, orbit)
         .then(() => {
