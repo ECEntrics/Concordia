@@ -19,8 +19,6 @@ const {
 } = drizzle;
 
 const HomeTopicList = () => {
-  const drizzleInitialized = useSelector((state) => state.drizzleStatus.initialized);
-  const drizzleInitializationFailed = useSelector((state) => state.drizzleStatus.failed);
   const [pageNumber, setPageNumber] = useState(1);
   const [numTopics, setNumTopics] = useState(null);
   const [topicIds, setTopicIds] = useState([]);
@@ -29,17 +27,17 @@ const HomeTopicList = () => {
   const numTopicsResult = useSelector((state) => state.contracts[FORUM_CONTRACT].numTopics[numTopicsCallHash]);
 
   useEffect(() => {
-    if (drizzleInitialized && !drizzleInitializationFailed && numTopicsCallHash === null) {
+    if (numTopicsCallHash === null) {
       setNumTopicsCallHash(numTopicsChainData());
     }
-  }, [drizzleInitializationFailed, drizzleInitialized, numTopicsCallHash]);
+  }, [numTopicsCallHash]);
 
   useEffect(() => {
-    if (drizzleInitialized && !drizzleInitializationFailed && numTopics !== null) {
+    if (numTopics !== null) {
       setTopicIds(_.rangeRight(Math.max(numTopics - ITEMS_PER_PAGE * pageNumber, 0),
         numTopics - ITEMS_PER_PAGE * (pageNumber - 1)));
     }
-  }, [drizzleInitializationFailed, drizzleInitialized, numTopics, pageNumber]);
+  }, [numTopics, pageNumber]);
 
   useEffect(() => {
     if (numTopicsResult) {

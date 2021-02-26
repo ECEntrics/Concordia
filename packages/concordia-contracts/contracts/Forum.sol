@@ -94,14 +94,14 @@ contract Forum {
         return userPosts;
     }
 
-    function getAllUserTopics(address userAddress) public view returns (uint[] memory) {
+    function getUserTopicCount(address userAddress) public view returns (uint) {
         require(hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
-        return users[userAddress].topicIDs;
+        return users[userAddress].topicIDs.length;
     }
 
-    function getAllUserPosts(address userAddress) public view returns (uint[] memory) {
+    function getUserPostCount(address userAddress) public view returns (uint) {
         require(hasUserSignedUp(userAddress), USER_HAS_NOT_SIGNED_UP);
-        return users[userAddress].postIDs;
+        return users[userAddress].postIDs.length;
     }
 
     function getUserDateOfRegister(address userAddress) public view returns (uint) {
