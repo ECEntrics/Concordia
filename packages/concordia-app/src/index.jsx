@@ -3,15 +3,18 @@ import './utils/wdyr';
 import React, { Suspense } from 'react';
 import { render } from 'react-dom';
 import App from './App';
+import ErrorBoundary from './ErrorBoundary';
 import store from './redux/store';
 import * as serviceWorker from './utils/serviceWorker';
 import LoadingScreen from './components/LoadingScreen';
 import './assets/css/index.css';
 
 render(
-    <Suspense fallback={<LoadingScreen />}>
-        <App store={store} />
-    </Suspense>,
+    <ErrorBoundary>
+        <Suspense fallback={<LoadingScreen />}>
+            <App store={store} />
+        </Suspense>
+    </ErrorBoundary>,
     document.getElementById('root'),
 );
 
