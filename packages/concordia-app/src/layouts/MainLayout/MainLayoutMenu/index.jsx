@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import { Dropdown, Menu } from 'semantic-ui-react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
@@ -95,4 +95,4 @@ const MainLayoutMenu = () => {
   );
 };
 
-export default MainLayoutMenu;
+export default memo(MainLayoutMenu);
