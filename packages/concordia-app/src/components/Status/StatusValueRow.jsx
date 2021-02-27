@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Table } from 'semantic-ui-react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
@@ -19,4 +19,4 @@ const StatusValueRow = (props) => {
   );
 };
 
-export default StatusValueRow;
+export default memo(StatusValueRow);
