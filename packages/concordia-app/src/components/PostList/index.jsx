@@ -8,7 +8,7 @@ import {
 import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import { drizzle } from '../../redux/store';
 import PostListRow from './PostListRow';
-import PaginationComponent from '../PaginationComponent';
+import PaginationComponent, { ITEMS_PER_PAGE } from '../PaginationComponent';
 
 const { contracts: { [FORUM_CONTRACT]: { methods: { getPost: { cacheCall: getPostChainData } } } } } = drizzle;
 
@@ -16,6 +16,7 @@ const PostList = (props) => {
   const {
     postIds, numberOfItems, onPageChange, loading, focusOnPost,
   } = props;
+  const [pageNumber, setPageNumber] = useState(1);
   const [getPostCallHashes, setGetPostCallHashes] = useState([]);
 
   useEffect(() => {
@@ -40,7 +41,7 @@ const PostList = (props) => {
         return (
             <PostListRow
               id={postId}
-              postIndex={index + 1}
+              postIndex={ITEMS_PER_PAGE * (pageNumber - 1) + index + 1}
               key={postId}
               postCallHash={postHash && postHash.hash}
               loading={postHash === undefined}
@@ -48,7 +49,12 @@ const PostList = (props) => {
             />
         );
       });
-  }, [focusOnPost, getPostCallHashes, loading, postIds]);
+  }, [focusOnPost, getPostCallHashes, loading, pageNumber, postIds]);
+
+  const handlePageChange = (event, data) => {
+    setPageNumber(data.activePage);
+    onPageChange(event, data);
+  };
 
   return (
       <>
@@ -56,7 +62,7 @@ const PostList = (props) => {
               <Loader active={loading} />
               {posts}
           </Dimmer.Dimmable>
-          <PaginationComponent onPageChange={onPageChange} numberOfItems={numberOfItems} />
+          <PaginationComponent onPageChange={handlePageChange} numberOfItems={numberOfItems} />
       </>
   );
 };
