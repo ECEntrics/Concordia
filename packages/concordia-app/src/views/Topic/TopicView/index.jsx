@@ -11,7 +11,7 @@ import { TOPICS_DATABASE, USER_DATABASE } from 'concordia-shared/src/constants/o
 import { breeze, drizzle } from '../../../redux/store';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import './styles.css';
-import PostList from '../../../components/PostList';
+import TopicPostList from './TopicPostList';
 import determineKVAddress from '../../../utils/orbitUtils';
 import { TOPIC_SUBJECT } from '../../../constants/orbit/TopicsDatabaseKeys';
 import PostCreate from '../../../components/PostCreate';
@@ -24,8 +24,6 @@ const TopicView = (props) => {
     topicId, topicAuthorAddress: initialTopicAuthorAddress, topicAuthor: initialTopicAuthor,
     timestamp: initialTimestamp, postIds: initialPostIds, focusOnPost,
   } = props;
-  const drizzleInitialized = useSelector((state) => state.drizzleStatus.initialized);
-  const drizzleInitializationFailed = useSelector((state) => state.drizzleStatus.failed);
   const userAddress = useSelector((state) => state.user.address);
   const hasSignedUp = useSelector((state) => state.user.hasSignedUp);
   const getTopicResults = useSelector((state) => state.contracts[FORUM_CONTRACT].getTopic);
@@ -47,12 +45,10 @@ const TopicView = (props) => {
         || timestamp === null
         || postIds === null;
 
-    if (drizzleInitialized && !drizzleInitializationFailed && shouldGetTopicDataFromChain) {
+    if (shouldGetTopicDataFromChain) {
       setGetTopicCallHash(getTopicChainData(topicId));
     }
-  }, [
-    drizzleInitializationFailed, drizzleInitialized, postIds, timestamp, topicAuthor, topicAuthorAddress, topicId,
-  ]);
+  }, [postIds, timestamp, topicAuthor, topicAuthorAddress, topicId]);
 
   useEffect(() => {
     if (getTopicCallHash && getTopicResults && getTopicResults[getTopicCallHash]) {
@@ -149,7 +145,7 @@ const TopicView = (props) => {
                   </div>
                   <Divider />
               </Dimmer.Dimmable>
-              <PostList postIds={postIds || []} loading={postIds === null} focusOnPost={focusOnPost} />
+              <TopicPostList topicId={topicId} loading={postIds === null} focusOnPost={focusOnPost} />
           </Segment>
 
           {topicSubject !== null && postIds !== null && hasSignedUp && (

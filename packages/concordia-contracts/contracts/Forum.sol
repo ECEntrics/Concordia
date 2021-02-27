@@ -188,9 +188,22 @@ contract Forum {
         );
     }
 
-    function getTopicPosts(uint topicID) public view returns (uint[] memory) {
+    function getTopicPostCount(uint topicID) public view returns (uint) {
         require(topicExists(topicID), TOPIC_DOES_NOT_EXIST);
-        return topics[topicID].postIDs;
+        return topics[topicID].postIDs.length;
+    }
+
+    function getTopicPosts(uint topicID, uint startIndex, uint endIndex) public view returns (uint[] memory) {
+        require(topicExists(topicID), TOPIC_DOES_NOT_EXIST);
+        require(startIndex <= endIndex && topics[topicID].postIDs.length > endIndex, INVALID_RANGE);
+        uint length = endIndex - startIndex + 1;
+        uint[] memory topicPosts = new uint[](length);
+        uint counter = 0;
+        for (uint i = startIndex; i <= endIndex; i++) {
+            topicPosts[counter] = topics[topicID].postIDs[i];
+            counter++;
+        }
+        return topicPosts;
     }
 
     function getTopicAuthor(uint topicID) public view returns (address) {
