@@ -108,9 +108,9 @@ const PostListRow = (props) => {
           <Ref innerRef={focusRef}>
               <Feed.Label className="post-profile-picture">
                   <ProfileImage
-                    topicAuthorAddress={postAuthorAddress}
-                    topicAuthor={postAuthor}
-                    topicAuthorMeta={postAuthorMeta}
+                    profileAddress={postAuthorAddress}
+                    profileUsername={postAuthor}
+                    profileUserMeta={postAuthorMeta}
                     size="42"
                     link
                   />

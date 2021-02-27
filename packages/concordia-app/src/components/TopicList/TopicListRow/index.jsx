@@ -105,9 +105,9 @@ const TopicListRow = (props) => {
                     <Grid.Column width={1} className="topic-row-avatar">
                         <Item>
                             <ProfileImage
-                              topicAuthorAddress={topicAuthorAddress}
-                              topicAuthor={topicAuthor}
-                              topicAuthorMeta={topicAuthorMeta}
+                              profileAddress={topicAuthorAddress}
+                              profileUsername={topicAuthor}
+                              profileUserMeta={topicAuthorMeta}
                               size="65"
                               link
                             />
