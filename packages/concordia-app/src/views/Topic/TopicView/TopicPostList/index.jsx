@@ -41,8 +41,8 @@ const TopicPostList = (props) => {
 
   useEffect(() => {
     if (topicPostCount !== null && topicPostCount !== 0) {
-      const startIndex = Math.max(topicPostCount - ITEMS_PER_PAGE * pageNumber, 0);
-      const endIndex = topicPostCount - ITEMS_PER_PAGE * (pageNumber - 1) - 1;
+      const startIndex = ITEMS_PER_PAGE * (pageNumber - 1);
+      const endIndex = Math.min(ITEMS_PER_PAGE * pageNumber - 1, topicPostCount - 1);
       setGetTopicPostsCallHash(getTopicPostsChainData(topicId, startIndex, endIndex));
     }
   }, [pageNumber, topicId, topicPostCount]);
@@ -55,7 +55,7 @@ const TopicPostList = (props) => {
 
   useEffect(() => {
     if (getTopicPostsResult) {
-      setPostIds(getTopicPostsResult.value.slice().reverse().map(Number));
+      setPostIds(getTopicPostsResult.value.slice().map(Number));
     }
   }, [getTopicPostsResult, topicPostCount]);
 
