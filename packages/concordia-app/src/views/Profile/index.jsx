@@ -1,7 +1,7 @@
 import React, {
   memo, useEffect, useMemo, useState,
 } from 'react';
-import { Container, Header, Tab } from 'semantic-ui-react';
+import { Container, Tab } from 'semantic-ui-react';
 import { useSelector } from 'react-redux';
 import { useHistory, useRouteMatch } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +9,7 @@ import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/Contrac
 import { drizzle } from '../../redux/store';
 import CustomLoadingTabPane from '../../components/CustomLoadingTabPane';
 import ProfileTopicList from './ProfileTopicList';
-import PostList from '../../components/PostList';
+import ProfilePostList from './ProfilePostList';
 import GeneralTab from './GeneralTab';
 import { GENERAL_TAB, POSTS_TAB, TOPICS_TAB } from '../../constants/ProfileTabs';
 import './styles.css';
@@ -80,13 +80,9 @@ const Profile = () => {
       <ProfileTopicList username={username} profileAddress={profileAddress} />
   ), [profileAddress, username]);
 
-  const postsTab = useMemo(() => (userPostIds.length > 0
-    ? (<PostList postIds={userPostIds} />)
-    : (
-        <Header textAlign="center" as="h2">
-            {t('profile.user.has.no.posts.header.message', { user: username })}
-        </Header>
-    )), [t, userPostIds, username]);
+  const postsTab = useMemo(() => (
+      <ProfilePostList username={username} profileAddress={profileAddress} />
+  ), [profileAddress, username]);
 
   const panes = useMemo(() => {
     const generalTabPane = (<CustomLoadingTabPane loading={loading}>{generalTab}</CustomLoadingTabPane>);

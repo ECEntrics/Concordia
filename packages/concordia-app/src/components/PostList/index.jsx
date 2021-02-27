@@ -2,24 +2,24 @@ import React, {
   useEffect, useMemo, useState,
 } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import {
   Dimmer, Feed, Loader,
 } from 'semantic-ui-react';
 import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
-import PostListRow from './PostListRow';
 import { drizzle } from '../../redux/store';
+import PostListRow from './PostListRow';
+import PaginationComponent from '../PaginationComponent';
 
 const { contracts: { [FORUM_CONTRACT]: { methods: { getPost: { cacheCall: getPostChainData } } } } } = drizzle;
 
 const PostList = (props) => {
-  const { postIds, loading, focusOnPost } = props;
+  const {
+    postIds, numberOfItems, onPageChange, loading, focusOnPost,
+  } = props;
   const [getPostCallHashes, setGetPostCallHashes] = useState([]);
-  const drizzleInitialized = useSelector((state) => state.drizzleStatus.initialized);
-  const drizzleInitializationFailed = useSelector((state) => state.drizzleStatus.failed);
 
   useEffect(() => {
-    if (drizzleInitialized && !drizzleInitializationFailed && !loading) {
+    if (!loading) {
       setGetPostCallHashes(
         postIds.map((postId) => ({
           id: postId,
@@ -27,7 +27,7 @@ const PostList = (props) => {
         })),
       );
     }
-  }, [drizzleInitializationFailed, drizzleInitialized, loading, postIds]);
+  }, [loading, postIds]);
 
   const posts = useMemo(() => {
     if (loading) {
@@ -54,6 +54,7 @@ const PostList = (props) => {
       <Dimmer.Dimmable as={Feed} blurring dimmed={loading} id="post-list" size="large">
           <Loader active={loading} />
           {posts}
+          <PaginationComponent onPageChange={onPageChange} numberOfItems={numberOfItems} />
       </Dimmer.Dimmable>
   );
 };
