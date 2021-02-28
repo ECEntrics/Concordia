@@ -5,14 +5,9 @@ import ReactMarkdown from 'react-markdown';
 import { Container, Image, Segment } from 'semantic-ui-react';
 import AboutMd from '../../assets/About.md';
 import appLogo from '../../assets/images/app_logo_circle.svg';
+import targetBlank from '../../utils/markdownUtils';
 
 import './styles.css';
-
-const targetBlank = () => ({ href, children }) => (
-    <a href={href} target="_blank" rel="noopener noreferrer">
-        {children}
-    </a>
-);
 
 const About = () => {
   const [aboutMd, setAboutMd] = useState('');

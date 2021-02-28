@@ -7,6 +7,7 @@ import {
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import TimeAgo from 'react-timeago';
+import ReactMarkdown from 'react-markdown';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
@@ -18,6 +19,7 @@ import determineKVAddress from '../../../utils/orbitUtils';
 import { POST_CONTENT } from '../../../constants/orbit/PostsDatabaseKeys';
 import ProfileImage from '../../ProfileImage';
 import PostVoting from '../PostVoting';
+import targetBlank from '../../../utils/markdownUtils';
 
 const { orbit } = breeze;
 
@@ -136,7 +138,15 @@ const PostListRow = (props) => {
               </Feed.Summary>
               <Feed.Extra>
                   {postContent !== null
-                    ? postContent
+                    ? (
+                        <ReactMarkdown
+                          source={postContent}
+                          renderers={{
+                            link: targetBlank(),
+                            linkReference: targetBlank(),
+                          }}
+                        />
+                    )
                     : <Placeholder><Placeholder.Line length="long" /></Placeholder>}
               </Feed.Extra>
               <PostVoting postId={postId} postAuthorAddress={postAuthorAddress} />
