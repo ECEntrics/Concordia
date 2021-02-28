@@ -111,7 +111,7 @@ const TopicView = (props) => {
     if (topicFound) {
       setTopicSubject(topicFound[TOPIC_SUBJECT]);
     }
-  }, [topicId]);
+  }, [topicId, topics]);
 
   const stopClickPropagation = (event) => {
     event.stopPropagation();
