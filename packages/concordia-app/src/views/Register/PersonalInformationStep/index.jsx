@@ -99,6 +99,9 @@ const PersonalInformationStep = (props) => {
     }
   }, [error, locationInput, profilePictureInput, pushNextStep]);
 
+  const submitEnabled = useMemo(() => (profilePictureInput && profilePictureUrlValid) || locationInput,
+    [locationInput, profilePictureInput, profilePictureUrlValid]);
+
   const goToHomePage = () => history.push('/');
 
   return (
@@ -154,7 +157,7 @@ const PersonalInformationStep = (props) => {
                 floated="right"
                 content={t('register.form.personal.information.step.button.submit')}
                 onClick={handleSubmit}
-                disabled={!profilePictureUrlValid}
+                disabled={!submitEnabled}
               />
               <Button
                 className="skip-button"
