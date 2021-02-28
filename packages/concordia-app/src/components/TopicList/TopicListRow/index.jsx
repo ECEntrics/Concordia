@@ -7,6 +7,7 @@ import {
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import TimeAgo from 'react-timeago';
+import ReactMarkdown from 'react-markdown';
 import { useHistory } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -18,6 +19,7 @@ import { breeze } from '../../../redux/store';
 import './styles.css';
 import determineKVAddress from '../../../utils/orbitUtils';
 import { TOPIC_SUBJECT } from '../../../constants/orbit/TopicsDatabaseKeys';
+import targetBlank from '../../../utils/markdownUtils';
 
 const { orbit } = breeze;
 
@@ -118,7 +120,15 @@ const TopicListRow = (props) => {
                             <Grid.Row>
                                 <Grid.Column floated="left" width={14} className="topic-row-subject">
                                     {topicSubject !== null
-                                      ? topicSubject
+                                      ? (
+                                          <ReactMarkdown
+                                            source={topicSubject}
+                                            renderers={{
+                                              link: targetBlank(),
+                                              linkReference: targetBlank(),
+                                            }}
+                                          />
+                                      )
                                       : <Placeholder><Placeholder.Line length="very long" /></Placeholder>}
                                 </Grid.Column>
                                 <Grid.Column floated="right" width={2} textAlign="right">
