@@ -85,7 +85,7 @@ pipeline {
       steps {
         script {
           cleanSlateEnabled = sh (script: "git log -1 |  grep -qE 'ci: force'", returnStatus: true)
-          sanitizedBranchName = "${BRANCH_NAME#*/}"
+          sanitizedBranchName = sh(script: 'echo $GIT_BRANCH | sed -e "s:.*/::g"', returnStdout: true).trim()
 
           appPackageChanged = sh(script: 'bash ./jenkins/check_package_changed.sh app "$GIT_COMMIT" "$GIT_PREVIOUS_COMMIT"', returnStdout: true).trim()
           contractsPackageChanged = sh(script: 'bash ./jenkins/check_package_changed.sh contracts "$GIT_COMMIT" "$GIT_PREVIOUS_COMMIT"', returnStdout: true).trim()
