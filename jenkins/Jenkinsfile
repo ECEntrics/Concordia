@@ -128,7 +128,7 @@ pipeline {
                 --net=concordia_ganache_test_network""") { concordiaGanacheTest ->
 
                   contractsTestsImage = docker.build(
-                    "ecentrics/concordia-contracts-tests:v${contractsPackageVersion}-b${BUILD_NUMBER}-tests",
+                    "ecentrics/concordia-contracts-tests:${BRANCH_NAME}-v${contractsPackageVersion}-b${BUILD_NUMBER}-tests",
                     "-f docker/concordia-contracts/Dockerfile \
                     ./ \
                     --target test \
@@ -158,7 +158,7 @@ pipeline {
           steps {
             script {
               appTestsImage = docker.build(
-                "ecentrics/concordia-app:v${appPackageVersion}-b${BUILD_NUMBER}-tests",
+                "ecentrics/concordia-app:${BRANCH_NAME}-v${appPackageVersion}-b${BUILD_NUMBER}-tests",
                 "-f docker/concordia-app/Dockerfile \
                 ./ \
                 --target test \
