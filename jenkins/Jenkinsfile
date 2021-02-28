@@ -61,8 +61,8 @@ pipeline {
       sleep 2
       sh 'docker images | grep -E "ecentrics/concordia.+tests" | tr -s \' \' | cut -d \' \' -f 3 | xargs --no-run-if-empty docker rmi -f || true'
 
-      sh "docker images | tr -s ' ' | grep -E 'ecentrics/concordia.+staging-b' | sed -r 's/(v.*-staging-b)([0-9]*)/\1\2 \2/g' | awk '{ if ($3 < ($BUILD_NUMBER - 2)) print $1\":\"$2}' | xargs --no-run-if-empty docker rmi -f || true"
-      sh "docker images | tr -s ' ' | grep -E 'ecentrics/concordia.+production-b' | sed -r 's/(v.*-production-b)([0-9]*)/\1\2 \2/g' | awk '{ if ($3 < ($BUILD_NUMBER - 2)) print $1\":\"$2}' | xargs --no-run-if-empty docker rmi -f || true"
+      sh "docker images | tr -s ' ' | grep -E 'ecentrics/concordia.+staging-b' | sed -r 's/(v.*-staging-b)([0-9]*)/\1\2 \2/g' | awk '{ if ($3 < ($BUILD_NUMBER - 2)) print \$1\":\"\$2}' | xargs --no-run-if-empty docker rmi -f || true"
+      sh "docker images | tr -s ' ' | grep -E 'ecentrics/concordia.+production-b' | sed -r 's/(v.*-production-b)([0-9]*)/\1\2 \2/g' | awk '{ if ($3 < ($BUILD_NUMBER - 2)) print \$1\":\"\$2}' | xargs --no-run-if-empty docker rmi -f || true"
 
       sh 'docker system prune -f'
       sh 'rm -rf reports'
