@@ -5,9 +5,8 @@ import { useSelector } from 'react-redux';
 import _ from 'lodash';
 import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import { drizzle } from '../../../redux/store';
-import TopicList from '../../TopicList';
-import PaginationComponent, { ITEMS_PER_PAGE } from '../index';
-import './styles.css';
+import { ITEMS_PER_PAGE } from '../../../components/PaginationComponent';
+import TopicList from '../../../components/TopicList';
 
 const {
   contracts: {
@@ -19,9 +18,7 @@ const {
   },
 } = drizzle;
 
-const PaginatedTopicList = () => {
-  const drizzleInitialized = useSelector((state) => state.drizzleStatus.initialized);
-  const drizzleInitializationFailed = useSelector((state) => state.drizzleStatus.failed);
+const HomeTopicList = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const [numTopics, setNumTopics] = useState(null);
   const [topicIds, setTopicIds] = useState([]);
@@ -30,21 +27,21 @@ const PaginatedTopicList = () => {
   const numTopicsResult = useSelector((state) => state.contracts[FORUM_CONTRACT].numTopics[numTopicsCallHash]);
 
   useEffect(() => {
-    if (drizzleInitialized && !drizzleInitializationFailed && numTopicsCallHash === null) {
+    if (numTopicsCallHash === null) {
       setNumTopicsCallHash(numTopicsChainData());
     }
-  }, [drizzleInitializationFailed, drizzleInitialized, numTopicsCallHash]);
+  }, [numTopicsCallHash]);
 
   useEffect(() => {
-    if (drizzleInitialized && !drizzleInitializationFailed && numTopics !== null) {
+    if (numTopics !== null) {
       setTopicIds(_.rangeRight(Math.max(numTopics - ITEMS_PER_PAGE * pageNumber, 0),
         numTopics - ITEMS_PER_PAGE * (pageNumber - 1)));
     }
-  }, [pageNumber, drizzleInitializationFailed, drizzleInitialized, numTopics]);
+  }, [numTopics, pageNumber]);
 
   useEffect(() => {
     if (numTopicsResult) {
-      setNumTopics(numTopicsResult.value);
+      setNumTopics(parseInt(numTopicsResult.value, 10));
     }
   }, [numTopicsResult]);
 
@@ -52,12 +49,18 @@ const PaginatedTopicList = () => {
     setPageNumber(data.activePage);
   };
 
-  return useMemo(() => (
-      <div id="paginated-topic-list">
-          <TopicList topicIds={topicIds} />
-          <PaginationComponent onPageChange={handlePageChange} numberOfItems={numTopics} />
-      </div>
-  ), [numTopics, topicIds]);
+  return useMemo(() => {
+    if (numTopics !== null) {
+      return (
+          <TopicList
+            topicIds={topicIds}
+            numberOfItems={numTopics}
+            onPageChange={handlePageChange}
+          />
+      );
+    }
+    return null;
+  }, [numTopics, topicIds]);
 };
 
-export default PaginatedTopicList;
+export default HomeTopicList;

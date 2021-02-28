@@ -1,15 +1,15 @@
 import React, {
   memo, useEffect, useMemo, useState,
 } from 'react';
-import { Container, Header, Tab } from 'semantic-ui-react';
+import { Container, Tab } from 'semantic-ui-react';
 import { useSelector } from 'react-redux';
 import { useHistory, useRouteMatch } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import { drizzle } from '../../redux/store';
 import CustomLoadingTabPane from '../../components/CustomLoadingTabPane';
-import TopicList from '../../components/TopicList';
-import PostList from '../../components/PostList';
+import ProfileTopicList from './ProfileTopicList';
+import ProfilePostList from './ProfilePostList';
 import GeneralTab from './GeneralTab';
 import { GENERAL_TAB, POSTS_TAB, TOPICS_TAB } from '../../constants/ProfileTabs';
 import './styles.css';
@@ -76,22 +76,13 @@ const Profile = () => {
     loading, profileAddress, self.address, userPostIds.length, userRegistrationTimestamp, userTopicIds.length, username,
   ]);
 
-  const topicsTab = useMemo(() => (userTopicIds.length > 0
-    ? (<TopicList topicIds={userTopicIds} />)
-    : (
-        <Header textAlign="center" as="h2">
-            {t('profile.user.has.no.topics.header.message', { user: username })}
-        </Header>
-    )
-  ), [t, userTopicIds, username]);
+  const topicsTab = useMemo(() => (
+      <ProfileTopicList username={username} profileAddress={profileAddress} />
+  ), [profileAddress, username]);
 
-  const postsTab = useMemo(() => (userPostIds.length > 0
-    ? (<PostList postIds={userPostIds} />)
-    : (
-        <Header textAlign="center" as="h2">
-            {t('profile.user.has.no.posts.header.message', { user: username })}
-        </Header>
-    )), [t, userPostIds, username]);
+  const postsTab = useMemo(() => (
+      <ProfilePostList username={username} profileAddress={profileAddress} />
+  ), [profileAddress, username]);
 
   const panes = useMemo(() => {
     const generalTabPane = (<CustomLoadingTabPane loading={loading}>{generalTab}</CustomLoadingTabPane>);

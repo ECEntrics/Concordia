@@ -6,7 +6,7 @@ import { USER_PROFILE_PICTURE } from '../constants/orbit/UserDatabaseKeys';
 
 const ProfileImage = (props) => {
   const {
-    topicAuthorAddress, topicAuthor, topicAuthorMeta, avatarUrl, size, link,
+    profileAddress, profileUsername, topicAuthorMeta, avatarUrl, size, link,
   } = props;
 
   const stopClickPropagation = (event) => {
@@ -20,30 +20,30 @@ const ProfileImage = (props) => {
 
     return (
         <Avatar
-          name={topicAuthor}
+          name={profileUsername}
           size={size}
           round
           src={profileImageUrl}
         />
     );
-  }, [avatarUrl, size, topicAuthor, topicAuthorMeta]);
+  }, [avatarUrl, size, profileUsername, topicAuthorMeta]);
 
   return useMemo(() => {
-    if (link && topicAuthorAddress) {
+    if (link && profileAddress) {
       return (
-          <Link to={`/users/${topicAuthorAddress}`} onClick={stopClickPropagation}>
+          <Link to={`/users/${profileAddress}`} onClick={stopClickPropagation}>
               {authorAvatar}
           </Link>
       );
     }
     return authorAvatar;
-  }, [authorAvatar, link, topicAuthorAddress]);
+  }, [authorAvatar, link, profileAddress]);
 };
 
 ProfileImage.propTypes = {
-  topicAuthorAddress: PropTypes.string,
-  topicAuthor: PropTypes.string,
-  topicAuthorMeta: PropTypes.shape({ id: PropTypes.string, profile_picture: PropTypes.string }),
+  profileAddress: PropTypes.string,
+  profileUsername: PropTypes.string,
+  profileUserMeta: PropTypes.shape({ id: PropTypes.string, profile_picture: PropTypes.string }),
   avatarUrl: PropTypes.string,
   size: PropTypes.string,
   link: PropTypes.bool,

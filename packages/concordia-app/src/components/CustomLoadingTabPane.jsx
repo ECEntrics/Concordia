@@ -40,7 +40,7 @@ const CustomLoadingTabPane = (props) => {
 CustomLoadingTabPane.propTypes = {
   loading: PropTypes.bool,
   loadingMessage: PropTypes.string,
-  children: PropTypes.element.isRequired,
+  children: PropTypes.element,
 };
 
 export default CustomLoadingTabPane;

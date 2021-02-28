@@ -2,41 +2,34 @@ import React, {
   useEffect, useMemo, useState,
 } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import {
-  Dimmer, Feed, Loader,
+  Dimmer, Divider, Feed, Loader,
 } from 'semantic-ui-react';
 import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
-import PostListRow from './PostListRow';
 import { drizzle } from '../../redux/store';
+import PostListRow from './PostListRow';
+import PaginationComponent, { ITEMS_PER_PAGE } from '../PaginationComponent';
+import './styles.css';
 
 const { contracts: { [FORUM_CONTRACT]: { methods: { getPost: { cacheCall: getPostChainData } } } } } = drizzle;
 
 const PostList = (props) => {
-  const { postIds, loading, focusOnPost } = props;
+  const {
+    postIds, numberOfItems, onPageChange, loading, focusOnPost,
+  } = props;
+  const [pageNumber, setPageNumber] = useState(1);
   const [getPostCallHashes, setGetPostCallHashes] = useState([]);
-  const drizzleInitialized = useSelector((state) => state.drizzleStatus.initialized);
-  const drizzleInitializationFailed = useSelector((state) => state.drizzleStatus.failed);
 
   useEffect(() => {
-    if (drizzleInitialized && !drizzleInitializationFailed && !loading) {
-      const newPostsFound = postIds
-        .filter((postId) => !getPostCallHashes
-          .map((getPostCallHash) => getPostCallHash.id)
-          .includes(postId));
-
-      if (newPostsFound.length > 0) {
-        setGetPostCallHashes([
-          ...getPostCallHashes,
-          ...newPostsFound
-            .map((postId) => ({
-              id: postId,
-              hash: getPostChainData(postId),
-            })),
-        ]);
-      }
+    if (!loading) {
+      setGetPostCallHashes(
+        postIds.map((postId) => ({
+          id: postId,
+          hash: getPostChainData(postId),
+        })),
+      );
     }
-  }, [drizzleInitializationFailed, drizzleInitialized, getPostCallHashes, loading, postIds]);
+  }, [loading, postIds]);
 
   const posts = useMemo(() => {
     if (loading) {
@@ -49,7 +42,7 @@ const PostList = (props) => {
         return (
             <PostListRow
               id={postId}
-              postIndex={index + 1}
+              postIndex={ITEMS_PER_PAGE * (pageNumber - 1) + index}
               key={postId}
               postCallHash={postHash && postHash.hash}
               loading={postHash === undefined}
@@ -57,13 +50,24 @@ const PostList = (props) => {
             />
         );
       });
-  }, [focusOnPost, getPostCallHashes, loading, postIds]);
+  }, [focusOnPost, getPostCallHashes, loading, pageNumber, postIds]);
+
+  const handlePageChange = (event, data) => {
+    setPageNumber(data.activePage);
+    onPageChange(event, data);
+  };
 
   return (
-      <Dimmer.Dimmable as={Feed} blurring dimmed={loading} id="post-list" size="large">
-          <Loader active={loading} />
-          {posts}
-      </Dimmer.Dimmable>
+      <>
+          <Dimmer.Dimmable as={Feed} blurring dimmed={loading} id="post-list" size="large">
+              <Loader active={loading} />
+              {posts}
+          </Dimmer.Dimmable>
+          <Divider />
+          <div id="post-list-pagination">
+              <PaginationComponent onPageChange={handlePageChange} numberOfItems={numberOfItems} />
+          </div>
+      </>
   );
 };
 

@@ -108,8 +108,8 @@ const GeneralTab = (props) => {
                   <Table.Row textAlign="center">
                       <Table.Cell colSpan="3" className="profile-image">
                           <ProfileImage
-                            topicAuthorAddress={profileAddress}
-                            topicAuthor={username}
+                            profileAddress={profileAddress}
+                            profileUsername={username}
                             avatarUrl={userAvatarUrl}
                             size="160"
                           />

@@ -1,3 +1,7 @@
 #post-list{
     height: 100%;
 }
+
+#post-list-pagination{
+    padding: 1rem 0;
+}
