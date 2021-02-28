@@ -143,14 +143,14 @@ pipeline {
                   -e WEB3_HOST=concordia-ganache-test-6${ganacheTestPort} \
                   -e WEB3_PORT=6${ganacheTestPort} \
                   --net=concordia_ganache_test_network""")
-
-                  sh 'mkdir -p ./reports/${BUILD_NUMBER}/contracts'
-                  sh 'find /mnt/janus/common/ -name "concordia-contracts-*" -exec cp \'{}\' ./reports/${BUILD_NUMBER}/contracts/ \\;'
                 }
               } catch (e) {
                 error('Some tests failed!')
                 error('Aborting the build.')
                 throw e
+              } finally {
+                sh 'mkdir -p ./reports/${BUILD_NUMBER}/contracts'
+                sh 'find /mnt/janus/common/ -name "concordia-contracts-*" -exec cp \'{}\' ./reports/${BUILD_NUMBER}/contracts/ \\;'
               }
             }
           }
@@ -159,7 +159,7 @@ pipeline {
         stage('TEST APP') {
           steps {
             script {
-              appTestsImage = docker.build(
+              docker.build(
                 "ecentrics/concordia-app:${sanitizedBranchName}-v${appPackageVersion}-b${BUILD_NUMBER}-tests",
                 "-f docker/concordia-app/Dockerfile \
                 ./ \
@@ -168,15 +168,17 @@ pipeline {
               )
 
               try {
-                appTestsImage.run('--rm \
-                -v ecentrics_janus_common:/mnt/concordia/test-reports/')
-
-                sh 'mkdir -p ./reports/${BUILD_NUMBER}/app'
-                sh 'find /mnt/janus/common/ -name "concordia-app-*" -exec cp \'{}\' ./reports/${BUILD_NUMBER}/app/ \\;'
+                sh """docker run \
+                  --rm \
+                  -v ecentrics_janus_common:/mnt/concordia/test-reports/
+                  ecentrics/concordia-app:${sanitizedBranchName}-v${appPackageVersion}-b${BUILD_NUMBER}-tests"""
               } catch (e) {
                 error('Some tests failed!')
                 error('Aborting the build.')
                 throw e
+              } finally {
+                sh 'mkdir -p ./reports/${BUILD_NUMBER}/app'
+                sh 'find /mnt/janus/common/ -name "concordia-app-*" -exec cp \'{}\' ./reports/${BUILD_NUMBER}/app/ \\;'
               }
             }
           }
