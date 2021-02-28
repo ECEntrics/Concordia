@@ -3,12 +3,13 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Dimmer, Feed, Loader,
+  Dimmer, Divider, Feed, Loader,
 } from 'semantic-ui-react';
 import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import { drizzle } from '../../redux/store';
 import PostListRow from './PostListRow';
 import PaginationComponent, { ITEMS_PER_PAGE } from '../PaginationComponent';
+import './styles.css';
 
 const { contracts: { [FORUM_CONTRACT]: { methods: { getPost: { cacheCall: getPostChainData } } } } } = drizzle;
 
@@ -41,7 +42,7 @@ const PostList = (props) => {
         return (
             <PostListRow
               id={postId}
-              postIndex={ITEMS_PER_PAGE * (pageNumber - 1) + index + 1}
+              postIndex={ITEMS_PER_PAGE * (pageNumber - 1) + index}
               key={postId}
               postCallHash={postHash && postHash.hash}
               loading={postHash === undefined}
@@ -62,7 +63,10 @@ const PostList = (props) => {
               <Loader active={loading} />
               {posts}
           </Dimmer.Dimmable>
-          <PaginationComponent onPageChange={handlePageChange} numberOfItems={numberOfItems} />
+          <Divider />
+          <div id="post-list-pagination">
+              <PaginationComponent onPageChange={handlePageChange} numberOfItems={numberOfItems} />
+          </div>
       </>
   );
 };
