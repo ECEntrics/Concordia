@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router';
 import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import { TOPICS_DATABASE, USER_DATABASE } from 'concordia-shared/src/constants/orbit/OrbitDatabases';
+import ReactMarkdown from 'react-markdown';
 import { breeze, drizzle } from '../../../redux/store';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import './styles.css';
@@ -15,6 +16,7 @@ import TopicPostList from './TopicPostList';
 import determineKVAddress from '../../../utils/orbitUtils';
 import { TOPIC_SUBJECT } from '../../../constants/orbit/TopicsDatabaseKeys';
 import PostCreate from '../../../components/PostCreate';
+import targetBlank from '../../../utils/markdownUtils';
 
 const { contracts: { [FORUM_CONTRACT]: { methods: { getTopic: { cacheCall: getTopicChainData } } } } } = drizzle;
 const { orbit } = breeze;
@@ -122,11 +124,21 @@ const TopicView = (props) => {
               >
                   <div id="topic-header">
                       <Header as="h2">
-                          {topicSubject || (
-                              <Placeholder id="subject-placeholder">
-                                  <Placeholder.Line />
-                              </Placeholder>
-                          )}
+                          {topicSubject
+                            ? (
+                                <ReactMarkdown
+                                  source={topicSubject}
+                                  renderers={{
+                                    link: targetBlank(),
+                                    linkReference: targetBlank(),
+                                  }}
+                                />
+                            )
+                            : (
+                                <Placeholder id="subject-placeholder">
+                                    <Placeholder.Line />
+                                </Placeholder>
+                            )}
                       </Header>
 
                       <div id="topic-metadata">
