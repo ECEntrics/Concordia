@@ -52,10 +52,24 @@ const PostList = (props) => {
       });
   }, [focusOnPost, getPostCallHashes, loading, pageNumber, postIds]);
 
-  const handlePageChange = (event, data) => {
-    setPageNumber(data.activePage);
-    onPageChange(event, data);
-  };
+  const footer = useMemo(() => {
+    const handlePageChange = (event, data) => {
+      setPageNumber(data.activePage);
+      onPageChange(event, data);
+    };
+
+    if (numberOfItems <= ITEMS_PER_PAGE) {
+      return null;
+    }
+    return (
+        <>
+            <Divider />
+            <div id="post-list-pagination">
+                <PaginationComponent onPageChange={handlePageChange} numberOfItems={numberOfItems} />
+            </div>
+        </>
+    );
+  }, [numberOfItems, onPageChange]);
 
   return (
       <>
@@ -63,10 +77,7 @@ const PostList = (props) => {
               <Loader active={loading} />
               {posts}
           </Dimmer.Dimmable>
-          <Divider />
-          <div id="post-list-pagination">
-              <PaginationComponent onPageChange={handlePageChange} numberOfItems={numberOfItems} />
-          </div>
+          {footer}
       </>
   );
 };

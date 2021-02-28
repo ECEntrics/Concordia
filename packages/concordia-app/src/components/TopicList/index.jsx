@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { List } from 'semantic-ui-react';
 import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import TopicListRow from './TopicListRow';
-import PaginationComponent from '../PaginationComponent';
+import PaginationComponent, { ITEMS_PER_PAGE } from '../PaginationComponent';
 import { drizzle } from '../../redux/store';
 import './styles.css';
 
@@ -39,12 +39,19 @@ const TopicList = (props) => {
       );
     }), [getTopicCallHashes, topicIds]);
 
+  const pagination = useMemo(() => {
+    if (numberOfItems <= ITEMS_PER_PAGE) {
+      return null;
+    }
+    return (<PaginationComponent onPageChange={onPageChange} numberOfItems={numberOfItems} />);
+  }, [numberOfItems, onPageChange]);
+
   return (
       <div>
           <List id="topic-list" size="big">
               {topics}
           </List>
-          <PaginationComponent onPageChange={onPageChange} numberOfItems={numberOfItems} />
+          {pagination}
       </div>
   );
 };
