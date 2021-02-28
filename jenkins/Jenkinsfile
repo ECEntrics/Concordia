@@ -19,9 +19,7 @@ def sharedPackageVersion
 
 // Docker images
 def appImage
-def appTestsImage
 def contractsImage
-def contractsTestsImage
 def contractsProviderImage
 def pinnerImage
 
@@ -113,44 +111,46 @@ pipeline {
         stage('TEST CONTRACTS') {
           steps {
             script {
-              try {
-                def ganacheTestPort = sh(script: "bash ./jenkins/hash_build_properties.sh ${BRANCH_NAME} ${BUILD_NUMBER} | xargs bash ./jenkins/map_to_thousand.sh", returnStdout: true).trim()
+              def ganacheTestPort = sh(script: "bash ./jenkins/hash_build_properties.sh ${BRANCH_NAME} ${BUILD_NUMBER} | xargs bash ./jenkins/map_to_thousand.sh", returnStdout: true).trim()
 
-                def ganacheTestImage = docker.build(
-                  "ecentrics/concordia-ganache",
-                  "-f docker/ganache/Dockerfile \
-                  ./"
-                )
+              def ganacheTestImage = docker.build(
+                "ecentrics/concordia-ganache",
+                "-f docker/ganache/Dockerfile \
+                ./"
+              )
 
-                sh 'docker network create --driver bridge concordia_ganache_test_network || true'
+              docker.build(
+                "ecentrics/concordia-contracts-tests:${sanitizedBranchName}-v${contractsPackageVersion}-b${BUILD_NUMBER}-tests",
+                "-f docker/concordia-contracts/Dockerfile \
+                ./ \
+                --target test \
+                --build-arg TZ=Europe/Athens"
+              )
 
-                ganacheTestImage.withRun("""-d -p 6${ganacheTestPort}:8546 \
+              sh 'docker network create --driver bridge concordia_ganache_test_network || true'
+
+              ganacheTestImage.withRun("""-d -p 6${ganacheTestPort}:8546 \
                 --env-file=./jenkins/env/ganache.test.jenkins.env \
                 --name concordia-ganache-test-6${ganacheTestPort} \
                 --net=concordia_ganache_test_network""") { concordiaGanacheTest ->
 
-                  contractsTestsImage = docker.build(
-                    "ecentrics/concordia-contracts-tests:${sanitizedBranchName}-v${contractsPackageVersion}-b${BUILD_NUMBER}-tests",
-                    "-f docker/concordia-contracts/Dockerfile \
-                    ./ \
-                    --target test \
-                    --build-arg TZ=Europe/Athens"
-                  )
-
-                  contractsTestsImage.run("""--rm \
-                  -v ecentrics_janus_common:/mnt/concordia/test-reports/ \
-                  --env-file=./jenkins/env/contracts.test.jenkins.env \
-                  -e WEB3_HOST=concordia-ganache-test-6${ganacheTestPort} \
-                  -e WEB3_PORT=6${ganacheTestPort} \
-                  --net=concordia_ganache_test_network""")
+                try {
+                   sh """docker run \
+                     --rm \
+                     -v ecentrics_janus_common:/mnt/concordia/test-reports/ \
+                     --env-file=./jenkins/env/contracts.test.jenkins.env \
+                     -e WEB3_HOST=concordia-ganache-test-6${ganacheTestPort} \
+                     -e WEB3_PORT=6${ganacheTestPort} \
+                     --net=concordia_ganache_test_network \
+                     ecentrics/concordia-contracts-tests:${sanitizedBranchName}-v${contractsPackageVersion}-b${BUILD_NUMBER}-tests"""
+                } catch (e) {
+                  error('Some tests failed!')
+                  error('Aborting the build.')
+                  throw e
+                } finally {
+                  sh 'mkdir -p ./reports/${BUILD_NUMBER}/contracts'
+                  sh 'find /mnt/janus/common/ -name "concordia-contracts-*" -exec cp \'{}\' ./reports/${BUILD_NUMBER}/contracts/ \\;'
                 }
-              } catch (e) {
-                error('Some tests failed!')
-                error('Aborting the build.')
-                throw e
-              } finally {
-                sh 'mkdir -p ./reports/${BUILD_NUMBER}/contracts'
-                sh 'find /mnt/janus/common/ -name "concordia-contracts-*" -exec cp \'{}\' ./reports/${BUILD_NUMBER}/contracts/ \\;'
               }
             }
           }
