@@ -6,7 +6,7 @@ import { USER_PROFILE_PICTURE } from '../constants/orbit/UserDatabaseKeys';
 
 const ProfileImage = (props) => {
   const {
-    profileAddress, profileUsername, topicAuthorMeta, avatarUrl, size, link,
+    profileAddress, profileUsername, profileUserMeta, avatarUrl, size, link,
   } = props;
 
   const stopClickPropagation = (event) => {
@@ -16,7 +16,9 @@ const ProfileImage = (props) => {
   const authorAvatar = useMemo(() => {
     let profileImageUrl = '';
     if (avatarUrl) profileImageUrl = avatarUrl;
-    else if (topicAuthorMeta && topicAuthorMeta[USER_PROFILE_PICTURE]) profileImageUrl = topicAuthorMeta[USER_PROFILE_PICTURE];
+    else if (profileUserMeta && profileUserMeta[USER_PROFILE_PICTURE]) {
+      profileImageUrl = profileUserMeta[USER_PROFILE_PICTURE];
+    }
 
     return (
         <Avatar
@@ -26,7 +28,7 @@ const ProfileImage = (props) => {
           src={profileImageUrl}
         />
     );
-  }, [avatarUrl, size, profileUsername, topicAuthorMeta]);
+  }, [avatarUrl, size, profileUsername, profileUserMeta]);
 
   return useMemo(() => {
     if (link && profileAddress) {
