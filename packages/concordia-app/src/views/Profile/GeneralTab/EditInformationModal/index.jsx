@@ -2,7 +2,7 @@ import React, {
   useCallback, useEffect, useMemo, useState,
 } from 'react';
 import {
-  Button, Form, Icon, Image, Input, Message, Modal,
+  Button, Form, Input, Message, Modal,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,8 @@ import checkUrlValid from '../../../../utils/urlUtils';
 import { USER_LOCATION, USER_PROFILE_PICTURE } from '../../../../constants/orbit/UserDatabaseKeys';
 import { breeze, drizzle } from '../../../../redux/store';
 import UsernameSelector from '../../../../components/UsernameSelector';
+import ProfileImage from '../../../../components/ProfileImage';
+import './style.css';
 
 const { orbit: { stores } } = breeze;
 const { contracts: { [FORUM_CONTRACT]: { methods: { updateUsername } } } } = drizzle;
@@ -88,11 +90,6 @@ const EditInformationModal = (props) => {
     }
   }, []);
 
-  const profilePicture = useMemo(() => (profilePictureInput.length > 0 && profilePictureUrlValid
-    ? (<Image size="medium" src={profilePictureInput} wrapped />)
-    : (<Icon name="user circle" size="massive" inverted color="black" />)
-  ), [profilePictureInput, profilePictureUrlValid]);
-
   const handleSubmit = useCallback(() => {
     const keyValuesToStore = [];
 
@@ -141,7 +138,13 @@ const EditInformationModal = (props) => {
       >
           <Modal.Header>{t('edit.information.modal.title')}</Modal.Header>
           <Modal.Content image>
-              {profilePicture}
+              <div id="edit-info-profile-image">
+                  <ProfileImage
+                    profileUsername={usernameInput}
+                    avatarUrl={profilePictureUrlValid ? profilePictureInput : null}
+                    size="120"
+                  />
+              </div>
               <Modal.Description>
                   <Form>
                       <UsernameSelector
@@ -179,8 +182,9 @@ const EditInformationModal = (props) => {
                   </Form>
                   {error === true && (
                     errorMessages
-                      .map((errorMessage) => (
+                      .map((errorMessage, index) => (
                           <Message
+                            key={`edit-info-error-message-${{ index }}`}
                             error
                             header={t('edit.information.modal.form.error.message.header')}
                             content={errorMessage}
@@ -189,6 +193,7 @@ const EditInformationModal = (props) => {
                   )}
                   {usernameError === true && (
                       <Message
+                        key="edit-info-username-error-message"
                         error
                         header={t('edit.information.modal.form.error.message.header')}
                         content={usernameErrorMessage}
@@ -212,11 +217,11 @@ const EditInformationModal = (props) => {
               />
           </Modal.Actions>
       </Modal>
-  ), [
-    error, errorMessages, handleInputChange, handleSubmit, handleUsernameErrorChange, initialUsername, locationInput,
-    onCancel, open, profilePicture, profilePictureInput, t, usernameChecked, usernameError, usernameErrorMessage,
-    usernameInput,
-  ]);
+  ), [error, errorMessages, handleInputChange,
+    handleSubmit, handleUsernameErrorChange,
+    initialUsername, locationInput, onCancel,
+    open, profilePictureInput, profilePictureUrlValid, t,
+    usernameChecked, usernameError, usernameErrorMessage, usernameInput]);
 };
 
 EditInformationModal.defaultProps = {

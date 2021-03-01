@@ -14,12 +14,12 @@ import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/Contrac
 import { POSTS_DATABASE, USER_DATABASE } from 'concordia-shared/src/constants/orbit/OrbitDatabases';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
 import { breeze } from '../../../redux/store';
-import './styles.css';
 import determineKVAddress from '../../../utils/orbitUtils';
 import { POST_CONTENT } from '../../../constants/orbit/PostsDatabaseKeys';
 import ProfileImage from '../../ProfileImage';
 import PostVoting from '../PostVoting';
 import targetBlank from '../../../utils/markdownUtils';
+import './styles.css';
 
 const { orbit } = breeze;
 
