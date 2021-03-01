@@ -9,7 +9,7 @@ const StatusKeyRow = (props) => {
   return (
       <Segment padded>
           <Header textAlign="center">
-              <Image src={headerImage} size="small" />
+              <Image className="status-header-image" src={headerImage} />
               {headerTitle}
           </Header>
           <Table className="status-table" compact textAlign="center" columns={1}>

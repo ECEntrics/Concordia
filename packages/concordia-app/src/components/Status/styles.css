@@ -2,6 +2,10 @@
     border: 1px solid var(--secondary-color) !important;
 }
 
+.status-header-image{
+    width: 2.5rem !important;
+}
+
 .status-key {
     background-color: var(--secondary-color);
     color: white;

@@ -4,6 +4,7 @@ import { Grid } from 'semantic-ui-react';
 import Particles from 'react-particles-js';
 import particlesOptions from '../../assets/particles';
 import MainLayoutMenu from './MainLayoutMenu';
+import MainLayoutConcordiaStatus from './MainLayoutConcordiaStatus';
 import MainLayoutEthereumStatus from './MainLayoutEthereumStatus';
 import MainLayoutIPFSStatus from './MainLayoutIPFSStatus';
 import './styles.css';
@@ -21,6 +22,7 @@ const MainLayout = (props) => {
                   {children}
               </Grid.Column>
               <Grid.Column width={4}>
+                  <MainLayoutConcordiaStatus />
                   <MainLayoutEthereumStatus />
                   <MainLayoutIPFSStatus />
               </Grid.Column>

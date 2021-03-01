@@ -4,7 +4,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const StatusValueRow = (props) => {
   const { value } = props;
-  return (value) ? (
+  return (value || value === 0) ? (
       <Table.Row className="status-value">
           <Table.Cell>
               <CopyToClipboard text={value}>
