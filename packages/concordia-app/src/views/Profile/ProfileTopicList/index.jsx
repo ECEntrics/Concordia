@@ -51,13 +51,15 @@ const ProfileTopicList = (props) => {
 
   useEffect(() => {
     if (getUserTopicCountResult) {
-      setUserTopicCount(parseInt(getUserTopicCountResult.value, 10));
+      setUserTopicCount(parseInt(getUserTopicCountResult.value, 10) || 0);
     }
   }, [getUserTopicCountResult, userTopicCount]);
 
   useEffect(() => {
     if (getUserTopicsResult) {
-      setTopicIds(getUserTopicsResult.value.slice().reverse().map(Number));
+      const { value } = getUserTopicsResult;
+      const res = value || [];
+      setTopicIds(res.slice().reverse().map(Number));
     }
   }, [getUserTopicsResult, userTopicCount]);
 

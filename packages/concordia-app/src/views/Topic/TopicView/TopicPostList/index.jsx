@@ -49,13 +49,15 @@ const TopicPostList = (props) => {
 
   useEffect(() => {
     if (getTopicPostCountResult) {
-      setTopicPostCount(parseInt(getTopicPostCountResult.value, 10));
+      setTopicPostCount(parseInt(getTopicPostCountResult.value, 10) || 0);
     }
   }, [getTopicPostCountResult, topicPostCount]);
 
   useEffect(() => {
     if (getTopicPostsResult) {
-      setPostIds(getTopicPostsResult.value.slice().map(Number));
+      const { value } = getTopicPostsResult;
+      const res = value || [];
+      setPostIds(res.slice().map(Number));
     }
   }, [getTopicPostsResult, topicPostCount]);
 

@@ -51,13 +51,15 @@ const ProfilePostList = (props) => {
 
   useEffect(() => {
     if (getUserPostCountResult) {
-      setUserPostCount(parseInt(getUserPostCountResult.value, 10));
+      setUserPostCount(parseInt(getUserPostCountResult.value, 10) || 0);
     }
   }, [getUserPostCountResult, userPostCount]);
 
   useEffect(() => {
     if (getUserPostsResult) {
-      setPostIds(getUserPostsResult.value.slice().reverse().map(Number));
+      const { value } = getUserPostsResult;
+      const res = value || [];
+      setPostIds(res.slice().reverse().map(Number));
     }
   }, [getUserPostsResult, userPostCount]);
 

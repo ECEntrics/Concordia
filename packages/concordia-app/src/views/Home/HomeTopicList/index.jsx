@@ -41,7 +41,7 @@ const HomeTopicList = () => {
 
   useEffect(() => {
     if (numTopicsResult) {
-      setNumTopics(parseInt(numTopicsResult.value, 10));
+      setNumTopics(parseInt(numTopicsResult.value, 10) || 0);
     }
   }, [numTopicsResult]);
 
