@@ -11,8 +11,8 @@ const {
   contracts: {
     [FORUM_CONTRACT]: {
       methods: {
-        getTopicPostCount: { cacheCall: getTopicPostCountChainData },
-        getTopicPosts: { cacheCall: getTopicPostsChainData },
+        getTopicPostCount: { cacheCall: getTopicPostCountChainData, clearCacheCall: clearGetTopicPostCountChainData },
+        getTopicPosts: { cacheCall: getTopicPostsChainData, clearCacheCall: clearGetTopicPostsChainData },
       },
     },
   },
@@ -64,6 +64,8 @@ const TopicPostList = (props) => {
   const handlePageChange = (event, data) => {
     setPageNumber(data.activePage);
   };
+
+  useEffect(() => () => { clearGetTopicPostCountChainData(); clearGetTopicPostsChainData(); }, []);
 
   return useMemo(() => {
     if (postIds.length && postIds.length !== 0) {

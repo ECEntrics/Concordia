@@ -15,13 +15,15 @@ import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/Contrac
 import { TOPICS_DATABASE, USER_DATABASE } from 'concordia-shared/src/constants/orbit/OrbitDatabases';
 import ProfileImage from '../../ProfileImage';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
-import { breeze } from '../../../redux/store';
+import { breeze, drizzle } from '../../../redux/store';
 import './styles.css';
 import determineKVAddress from '../../../utils/orbitUtils';
 import { TOPIC_SUBJECT } from '../../../constants/orbit/TopicsDatabaseKeys';
 import targetBlank from '../../../utils/markdownUtils';
 
 const { orbit } = breeze;
+
+const { contracts: { [FORUM_CONTRACT]: { methods: { getTopic: { clearCacheCall: clearGetTopicChainData } } } } } = drizzle;
 
 const TopicListRow = (props) => {
   const { id: topicId, topicCallHash, loading } = props;
@@ -95,6 +97,8 @@ const TopicListRow = (props) => {
   const stopClickPropagation = (event) => {
     event.stopPropagation();
   };
+
+  useEffect(() => () => clearGetTopicChainData(topicId), [topicId]);
 
   return useMemo(() => {
     const handleTopicClick = () => {

@@ -10,7 +10,19 @@ import HomeScreenTopicList from './HomeTopicList';
 import './styles.css';
 import { drizzle } from '../../redux/store';
 
-const { contracts: { [FORUM_CONTRACT]: { methods: { numTopics } } } } = drizzle;
+const {
+  contracts: {
+    [FORUM_CONTRACT]: {
+      methods: {
+        numTopics:
+    {
+      cacheCall: numTopicsChainData,
+      clearCacheCall: clearNumTopicsChainData,
+    },
+      },
+    },
+  },
+} = drizzle;
 
 const Home = () => {
   const [numberOfTopicsCallHash, setNumberOfTopicsCallHash] = useState('');
@@ -20,13 +32,15 @@ const Home = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    setNumberOfTopicsCallHash(numTopics.cacheCall());
+    setNumberOfTopicsCallHash(numTopicsChainData());
   }, []);
 
   const numberOfTopics = useMemo(() => (numTopicsResults[numberOfTopicsCallHash] !== undefined
     ? parseInt(numTopicsResults[numberOfTopicsCallHash].value, 10)
     : null),
   [numTopicsResults, numberOfTopicsCallHash]);
+
+  useEffect(() => () => clearNumTopicsChainData(), []);
 
   return useMemo(() => (
       <Container id="home-container" textAlign="center">

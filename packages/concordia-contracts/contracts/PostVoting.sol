@@ -21,7 +21,7 @@ contract PostVoting {
 
     event UserVotedPost(address userAddress, uint postID, Option option);
 
-    function getVote(uint postID, address voter) public view returns (Option) {
+    function getVote(uint postID, address voter) private view returns (Option) {
         require(forum.postExists(postID), forum.POST_DOES_NOT_EXIST());
         return postBallots[postID].votes[voter];
     }
@@ -32,15 +32,15 @@ contract PostVoting {
         return (postBallots[postID].voters[option].length);
     }
 
-    function getUpvoteCount(uint postID) public view returns (uint) {
+    function getUpvoteCount(uint postID) private view returns (uint) {
         return (getVoteCount(postID, Option.UP));
     }
 
-    function getDownvoteCount(uint postID) public view returns (uint) {
+    function getDownvoteCount(uint postID) private view returns (uint) {
         return (getVoteCount(postID, Option.DOWN));
     }
 
-    function getTotalVoteCount(uint postID) public view returns (int) {
+    function getTotalVoteCount(uint postID) private view returns (int) {
         int upvoteCount = int(getUpvoteCount(postID));
         int downvoteCount = int(getDownvoteCount(postID));
         return upvoteCount - downvoteCount;

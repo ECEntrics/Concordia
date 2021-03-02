@@ -12,9 +12,7 @@ const MainLayoutConcordiaStatus = () => {
     contracts: {
       [FORUM_CONTRACT]: {
         methods: {
-          numUsers: { cacheCall: numUsersChainData },
-          numTopics: { cacheCall: numTopicsChainData },
-          numPosts: { cacheCall: numPostsChainData },
+          getStats: { cacheCall: getStatsChainData },
         },
       },
     },
@@ -23,48 +21,22 @@ const MainLayoutConcordiaStatus = () => {
   const [numUsers, setNumUsers] = useState(null);
   const [numTopics, setNumTopics] = useState(null);
   const [numPosts, setNumPosts] = useState(null);
-  const [numUsersCallHash, setNumUsersCallHash] = useState(null);
-  const [numTopicsCallHash, setNumTopicsCallHash] = useState(null);
-  const [numPostsCallHash, setNumPostsCallHash] = useState(null);
-  const numUsersResult = useSelector((state) => state.contracts[FORUM_CONTRACT].numUsers[numUsersCallHash]);
-  const numTopicsResult = useSelector((state) => state.contracts[FORUM_CONTRACT].numTopics[numTopicsCallHash]);
-  const numPostsResult = useSelector((state) => state.contracts[FORUM_CONTRACT].numPosts[numPostsCallHash]);
+  const [getStatsCallHash, setGetStatsCallHash] = useState(null);
+  const getStatsResult = useSelector((state) => state.contracts[FORUM_CONTRACT].getStats[getStatsCallHash]);
 
   useEffect(() => {
-    if (numUsersCallHash === null) {
-      setNumUsersCallHash(numUsersChainData());
+    if (getStatsCallHash === null) {
+      setGetStatsCallHash(getStatsChainData());
     }
-  }, [numUsersCallHash, numUsersChainData]);
+  }, [getStatsCallHash, getStatsChainData]);
 
   useEffect(() => {
-    if (numTopicsCallHash === null) {
-      setNumTopicsCallHash(numTopicsChainData());
+    if (getStatsResult) {
+      setNumUsers(parseInt(getStatsResult.value[0], 10));
+      setNumTopics(parseInt(getStatsResult.value[1], 10));
+      setNumPosts(parseInt(getStatsResult.value[2], 10));
     }
-  }, [numTopicsCallHash, numTopicsChainData]);
-
-  useEffect(() => {
-    if (numPostsCallHash === null) {
-      setNumPostsCallHash(numPostsChainData());
-    }
-  }, [numPostsCallHash, numPostsChainData]);
-
-  useEffect(() => {
-    if (numUsersResult) {
-      setNumUsers(parseInt(numUsersResult.value, 10));
-    }
-  }, [numUsersResult]);
-
-  useEffect(() => {
-    if (numTopicsResult) {
-      setNumTopics(parseInt(numTopicsResult.value, 10));
-    }
-  }, [numTopicsResult]);
-
-  useEffect(() => {
-    if (numPostsResult) {
-      setNumPosts(parseInt(numPostsResult.value, 10));
-    }
-  }, [numPostsResult]);
+  }, [getStatsResult]);
 
   return (
       <StatusSegment

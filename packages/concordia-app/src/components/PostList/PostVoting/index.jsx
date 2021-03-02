@@ -17,7 +17,7 @@ const {
   contracts: {
     [POST_VOTING_CONTRACT]: {
       methods: {
-        getVoteInfo: { cacheCall: getVoteInfoChainData },
+        getVoteInfo: { cacheCall: getVoteInfoChainData, clearCacheCall: clearGetVoteInfoChainData },
         upvote, downvote, unvote,
       },
     },
@@ -84,6 +84,10 @@ const PostVoting = (props) => {
   }, [ownVote, postId, userAccount, voting]);
 
   const disableVoting = userAccount === null || !hasSignedUp || postAuthorAddress === null || userAccount === postAuthorAddress;
+
+  // Clear when unmounting
+  useEffect(() => () => clearGetVoteInfoChainData(postId), [postId]);
+
   return useMemo(() => (
       <div className="post-voting">
           <Button

@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import { POSTS_DATABASE, USER_DATABASE } from 'concordia-shared/src/constants/orbit/OrbitDatabases';
 import { FETCH_USER_DATABASE } from '../../../redux/actions/peerDbReplicationActions';
-import { breeze } from '../../../redux/store';
+import { breeze, drizzle } from '../../../redux/store';
 import determineKVAddress from '../../../utils/orbitUtils';
 import { POST_CONTENT } from '../../../constants/orbit/PostsDatabaseKeys';
 import ProfileImage from '../../ProfileImage';
@@ -22,6 +22,8 @@ import targetBlank from '../../../utils/markdownUtils';
 import './styles.css';
 
 const { orbit } = breeze;
+
+const { contracts: { [FORUM_CONTRACT]: { methods: { getPost: { clearCacheCall: clearGetPostChainData } } } } } = drizzle;
 
 const PostListRow = (props) => {
   const {
@@ -98,6 +100,8 @@ const PostListRow = (props) => {
       node.scrollIntoView({ behavior: 'smooth' });
     }
   }, [focus]);
+
+  useEffect(() => () => clearGetPostChainData(postId), [postId]);
 
   return useMemo(() => (
       <Dimmer.Dimmable

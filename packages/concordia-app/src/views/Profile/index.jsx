@@ -14,7 +14,19 @@ import GeneralTab from './GeneralTab';
 import { GENERAL_TAB, POSTS_TAB, TOPICS_TAB } from '../../constants/ProfileTabs';
 import './styles.css';
 
-const { contracts: { [FORUM_CONTRACT]: { methods: { getUser } } } } = drizzle;
+const {
+  contracts: {
+    [FORUM_CONTRACT]: {
+      methods: {
+        getUser: { cacheCall: getUserChainData, clearCacheCall: clearGetUserChainData },
+        getUserTopicCount: { clearCacheCall: clearGetUserTopicCountChainData },
+        getUserTopics: { clearCacheCall: clearGetUserTopicsChainData },
+        getUserPostCount: { clearCacheCall: clearGetUserPostCountChainData },
+        getUserPosts: { clearCacheCall: clearGetUserPostsChainData },
+      },
+    },
+  },
+} = drizzle;
 
 const Profile = () => {
   const [userCallHash, setUserCallHash] = useState('');
@@ -46,7 +58,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (profileAddress) {
-      setUserCallHash(getUser.cacheCall(profileAddress));
+      setUserCallHash(getUserChainData(profileAddress));
     }
   }, [profileAddress]);
 
@@ -95,6 +107,14 @@ const Profile = () => {
       { menuItem: t(POSTS_TAB.intl_display_name_id), render: () => postsTabPane },
     ]);
   }, [generalTab, loading, postsTab, t, topicsTab]);
+
+  useEffect(() => () => {
+    clearGetUserChainData();
+    clearGetUserTopicCountChainData();
+    clearGetUserTopicsChainData();
+    clearGetUserPostCountChainData();
+    clearGetUserPostsChainData();
+  }, []);
 
   return useMemo(() => (
       <Container id="profile-container" textAlign="center">

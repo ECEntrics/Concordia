@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import { drizzle } from '../redux/store';
 
-const { contracts: { [FORUM_CONTRACT]: { methods: { isUserNameTaken } } } } = drizzle;
+const { contracts: { [FORUM_CONTRACT]: { methods: { isUserNameTaken: { cacheCall: isUserNameTakenChainData, clearCacheCall: clearIsUserNameTakenChainData } } } } } = drizzle;
 
 const UsernameSelector = (props) => {
   const {
@@ -65,7 +65,7 @@ const UsernameSelector = (props) => {
 
   const checkUsernameTaken = useMemo(() => throttle(
     (usernameToCheck) => {
-      isUserNameTaken.cacheCall(usernameToCheck);
+      isUserNameTakenChainData(usernameToCheck);
     }, 200,
   ), []);
 
@@ -76,6 +76,8 @@ const UsernameSelector = (props) => {
       checkUsernameTaken(value);
     }
   }, [checkUsernameTaken, onChangeCallback]);
+
+  useEffect(() => () => clearIsUserNameTakenChainData(), []);
 
   return (
       <Form.Field required>

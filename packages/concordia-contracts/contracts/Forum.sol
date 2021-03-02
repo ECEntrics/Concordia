@@ -225,4 +225,13 @@ contract Forum {
         require(postExists(postID), POST_DOES_NOT_EXIST);
         return posts[postID].author;
     }
+
+    //----------------------------------------MISC----------------------------------------
+    function getStats() public view returns (uint, uint, uint) {
+        return (
+            numUsers,
+            numTopics,
+            numPosts
+        );
+    }
 }
