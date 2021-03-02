@@ -22,9 +22,9 @@ const MainLayout = (props) => {
                   {children}
               </Grid.Column>
               <Grid.Column width={4}>
-                  <MainLayoutConcordiaStatus />
                   <MainLayoutEthereumStatus />
                   <MainLayoutIPFSStatus />
+                  <MainLayoutConcordiaStatus />
               </Grid.Column>
           </Grid>
 
