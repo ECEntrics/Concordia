@@ -2,7 +2,7 @@ import React, {
   memo, useEffect, useMemo, useState, useCallback,
 } from 'react';
 import {
-  Dimmer, Feed, Icon, Placeholder, Ref, TextArea,
+  Dimmer, Feed, Form, Icon, Placeholder, Ref, TextArea,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -184,10 +184,12 @@ const PostListRow = (props) => {
         );
       }
       return (
-          <TextArea
-            value={editedPostContent}
-            onChange={handleInputChange}
-          />
+          <Form>
+              <TextArea
+                value={editedPostContent}
+                onChange={handleInputChange}
+              />
+          </Form>
       );
     }
     return (<Placeholder><Placeholder.Line length="long" /></Placeholder>);
