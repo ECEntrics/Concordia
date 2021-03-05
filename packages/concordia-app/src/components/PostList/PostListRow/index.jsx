@@ -2,7 +2,7 @@ import React, {
   memo, useEffect, useMemo, useState, useCallback,
 } from 'react';
 import {
-  Dimmer, Feed, Placeholder, Ref,
+  Dimmer, Feed, Form, Icon, Placeholder, Ref, TextArea,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -36,6 +36,8 @@ const PostListRow = (props) => {
   const [topicId, setTopicId] = useState(null);
   const [postContent, setPostContent] = useState(null);
   const [postAuthorMeta, setPostAuthorMeta] = useState(null);
+  const [editing, setEditing] = useState(false);
+  const [editedPostContent, setEditedPostContent] = useState(null);
   const userAddress = useSelector((state) => state.user.address);
   const posts = useSelector((state) => state.orbitData.posts);
   const users = useSelector((state) => state.orbitData.users);
@@ -101,6 +103,95 @@ const PostListRow = (props) => {
     }
   }, [focus]);
 
+  // ---------- Post Editing -----------------
+
+  const editPost = useCallback(() => {
+    setEditedPostContent(postContent);
+    setEditing(true);
+  }, [postContent]);
+
+  const discardChanges = useCallback(() => {
+    setEditing(false);
+  }, []);
+
+  const saveChanges = useCallback(() => {
+    setEditing(false);
+    if (editedPostContent !== postContent) {
+      const { stores } = orbit;
+      const postsDb = Object.values(stores).find((store) => store.dbname === POSTS_DATABASE);
+      postsDb
+        .put(postId.toString(), {
+          [POST_CONTENT]: editedPostContent,
+        })
+        .catch((reason) => {
+          console.error(reason);
+        });
+    }
+  }, [editedPostContent, postContent, postId]);
+
+  const editPostButtons = useMemo(() => {
+    if (postContent !== null && userAddress === postAuthorAddress) {
+      if (editing) {
+        return (
+            <>
+                <Icon
+                  className="post-list-edit-button"
+                  name="check"
+                  color="green"
+                  fitted
+                  onClick={saveChanges}
+                />
+                <Icon
+                  className="post-list-edit-button"
+                  name="x"
+                  color="red"
+                  fitted
+                  onClick={discardChanges}
+                />
+            </>
+        );
+      }
+      return (
+          <Icon
+            className="post-list-edit-button"
+            name="pencil"
+            fitted
+            onClick={editPost}
+          />
+      );
+    }
+    return null;
+  }, [discardChanges, editPost, editing, postAuthorAddress, postContent, saveChanges, userAddress]);
+
+  const postContentArea = useMemo(() => {
+    const handleInputChange = (event, { value }) => {
+      setEditedPostContent(value);
+    };
+
+    if (postContent !== null) {
+      if (!editing) {
+        return (
+            <ReactMarkdown
+              source={postContent}
+              renderers={{
+                link: targetBlank(),
+                linkReference: targetBlank(),
+              }}
+            />
+        );
+      }
+      return (
+          <Form>
+              <TextArea
+                value={editedPostContent}
+                onChange={handleInputChange}
+              />
+          </Form>
+      );
+    }
+    return (<Placeholder><Placeholder.Line length="long" /></Placeholder>);
+  }, [editedPostContent, editing, postContent]);
+
   useEffect(() => () => clearGetPostChainData(postId), [postId]);
 
   return useMemo(() => (
@@ -136,29 +227,19 @@ const PostListRow = (props) => {
                             <Feed.Date>
                                 <TimeAgo date={timeAgo} />
                             </Feed.Date>
+                            {editPostButtons}
                         </>
                     )
                     : <Placeholder><Placeholder.Line length="medium" /></Placeholder>}
               </Feed.Summary>
               <Feed.Extra>
-                  {postContent !== null
-                    ? (
-                        <ReactMarkdown
-                          source={postContent}
-                          renderers={{
-                            link: targetBlank(),
-                            linkReference: targetBlank(),
-                          }}
-                        />
-                    )
-                    : <Placeholder><Placeholder.Line length="long" /></Placeholder>}
+                  {postContentArea}
               </Feed.Extra>
               <PostVoting postId={postId} postAuthorAddress={postAuthorAddress} />
           </Feed.Content>
       </Dimmer.Dimmable>
-  ), [focusRef, loading, postAuthor, postAuthorAddress, postAuthorMeta, postContent, postId, postIndex, t, timeAgo,
-    topicId,
-  ]);
+  ), [editPostButtons, focusRef, loading, postAuthor, postAuthorAddress, postAuthorMeta,
+    postContentArea, postId, postIndex, t, timeAgo, topicId]);
 };
 
 PostListRow.defaultProps = {
