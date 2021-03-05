@@ -120,7 +120,7 @@ const PostListRow = (props) => {
       const { stores } = orbit;
       const postsDb = Object.values(stores).find((store) => store.dbname === POSTS_DATABASE);
       postsDb
-        .put(postId, {
+        .put(postId.toString(), {
           [POST_CONTENT]: editedPostContent,
         })
         .then(() => {
