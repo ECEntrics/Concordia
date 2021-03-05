@@ -119,7 +119,6 @@ const TopicView = (props) => {
       <Container id="topic-container">
           <Segment>
               <Dimmer.Dimmable
-                blurring
                 dimmed={topicAuthorAddress === null && topicAuthor === null && timestamp === null}
               >
                   <div id="topic-header">
@@ -160,7 +159,7 @@ const TopicView = (props) => {
               <TopicPostList topicId={topicId} loading={postIds === null} focusOnPost={focusOnPost} />
           </Segment>
 
-          {topicSubject !== null && postIds !== null && hasSignedUp && (
+          {postIds !== null && hasSignedUp && (
               <PostCreate
                 topicId={topicId}
                 postIndexInTopic={postIds.length + 1}
