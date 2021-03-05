@@ -123,9 +123,6 @@ const PostListRow = (props) => {
         .put(postId.toString(), {
           [POST_CONTENT]: editedPostContent,
         })
-        .then(() => {
-          setPostContent(editedPostContent);
-        })
         .catch((reason) => {
           console.error(reason);
         });
