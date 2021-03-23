@@ -23,6 +23,7 @@ const GeneralTab = (props) => {
   const [userInfoOrbitAddress, setUserInfoOrbitAddress] = useState(null);
   const [userTopicsOrbitAddress, setUserTopicsOrbitAddress] = useState(null);
   const [userPostsOrbitAddress, setUserPostsOrbitAddress] = useState(null);
+  const [userPollsOrbitAddress, setUserPollsOrbitAddress] = useState(null);
   const [profileMetadataFetched, setProfileMetadataFetched] = useState(false);
   const [userAvatarUrl, setUserAvatarUrl] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
@@ -41,10 +42,11 @@ const GeneralTab = (props) => {
             userAddress: profileAddress,
           })))
         .then((values) => {
-          const [userOrbitAddress, topicsOrbitAddress, postsOrbitAddress] = values;
+          const [userOrbitAddress, topicsOrbitAddress, postsOrbitAddress, pollsOrbitAddress] = values;
           setUserInfoOrbitAddress(userOrbitAddress);
           setUserTopicsOrbitAddress(topicsOrbitAddress);
           setUserPostsOrbitAddress(postsOrbitAddress);
+          setUserPollsOrbitAddress(pollsOrbitAddress);
 
           const userFound = users
             .find((user) => user.id === userOrbitAddress);
@@ -142,6 +144,12 @@ const GeneralTab = (props) => {
                       </Table.Cell>
                   </Table.Row>
                   <Table.Row>
+                      <Table.Cell><strong>{t('profile.general.tab.polls.db.address.row.title')}</strong></Table.Cell>
+                      <Table.Cell>
+                          {userPollsOrbitAddress || (<Placeholder><Placeholder.Line /></Placeholder>)}
+                      </Table.Cell>
+                  </Table.Row>
+                  <Table.Row>
                       <Table.Cell><strong>{t('profile.general.tab.number.of.topics.row.title')}</strong></Table.Cell>
                       <Table.Cell>
                           {numberOfTopics}
@@ -192,7 +200,7 @@ const GeneralTab = (props) => {
           </Table>
           {isSelf && editInformationModal}
       </>
-  ), [editInformationModal, isSelf, numberOfPosts, numberOfTopics, profileAddress, profileMetadataFetched, t, userAvatarUrl, userInfoOrbitAddress, userLocationCell, userPostsOrbitAddress, userRegistrationTimestamp, userTopicsOrbitAddress, username]);
+  ), [editInformationModal, isSelf, numberOfPosts, numberOfTopics, profileAddress, profileMetadataFetched, t, userAvatarUrl, userInfoOrbitAddress, userLocationCell, userPollsOrbitAddress, userPostsOrbitAddress, userRegistrationTimestamp, userTopicsOrbitAddress, username]);
 };
 
 GeneralTab.defaultProps = {

@@ -2,6 +2,7 @@ import OrbitDB from 'orbit-db';
 import Identities from 'orbit-db-identity-provider';
 import { EthereumContractIdentityProvider } from '@ezerous/eth-identity-provider';
 import Web3 from 'web3';
+import { databaseNames } from 'concordia-shared/src/constants/orbit/OrbitDatabases';
 import { ORBIT_DIRECTORY_DEFAULT } from '../constants';
 import { logger } from './logger';
 
@@ -31,11 +32,7 @@ export const createOrbitInstance = async (ipfs, contractAddress) => {
 };
 
 export const getPeerDatabases = async (orbit, userAddresses) => Promise.all(userAddresses
-  .flatMap((userAddress) => [
-    determineKVAddress({ orbit, dbName: 'user', userAddress }),
-    determineKVAddress({ orbit, dbName: 'posts', userAddress }),
-    determineKVAddress({ orbit, dbName: 'topics', userAddress }),
-  ]));
+  .flatMap((userAddress) => databaseNames.map((dbName) => determineKVAddress({ orbit, dbName, userAddress }))));
 
 export const openKVDBs = async (orbit, databases) => {
   databases
