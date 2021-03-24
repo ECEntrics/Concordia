@@ -8,7 +8,8 @@ import {
   USER_VOTED_POST_EVENT,
 } from 'concordia-shared/src/constants/contracts/events/PostVotingContractEvents';
 import {
-  POLL_CREATED_EVENT, USER_VOTED_POLL_EVENT
+  POLL_CREATED_EVENT,
+  USER_VOTED_POLL_EVENT,
 } from 'concordia-shared/src/constants/contracts/events/VotingContractEvents';
 
 export const FORUM_EVENT_USER_SIGNED_UP = 'FORUM_EVENT_USER_SIGNED_UP';
