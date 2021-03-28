@@ -7,12 +7,18 @@ import {
   ORBIT_DB_REPLICATED,
   ORBIT_DB_WRITE,
 } from '@ezerous/breeze/src/orbit/orbitActions';
-import { POSTS_DATABASE, TOPICS_DATABASE, USER_DATABASE } from 'concordia-shared/src/constants/orbit/OrbitDatabases';
+import {
+  POLLS_DATABASE,
+  POSTS_DATABASE,
+  TOPICS_DATABASE,
+  USER_DATABASE,
+} from 'concordia-shared/src/constants/orbit/OrbitDatabases';
 import determineKVAddress from '../../utils/orbitUtils';
 import { FETCH_USER_DATABASE, UPDATE_ORBIT_DATA } from '../actions/peerDbReplicationActions';
 import userDatabaseKeys from '../../constants/orbit/UserDatabaseKeys';
 import { TOPIC_SUBJECT } from '../../constants/orbit/TopicsDatabaseKeys';
 import { POST_CONTENT } from '../../constants/orbit/PostsDatabaseKeys';
+import { POLL_OPTIONS, POLL_QUESTION } from '../../constants/orbit/PollsDatabaseKeys';
 
 function* fetchUserDb({ orbit, userAddress, dbName }) {
   const peerDbAddress = yield call(determineKVAddress, {
@@ -23,10 +29,13 @@ function* fetchUserDb({ orbit, userAddress, dbName }) {
 }
 
 function* updateReduxState({ database }) {
-  const { users, topics, posts } = yield select((state) => ({
+  const {
+    users, topics, posts, polls,
+  } = yield select((state) => ({
     users: state.orbitData.users,
     topics: state.orbitData.topics,
     posts: state.orbitData.posts,
+    polls: state.orbitData.polls,
   }));
 
   if (database.dbname === USER_DATABASE) {
@@ -53,6 +62,7 @@ function* updateReduxState({ database }) {
       ],
       topics: [...topics],
       posts: [...posts],
+      polls: [...polls],
     });
   }
 
@@ -76,6 +86,7 @@ function* updateReduxState({ database }) {
           })),
       ],
       posts: [...posts],
+      polls: [...polls],
     });
   }
 
@@ -95,6 +106,32 @@ function* updateReduxState({ database }) {
         ...Object.entries(database.all).map(([key, value]) => ({
           id: parseInt(key, 10),
           [POST_CONTENT]: value[POST_CONTENT],
+        })),
+      ],
+      polls: [...polls],
+    });
+  }
+
+  if (database.dbname === POLLS_DATABASE) {
+    const oldPollsUnchanged = polls
+      .filter((poll) => !Object
+        .keys(database.all)
+        .map((key) => parseInt(key, 10))
+        .includes(poll.id));
+
+    yield put({
+      type: UPDATE_ORBIT_DATA,
+      users: [...users],
+      topics: [...topics],
+      posts: [...posts],
+      polls: [
+        ...oldPollsUnchanged,
+        ...Object.entries(database.all).map(([key, value]) => ({
+          id: parseInt(key, 10),
+          [POLL_QUESTION]: value[POLL_QUESTION],
+          [POLL_OPTIONS]: [
+            ...value[POLL_OPTIONS],
+          ],
         })),
       ],
     });
