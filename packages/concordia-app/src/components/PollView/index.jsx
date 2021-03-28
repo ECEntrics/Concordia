@@ -15,6 +15,7 @@ import PollVote from './PollVote';
 import { FETCH_USER_DATABASE } from '../../redux/actions/peerDbReplicationActions';
 import { generatePollHash, generateHash } from '../../utils/hashUtils';
 import { POLL_OPTIONS, POLL_QUESTION } from '../../constants/orbit/PollsDatabaseKeys';
+import PollDataInvalid from './PollDataInvalid';
 
 const { contracts: { [VOTING_CONTRACT]: { methods: { getPoll: { cacheCall: getPollChainData } } } } } = drizzle;
 const { orbit } = breeze;
@@ -144,17 +145,23 @@ const PollView = (props) => {
 
   return (
       <Container id="topic-poll-container" textAlign="left">
-          <Header as="h3">
-              <Grid>
-                  <Grid.Column width={1}><Icon name="chart pie" size="large" /></Grid.Column>
-                  <Grid.Column width={15}>
-                      {loading
-                        ? <Placeholder><Placeholder.Line length="very long" /></Placeholder>
-                        : pollQuestion}
-                  </Grid.Column>
-              </Grid>
-          </Header>
-          <Tab panes={panes} />
+          {!loading && pollHashValid
+            ? (
+                <>
+                    <Header as="h3">
+                        <Grid>
+                            <Grid.Column width={1}><Icon name="chart pie" size="large" /></Grid.Column>
+                            <Grid.Column width={15}>
+                                {loading
+                                  ? <Placeholder><Placeholder.Line length="very long" /></Placeholder>
+                                  : pollQuestion}
+                            </Grid.Column>
+                        </Grid>
+                    </Header>
+                    <Tab panes={panes} />
+                </>
+            )
+            : <PollDataInvalid />}
       </Container>
   );
 };
