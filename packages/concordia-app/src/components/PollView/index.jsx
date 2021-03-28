@@ -1,89 +1,144 @@
-import React, { useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { VOTING_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import {
   Container, Header, Icon, Tab,
 } from 'semantic-ui-react';
 import { useTranslation } from 'react-i18next';
-import { drizzle } from '../../redux/store';
+import PropTypes from 'prop-types';
+import { POLLS_DATABASE } from 'concordia-shared/src/constants/orbit/OrbitDatabases';
+import { breeze, drizzle } from '../../redux/store';
 import PollGraph from './PollGraph';
 import CustomLoadingTabPane from '../CustomLoadingTabPane';
 import { GRAPH_TAB, VOTE_TAB } from '../../constants/polls/PollTabs';
 import PollVote from './PollVote';
+import { FETCH_USER_DATABASE } from '../../redux/actions/peerDbReplicationActions';
+import { generatePollHash, generateHash } from '../../utils/hashUtils';
+import { POLL_OPTIONS, POLL_QUESTION } from '../../constants/orbit/PollsDatabaseKeys';
 
-const { contracts: { [VOTING_CONTRACT]: { methods: { pollExists: { cacheCall: pollExistsChainData } } } } } = drizzle;
-
-const hashOption = (val) => {
-  let hash = 0;
-  let i;
-  let chr;
-
-  for (i = 0; i < val.length; i++) {
-    chr = val.charCodeAt(i);
-    hash = ((hash << 5) - hash) + chr;
-    hash |= 0;
-  }
-
-  return `${hash}`;
-};
+const { contracts: { [VOTING_CONTRACT]: { methods: { getPoll: { cacheCall: getPollChainData } } } } } = drizzle;
+const { orbit } = breeze;
 
 const PollView = (props) => {
   const { topicId } = props;
   const userAddress = useSelector((state) => state.user.address);
   const hasSignedUp = useSelector((state) => state.user.hasSignedUp);
-  const getPollInfoResults = useSelector((state) => state.contracts[VOTING_CONTRACT].getPollInfo);
-  const [getPollInfoCallHash, setGetPollInfoCallHash] = useState(null);
-  const [pollOptions, setPollOptions] = useState([
-    {
-      label: 'option 1',
-      hash: hashOption('option 1'),
-    },
-    {
-      label: 'option 2',
-      hash: hashOption('option 2'),
-    },
-    {
-      label: 'option 3',
-      hash: hashOption('option 3'),
-    },
-    {
-      label: 'option 4',
-      hash: hashOption('option 4'),
-    },
-    {
-      label: 'option 5',
-      hash: hashOption('option 5'),
-    },
-
-  ]);
-  const [voteCounts, setVoteCounts] = useState([2, 8, 4, 12, 7]);
-  const [voteLoading, setVoteLoading] = useState(false);
-  const [resultsLoading, setResultsLoading] = useState(false);
+  const getPollResults = useSelector((state) => state.contracts[VOTING_CONTRACT].getPoll);
+  const polls = useSelector((state) => state.orbitData.polls);
+  const [getPollCallHash, setGetPollCallHash] = useState(null);
+  const [pollHash, setPollHash] = useState('');
+  const [pollChangeVoteEnabled, setPollChangeVoteEnabled] = useState(false);
+  const [pollOptions, setPollOptions] = useState([]);
+  const [voteCounts, setVoteCounts] = useState([]);
+  const [voters, setVoters] = useState([]);
+  const [pollHashValid, setPollHashValid] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  // TODO: get vote options
+  useEffect(() => {
+    if (!getPollCallHash) {
+      setGetPollCallHash(getPollChainData(topicId));
+    }
+  }, [getPollCallHash, topicId]);
 
-  // TODO: get current results
+  useEffect(() => {
+    dispatch({
+      type: FETCH_USER_DATABASE,
+      orbit,
+      dbName: POLLS_DATABASE,
+      userAddress,
+    });
+  }, [dispatch, userAddress]);
 
-  // TODO: check poll hash validity, add invalid view
+  useEffect(() => {
+    if (getPollCallHash && getPollResults && getPollResults[getPollCallHash]) {
+      setPollHash(getPollResults[getPollCallHash].value[1]);
+      setPollChangeVoteEnabled(getPollResults[getPollCallHash].value[2]);
+      setVoteCounts(getPollResults[getPollCallHash].value[4].map((voteCount) => parseInt(voteCount, 10)));
+
+      const cumulativeSum = getPollResults[getPollCallHash].value[4]
+        .map((voteCount) => parseInt(voteCount, 10))
+        .reduce((accumulator, voteCount) => (accumulator.length === 0
+          ? [voteCount]
+          : [...accumulator, accumulator[accumulator.length - 1] + voteCount]), []);
+
+      setVoters(cumulativeSum
+        .map((subArrayEnd, index) => getPollResults[getPollCallHash].value[5]
+          .slice(index > 0 ? cumulativeSum[index - 1] : 0,
+            subArrayEnd)));
+    }
+  }, [getPollCallHash, getPollResults]);
+
+  useEffect(() => {
+    const pollFound = polls
+      .find((poll) => poll.id === topicId);
+
+    if (pollHash && pollFound) {
+      if (generatePollHash(pollFound[POLL_QUESTION], pollFound[POLL_OPTIONS]) === pollHash) {
+        setPollHashValid(true);
+        setPollOptions(pollFound[POLL_OPTIONS].map((pollOption) => ({
+          label: pollOption,
+          hash: generateHash(pollOption),
+        })));
+      } else {
+        setPollHashValid(false);
+      }
+
+      setLoading(false);
+    }
+  }, [pollHash, polls, topicId]);
+
+  // TODO: add a "Signup to enable voting" view
+
+  const userHasVoted = useMemo(() => hasSignedUp && voters
+    .some((optionVoters) => optionVoters.includes(userAddress)),
+  [hasSignedUp, userAddress, voters]);
+
+  const userVoteHash = useMemo(() => {
+    if (userHasVoted) {
+      return pollOptions[voters
+        .findIndex((optionVoters) => optionVoters.includes(userAddress))].hash;
+    }
+
+    return '';
+  }, [pollOptions, userAddress, userHasVoted, voters]);
 
   const pollVoteTab = useMemo(() => (
-      <PollVote pollOptions={pollOptions} enableVoteChanges hasUserVoted userVoteHash={pollOptions[2].hash} />
-  ), [pollOptions]);
+    !loading
+      ? (
+          <PollVote
+            pollOptions={pollOptions}
+            enableVoteChanges={pollChangeVoteEnabled}
+            hasUserVoted={userHasVoted}
+            userVoteHash={userVoteHash}
+          />
+      )
+      : <div />
+  ), [loading, pollChangeVoteEnabled, pollOptions, userHasVoted, userVoteHash]);
 
   const pollGraphTab = useMemo(() => (
-      <PollGraph pollOptions={pollOptions} voteCounts={voteCounts} hasUserVoted userVoteHash={pollOptions[2].hash} />
-  ), [pollOptions, voteCounts]);
+    !loading
+      ? (
+          <PollGraph
+            pollOptions={pollOptions}
+            voteCounts={voteCounts}
+            hasUserVoted={userHasVoted}
+            userVoteHash={userVoteHash}
+          />
+      )
+      : <div />
+  ), [loading, pollOptions, userHasVoted, userVoteHash, voteCounts]);
 
   const panes = useMemo(() => {
-    const pollVotePane = (<CustomLoadingTabPane loading={voteLoading}>{pollVoteTab}</CustomLoadingTabPane>);
-    const pollGraphPane = (<CustomLoadingTabPane loading={resultsLoading}>{pollGraphTab}</CustomLoadingTabPane>);
+    const pollVotePane = (<CustomLoadingTabPane loading={loading}>{pollVoteTab}</CustomLoadingTabPane>);
+    const pollGraphPane = (<CustomLoadingTabPane loading={loading}>{pollGraphTab}</CustomLoadingTabPane>);
 
     return ([
       { menuItem: t(VOTE_TAB.intl_display_name_id), render: () => pollVotePane },
       { menuItem: t(GRAPH_TAB.intl_display_name_id), render: () => pollGraphPane },
     ]);
-  }, [pollGraphTab, pollVoteTab, resultsLoading, t, voteLoading]);
+  }, [loading, pollGraphTab, pollVoteTab, t]);
 
   return (
       <Container id="topic-poll-container" textAlign="left">
@@ -94,6 +149,10 @@ const PollView = (props) => {
           <Tab panes={panes} />
       </Container>
   );
+};
+
+PollView.propTypes = {
+  topicId: PropTypes.number.isRequired,
 };
 
 export default PollView;

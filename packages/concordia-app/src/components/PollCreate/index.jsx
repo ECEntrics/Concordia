@@ -15,7 +15,7 @@ import { breeze, drizzle } from '../../redux/store';
 import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../constants/TransactionStatus';
 import './styles.css';
 import { POLL_OPTIONS, POLL_QUESTION } from '../../constants/orbit/PollsDatabaseKeys';
-import generatePollHash from '../../utils/hashUtils';
+import { generatePollHash } from '../../utils/hashUtils';
 
 const { contracts: { [VOTING_CONTRACT]: { methods: { createPoll } } } } = drizzle;
 const { orbit: { stores } } = breeze;

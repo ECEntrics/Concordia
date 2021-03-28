@@ -62,8 +62,10 @@ const TopicView = (props) => {
   }, [postIds, timestamp, topicAuthor, topicAuthorAddress, topicId]);
 
   useEffect(() => {
-    setPollExistsCallHash(pollExistsChainData(topicId));
-  }, [topicId]);
+    if (!pollExistsCallHash) {
+      setPollExistsCallHash(pollExistsChainData(topicId));
+    }
+  }, [pollExistsCallHash, topicId]);
 
   useEffect(() => {
     if (getTopicCallHash && getTopicResults && getTopicResults[getTopicCallHash]) {
@@ -130,7 +132,7 @@ const TopicView = (props) => {
     }
   }, [topicId, topics]);
 
-  const poll = useMemo(() => hasPoll && <PollView />, [hasPoll]);
+  const poll = useMemo(() => hasPoll && <PollView topicId={topicId} />, [hasPoll, topicId]);
 
   const stopClickPropagation = (event) => {
     event.stopPropagation();
