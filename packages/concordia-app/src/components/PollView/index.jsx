@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { VOTING_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import {
-  Container, Header, Icon, Tab,
+  Container, Grid, Header, Icon, Placeholder, Tab,
 } from 'semantic-ui-react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
@@ -32,6 +32,7 @@ const PollView = (props) => {
   const [voteCounts, setVoteCounts] = useState([]);
   const [voters, setVoters] = useState([]);
   const [pollHashValid, setPollHashValid] = useState(false);
+  const [pollQuestion, setPollQuestion] = useState('');
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -77,6 +78,7 @@ const PollView = (props) => {
     if (pollHash && pollFound) {
       if (generatePollHash(pollFound[POLL_QUESTION], pollFound[POLL_OPTIONS]) === pollHash) {
         setPollHashValid(true);
+        setPollQuestion(pollFound[POLL_QUESTION]);
         setPollOptions(pollFound[POLL_OPTIONS].map((pollOption) => ({
           label: pollOption,
           hash: generateHash(pollOption),
@@ -143,8 +145,14 @@ const PollView = (props) => {
   return (
       <Container id="topic-poll-container" textAlign="left">
           <Header as="h3">
-              <Icon name="chart pie" size="large" />
-              Do you thing asdf or fdsa?
+              <Grid>
+                  <Grid.Column width={1}><Icon name="chart pie" size="large" /></Grid.Column>
+                  <Grid.Column width={15}>
+                      {loading
+                        ? <Placeholder><Placeholder.Line length="very long" /></Placeholder>
+                        : pollQuestion}
+                  </Grid.Column>
+              </Grid>
           </Header>
           <Tab panes={panes} />
       </Container>
