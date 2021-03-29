@@ -7,7 +7,7 @@ import { CASTED_OPTION_COLOR, DEFAULT_OPTION_COLOR } from '../../../constants/po
 
 const PollGraph = (props) => {
   const {
-    pollOptions, voteCounts, hasUserVoted, userVoteHash,
+    pollOptions, voteCounts, hasUserVoted, selectedOptionIndex,
   } = props;
   const { t } = useTranslation();
 
@@ -22,16 +22,16 @@ const PollGraph = (props) => {
     },
     colors: [
       (value) => {
-        if (hasUserVoted && pollOptions[value.dataPointIndex].hash === userVoteHash) {
+        if (hasUserVoted && value.dataPointIndex === selectedOptionIndex) {
           return CASTED_OPTION_COLOR;
         }
         return DEFAULT_OPTION_COLOR;
       },
     ],
     xaxis: {
-      categories: pollOptions.map((pollOption) => pollOption.label),
+      categories: pollOptions,
     },
-  }), [hasUserVoted, pollOptions, userVoteHash]);
+  }), [hasUserVoted, pollOptions, selectedOptionIndex]);
 
   const chartSeries = useMemo(() => [{
     name: 'votes',
@@ -66,17 +66,14 @@ const PollGraph = (props) => {
 
 PollGraph.defaultProps = {
   hasUserVoted: false,
-  userVoteHash: '',
+  selectedOptionIndex: '',
 };
 
 PollGraph.propTypes = {
-  pollOptions: PropTypes.arrayOf(PropTypes.exact({
-    label: PropTypes.string,
-    hash: PropTypes.string,
-  })).isRequired,
+  pollOptions: PropTypes.arrayOf(PropTypes.string).isRequired,
   voteCounts: PropTypes.arrayOf(PropTypes.number).isRequired,
   hasUserVoted: PropTypes.bool,
-  userVoteHash: PropTypes.string,
+  selectedOptionIndex: PropTypes.string,
 };
 
 export default PollGraph;

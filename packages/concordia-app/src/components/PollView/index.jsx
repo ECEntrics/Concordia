@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { VOTING_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import {
-  Container, Grid, Header, Icon, Placeholder, Tab,
+  Container, Header, Icon, Tab,
 } from 'semantic-ui-react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
@@ -13,7 +13,7 @@ import CustomLoadingTabPane from '../CustomLoadingTabPane';
 import { GRAPH_TAB, VOTE_TAB } from '../../constants/polls/PollTabs';
 import PollVote from './PollVote';
 import { FETCH_USER_DATABASE } from '../../redux/actions/peerDbReplicationActions';
-import { generatePollHash, generateHash } from '../../utils/hashUtils';
+import { generatePollHash } from '../../utils/hashUtils';
 import { POLL_OPTIONS, POLL_QUESTION } from '../../constants/orbit/PollsDatabaseKeys';
 import PollDataInvalid from './PollDataInvalid';
 import PollGuestView from './PollGuestView';
@@ -35,7 +35,8 @@ const PollView = (props) => {
   const [voters, setVoters] = useState([]);
   const [pollHashValid, setPollHashValid] = useState(false);
   const [pollQuestion, setPollQuestion] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [chainDataLoading, setChainDataLoading] = useState(true);
+  const [orbitDataLoading, setOrbitDataLoading] = useState(true);
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -70,6 +71,8 @@ const PollView = (props) => {
         .map((subArrayEnd, index) => getPollResults[getPollCallHash].value[5]
           .slice(index > 0 ? cumulativeSum[index - 1] : 0,
             subArrayEnd)));
+
+      setChainDataLoading(false);
     }
   }, [getPollCallHash, getPollResults]);
 
@@ -81,15 +84,12 @@ const PollView = (props) => {
       if (generatePollHash(pollFound[POLL_QUESTION], pollFound[POLL_OPTIONS]) === pollHash) {
         setPollHashValid(true);
         setPollQuestion(pollFound[POLL_QUESTION]);
-        setPollOptions(pollFound[POLL_OPTIONS].map((pollOption) => ({
-          label: pollOption,
-          hash: generateHash(pollOption),
-        })));
+        setPollOptions([...pollFound[POLL_OPTIONS]]);
       } else {
         setPollHashValid(false);
       }
 
-      setLoading(false);
+      setOrbitDataLoading(false);
     }
   }, [pollHash, polls, topicId]);
 
@@ -97,71 +97,77 @@ const PollView = (props) => {
     .some((optionVoters) => optionVoters.includes(userAddress)),
   [hasSignedUp, userAddress, voters]);
 
-  const userVoteHash = useMemo(() => {
-    if (userHasVoted) {
-      return pollOptions[voters
-        .findIndex((optionVoters) => optionVoters.includes(userAddress))].hash;
+  const userVoteIndex = useMemo(() => {
+    if (!chainDataLoading && !orbitDataLoading && userHasVoted) {
+      return voters
+        .findIndex((optionVoters) => optionVoters.includes(userAddress));
     }
 
-    return '';
-  }, [pollOptions, userAddress, userHasVoted, voters]);
+    return -1;
+  }, [chainDataLoading, orbitDataLoading, userAddress, userHasVoted, voters]);
 
   const pollVoteTab = useMemo(() => {
     if (!hasSignedUp) {
       return <PollGuestView />;
     }
 
-    if (loading) {
+    if (chainDataLoading || orbitDataLoading) {
       return null;
     }
 
     return (
         <PollVote
+          topicId={topicId}
           pollOptions={pollOptions}
           enableVoteChanges={pollChangeVoteEnabled}
           hasUserVoted={userHasVoted}
-          userVoteHash={userVoteHash}
+          userVoteIndex={userVoteIndex}
         />
     );
-  }, [hasSignedUp, loading, pollChangeVoteEnabled, pollOptions, userHasVoted, userVoteHash]);
+  }, [
+    chainDataLoading, hasSignedUp, orbitDataLoading, pollChangeVoteEnabled, pollOptions, topicId, userHasVoted,
+    userVoteIndex,
+  ]);
 
   const pollGraphTab = useMemo(() => (
-    !loading
+    !chainDataLoading || orbitDataLoading
       ? (
           <PollGraph
             pollOptions={pollOptions}
             voteCounts={voteCounts}
             hasUserVoted={userHasVoted}
-            userVoteHash={userVoteHash}
+            userVoteIndex={userVoteIndex}
           />
       )
       : null
-  ), [loading, pollOptions, userHasVoted, userVoteHash, voteCounts]);
+  ), [chainDataLoading, orbitDataLoading, pollOptions, userHasVoted, userVoteIndex, voteCounts]);
 
   const panes = useMemo(() => {
-    const pollVotePane = (<CustomLoadingTabPane loading={loading}>{pollVoteTab}</CustomLoadingTabPane>);
-    const pollGraphPane = (<CustomLoadingTabPane loading={loading}>{pollGraphTab}</CustomLoadingTabPane>);
+    const pollVotePane = (
+        <CustomLoadingTabPane loading={chainDataLoading || orbitDataLoading}>
+            {pollVoteTab}
+        </CustomLoadingTabPane>
+    );
+    const pollGraphPane = (
+        <CustomLoadingTabPane loading={chainDataLoading || orbitDataLoading}>
+            {pollGraphTab}
+        </CustomLoadingTabPane>
+    );
 
     return ([
       { menuItem: t(VOTE_TAB.intl_display_name_id), render: () => pollVotePane },
       { menuItem: t(GRAPH_TAB.intl_display_name_id), render: () => pollGraphPane },
     ]);
-  }, [loading, pollGraphTab, pollVoteTab, t]);
+  }, [chainDataLoading, orbitDataLoading, pollGraphTab, pollVoteTab, t]);
 
   return (
       <Container id="topic-poll-container" textAlign="left">
-          {!loading && pollHashValid
+          {!chainDataLoading && !orbitDataLoading && pollHashValid
             ? (
                 <>
                     <Header as="h3">
-                        <Grid>
-                            <Grid.Column width={1}><Icon name="chart pie" size="large" /></Grid.Column>
-                            <Grid.Column width={15}>
-                                {loading
-                                  ? <Placeholder><Placeholder.Line length="very long" /></Placeholder>
-                                  : pollQuestion}
-                            </Grid.Column>
-                        </Grid>
+                        <Icon name="chart pie" size="large" />
+                        {pollQuestion}
                     </Header>
                     <Tab panes={panes} />
                 </>

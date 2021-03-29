@@ -2,42 +2,46 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Form } from 'semantic-ui-react';
 import { useTranslation } from 'react-i18next';
+import { VOTING_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
+import { drizzle } from '../../../redux/store';
+
+const { contracts: { [VOTING_CONTRACT]: { methods: { vote } } } } = drizzle;
 
 const PollVote = (props) => {
   const {
-    pollOptions, enableVoteChanges, hasUserVoted, userVoteHash,
+    topicId, account, pollOptions, enableVoteChanges, hasUserVoted, userVoteIndex,
   } = props;
-  const [selectedOptionHash, setSelectedOptionHash] = useState(userVoteHash);
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState(userVoteIndex);
+  const [voting, setVoting] = useState('');
   const { t } = useTranslation();
 
   const onOptionSelected = (e, { value }) => {
-    setSelectedOptionHash(value);
+    setSelectedOptionIndex(value);
   };
 
   const onCastVote = () => {
-    console.log('vote');
-    // TODO
-    // TODO: callback for immediate poll data refresh on vote?
+    setVoting(true);
+    vote.cacheSend(...[topicId, selectedOptionIndex + 1], { from: account });
   };
 
   return (
       <Form onSubmit={onCastVote}>
           <Form.Group grouped>
               <label htmlFor="poll">{t('topic.poll.tab.vote.form.radio.label')}</label>
-              {pollOptions.map((pollOption) => (
+              {pollOptions.map((pollOption, index) => (
                   <Form.Radio
-                    key={pollOption.hash}
-                    label={pollOption.label}
-                    value={pollOption.hash}
-                    checked={pollOption.hash === selectedOptionHash}
-                    disabled={hasUserVoted && !enableVoteChanges && pollOption.hash !== selectedOptionHash}
+                    key={pollOption}
+                    label={pollOption}
+                    value={index}
+                    checked={index === selectedOptionIndex}
+                    disabled={hasUserVoted && !enableVoteChanges && index !== selectedOptionIndex}
                     onChange={onOptionSelected}
                   />
               ))}
           </Form.Group>
           <Form.Button
             type="submit"
-            disabled={(hasUserVoted && !enableVoteChanges) || (selectedOptionHash === userVoteHash)}
+            disabled={voting || (hasUserVoted && !enableVoteChanges) || (selectedOptionIndex === userVoteIndex)}
           >
               {t('topic.poll.tab.vote.form.button.submit')}
           </Form.Button>
@@ -46,17 +50,15 @@ const PollVote = (props) => {
 };
 
 PollVote.defaultProps = {
-  userVoteHash: '',
+  userVoteIndex: -1,
 };
 
 PollVote.propTypes = {
-  pollOptions: PropTypes.arrayOf(PropTypes.exact({
-    label: PropTypes.string,
-    hash: PropTypes.string,
-  })).isRequired,
+  topicId: PropTypes.number.isRequired,
+  pollOptions: PropTypes.arrayOf(PropTypes.string).isRequired,
   enableVoteChanges: PropTypes.bool.isRequired,
   hasUserVoted: PropTypes.bool.isRequired,
-  userVoteHash: PropTypes.string,
+  userVoteIndex: PropTypes.number,
 };
 
 export default PollVote;
