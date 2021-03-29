@@ -16,6 +16,7 @@ import { FETCH_USER_DATABASE } from '../../redux/actions/peerDbReplicationAction
 import { generatePollHash, generateHash } from '../../utils/hashUtils';
 import { POLL_OPTIONS, POLL_QUESTION } from '../../constants/orbit/PollsDatabaseKeys';
 import PollDataInvalid from './PollDataInvalid';
+import PollGuestView from './PollGuestView';
 
 const { contracts: { [VOTING_CONTRACT]: { methods: { getPoll: { cacheCall: getPollChainData } } } } } = drizzle;
 const { orbit } = breeze;
@@ -92,8 +93,6 @@ const PollView = (props) => {
     }
   }, [pollHash, polls, topicId]);
 
-  // TODO: add a "Signup to enable voting" view
-
   const userHasVoted = useMemo(() => hasSignedUp && voters
     .some((optionVoters) => optionVoters.includes(userAddress)),
   [hasSignedUp, userAddress, voters]);
@@ -107,18 +106,24 @@ const PollView = (props) => {
     return '';
   }, [pollOptions, userAddress, userHasVoted, voters]);
 
-  const pollVoteTab = useMemo(() => (
-    !loading
-      ? (
-          <PollVote
-            pollOptions={pollOptions}
-            enableVoteChanges={pollChangeVoteEnabled}
-            hasUserVoted={userHasVoted}
-            userVoteHash={userVoteHash}
-          />
-      )
-      : <div />
-  ), [loading, pollChangeVoteEnabled, pollOptions, userHasVoted, userVoteHash]);
+  const pollVoteTab = useMemo(() => {
+    if (!hasSignedUp) {
+      return <PollGuestView />;
+    }
+
+    if (loading) {
+      return null;
+    }
+
+    return (
+        <PollVote
+          pollOptions={pollOptions}
+          enableVoteChanges={pollChangeVoteEnabled}
+          hasUserVoted={userHasVoted}
+          userVoteHash={userVoteHash}
+        />
+    );
+  }, [hasSignedUp, loading, pollChangeVoteEnabled, pollOptions, userHasVoted, userVoteHash]);
 
   const pollGraphTab = useMemo(() => (
     !loading
@@ -130,7 +135,7 @@ const PollView = (props) => {
             userVoteHash={userVoteHash}
           />
       )
-      : <div />
+      : null
   ), [loading, pollOptions, userHasVoted, userVoteHash, voteCounts]);
 
   const panes = useMemo(() => {
