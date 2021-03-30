@@ -91,7 +91,7 @@ contract Voting {
         address[] memory voters = new address[](totalVotes);
         uint serializationIndex = 0;
 
-        for (uint pollOption = 1; pollOption < polls[topicID].numOptions; pollOption++) {
+        for (uint pollOption = 1; pollOption <= polls[topicID].numOptions; pollOption++) {
             address[] memory optionVoters = getVoters(topicID, pollOption);
 
             for (uint voteIndex = 0; voteIndex < voteCounts[pollOption - 1]; voteIndex++) {
@@ -132,7 +132,7 @@ contract Voting {
 
         uint[] memory voteCounts = new uint[](polls[topicID].numOptions);
 
-        for (uint pollOption = 1; pollOption < polls[topicID].numOptions; pollOption++) {
+        for (uint pollOption = 1; pollOption <= polls[topicID].numOptions; pollOption++) {
             voteCounts[pollOption - 1] = getVoteCount(topicID, pollOption);
         }
 
