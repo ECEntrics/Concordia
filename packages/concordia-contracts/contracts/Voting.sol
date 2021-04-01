@@ -68,7 +68,41 @@ contract Voting {
         );
     }
 
-    function isOptionValid(uint topicID, uint option) public view returns (bool) {
+    function getPoll(uint topicID) public view returns (uint, string memory, bool, uint, uint[] memory, address[] memory, uint) {
+        require(pollExists(topicID), POLL_DOES_NOT_EXIST);
+
+        uint totalVotes = getTotalVotes(topicID);
+        uint[] memory voteCounts = getVoteCounts(topicID);
+        address[] memory voters = getSerializedVoters(topicID, voteCounts, totalVotes);
+
+        return (
+        polls[topicID].numOptions,
+        polls[topicID].dataHash,
+        polls[topicID].enableVoteChanges,
+        polls[topicID].timestamp,
+        voteCounts,
+        voters,
+        totalVotes
+        );
+    }
+
+    function getSerializedVoters(uint topicID, uint[] memory voteCounts, uint totalVotes) private view returns (address[] memory) {
+
+        address[] memory voters = new address[](totalVotes);
+        uint serializationIndex = 0;
+
+        for (uint pollOption = 1; pollOption <= polls[topicID].numOptions; pollOption++) {
+            address[] memory optionVoters = getVoters(topicID, pollOption);
+
+            for (uint voteIndex = 0; voteIndex < voteCounts[pollOption - 1]; voteIndex++) {
+                voters[serializationIndex++] = optionVoters[voteIndex];
+            }
+        }
+
+        return (voters);
+    }
+
+    function isOptionValid(uint topicID, uint option) private view returns (bool) {
         require(pollExists(topicID), POLL_DOES_NOT_EXIST);
         if (option <= polls[topicID].numOptions)    // Option 0 is valid as well (no option chosen)
             return true;
@@ -93,6 +127,18 @@ contract Voting {
         return (polls[topicID].voters[option].length);
     }
 
+    function getVoteCounts(uint topicID) public view returns (uint[] memory) {
+        require(pollExists(topicID), POLL_DOES_NOT_EXIST);
+
+        uint[] memory voteCounts = new uint[](polls[topicID].numOptions);
+
+        for (uint pollOption = 1; pollOption <= polls[topicID].numOptions; pollOption++) {
+            voteCounts[pollOption - 1] = getVoteCount(topicID, pollOption);
+        }
+
+        return voteCounts;
+    }
+
     function getTotalVotes(uint topicID) public view returns (uint) {
         require(pollExists(topicID), POLL_DOES_NOT_EXIST);
 
@@ -111,7 +157,7 @@ contract Voting {
         return (polls[topicID].voters[option]);
     }
 
-    function getVoterIndex(uint topicID, address voter) public view returns (uint) {
+    function getVoterIndex(uint topicID, address voter) private view returns (uint) {
         require(pollExists(topicID), POLL_DOES_NOT_EXIST);
         require(hasVoted(topicID, voter), USER_HAS_NOT_VOTED);
         Poll storage poll = polls[topicID];

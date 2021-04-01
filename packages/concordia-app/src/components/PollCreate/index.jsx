@@ -15,7 +15,7 @@ import { breeze, drizzle } from '../../redux/store';
 import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../constants/TransactionStatus';
 import './styles.css';
 import { POLL_OPTIONS, POLL_QUESTION } from '../../constants/orbit/PollsDatabaseKeys';
-import generateHash from '../../utils/hashUtils';
+import { generatePollHash } from '../../utils/hashUtils';
 
 const { contracts: { [VOTING_CONTRACT]: { methods: { createPoll } } } } = drizzle;
 const { orbit: { stores } } = breeze;
@@ -96,7 +96,7 @@ const PollCreate = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     createPoll(topicId) {
       setCreating(true);
-      const dataHash = generateHash(JSON.stringify({ question, optionValues }));
+      const dataHash = generatePollHash(question, optionValues);
       setCreatePollCacheSendStackId(createPoll.cacheSend(
         ...[topicId, options.length, dataHash, allowVoteChanges], { from: account },
       ));
