@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useEffect, useState,
+  useCallback, useEffect, useRef, useState,
 } from 'react';
 import {
   Button, Container, Form, Header, Icon, Input, TextArea,
@@ -15,6 +15,7 @@ import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../../constants/Trans
 import { TOPIC_SUBJECT } from '../../../constants/orbit/TopicsDatabaseKeys';
 import { POST_CONTENT } from '../../../constants/orbit/PostsDatabaseKeys';
 import './styles.css';
+import PollCreate from '../../../components/PollCreate';
 
 const { contracts: { [FORUM_CONTRACT]: { methods: { createTopic } } } } = drizzle;
 const { orbit: { stores } } = breeze;
@@ -25,9 +26,12 @@ const TopicCreate = (props) => {
   const transactions = useSelector((state) => state.transactions);
   const [subjectInput, setSubjectInput] = useState('');
   const [contentInput, setContentInput] = useState('');
+  const [newTopicId, setNewTopicId] = useState(null);
   const [createTopicCacheSendStackId, setCreateTopicCacheSendStackId] = useState('');
   const [posting, setPosting] = useState(false);
-
+  const [pollAdded, setPollAdded] = useState(false);
+  const [pollFilled, setPollFilled] = useState(false);
+  const pollCreateRef = useRef();
   const history = useHistory();
   const { t } = useTranslation();
 
@@ -48,9 +52,18 @@ const TopicCreate = (props) => {
     }
   }, [posting]);
 
+  const goToTopic = useCallback((topicId) => {
+    if (topicId) history.push(`/topics/${topicId}`);
+    else {
+      console.error('Error creating poll!');
+      history.push(`/topics/${newTopicId}`);
+    }
+  }, [history, newTopicId]);
+
   useEffect(() => {
     if (posting && transactionStack && transactionStack[createTopicCacheSendStackId]
-            && transactions[transactionStack[createTopicCacheSendStackId]]) {
+            && transactions[transactionStack[createTopicCacheSendStackId]]
+            && (!pollAdded || (!pollCreateRef.current.pollCreating() && !pollCreateRef.current.pollErrored()))) {
       if (transactions[transactionStack[createTopicCacheSendStackId]].status === TRANSACTION_ERROR) {
         setPosting(false);
       } else if (transactions[transactionStack[createTopicCacheSendStackId]].status === TRANSACTION_SUCCESS) {
@@ -67,6 +80,12 @@ const TopicCreate = (props) => {
           },
         } = transactions[transactionStack[createTopicCacheSendStackId]];
 
+        setNewTopicId(topicId);
+
+        if (pollAdded) {
+          pollCreateRef.current.createPoll(topicId);
+        }
+
         const topicsDb = Object.values(stores).find((store) => store.dbname === TOPICS_DATABASE);
         const postsDb = Object.values(stores).find((store) => store.dbname === POSTS_DATABASE);
 
@@ -77,14 +96,15 @@ const TopicCreate = (props) => {
               [POST_CONTENT]: contentInput,
             }))
           .then(() => {
-            history.push(`/topics/${topicId}`);
+            if (!pollAdded) goToTopic();
           })
           .catch((reason) => {
             console.error(reason);
           });
       }
     }
-  }, [createTopicCacheSendStackId, history, contentInput, posting, subjectInput, transactionStack, transactions]);
+  }, [createTopicCacheSendStackId,
+    contentInput, posting, subjectInput, transactionStack, transactions, pollAdded, goToTopic]);
 
   const validateAndPost = useCallback(() => {
     if (subjectInput === '' || contentInput === '') {
@@ -95,8 +115,24 @@ const TopicCreate = (props) => {
     setCreateTopicCacheSendStackId(createTopic.cacheSend(...[], { from: account }));
   }, [account, contentInput, subjectInput]);
 
+  const togglePollCreate = useCallback((e) => {
+    e.currentTarget.blur();
+    if (!pollAdded) {
+      setPollAdded(true);
+    } else {
+      setPollAdded(false);
+    }
+  }, [pollAdded]);
+
+  const handlePollCreateChanges = useCallback((pollCreateState) => {
+    const { question, optionValues } = pollCreateState;
+    if (question !== '' && !optionValues.includes('')) {
+      setPollFilled(true);
+    } else setPollFilled(false);
+  }, []);
+
   return (
-      <Container>
+      <Container id="form-topic-create">
           <Header id="new-topic-header" as="h2">New Topic</Header>
           <Form loading={posting}>
               <Form.Field required>
@@ -127,12 +163,42 @@ const TopicCreate = (props) => {
                   />
               </Form.Field>
               <Button
+                id="toggle-poll-button"
+                key="form-poll-button"
+                positive={!pollAdded}
+                negative={pollAdded}
+                icon
+                labelPosition="left"
+                onClick={togglePollCreate}
+              >
+                  {!pollAdded ? (
+                      <>
+                          <Icon name="plus" />
+                          {t('topic.create.form.add.poll.button')}
+                      </>
+                  )
+                    : (
+                        <>
+                            <Icon name="x" />
+                            {t('topic.create.form.remove.poll.button')}
+                        </>
+                    )}
+              </Button>
+              {pollAdded && (
+                  <PollCreate
+                    ref={pollCreateRef}
+                    onChange={handlePollCreateChanges}
+                    onCreated={goToTopic}
+                    account={account}
+                  />
+              )}
+              <Button
                 id="create-topic-button"
                 animated
                 key="form-topic-create-button-submit"
                 type="button"
                 className="primary-button"
-                disabled={posting || subjectInput === '' || contentInput === ''}
+                disabled={posting || subjectInput === '' || contentInput === '' || (pollAdded && !pollFilled)}
                 onClick={validateAndPost}
               >
                   <Button.Content visible>
@@ -142,7 +208,6 @@ const TopicCreate = (props) => {
                       <Icon name="send" />
                   </Button.Content>
               </Button>
-
           </Form>
       </Container>
   );
