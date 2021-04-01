@@ -32,7 +32,8 @@ const PostVoting = (props) => {
   // Current votes
   const [getVoteInfoCallHash, setGetVoteInfoCallHash] = useState(null);
 
-  const getVoteInfoResult = useSelector((state) => state.contracts[POST_VOTING_CONTRACT].getVoteInfo[getVoteInfoCallHash]);
+  const getVoteInfoResult = useSelector((state) => state.contracts[POST_VOTING_CONTRACT]
+    .getVoteInfo[getVoteInfoCallHash]);
 
   const [ownVote, setOwnVote] = useState(null);
   const [totalVoteCount, setTotalVoteCount] = useState(null);
@@ -77,13 +78,22 @@ const PostVoting = (props) => {
     if (voting) return;
 
     setVoting(true);
-    if ((ownVote === CHOICE_DEFAULT || ownVote === CHOICE_DOWN) && choice === CHOICE_UP) setVoteCacheSendStackId(upvote.cacheSend(postId, { from: userAccount }));
-    else if ((ownVote === CHOICE_DEFAULT || ownVote === CHOICE_UP) && choice === CHOICE_DOWN) setVoteCacheSendStackId(downvote.cacheSend(postId, { from: userAccount }));
-    else if ((ownVote === CHOICE_UP && choice === CHOICE_UP) || (ownVote === CHOICE_DOWN && choice === CHOICE_DOWN)) setVoteCacheSendStackId(unvote.cacheSend(postId, { from: userAccount }));
-    else setVoting(false);
+
+    if ((ownVote === CHOICE_DEFAULT || ownVote === CHOICE_DOWN) && choice === CHOICE_UP) {
+      setVoteCacheSendStackId(upvote.cacheSend(postId, { from: userAccount }));
+    } else if ((ownVote === CHOICE_DEFAULT || ownVote === CHOICE_UP) && choice === CHOICE_DOWN) {
+      setVoteCacheSendStackId(downvote.cacheSend(postId, { from: userAccount }));
+    } else if ((ownVote === CHOICE_UP && choice === CHOICE_UP) || (ownVote === CHOICE_DOWN && choice === CHOICE_DOWN)) {
+      setVoteCacheSendStackId(unvote.cacheSend(postId, { from: userAccount }));
+    } else {
+      setVoting(false);
+    }
   }, [ownVote, postId, userAccount, voting]);
 
-  const disableVoting = userAccount === null || !hasSignedUp || postAuthorAddress === null || userAccount === postAuthorAddress;
+  const disableVoting = userAccount === null
+      || !hasSignedUp
+      || postAuthorAddress === null
+      || userAccount === postAuthorAddress;
 
   // Clear when unmounting
   useEffect(() => () => clearGetVoteInfoChainData(postId), [postId]);
@@ -107,7 +117,8 @@ const PostVoting = (props) => {
                         &nbsp;&nbsp;
                 </span>
             )}
-            disabled={(upvoteCount === null && downvoteCount === null) || (upvoteCount === '0' && downvoteCount === '0')}
+            disabled={(upvoteCount === null && downvoteCount === null)
+            || (upvoteCount === '0' && downvoteCount === '0')}
             position="bottom center"
           >
               {upvoteCount !== '0' ? (

@@ -23,7 +23,9 @@ import './styles.css';
 
 const { orbit } = breeze;
 
-const { contracts: { [FORUM_CONTRACT]: { methods: { getPost: { clearCacheCall: clearGetPostChainData } } } } } = drizzle;
+const {
+  contracts: { [FORUM_CONTRACT]: { methods: { getPost: { clearCacheCall: clearGetPostChainData } } } },
+} = drizzle;
 
 const PostListRow = (props) => {
   const {

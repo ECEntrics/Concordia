@@ -9,7 +9,15 @@ import PropTypes from 'prop-types';
 import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import { drizzle } from '../redux/store';
 
-const { contracts: { [FORUM_CONTRACT]: { methods: { isUserNameTaken: { cacheCall: isUserNameTakenChainData, clearCacheCall: clearIsUserNameTakenChainData } } } } } = drizzle;
+const {
+  contracts: {
+    [FORUM_CONTRACT]: {
+      methods: {
+        isUserNameTaken: { cacheCall: isUserNameTakenChainData, clearCacheCall: clearIsUserNameTakenChainData },
+      },
+    },
+  },
+} = drizzle;
 
 const UsernameSelector = (props) => {
   const {

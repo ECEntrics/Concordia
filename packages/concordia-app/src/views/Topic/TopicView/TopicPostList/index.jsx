@@ -30,8 +30,10 @@ const TopicPostList = (props) => {
   const [getTopicPostCountCallHash, setGetTopicPostCountCallHash] = useState(null);
   const [getTopicPostsCallHash, setGetTopicPostsCallHash] = useState(null);
 
-  const getTopicPostCountResult = useSelector((state) => state.contracts[FORUM_CONTRACT].getTopicPostCount[getTopicPostCountCallHash]);
-  const getTopicPostsResult = useSelector((state) => state.contracts[FORUM_CONTRACT].getTopicPosts[getTopicPostsCallHash]);
+  const getTopicPostCountResult = useSelector((state) => state.contracts[FORUM_CONTRACT]
+    .getTopicPostCount[getTopicPostCountCallHash]);
+  const getTopicPostsResult = useSelector((state) => state.contracts[FORUM_CONTRACT]
+    .getTopicPosts[getTopicPostsCallHash]);
 
   useEffect(() => {
     if (getTopicPostCountCallHash === null) {

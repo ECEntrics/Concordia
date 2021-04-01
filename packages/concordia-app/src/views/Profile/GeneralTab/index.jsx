@@ -200,7 +200,11 @@ const GeneralTab = (props) => {
           </Table>
           {isSelf && editInformationModal}
       </>
-  ), [editInformationModal, isSelf, numberOfPosts, numberOfTopics, profileAddress, profileMetadataFetched, t, userAvatarUrl, userInfoOrbitAddress, userLocationCell, userPollsOrbitAddress, userPostsOrbitAddress, userRegistrationTimestamp, userTopicsOrbitAddress, username]);
+  ), [
+    editInformationModal, isSelf, numberOfPosts, numberOfTopics, profileAddress, profileMetadataFetched, t,
+    userAvatarUrl, userInfoOrbitAddress, userLocationCell, userPollsOrbitAddress, userPostsOrbitAddress,
+    userRegistrationTimestamp, userTopicsOrbitAddress, username,
+  ]);
 };
 
 GeneralTab.defaultProps = {

@@ -30,8 +30,10 @@ const ProfilePostList = (props) => {
   const [getUserPostCountCallHash, setGetUserPostCountCallHash] = useState(null);
   const [getUserPostsCallHash, setGetUserPostsCallHash] = useState(null);
 
-  const getUserPostCountResult = useSelector((state) => state.contracts[FORUM_CONTRACT].getUserPostCount[getUserPostCountCallHash]);
-  const getUserPostsResult = useSelector((state) => state.contracts[FORUM_CONTRACT].getUserPosts[getUserPostsCallHash]);
+  const getUserPostCountResult = useSelector((state) => state.contracts[FORUM_CONTRACT]
+    .getUserPostCount[getUserPostCountCallHash]);
+  const getUserPostsResult = useSelector((state) => state.contracts[FORUM_CONTRACT]
+    .getUserPosts[getUserPostsCallHash]);
 
   const { t } = useTranslation();
 

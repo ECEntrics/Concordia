@@ -23,7 +23,9 @@ import targetBlank from '../../../utils/markdownUtils';
 
 const { orbit } = breeze;
 
-const { contracts: { [FORUM_CONTRACT]: { methods: { getTopic: { clearCacheCall: clearGetTopicChainData } } } } } = drizzle;
+const {
+  contracts: { [FORUM_CONTRACT]: { methods: { getTopic: { clearCacheCall: clearGetTopicChainData } } } },
+} = drizzle;
 
 const TopicListRow = (props) => {
   const { id: topicId, topicCallHash, loading } = props;
@@ -177,7 +179,10 @@ const TopicListRow = (props) => {
             </Segment>
         </Dimmer.Dimmable>
     );
-  }, [history, loading, numberOfReplies, t, timeAgo, topicAuthor, topicAuthorAddress, topicAuthorMeta, topicId, topicSubject]);
+  }, [
+    history, loading, numberOfReplies, t, timeAgo, topicAuthor, topicAuthorAddress, topicAuthorMeta, topicId,
+    topicSubject,
+  ]);
 };
 
 TopicListRow.defaultProps = {

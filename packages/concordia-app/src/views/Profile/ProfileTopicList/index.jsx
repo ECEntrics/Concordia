@@ -30,8 +30,10 @@ const ProfileTopicList = (props) => {
   const [getUserTopicCountCallHash, setGetUserTopicCountCallHash] = useState(null);
   const [getUserTopicsCallHash, setGetUserTopicsCallHash] = useState(null);
 
-  const getUserTopicCountResult = useSelector((state) => state.contracts[FORUM_CONTRACT].getUserTopicCount[getUserTopicCountCallHash]);
-  const getUserTopicsResult = useSelector((state) => state.contracts[FORUM_CONTRACT].getUserTopics[getUserTopicsCallHash]);
+  const getUserTopicCountResult = useSelector((state) => state.contracts[FORUM_CONTRACT]
+    .getUserTopicCount[getUserTopicCountCallHash]);
+  const getUserTopicsResult = useSelector((state) => state.contracts[FORUM_CONTRACT]
+    .getUserTopics[getUserTopicsCallHash]);
 
   const { t } = useTranslation();
 
