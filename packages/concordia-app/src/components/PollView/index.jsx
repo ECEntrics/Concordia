@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { VOTING_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import {
-  Container, Header, Icon, Tab,
+  Container, Header, Icon, Loader, Tab,
 } from 'semantic-ui-react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
@@ -33,7 +33,7 @@ const PollView = (props) => {
   const [pollOptions, setPollOptions] = useState([]);
   const [voteCounts, setVoteCounts] = useState([]);
   const [voters, setVoters] = useState([]);
-  const [pollHashValid, setPollHashValid] = useState(false);
+  const [pollHashValid, setPollHashValid] = useState(true);
   const [pollQuestion, setPollQuestion] = useState('');
   const [chainDataLoading, setChainDataLoading] = useState(true);
   const [orbitDataLoading, setOrbitDataLoading] = useState(true);
@@ -162,14 +162,18 @@ const PollView = (props) => {
 
   return (
       <Container id="topic-poll-container" textAlign="left">
-          {!chainDataLoading && !orbitDataLoading && pollHashValid
+          {pollHashValid
             ? (
                 <>
-                    <Header as="h3">
-                        <Icon name="chart pie" size="large" />
-                        {pollQuestion}
-                    </Header>
-                    <Tab panes={panes} />
+                    {!chainDataLoading && !orbitDataLoading ? (
+                        <>
+                            <Header as="h3">
+                                <Icon name="chart pie" size="large" />
+                                {pollQuestion}
+                            </Header>
+                            <Tab panes={panes} />
+                        </>
+                    ) : <Loader active inline="centered" />}
                 </>
             )
             : <PollDataInvalid />}
