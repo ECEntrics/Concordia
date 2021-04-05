@@ -18,11 +18,20 @@ import { POLL_OPTIONS, POLL_QUESTION } from '../../constants/orbit/PollsDatabase
 import PollDataInvalid from './PollDataInvalid';
 import PollGuestView from './PollGuestView';
 
-const { contracts: { [VOTING_CONTRACT]: { methods: { getPoll: { cacheCall: getPollChainData } } } } } = drizzle;
+const {
+  contracts: {
+    [VOTING_CONTRACT]: {
+      methods: {
+        getPoll:
+          { cacheCall: getPollChainData, clearCacheCall: clearGetPollChainData },
+      },
+    },
+  },
+} = drizzle;
 const { orbit } = breeze;
 
 const PollView = (props) => {
-  const { topicId } = props;
+  const { topicId, topicAuthorAddress } = props;
   const userAddress = useSelector((state) => state.user.address);
   const hasSignedUp = useSelector((state) => state.user.hasSignedUp);
   const getPollResults = useSelector((state) => state.contracts[VOTING_CONTRACT].getPoll);
@@ -51,24 +60,25 @@ const PollView = (props) => {
       type: FETCH_USER_DATABASE,
       orbit,
       dbName: POLLS_DATABASE,
-      userAddress,
+      userAddress: topicAuthorAddress,
     });
-  }, [dispatch, userAddress]);
+  }, [dispatch, topicAuthorAddress]);
 
   useEffect(() => {
     if (getPollCallHash && getPollResults && getPollResults[getPollCallHash]) {
-      setPollHash(getPollResults[getPollCallHash].value[1]);
-      setPollChangeVoteEnabled(getPollResults[getPollCallHash].value[2]);
-      setVoteCounts(getPollResults[getPollCallHash].value[4].map((voteCount) => parseInt(voteCount, 10)));
+      const pollResults = getPollResults[getPollCallHash];
+      setPollHash(pollResults.value[1]);
+      setPollChangeVoteEnabled(pollResults.value[2]);
+      setVoteCounts(pollResults.value[4].map((voteCount) => parseInt(voteCount, 10)));
 
-      const cumulativeSum = getPollResults[getPollCallHash].value[4]
+      const cumulativeSum = pollResults.value[4]
         .map((voteCount) => parseInt(voteCount, 10))
         .reduce((accumulator, voteCount) => (accumulator.length === 0
           ? [voteCount]
           : [...accumulator, accumulator[accumulator.length - 1] + voteCount]), []);
 
       setVoters(cumulativeSum
-        .map((subArrayEnd, index) => getPollResults[getPollCallHash].value[5]
+        .map((subArrayEnd, index) => pollResults.value[5]
           .slice(index > 0 ? cumulativeSum[index - 1] : 0,
             subArrayEnd)));
 
@@ -160,6 +170,10 @@ const PollView = (props) => {
     ]);
   }, [chainDataLoading, orbitDataLoading, pollGraphTab, pollVoteTab, t]);
 
+  useEffect(() => () => {
+    clearGetPollChainData();
+  }, []);
+
   return (
       <Container id="topic-poll-container" textAlign="left">
           {pollHashValid
@@ -183,6 +197,7 @@ const PollView = (props) => {
 
 PollView.propTypes = {
   topicId: PropTypes.number.isRequired,
+  topicAuthorAddress: PropTypes.string,
 };
 
 export default PollView;

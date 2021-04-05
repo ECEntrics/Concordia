@@ -22,7 +22,13 @@ import targetBlank from '../../../utils/markdownUtils';
 const {
   contracts: {
     [FORUM_CONTRACT]: { methods: { getTopic: { cacheCall: getTopicChainData } } },
-    [VOTING_CONTRACT]: { methods: { pollExists: { cacheCall: pollExistsChainData } } },
+    [VOTING_CONTRACT]: {
+      methods: {
+        pollExists: {
+          cacheCall: pollExistsChainData, clearCacheCall: clearPollExistsChainData,
+        },
+      },
+    },
   },
 } = drizzle;
 const { orbit } = breeze;
@@ -132,11 +138,21 @@ const TopicView = (props) => {
     }
   }, [topicId, topics]);
 
-  const poll = useMemo(() => hasPoll && <PollView topicId={topicId} />, [hasPoll, topicId]);
+  const poll = useMemo(() => hasPoll
+      && (
+          <PollView
+            topicId={topicId}
+            topicAuthorAddress={topicAuthorAddress}
+          />
+      ), [hasPoll, topicAuthorAddress, topicId]);
 
   const stopClickPropagation = (event) => {
     event.stopPropagation();
   };
+
+  useEffect(() => () => {
+    clearPollExistsChainData();
+  }, []);
 
   return (
       <Container id="topic-container">

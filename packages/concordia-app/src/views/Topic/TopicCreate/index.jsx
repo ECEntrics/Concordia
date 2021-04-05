@@ -54,10 +54,7 @@ const TopicCreate = (props) => {
 
   const goToTopic = useCallback((topicId) => {
     if (topicId) history.push(`/topics/${topicId}`);
-    else {
-      console.error('Error creating poll!');
-      history.push(`/topics/${newTopicId}`);
-    }
+    else history.push(`/topics/${newTopicId}`);
   }, [history, newTopicId]);
 
   useEffect(() => {
