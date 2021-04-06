@@ -1,4 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {
+  useEffect, useMemo, useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { VOTING_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import {
@@ -145,12 +147,10 @@ const PollView = (props) => {
           <PollGraph
             pollOptions={pollOptions}
             voteCounts={voteCounts}
-            hasUserVoted={userHasVoted}
-            userVoteIndex={userVoteIndex}
           />
       )
       : null
-  ), [chainDataLoading, orbitDataLoading, pollOptions, userHasVoted, userVoteIndex, voteCounts]);
+  ), [chainDataLoading, orbitDataLoading, pollOptions, voteCounts]);
 
   const panes = useMemo(() => {
     const pollVotePane = (
@@ -165,8 +165,8 @@ const PollView = (props) => {
     );
 
     return ([
-      { menuItem: t(VOTE_TAB.intl_display_name_id), render: () => pollVotePane },
       { menuItem: t(GRAPH_TAB.intl_display_name_id), render: () => pollGraphPane },
+      { menuItem: t(VOTE_TAB.intl_display_name_id), render: () => pollVotePane },
     ]);
   }, [chainDataLoading, orbitDataLoading, pollGraphTab, pollVoteTab, t]);
 
@@ -182,7 +182,7 @@ const PollView = (props) => {
                     {!chainDataLoading && !orbitDataLoading ? (
                         <>
                             <Header as="h3">
-                                <Icon name="chart pie" size="large" />
+                                <Icon name="chart area" size="large" />
                                 {pollQuestion}
                             </Header>
                             <Tab panes={panes} />

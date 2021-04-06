@@ -1,2 +1,2 @@
-export const DEFAULT_OPTION_COLOR = '#3B5066';
-export const CASTED_OPTION_COLOR = '#0b2540';
+export const CHART_TYPE_BAR = 'bar';
+export const CHART_TYPE_DONUT = 'donut';
