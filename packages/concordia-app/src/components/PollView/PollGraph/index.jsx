@@ -7,8 +7,27 @@ import PollChartDonut from './PollChartDonut';
 import './styles.css';
 
 const PollGraph = (props) => {
-  const { pollOptions, voteCounts } = props;
+  const { pollOptions, voteCounts, userVoteIndex } = props;
   const { t } = useTranslation();
+
+  const footer = useMemo(() => (
+      <>
+          {' '}
+          <Header as="h4">
+              {t('topic.poll.tab.results.votes.count', {
+                totalVotes: voteCounts.reduce((accumulator, voteCount) => accumulator + voteCount, 0),
+              })}
+          </Header>
+          {userVoteIndex !== -1
+          && (
+              <Header as="h4">
+                  {t('topic.poll.tab.results.user.vote', {
+                    userVote: pollOptions[userVoteIndex],
+                  })}
+              </Header>
+          )}
+      </>
+  ), [pollOptions, t, userVoteIndex, voteCounts]);
 
   const panes = useMemo(() => {
     const chartBarPane = (
@@ -26,11 +45,7 @@ const PollGraph = (props) => {
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column textAlign="center">
-                        <Header as="h4">
-                            {t('topic.poll.tab.results.votes.count', {
-                              totalVotes: voteCounts.reduce((accumulator, voteCount) => accumulator + voteCount, 0),
-                            })}
-                        </Header>
+                        {footer}
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
@@ -49,7 +64,11 @@ const PollGraph = (props) => {
                     </Grid.Column>
                     <Grid.Column />
                 </Grid.Row>
-                <Grid.Row />
+                <Grid.Row>
+                    <Grid.Column textAlign="center">
+                        {footer}
+                    </Grid.Column>
+                </Grid.Row>
             </Grid>
         </Tab.Pane>
     );
@@ -58,7 +77,7 @@ const PollGraph = (props) => {
       { menuItem: { key: 'chart-bar', icon: 'chart bar' }, render: () => chartBarPane },
       { menuItem: { key: 'chart-donut', icon: 'chart pie' }, render: () => chartDonutPane },
     ]);
-  }, [pollOptions, t, voteCounts]);
+  }, [footer, pollOptions, voteCounts]);
 
   return (
       <Tab
@@ -68,9 +87,14 @@ const PollGraph = (props) => {
   );
 };
 
+PollGraph.defaultProps = {
+  userVoteIndex: -1,
+};
+
 PollGraph.propTypes = {
   pollOptions: PropTypes.arrayOf(PropTypes.string).isRequired,
   voteCounts: PropTypes.arrayOf(PropTypes.number).isRequired,
+  userVoteIndex: PropTypes.number,
 };
 
 export default PollGraph;

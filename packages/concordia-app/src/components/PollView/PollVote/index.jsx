@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Form } from 'semantic-ui-react';
+import { useSelector } from 'react-redux';
+import { Button, Form, Header } from 'semantic-ui-react';
 import { useTranslation } from 'react-i18next';
 import { VOTING_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import { drizzle } from '../../../redux/store';
+import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../../constants/TransactionStatus';
 
 const { contracts: { [VOTING_CONTRACT]: { methods: { vote } } } } = drizzle;
 
@@ -11,18 +13,56 @@ const PollVote = (props) => {
   const {
     topicId, account, pollOptions, enableVoteChanges, hasUserVoted, userVoteIndex,
   } = props;
+  const transactionStack = useSelector((state) => state.transactionStack);
+  const transactions = useSelector((state) => state.transactions);
+  const [voteCacheSendStackId, setVoteCacheSendStackId] = useState('');
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(userVoteIndex);
-  const [voting, setVoting] = useState('');
+  const [voting, setVoting] = useState(false);
   const { t } = useTranslation();
 
   const onOptionSelected = (e, { value }) => {
     setSelectedOptionIndex(value);
   };
 
+  useEffect(() => {
+    setSelectedOptionIndex(userVoteIndex);
+  }, [userVoteIndex]);
+
   const onCastVote = () => {
     setVoting(true);
-    vote.cacheSend(...[topicId, selectedOptionIndex + 1], { from: account });
+    setVoteCacheSendStackId(vote.cacheSend(...[topicId, selectedOptionIndex + 1], { from: account }));
   };
+
+  const onUnvote = (e) => {
+    e.preventDefault();
+    setVoting(true);
+    setVoteCacheSendStackId(vote.cacheSend(...[topicId, 0], { from: account }));
+  };
+
+  useEffect(() => {
+    if (voting && transactionStack && transactionStack[voteCacheSendStackId]
+        && transactions[transactionStack[voteCacheSendStackId]]) {
+      if (transactions[transactionStack[voteCacheSendStackId]].status === TRANSACTION_ERROR
+            || transactions[transactionStack[voteCacheSendStackId]].status === TRANSACTION_SUCCESS) {
+        setVoting(false);
+      }
+    }
+  }, [transactionStack, transactions, voteCacheSendStackId, voting]);
+
+  if (hasUserVoted && !enableVoteChanges) {
+    return (
+        <>
+            <Header as="h4">
+                {t('topic.poll.tab.results.user.vote', {
+                  userVote: pollOptions[userVoteIndex],
+                })}
+            </Header>
+            <div>
+                {t('topic.poll.tab.vote.no.changes')}
+            </div>
+        </>
+    );
+  }
 
   return (
       <Form onSubmit={onCastVote}>
@@ -34,17 +74,28 @@ const PollVote = (props) => {
                     label={pollOption}
                     value={index}
                     checked={index === selectedOptionIndex}
-                    disabled={hasUserVoted && !enableVoteChanges && index !== selectedOptionIndex}
+                    disabled={voting}
                     onChange={onOptionSelected}
                   />
               ))}
           </Form.Group>
-          <Form.Button
+          <Button
             type="submit"
-            disabled={voting || (hasUserVoted && !enableVoteChanges) || (selectedOptionIndex === userVoteIndex)}
+            className="primary-button"
+            disabled={voting || (selectedOptionIndex === userVoteIndex)}
           >
               {t('topic.poll.tab.vote.form.button.submit')}
-          </Form.Button>
+          </Button>
+          {hasUserVoted && enableVoteChanges
+            && (
+                <Button
+                  type="submit"
+                  disabled={voting}
+                  onClick={onUnvote}
+                >
+                    {t('topic.poll.tab.vote.form.button.unvote')}
+                </Button>
+            )}
       </Form>
   );
 };

@@ -18,10 +18,6 @@ const PollChartDonut = (props) => {
         donut: {
           labels: {
             show: true,
-            total: {
-              show: true,
-              label: 'Total Votes',
-            },
           },
         },
       },
@@ -29,6 +25,9 @@ const PollChartDonut = (props) => {
     labels: pollOptions,
     tooltip: {
       enabled: false,
+    },
+    legend: {
+      position: 'bottom',
     },
   }), [pollOptions]);
 

@@ -147,10 +147,11 @@ const PollView = (props) => {
           <PollGraph
             pollOptions={pollOptions}
             voteCounts={voteCounts}
+            userVoteIndex={userVoteIndex}
           />
       )
       : null
-  ), [chainDataLoading, orbitDataLoading, pollOptions, voteCounts]);
+  ), [chainDataLoading, orbitDataLoading, pollOptions, userVoteIndex, voteCounts]);
 
   const panes = useMemo(() => {
     const pollVotePane = (
