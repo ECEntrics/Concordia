@@ -2,3 +2,9 @@
     box-shadow: none;
     border: none;
 }
+
+.apexcharts-tooltip {
+    border: 1px solid #ddd !important;
+    background-color: white !important;
+    color: black !important;
+}

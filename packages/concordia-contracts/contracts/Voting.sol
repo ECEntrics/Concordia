@@ -68,26 +68,29 @@ contract Voting {
         );
     }
 
-    function getPoll(uint topicID) public view returns (uint, string memory, bool, uint, uint[] memory, address[] memory, uint) {
+    function getPoll(uint topicID) public view
+        returns (uint, string memory, bool, uint, uint[] memory, address[] memory, string[] memory) {
         require(pollExists(topicID), POLL_DOES_NOT_EXIST);
 
-        uint totalVotes = getTotalVotes(topicID);
         uint[] memory voteCounts = getVoteCounts(topicID);
-        address[] memory voters = getSerializedVoters(topicID, voteCounts, totalVotes);
+        address[] memory voters = getSerializedVoters(topicID, voteCounts);
+        string[] memory voterNames = forum.getUsernames(voters);
+
+        Poll storage poll = polls[topicID];
 
         return (
-        polls[topicID].numOptions,
-        polls[topicID].dataHash,
-        polls[topicID].enableVoteChanges,
-        polls[topicID].timestamp,
-        voteCounts,
-        voters,
-        totalVotes
+            poll.numOptions,
+            poll.dataHash,
+            poll.enableVoteChanges,
+            poll.timestamp,
+            voteCounts,
+            voters,
+            voterNames
         );
     }
 
-    function getSerializedVoters(uint topicID, uint[] memory voteCounts, uint totalVotes) private view returns (address[] memory) {
-
+    function getSerializedVoters(uint topicID, uint[] memory voteCounts) private view returns (address[] memory) {
+        uint totalVotes = getTotalVotes(topicID);
         address[] memory voters = new address[](totalVotes);
         uint serializationIndex = 0;
 
@@ -99,7 +102,7 @@ contract Voting {
             }
         }
 
-        return (voters);
+        return voters;
     }
 
     function isOptionValid(uint topicID, uint option) private view returns (bool) {

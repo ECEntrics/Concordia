@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Grid, Statistic, Tab } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -7,16 +7,23 @@ import PollChartDonut from './PollChartDonut';
 import './styles.css';
 
 const PollGraph = (props) => {
-  const { pollOptions, voteCounts, userVoteIndex } = props;
+  const { pollOptions, userVoteIndex, voteCounts, voterNames } = props;
+  const [totalVotes, setTotalVotes] = useState(voteCounts.reduce((accumulator, voteCount) => accumulator + voteCount, 0));
   const { t } = useTranslation();
+
+  useEffect(() => {
+    setTotalVotes(voteCounts.reduce((accumulator, voteCount) => accumulator + voteCount, 0));
+  }, [voteCounts]);
 
   const footer = useMemo(() => (
       <>
           <Statistic size="mini">
               <Statistic.Value>
-                  {voteCounts.reduce((accumulator, voteCount) => accumulator + voteCount, 0)}
+                  { totalVotes }
               </Statistic.Value>
-              <Statistic.Label>{t('topic.poll.tab.results.votes')}</Statistic.Label>
+              <Statistic.Label>
+                  { totalVotes !== 1 ? t('topic.poll.tab.results.votes') : t('topic.poll.tab.results.vote') }
+              </Statistic.Label>
           </Statistic>
           {userVoteIndex !== -1
           && (
@@ -26,7 +33,7 @@ const PollGraph = (props) => {
               </div>
           )}
       </>
-  ), [pollOptions, t, userVoteIndex, voteCounts]);
+  ), [pollOptions, t, totalVotes, userVoteIndex]);
 
   const panes = useMemo(() => {
     const chartBarPane = (
@@ -38,6 +45,7 @@ const PollGraph = (props) => {
                         <PollChartBar
                           pollOptions={pollOptions}
                           voteCounts={voteCounts}
+                          voterNames={voterNames}
                         />
                     </Grid.Column>
                     <Grid.Column />
@@ -59,6 +67,7 @@ const PollGraph = (props) => {
                         <PollChartDonut
                           pollOptions={pollOptions}
                           voteCounts={voteCounts}
+                          voterNames={voterNames}
                         />
                     </Grid.Column>
                     <Grid.Column />
@@ -76,7 +85,7 @@ const PollGraph = (props) => {
       { menuItem: { key: 'chart-bar', icon: 'chart bar' }, render: () => chartBarPane },
       { menuItem: { key: 'chart-donut', icon: 'chart pie' }, render: () => chartDonutPane },
     ]);
-  }, [footer, pollOptions, voteCounts]);
+  }, [footer, pollOptions, voteCounts, voterNames]);
 
   return (
       <Tab
@@ -93,6 +102,7 @@ PollGraph.defaultProps = {
 PollGraph.propTypes = {
   pollOptions: PropTypes.arrayOf(PropTypes.string).isRequired,
   voteCounts: PropTypes.arrayOf(PropTypes.number).isRequired,
+  voterNames: PropTypes.arrayOf(PropTypes.array).isRequired,
   userVoteIndex: PropTypes.number,
 };
 

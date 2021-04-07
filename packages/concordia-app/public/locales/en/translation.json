@@ -90,6 +90,7 @@
   "topic.poll.invalid.data.header": "This topic has a poll but the data are untrusted!",
   "topic.poll.invalid.data.sub.header": "The poll data downloaded from the poster have been tampered with.",
   "topic.poll.tab.graph.title": "Results",
+  "topic.poll.tab.results.vote": "Vote",
   "topic.poll.tab.results.votes": "Votes",
   "topic.poll.tab.results.user.vote": "You voted: ",
   "topic.poll.tab.vote.no.changes": "This poll does not allow vote changes.",

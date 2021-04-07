@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { CHART_TYPE_BAR } from '../../../../constants/polls/PollGraph';
 
 const PollChartBar = (props) => {
-  const { pollOptions, voteCounts } = props;
+  const { pollOptions, voteCounts, voterNames } = props;
 
   const chartOptions = useMemo(() => ({
     chart: {
@@ -30,9 +30,20 @@ const PollChartBar = (props) => {
       },
     },
     tooltip: {
-      enabled: false,
+      enabled: true,
+      x: {
+        show: false,
+      },
+      y: {
+        formatter(value, { seriesIndex }) {
+          return `<div>${voterNames[seriesIndex].join('</div><div>')}</div>`;
+        },
+        title: {
+          formatter: () => null,
+        },
+      },
     },
-  }), [pollOptions]);
+  }), [pollOptions, voterNames]);
 
   const chartSeries = useMemo(() => [{
     name: 'Votes',

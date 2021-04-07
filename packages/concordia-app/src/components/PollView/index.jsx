@@ -44,6 +44,7 @@ const PollView = (props) => {
   const [pollOptions, setPollOptions] = useState([]);
   const [voteCounts, setVoteCounts] = useState([]);
   const [voters, setVoters] = useState([]);
+  const [voterNames, setVoterNames] = useState([]);
   const [pollHashValid, setPollHashValid] = useState(true);
   const [pollQuestion, setPollQuestion] = useState('');
   const [chainDataLoading, setChainDataLoading] = useState(true);
@@ -81,6 +82,11 @@ const PollView = (props) => {
 
       setVoters(cumulativeSum
         .map((subArrayEnd, index) => pollResults.value[5]
+          .slice(index > 0 ? cumulativeSum[index - 1] : 0,
+            subArrayEnd)));
+
+      setVoterNames(cumulativeSum
+        .map((subArrayEnd, index) => pollResults.value[6]
           .slice(index > 0 ? cumulativeSum[index - 1] : 0,
             subArrayEnd)));
 
@@ -148,10 +154,11 @@ const PollView = (props) => {
             pollOptions={pollOptions}
             voteCounts={voteCounts}
             userVoteIndex={userVoteIndex}
+            voterNames={voterNames}
           />
       )
       : null
-  ), [chainDataLoading, orbitDataLoading, pollOptions, userVoteIndex, voteCounts]);
+  ), [chainDataLoading, orbitDataLoading, pollOptions, userVoteIndex, voteCounts, voterNames]);
 
   const panes = useMemo(() => {
     const pollVotePane = (
