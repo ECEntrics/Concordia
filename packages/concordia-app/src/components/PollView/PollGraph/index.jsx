@@ -7,7 +7,9 @@ import PollChartDonut from './PollChartDonut';
 import './styles.css';
 
 const PollGraph = (props) => {
-  const { pollOptions, userVoteIndex, voteCounts, voterNames } = props;
+  const {
+    pollOptions, userVoteIndex, voteCounts, voterNames,
+  } = props;
   const [totalVotes, setTotalVotes] = useState(voteCounts.reduce((accumulator, voteCount) => accumulator + voteCount, 0));
   const { t } = useTranslation();
 
