@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Grid, Header, Tab } from 'semantic-ui-react';
+import { Grid, Statistic, Tab } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import PollChartBar from './PollChartBar';
@@ -12,19 +12,18 @@ const PollGraph = (props) => {
 
   const footer = useMemo(() => (
       <>
-          {' '}
-          <Header as="h4">
-              {t('topic.poll.tab.results.votes.count', {
-                totalVotes: voteCounts.reduce((accumulator, voteCount) => accumulator + voteCount, 0),
-              })}
-          </Header>
+          <Statistic size="mini">
+              <Statistic.Value>
+                  {voteCounts.reduce((accumulator, voteCount) => accumulator + voteCount, 0)}
+              </Statistic.Value>
+              <Statistic.Label>{t('topic.poll.tab.results.votes')}</Statistic.Label>
+          </Statistic>
           {userVoteIndex !== -1
           && (
-              <Header as="h4">
-                  {t('topic.poll.tab.results.user.vote', {
-                    userVote: pollOptions[userVoteIndex],
-                  })}
-              </Header>
+              <div>
+                  {t('topic.poll.tab.results.user.vote')}
+                  <span className="poll-voted-option">{pollOptions[userVoteIndex]}</span>
+              </div>
           )}
       </>
   ), [pollOptions, t, userVoteIndex, voteCounts]);

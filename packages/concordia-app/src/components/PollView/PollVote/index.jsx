@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { Button, Form, Header } from 'semantic-ui-react';
+import { Button, Form } from 'semantic-ui-react';
 import { useTranslation } from 'react-i18next';
 import { VOTING_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import { drizzle } from '../../../redux/store';
 import { TRANSACTION_ERROR, TRANSACTION_SUCCESS } from '../../../constants/TransactionStatus';
+import './styles.css';
 
 const { contracts: { [VOTING_CONTRACT]: { methods: { vote } } } } = drizzle;
 
@@ -52,11 +53,10 @@ const PollVote = (props) => {
   if (hasUserVoted && !enableVoteChanges) {
     return (
         <>
-            <Header as="h4">
-                {t('topic.poll.tab.results.user.vote', {
-                  userVote: pollOptions[userVoteIndex],
-                })}
-            </Header>
+            <div>
+                {t('topic.poll.tab.results.user.vote')}
+                <span className="poll-voted-option">{pollOptions[userVoteIndex]}</span>
+            </div>
             <div>
                 {t('topic.poll.tab.vote.no.changes')}
             </div>
@@ -73,6 +73,7 @@ const PollVote = (props) => {
                     key={pollOption}
                     label={pollOption}
                     value={index}
+                    className={index === userVoteIndex ? 'poll-voted-option' : null}
                     checked={index === selectedOptionIndex}
                     disabled={voting}
                     onChange={onOptionSelected}

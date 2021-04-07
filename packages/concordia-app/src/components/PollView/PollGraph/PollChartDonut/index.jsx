@@ -9,6 +9,12 @@ const PollChartDonut = (props) => {
   const chartOptions = useMemo(() => ({
     chart: {
       id: 'chart-donut',
+      toolbar: {
+        show: true,
+        tools: {
+          download: true,
+        },
+      },
     },
     theme: {
       palette: 'palette8',
