@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Grid, Statistic, Tab } from 'semantic-ui-react';
+import {
+  Grid, Header, Statistic, Tab,
+} from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import PollChartBar from './PollChartBar';
@@ -38,23 +40,32 @@ const PollGraph = (props) => {
   ), [pollOptions, t, totalVotes, userVoteIndex]);
 
   const panes = useMemo(() => {
+    // TODO: tidy up duplicated code below using CHART_TYPE_BAR and CHART_TYPE_DONUT
     const chartBarPane = (
         <Tab.Pane attached={false}>
             <Grid columns="equal">
                 <Grid.Row>
                     <Grid.Column />
-                    <Grid.Column width={8}>
-                        <PollChartBar
-                          pollOptions={pollOptions}
-                          voteCounts={voteCounts}
-                          voterNames={voterNames}
-                        />
+                    <Grid.Column width={8} textAlign="center">
+                        {totalVotes > 0
+                          ? (
+                              <PollChartBar
+                                pollOptions={pollOptions}
+                                voteCounts={voteCounts}
+                                voterNames={voterNames}
+                              />
+                          )
+                          : (
+                              <Header as="h4">
+                                  {t('topic.poll.tab.results.no.votes')}
+                              </Header>
+                          )}
                     </Grid.Column>
                     <Grid.Column />
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column textAlign="center">
-                        {footer}
+                        {totalVotes > 0 && footer}
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
@@ -65,18 +76,26 @@ const PollGraph = (props) => {
             <Grid columns="equal">
                 <Grid.Row>
                     <Grid.Column />
-                    <Grid.Column width={8}>
-                        <PollChartDonut
-                          pollOptions={pollOptions}
-                          voteCounts={voteCounts}
-                          voterNames={voterNames}
-                        />
+                    <Grid.Column width={8} textAlign="center">
+                        {totalVotes > 0
+                          ? (
+                              <PollChartDonut
+                                pollOptions={pollOptions}
+                                voteCounts={voteCounts}
+                                voterNames={voterNames}
+                              />
+                          )
+                          : (
+                              <Header as="h4">
+                                  {t('topic.poll.tab.results.no.votes')}
+                              </Header>
+                          )}
                     </Grid.Column>
                     <Grid.Column />
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column textAlign="center">
-                        {footer}
+                        {totalVotes > 0 && footer}
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
@@ -87,7 +106,7 @@ const PollGraph = (props) => {
       { menuItem: { key: 'chart-bar', icon: 'chart bar' }, render: () => chartBarPane },
       { menuItem: { key: 'chart-donut', icon: 'chart pie' }, render: () => chartDonutPane },
     ]);
-  }, [footer, pollOptions, voteCounts, voterNames]);
+  }, [footer, pollOptions, t, totalVotes, voteCounts, voterNames]);
 
   return (
       <Tab

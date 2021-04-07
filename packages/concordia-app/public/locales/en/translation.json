@@ -92,6 +92,7 @@
   "topic.poll.tab.graph.title": "Results",
   "topic.poll.tab.results.vote": "Vote",
   "topic.poll.tab.results.votes": "Votes",
+  "topic.poll.tab.results.no.votes": "No one has voted yet!",
   "topic.poll.tab.results.user.vote": "You voted: ",
   "topic.poll.tab.vote.no.changes": "This poll does not allow vote changes.",
   "topic.poll.tab.vote.form.button.submit": "Submit",
