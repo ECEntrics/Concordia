@@ -35,8 +35,8 @@ const PollChartBar = (props) => {
         show: false,
       },
       y: {
-        formatter(value, { seriesIndex }) {
-          return `<div>${voterNames[seriesIndex].join('</div><div>')}</div>`;
+        formatter(value, { dataPointIndex }) {
+          return `<div>${voterNames[dataPointIndex].join('</div><div>')}</div>`;
         },
         title: {
           formatter: () => null,
