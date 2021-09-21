@@ -11,7 +11,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@ezerous/eth-identity-provider": "~0.1.2",
+    "@ecentrics/eth-identity-provider": "~0.1.2",
     "concordia-contracts": "~0.1.0",
     "concordia-shared": "~0.1.0",
     "esm": "~3.2.25",
