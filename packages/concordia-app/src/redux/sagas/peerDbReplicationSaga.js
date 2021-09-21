@@ -6,7 +6,7 @@ import {
   ORBIT_DB_READY,
   ORBIT_DB_REPLICATED,
   ORBIT_DB_WRITE,
-} from '@ezerous/breeze/src/orbit/orbitActions';
+} from '@ecentrics/breeze/src/orbit/orbitActions';
 import {
   POLLS_DATABASE,
   POSTS_DATABASE,

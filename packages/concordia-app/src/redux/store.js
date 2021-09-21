@@ -1,11 +1,11 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import {
   drizzleReducers, drizzleMiddlewares, generateContractsInitialState, Drizzle,
-} from '@ezerous/drizzle';
-import { Breeze, breezeReducers } from '@ezerous/breeze';
+} from '@ecentrics/drizzle';
+import { Breeze, breezeReducers } from '@ecentrics/breeze';
 import createSagaMiddleware from 'redux-saga';
 import getBreezeConfiguration from 'concordia-shared/src/configuration/breezeConfiguration';
-import { EthereumContractIdentityProvider } from '@ezerous/eth-identity-provider';
+import { EthereumContractIdentityProvider } from '@ecentrics/eth-identity-provider';
 import userReducer from './reducers/userReducer';
 import rootSaga from './sagas/rootSaga';
 import drizzleOptions from '../options/drizzleOptions';

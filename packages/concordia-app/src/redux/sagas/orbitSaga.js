@@ -2,10 +2,10 @@ import {
   call, put, all, take,
 } from 'redux-saga/effects';
 
-import { breezeActions } from '@ezerous/breeze';
-import { drizzleActions } from '@ezerous/drizzle';
+import { breezeActions } from '@ecentrics/breeze';
+import { drizzleActions } from '@ecentrics/drizzle';
 
-import { EthereumContractIdentityProvider } from '@ezerous/eth-identity-provider';
+import { EthereumContractIdentityProvider } from '@ecentrics/eth-identity-provider';
 import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import drizzleOptions from '../../options/drizzleOptions';
 

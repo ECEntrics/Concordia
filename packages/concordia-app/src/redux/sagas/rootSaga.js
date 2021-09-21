@@ -1,6 +1,6 @@
 import { all, fork } from 'redux-saga/effects';
-import { drizzleSagas } from '@ezerous/drizzle';
-import { breezeSagas } from '@ezerous/breeze';
+import { drizzleSagas } from '@ecentrics/drizzle';
+import { breezeSagas } from '@ecentrics/breeze';
 import orbitSaga from './orbitSaga';
 import userSaga from './userSaga';
 import peerDbReplicationSaga from './peerDbReplicationSaga';

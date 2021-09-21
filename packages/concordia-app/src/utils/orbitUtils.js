@@ -1,5 +1,5 @@
 // https://github.com/orbitdb/orbit-db/blob/master/GUIDE.md#address
-import { EthereumContractIdentityProvider } from '@ezerous/eth-identity-provider';
+import { EthereumContractIdentityProvider } from '@ecentrics/eth-identity-provider';
 
 async function determineDBAddress({
   orbit, dbName, type, identityId,

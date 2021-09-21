@@ -2,7 +2,7 @@
 import {
   all, call, put, take, takeLatest,
 } from 'redux-saga/effects';
-import { drizzleActions } from '@ezerous/drizzle';
+import { drizzleActions } from '@ecentrics/drizzle';
 import { FORUM_CONTRACT } from 'concordia-shared/src/constants/contracts/ContractNames';
 import { USER_DATA_UPDATED, USER_DATA_ERROR } from '../actions/userActions';
 import { FORUM_EVENT_USER_SIGNED_UP } from '../actions/contractEventActions';

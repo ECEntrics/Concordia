@@ -1,6 +1,6 @@
 import OrbitDB from 'orbit-db';
 import Identities from 'orbit-db-identity-provider';
-import { EthereumContractIdentityProvider } from '@ezerous/eth-identity-provider';
+import { EthereumContractIdentityProvider } from '@ecentrics/eth-identity-provider';
 import Web3 from 'web3';
 import { databaseNames } from 'concordia-shared/src/constants/orbit/OrbitDatabases';
 import { ORBIT_DIRECTORY_DEFAULT } from '../constants';
