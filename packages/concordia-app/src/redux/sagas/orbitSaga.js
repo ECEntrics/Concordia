@@ -30,6 +30,7 @@ function* orbitSaga() {
 
   EthereumContractIdentityProvider.setContractAddress(contractAddress);
   EthereumContractIdentityProvider.setWeb3(web3);
+  EthereumContractIdentityProvider.setStoreAuthDataLocally(true);
 
   yield initOrbitDatabases({ breeze: res[1].breeze, account: res[2].accounts[0] });
 }
