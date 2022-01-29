@@ -1,0 +1,25 @@
+#loading-screen {
+    padding-top: 14em;
+    text-align: center;
+    font-size: large;
+    height: 100%;
+}
+
+#loading-screen ul {
+    list-style-position: inside;
+}
+
+#loading-img {
+    margin-bottom: 3em;
+    height: 12em;
+}
+
+#loading-screen-container {
+    height: 26em;
+}
+
+#loading-screen-progress {
+    width: 40vw;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}

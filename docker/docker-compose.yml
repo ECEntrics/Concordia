@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  ganache:
+    build:
+      context: ../
+      dockerfile: ./docker/ganache/Dockerfile
+    image: ecentrics/concordia-ganache
+    container_name: concordia-ganache
+    env_file:
+      - env/ganache.env
+    expose:
+      - 8545
+    ports:
+      - 8545:8545
+    user: root
+    volumes:
+      - ./ganache/volumes/ganache_keys:/mnt/concordia/ganache_keys
+    networks:
+      concordia_network:
+    restart: always
+
+  rendezvous:
+    image: libp2p/js-libp2p-webrtc-star:version-0.21.1
+    container_name: concordia-rendezvous
+    networks:
+      concordia_network:
+    ports:
+      - 9090:9090
+    restart: always
+
+networks:
+  concordia_network:

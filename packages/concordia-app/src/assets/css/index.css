@@ -1,0 +1,72 @@
+:root {
+    --primary-color: #EA6954;
+    --primary-color-highlighted: #DB5844;
+    --secondary-color: #0B2540;
+    --secondary-color-highlighted: #061A30;
+}
+
+body {
+    overflow: auto;
+    margin: 0;
+    background: white;
+}
+
+div {
+    word-break: break-word;
+}
+
+#root {
+    height: 100%;
+}
+
+.i18next-newlines {
+    white-space: pre-line !important;
+}
+
+.text-secondary {
+    color: gray;
+    font-style: italic;
+}
+
+.primary-button{
+    color: white !important;
+    background-color: var(--primary-color) !important;
+}
+
+.primary-button:hover {
+    background-color: var(--primary-color-highlighted) !important;
+}
+
+.secondary-button{
+    color: white !important;
+    background-color: var(--secondary-color) !important;
+}
+
+.secondary-button:hover {
+    background-color: var(--secondary-color-highlighted) !important;
+}
+
+.skip-button {
+    color: var(--secondary-color) !important;
+    background-color: white !important;
+    box-shadow: 0 0 0 1px var(--secondary-color) inset !important;
+}
+
+.skip-button:hover {
+    color: var(--secondary-color-highlighted) !important;
+    box-shadow: 0 0 0 1px var(--secondary-color-highlighted) inset !important;
+}
+
+.unselectable {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+textarea, input, button, select {
+    font-family: inherit;
+    font-size: inherit;
+}

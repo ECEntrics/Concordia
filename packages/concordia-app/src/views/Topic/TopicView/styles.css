@@ -1,0 +1,33 @@
+#topic-container {
+    height: auto !important;
+    text-align: center;
+}
+
+#topic-header {
+    padding: 1.2rem 0;
+    text-align: center;
+}
+
+#topic-grid {
+    height: 100%;
+}
+
+#topic-metadata {
+    font-size: 1rem;
+    margin-top: 2rem;
+    color: rgba(0,0,0,.6);
+}
+
+#author-placeholder {
+    width: 150px !important;
+}
+
+#subject-placeholder {
+    width: 250px !important;
+    margin:auto;
+}
+
+#date-placeholder {
+    width: 150px !important;
+    margin: 0 auto;
+}

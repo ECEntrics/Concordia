@@ -1,0 +1,18 @@
+.post-summary-meta-index {
+    float: right;
+    font-size: 12px;
+    opacity: 0.4;
+}
+
+.like:hover .icon {
+    color: #fff !important;
+}
+
+#post-button-div {
+    float: right;
+    margin: 1rem 0 4rem 0;
+}
+
+#post-button-div button {
+    margin: 0;
+}

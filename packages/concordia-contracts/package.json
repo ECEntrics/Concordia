@@ -1,0 +1,36 @@
+{
+  "name": "concordia-contracts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Contracts used to power Concordia",
+  "main": "index.js",
+  "scripts": {
+    "compile": "yarn truffle compile",
+    "lint": "yarn _eslint && yarn _solhint",
+    "_eslint": "yarn eslint . --format table",
+    "_solhint": "yarn solhint --formatter table contracts/*.sol test/*.sol",
+    "test": "yarn truffle test",
+    "migrate": "yarn _migrate --network develop",
+    "migrate-reset": "yarn _migrate --network develop --reset",
+    "migrate-upload": "yarn _migrate --network develop && yarn upload",
+    "migrate-reset-upload": "yarn _migrate --network develop --reset && yarn upload",
+    "_migrate": "yarn truffle migrate",
+    "upload": "yarn _upload ${npm_package_version}-dev latest",
+    "_upload": "node ./utils/contractsProviderUtils.js"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "~3.3.0",
+    "concordia-shared": "~0.1.0",
+    "truffle": "5.1.65",
+    "unirest": "^0.6.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "solhint": "~3.3.2"
+  }
+}

@@ -1,0 +1,21 @@
+#home-button {
+    padding: 1.2em;
+}
+
+#main-layout-menu {
+    background: var(--secondary-color) !important;
+    border-radius: 0;
+    margin-top: 0;
+    margin-bottom: 4rem;
+    z-index: 1;
+    position: relative;
+    border-bottom: solid rgba(255, 255, 255,0.2) 1px;
+}
+
+#main-layout-menu .link.item {
+    border-radius: 0;
+}
+
+#main-layout-menu .link.item::before {
+    background: rgba(255, 255, 255,0.2);
+}

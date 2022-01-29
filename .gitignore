@@ -1,26 +1,38 @@
-# See https://help.github.com/ignore-files/ for more about ignoring files.
-
 # Node
 /node_modules
-package-lock.json
+packages/*/node_modules
+packages/concordia-contracts/build
 
-# Testing
-/coverage
+# IDE
+.DS_Store
+.idea
 
-# Production
+# Build Directories
 /build
 /src/build
+/packages/concordia-app/build
+/packages/concordia-contracts/build
+
+# Logs
+/log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker volumes
+docker/volumes
+docker/ganache/volumes
+docker/concordia-contracts-provider/volumes
+docker/concordia-pinner/volumes
+docker/reports
 
 # Misc
-.DS_Store
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Lerna
+*.lerna_backup
 
-# Jetbrains
-.idea
+yarn-clean.sh

@@ -1,0 +1,12 @@
+.poll-create {
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+.poll-create .checkbox > label,
+.poll-create .checkbox > label:focus,
+.poll-create .checkbox > label:hover{
+    color: white !important;
+    font-weight: 700;
+}
+
