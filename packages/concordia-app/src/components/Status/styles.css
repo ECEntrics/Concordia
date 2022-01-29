@@ -1,0 +1,22 @@
+.status-table {
+    border: 1px solid var(--secondary-color) !important;
+}
+
+.status-header-image{
+    width: 2.5rem !important;
+}
+
+.status-key {
+    background-color: var(--secondary-color);
+    color: white;
+    font-weight: 700;
+}
+
+.status-value {
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.status-value:hover {
+    color: grey;
+}

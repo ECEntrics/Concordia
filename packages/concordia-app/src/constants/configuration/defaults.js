@@ -1,0 +1,2 @@
+export const CONCORDIA_HOST_DEFAULT = '127.0.0.1';
+export const CONCORDIA_PORT_DEFAULT = '7000';

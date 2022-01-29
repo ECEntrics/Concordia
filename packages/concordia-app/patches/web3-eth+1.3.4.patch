@@ -1,0 +1,15 @@
+diff --git a/node_modules/web3-eth/lib/index.js b/node_modules/web3-eth/lib/index.js
+index da8a65f..06d5f83 100644
+--- a/node_modules/web3-eth/lib/index.js
++++ b/node_modules/web3-eth/lib/index.js
+@@ -288,8 +288,8 @@ var Eth = function Eth() {
+     this.Iban = Iban;
+     // add ABI
+     this.abi = abi;
+-    // add ENS
+-    this.ens = new ENS(this);
++    // add ENS   (Removed because of https://github.com/ethereum/web3.js/issues/2665#issuecomment-687164093)
++    // this.ens = new ENS(this);
+     var methods = [
+         new Method({
+             name: 'getNodeInfo',

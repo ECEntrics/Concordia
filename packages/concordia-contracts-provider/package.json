@@ -1,0 +1,32 @@
+{
+  "name": "concordia-contracts-provider",
+  "description": "A server that provides built contracts for Concordia.",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node -r esm src/index.js",
+    "lint": "eslint --ext js,jsx . --format table"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "concordia-shared": "~0.1.0",
+    "cors": "^2.8.5",
+    "esm": "~3.2.25",
+    "express": "^4.17.1",
+    "express-async-handler": "^1.1.4",
+    "helmet": "^4.4.1",
+    "lodash": "^4.17.20",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.2",
+    "multiparty": "^4.2.2",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "eslint": "^7.19.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0"
+  }
+}

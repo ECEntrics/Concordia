@@ -1,0 +1,16 @@
+const FORUM_CONTRACT = 'Forum';
+const POST_VOTING_CONTRACT = 'PostVoting';
+const VOTING_CONTRACT = 'Voting';
+
+const CONTRACTS = [
+  FORUM_CONTRACT,
+  POST_VOTING_CONTRACT,
+  VOTING_CONTRACT,
+];
+
+module.exports = Object.freeze({
+  FORUM_CONTRACT,
+  POST_VOTING_CONTRACT,
+  VOTING_CONTRACT,
+  CONTRACTS,
+});
