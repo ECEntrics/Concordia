@@ -527,7 +527,7 @@ pipeline {
                   ecentrics/concordia-ganache:latest')
 
                 // Ganache image might take a while to come alive
-                sleep 10
+                sleep 15
 
                 sh 'mkdir -p ./ganache/ && docker cp concordia-ganache-staging:/mnt/concordia/ganache_keys/keys.json ./ganache/'
                 freshGanacheStagingRunning = true
@@ -695,7 +695,7 @@ pipeline {
                   ecentrics/concordia-ganache:latest')
 
                 // Ganache image might take a while to come alive
-                sleep 10
+                sleep 15
 
                 sh 'mkdir -p ./ganache/ && docker cp concordia-ganache-production:/mnt/concordia/ganache_keys/keys.json ./ganache/'
                 freshGanacheProductionRunning = true
