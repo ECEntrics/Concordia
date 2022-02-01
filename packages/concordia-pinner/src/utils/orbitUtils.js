@@ -24,6 +24,7 @@ export const createOrbitInstance = async (ipfs, contractAddress) => {
 
   EthereumContractIdentityProvider.setWeb3(new Web3()); // We need a fully-featured new Web3 for signature verification
   EthereumContractIdentityProvider.setContractAddress(contractAddress);
+  EthereumContractIdentityProvider.setStoreAuthDataLocally(true);
 
   const ORBIT_DIRECTORY = process.env.ORBIT_DIRECTORY || ORBIT_DIRECTORY_DEFAULT;
   logger.info(`Setting up OrbitDB in directory: ${ORBIT_DIRECTORY}`);

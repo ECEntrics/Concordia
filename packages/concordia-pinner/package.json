@@ -1,7 +1,7 @@
 {
   "name": "concordia-pinner",
   "description": "An OrbitDB pinning service for Concordia.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "main": "src/index.js",
   "scripts": {
@@ -11,9 +11,9 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@ecentrics/eth-identity-provider": "~0.1.2",
-    "concordia-contracts": "~0.1.0",
-    "concordia-shared": "~0.1.0",
+    "@ecentrics/eth-identity-provider": "~0.2.0",
+    "concordia-contracts": "~0.1.1",
+    "concordia-shared": "~0.1.1",
     "esm": "~3.2.25",
     "express": "^4.17.1",
     "ipfs": "~0.54.2",
