@@ -1,7 +1,7 @@
 {
   "name": "concordia-contracts-provider",
   "description": "A server that provides built contracts for Concordia.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "main": "src/index.js",
   "scripts": {
@@ -10,7 +10,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "concordia-shared": "~0.1.0",
+    "concordia-shared": "~0.1.1",
     "cors": "^2.8.5",
     "esm": "~3.2.25",
     "express": "^4.17.1",
