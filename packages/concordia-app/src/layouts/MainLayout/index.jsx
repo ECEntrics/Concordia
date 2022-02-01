@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Grid } from 'semantic-ui-react';
-import Particles from 'react-particles-js';
+import Particles from 'react-tsparticles';
 import particlesOptions from '../../assets/particles';
 import MainLayoutMenu from './MainLayoutMenu';
 import MainLayoutConcordiaStatus from './MainLayoutConcordiaStatus';
