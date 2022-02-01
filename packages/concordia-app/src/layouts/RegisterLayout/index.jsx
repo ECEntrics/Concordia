@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Particles from 'react-particles-js';
+import Particles from 'react-tsparticles';
 import particlesOptions from '../../assets/particles';
 import './styles.css';
 
