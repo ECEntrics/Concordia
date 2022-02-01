@@ -1670,9 +1670,9 @@
     react-is "^16.6.3"
 
 "@grpc/grpc-js@^1.1.8":
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/@grpc/grpc-js/-/grpc-js-1.5.3.tgz#fe78a40eab4e21a6044ff6f23798f712ea352a8f"
-  integrity sha512-q0xgaZ3ymUM+ZOhe1hdocVSdKHCnJ6llLSXcP+MqMXMyYPUZ3mzQOCxZ3Zkg+QZ7sZ950sn7hvueQrIJZumPZg==
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/@grpc/grpc-js/-/grpc-js-1.5.4.tgz#dd0237ad7df80a7a24766fe516d7e4a22cb4855e"
+  integrity sha512-+nJTOsqpFAXnfFrMZ7Too4XXZ/J9O+8jYvSoaunupoC7I7b9H4iex1BRsbTdOmiowfPGJrWit7jUPmbENSUSpw==
   dependencies:
     "@grpc/proto-loader" "^0.6.4"
     "@types/node" ">=12.12.47"
@@ -2665,14 +2665,14 @@
   integrity sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==
 
 "@types/node@*", "@types/node@>=10.0.0", "@types/node@>=12.12.47", "@types/node@>=13.7.0":
-  version "17.0.13"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.13.tgz#5ed7ed7c662948335fcad6c412bb42d99ea754e3"
-  integrity sha512-Y86MAxASe25hNzlDbsviXl8jQHb0RDvKt4c40ZJQ1Don0AAL0STLZSs4N+6gLEO55pedy7r2cLwS+ZDxPm/2Bw==
+  version "17.0.14"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.14.tgz#33b9b94f789a8fedd30a68efdbca4dbb06b61f20"
+  integrity sha512-SbjLmERksKOGzWzPNuW7fJM7fk3YXVTFiZWB/Hs99gwhk+/dnrQRPBQjPW9aO+fi1tAffi9PrwFvsmOKmDTyng==
 
 "@types/node@^12.12.6":
-  version "12.20.42"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.20.42.tgz#2f021733232c2130c26f9eabbdd3bfd881774733"
-  integrity sha512-aI3/oo5DzyiI5R/xAhxxRzfZlWlsbbqdgxfTPkqu/Zt+23GXiJvMCyPJT4+xKSXOnLqoL8jJYMLTwvK2M3a5hw==
+  version "12.20.43"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.20.43.tgz#6cf47894da4a4748c62fccf720ba269e1b1ff5a4"
+  integrity sha512-HCfJdaYqJX3BCzeihgZrD7b85Cu05OC/GVJ4kEYIflwUs4jbnUlLLWoq7hw1LBcdvUyehO+gr6P5JQ895/2ZfA==
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"
@@ -5126,17 +5126,17 @@ copy-to-clipboard@^3:
     toggle-selection "^1.0.6"
 
 core-js-compat@^3.20.0, core-js-compat@^3.20.2, core-js-compat@^3.6.2:
-  version "3.20.3"
-  resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.20.3.tgz#d71f85f94eb5e4bea3407412e549daa083d23bd6"
-  integrity sha512-c8M5h0IkNZ+I92QhIpuSijOxGAcj3lgpsWdkCqmUTZNwidujF4r3pi6x1DCN+Vcs5qTS2XWWMfWSuCqyupX8gw==
+  version "3.21.0"
+  resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.21.0.tgz#bcc86aa5a589cee358e7a7fa0a4979d5a76c3885"
+  integrity sha512-OSXseNPSK2OPJa6GdtkMz/XxeXx8/CJvfhQWTqd6neuUraujcL4jVsjkLQz1OWnax8xVQJnRPe0V2jqNWORA+A==
   dependencies:
     browserslist "^4.19.1"
     semver "7.0.0"
 
 core-js-pure@^3.20.2:
-  version "3.20.3"
-  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.20.3.tgz#6cc4f36da06c61d95254efc54024fe4797fd5d02"
-  integrity sha512-Q2H6tQ5MtPtcC7f3HxJ48i4Q7T9ybPKgvWyuH7JXIoNa2pm0KuBnycsET/qw1SLLZYfbsbrZQNMeIOClb+6WIA==
+  version "3.21.0"
+  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.21.0.tgz#819adc8dfb808205ce25b51d50591becd615db7e"
+  integrity sha512-VaJUunCZLnxuDbo1rNOzwbet9E1K9joiXS5+DQMPtgxd24wfsZbJZMMfQLGYMlCUvSxLfsRUUhoOR2x28mFfeg==
 
 core-js@^2.4.0:
   version "2.6.12"
@@ -5144,9 +5144,9 @@ core-js@^2.4.0:
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
 core-js@^3.5.0, core-js@^3.6.1:
-  version "3.20.3"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.20.3.tgz#c710d0a676e684522f3db4ee84e5e18a9d11d69a"
-  integrity sha512-vVl8j8ph6tRS3B8qir40H7yw7voy17xL0piAjlbBUsH7WIfzoedL/ZOr1OV9FyZQLWXsayOJyV4tnRyXR85/ag==
+  version "3.21.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.21.0.tgz#f479dbfc3dffb035a0827602dd056839a774aa71"
+  integrity sha512-YUdI3fFu4TF/2WykQ2xzSiTQdldLB4KVuL9WeAy5XONZYt5Cun/fpQvctoKbCgvPhmzADeesTk/j2Rdx77AcKQ==
 
 core-util-is@1.0.2:
   version "1.0.2"
@@ -6127,9 +6127,9 @@ electron-fetch@^1.7.2:
     encoding "^0.1.13"
 
 electron-to-chromium@^1.3.378, electron-to-chromium@^1.4.17:
-  version "1.4.57"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.57.tgz#2b2766df76ac8dbc0a1d41249bc5684a31849892"
-  integrity sha512-FNC+P5K1n6pF+M0zIK+gFCoXcJhhzDViL3DRIGy2Fv5PohuSES1JHR7T+GlwxSxlzx4yYbsuzCZvHxcBSRCIOw==
+  version "1.4.59"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.59.tgz#657f2588c048fb95975779f8fea101fad854de89"
+  integrity sha512-AOJ3cAE0TWxz4fQ9zkND5hWrQg16nsZKVz9INOot1oV//u4wWu5xrj9CQMmPTYskkZRunSRc9sAnr4EkexXokg==
 
 elliptic@6.5.4, elliptic@^6.4.0, elliptic@^6.5.2, elliptic@^6.5.3, elliptic@^6.5.4:
   version "6.5.4"
@@ -6959,9 +6959,9 @@ ethereumjs-util@^6.0.0:
     rlp "^2.2.3"
 
 ethereumjs-util@^7.1.0:
-  version "7.1.3"
-  resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-7.1.3.tgz#b55d7b64dde3e3e45749e4c41288238edec32d23"
-  integrity sha512-y+82tEbyASO0K0X1/SRhbJJoAlfcvq8JbrG4a5cjrOks7HS/36efU/0j2flxCPOUM++HFahk33kr/ZxyC4vNuw==
+  version "7.1.4"
+  resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-7.1.4.tgz#a6885bcdd92045b06f596c7626c3e89ab3312458"
+  integrity sha512-p6KmuPCX4mZIqsQzXfmSx9Y0l2hqf+VkAiwSisW3UKUFdk8ZkAt+AYaor83z2nSi6CU2zSsXMlD80hAbNEGM0A==
   dependencies:
     "@types/bn.js" "^5.1.0"
     bn.js "^5.1.2"
@@ -19414,9 +19414,9 @@ winston-transport@^4.4.2:
     triple-beam "^1.2.0"
 
 winston@^3.3.3:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/winston/-/winston-3.5.0.tgz#b1ef4dbc6d1a7c1b462650070f171abc7ce9eac0"
-  integrity sha512-OQMbmLsIdVHvm2hSurrYZs+iZNIImXneYJ6pX7LseSMEq20HdTETXiNnNX3FDwN4LB/xDRZLF6JYOY+AI112Kw==
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/winston/-/winston-3.5.1.tgz#b25cc899d015836dbf8c583dec8c4c4483a0da2e"
+  integrity sha512-tbRtVy+vsSSCLcZq/8nXZaOie/S2tPXPFt4be/Q3vI/WtYwm7rrwidxVw2GRa38FIXcJ1kUM6MOZ9Jmnk3F3UA==
   dependencies:
     "@dabh/diagnostics" "^2.0.2"
     async "^3.2.3"
