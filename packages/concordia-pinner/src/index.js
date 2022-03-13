@@ -12,20 +12,33 @@ import { logger } from './utils/logger';
 
 let ipfsSingleton;
 
+const exitApp = async (code = 0) => {
+  try {
+    if (ipfsSingleton) {
+      logger.info('Waiting IPFS singleton to stop...');
+      await ipfsSingleton.stop();
+      logger.info('IPFS singleton stopped.');
+    }
+  } catch (e) {
+    console.log(e.message);
+  }
+  process.exit(code);
+};
+
+process.on('SIGTERM', exitApp);
+process.on('SIGINT', exitApp);
+process.on('SIGHUP', exitApp);
+
 process.on('unhandledRejection', async (error) => {
   // This happens when attempting to initialize without any available Swarm addresses (e.g. Rendezvous)
   if (error.code === 'ERR_NO_VALID_ADDRESSES') {
     logger.error(`unhandledRejection: ${error.message}`);
-    process.exit(1);
+    await exitApp(1);
   }
 
-  if (ipfsSingleton) {
-    await ipfsSingleton.stop();
-  }
-
-  // Don't swallow other errors
   logger.error(error);
-  throw error;
+  const errorCode = error.code ? error.code : 0;
+  exitApp(errorCode);
 });
 
 const getDeployedContract = async (web3) => {

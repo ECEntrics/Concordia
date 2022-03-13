@@ -18,6 +18,7 @@ const getLogger = (winston, logsDirectory, serviceName) => {
   if (process.env.NODE_ENV !== 'production') {
     transports.push(new winston.transports.Console({
       format: winston.format.combine(
+        winston.format.errors({ stack: true }),
         winston.format.colorize(),
         winston.format.timestamp(),
         winston.format.simple(),
@@ -26,6 +27,7 @@ const getLogger = (winston, logsDirectory, serviceName) => {
 
     exceptionHandlers.push(new winston.transports.Console({
       format: winston.format.combine(
+        winston.format.errors({ stack: true }),
         winston.format.colorize(),
         winston.format.timestamp(),
         winston.format.simple(),
@@ -36,6 +38,7 @@ const getLogger = (winston, logsDirectory, serviceName) => {
   return winston.createLogger({
     level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
     format: winston.format.combine(
+      winston.format.errors({ stack: true }),
       winston.format.timestamp(),
       winston.format.json(),
     ),

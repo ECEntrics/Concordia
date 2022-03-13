@@ -23,7 +23,7 @@ const getRendezvousMultiaddress = () => {
 
   const multiaddress = `${host}/tcp/${rendezvousPort}/wss/p2p-webrtc-star`;
   if (isMultiaddr(multiaddress)) return new Multiaddr(multiaddress);
-  process.exit(1); // Invalid multiaddress - exiting with error
+  throw Error('Invalid multiaddress');
 };
 
 export const getResolvedRendezvousMultiaddress = async () => {
@@ -36,8 +36,7 @@ export const getResolvedRendezvousMultiaddress = async () => {
       const resolvedDomain = await dnsLookup(address);
       return Promise.resolve(new Multiaddr(`/ip4/${resolvedDomain.address}/tcp/${rendezvousPort}/wss/p2p-webrtc-star`));
     } catch (error) {
-      logger.error(new Error(`DNS lookup of ${address} failed.\n${error}`));
-      process.exit(2);
+      throw new Error(`DNS lookup of ${address} failed.\n${error}`);
     }
   }
   return Promise.resolve(rendezvousMultiaddress);
