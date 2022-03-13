@@ -1,7 +1,7 @@
 # --------------------------------------------------
 # Stage 1 (Runtime)
 # --------------------------------------------------
-FROM node:16-buster@sha256:32362e2ea89c62d77c86c8f26ad936dbbdc170cd6c06c4d7ff7a809012bb0c32 as runtime
+FROM node:14-buster@sha256:32362e2ea89c62d77c86c8f26ad936dbbdc170cd6c06c4d7ff7a809012bb0c32 as runtime
 LABEL maintainers.1="Apostolos Fanakis <apostolof@auth.gr>"
 LABEL maintainers.2="Panagiotis Nikolaidis <ezerous@gmail.com>"
 LABEL gr.thmmy.ecentrics.concordia-image.name="pinner"
