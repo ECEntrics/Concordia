@@ -1,17 +1,17 @@
 import express from 'express';
-import morgan from 'morgan';
+import morgan from 'morgan';  //TODO: replace morgan with something else
 import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
 import isReachable from 'is-reachable';
 import { pinnerApiPort } from 'concordia-shared/src/environment/interpolated/pinner';
 import getWeb3ProviderUrl from 'concordia-shared/src/utils/web3';
-import { getResolvedRendezvousUrl } from './utils/ipfsUtils';
+import { getResolvedRendezvousMultiaddress } from './utils/ipfsUtils';
 import { logger, logsDirectoryPath } from './utils/logger';
 
 const POLLING_INTERVAL = 1000;
 const accessLogStream = fs.createWriteStream(path.join(logsDirectoryPath, 'access.log'), { flags: 'a' });
-logger.info('Service setting up.');
+logger.info('Initializing API service.');
 
 const responseBody = {
   ipfs: {
@@ -23,9 +23,11 @@ const responseBody = {
   timestamp: 0,
 };
 
-getResolvedRendezvousUrl().then(({ address }) => {
-  logger.info(`Resolved rendezvous URL to: ${address}`);
-  responseBody.rendezvous.url = address;
+getResolvedRendezvousMultiaddress().then((multiaddress) => {
+  const { address, port } = multiaddress.nodeAddress();
+  const rendezvousUrl = `http://${address}:${port}`;
+  logger.info(`Resolved rendezvous URL to: ${rendezvousUrl}`);
+  responseBody.rendezvous.url = rendezvousUrl;
 });
 
 const getStats = async (orbit) => {

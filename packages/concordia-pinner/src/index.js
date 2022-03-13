@@ -20,7 +20,7 @@ process.on('unhandledRejection', async (error) => {
   }
 
   if (ipfsSingleton) {
-      await ipfsSingleton.stop();
+    await ipfsSingleton.stop();
   }
 
   // Don't swallow other errors
@@ -71,16 +71,16 @@ const handleWeb3LogEvent = (web3, eventJsonInterface, orbit) => (error, result) 
 };
 
 const main = async () => {
-  logger.info('Initializing IPFS and orbitDb.');
+  logger.info('Initializing IPFS and OrbitDB.');
   const web3 = new Web3(new Web3.providers.WebsocketProvider(getWeb3ProviderUrl()));
 
   getDeployedContract(web3)
     .then(({ contract, contractAddress }) => getIpfsOptions()
       .then((ipfsOptions) => IPFS.create(ipfsOptions))
-        .then((ipfs) => {
-            ipfsSingleton = ipfs;
-            return ipfs;
-        })
+      .then((ipfs) => {
+        ipfsSingleton = ipfs;
+        return ipfs;
+      })
       .then((ipfs) => createOrbitInstance(ipfs, contractAddress))
       .then((orbit) => openExistingUsersDatabases(contract, orbit)
         .then(() => {
