@@ -9,7 +9,7 @@ import getWeb3ProviderUrl from 'concordia-shared/src/utils/web3';
 import { getResolvedRendezvousUrl } from './utils/ipfsUtils';
 import { logger, logsDirectoryPath } from './utils/logger';
 
-const POLLING_INTERVAL = 1000;
+const POLLING_INTERVAL = 10000;
 const accessLogStream = fs.createWriteStream(path.join(logsDirectoryPath, 'access.log'), { flags: 'a' });
 logger.info('Service setting up.');
 
