@@ -1,16 +1,13 @@
 import express from 'express';
-import morgan from 'morgan';  //TODO: replace morgan with something else
+import expressWinston from 'express-winston';
 import _ from 'lodash';
-import fs from 'fs';
-import path from 'path';
 import isReachable from 'is-reachable';
 import { pinnerApiPort } from 'concordia-shared/src/environment/interpolated/pinner';
 import getWeb3ProviderUrl from 'concordia-shared/src/utils/web3';
 import { getResolvedRendezvousMultiaddress } from './utils/ipfsUtils';
-import { logger, logsDirectoryPath } from './utils/logger';
+import { logger } from './utils/logger';
 
 const POLLING_INTERVAL = 1000;
-const accessLogStream = fs.createWriteStream(path.join(logsDirectoryPath, 'access.log'), { flags: 'a' });
 logger.info('Initializing API service.');
 
 const responseBody = {
@@ -64,7 +61,9 @@ const getStats = async (orbit) => {
 const startAPI = (orbit) => {
   const app = express();
 
-  app.use(morgan('combined', { stream: accessLogStream }));
+  app.use(expressWinston.logger({
+    winstonInstance: logger,
+  }));
 
   app.get('/', async (req, res) => {
     res.send(responseBody);
