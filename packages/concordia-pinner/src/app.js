@@ -22,8 +22,10 @@ const responseBody = {
 
 getResolvedRendezvousMultiaddress().then((multiaddress) => {
   const { address, port } = multiaddress.nodeAddress();
-  const rendezvousUrl = `http://${address}:${port}`;
-  logger.info(`Resolved rendezvous URL to ${rendezvousUrl}`);
+  let rendezvousUrl = `${address}:${port}`;
+  if (port !== 443) rendezvousUrl = `http://${rendezvousUrl}`;
+  else rendezvousUrl = `https://${rendezvousUrl}`;
+  logger.info(`Resolved rendezvous URL to: ${rendezvousUrl}`);
   responseBody.rendezvous.url = rendezvousUrl;
 });
 
@@ -68,7 +70,7 @@ const startAPI = (orbit) => {
   });
 
   app.listen(pinnerApiPort, () => {
-    logger.info(`Pinner API at http://localhost:${pinnerApiPort}`);
+    logger.info(`Pinner API at: http://localhost:${pinnerApiPort}`);
   });
 
   setInterval(getStats, POLLING_INTERVAL, orbit);

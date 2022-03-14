@@ -27,18 +27,20 @@ const getRendezvousMultiaddress = () => {
 };
 
 export const getResolvedRendezvousMultiaddress = async () => {
-  const rendezvousMultiaddress = getRendezvousMultiaddress();
+  let rendezvousMultiaddress = getRendezvousMultiaddress();
   const { address } = rendezvousMultiaddress.nodeAddress();
 
   // Address is a domain to be resolved to IP
   if (rendezvousMultiaddress.toString().includes('/dns4/')) {
     try {
+      logger.info(`Multiaddress ${rendezvousMultiaddress.toString()} will be resolved.`);
       const resolvedDomain = await dnsLookup(address);
-      return Promise.resolve(new Multiaddr(`/ip4/${resolvedDomain.address}/tcp/${rendezvousPort}/wss/p2p-webrtc-star`));
+      rendezvousMultiaddress = new Multiaddr(`/ip4/${resolvedDomain.address}/tcp/${rendezvousPort}/wss/p2p-webrtc-star`);
     } catch (error) {
       throw new Error(`DNS lookup of ${address} failed.\n${error}`);
     }
   }
+  logger.info(`Resolved rendezvous multiaddress is: ${rendezvousMultiaddress.toString()}`);
   return Promise.resolve(rendezvousMultiaddress);
 };
 
