@@ -8,7 +8,7 @@ import { getResolvedRendezvousMultiaddress } from './utils/ipfsUtils';
 import { logger } from './utils/logger';
 
 const POLLING_INTERVAL = 1000;
-logger.info('Initializing API service.');
+logger.info(`Initializing API service (polling interval is ${POLLING_INTERVAL / 1000}s).`);
 
 const responseBody = {
   ipfs: {
@@ -23,13 +23,11 @@ const responseBody = {
 getResolvedRendezvousMultiaddress().then((multiaddress) => {
   const { address, port } = multiaddress.nodeAddress();
   const rendezvousUrl = `http://${address}:${port}`;
-  logger.info(`Resolved rendezvous URL to: ${rendezvousUrl}`);
+  logger.info(`Resolved rendezvous URL to ${rendezvousUrl}`);
   responseBody.rendezvous.url = rendezvousUrl;
 });
 
 const getStats = async (orbit) => {
-  logger.info('Gathering stats.');
-
   try {
     const ipfs = orbit._ipfs;
     const { id } = await ipfs.id();
@@ -70,7 +68,7 @@ const startAPI = (orbit) => {
   });
 
   app.listen(pinnerApiPort, () => {
-    logger.info(`Pinner API at http://localhost:${pinnerApiPort}!`);
+    logger.info(`Pinner API at http://localhost:${pinnerApiPort}`);
   });
 
   setInterval(getStats, POLLING_INTERVAL, orbit);
